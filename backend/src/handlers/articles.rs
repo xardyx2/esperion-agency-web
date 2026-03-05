@@ -47,6 +47,36 @@ pub struct ListArticlesQuery {
     pub language: Option<String>,
 }
 
+impl ListArticlesQuery {
+    fn build_where_clause(&self) -> String {
+        let mut conditions = Vec::new();
+        
+        if let Some(ref category) = self.category {
+            conditions.push(format!("category = '{}'", category.replace('\'', "''")));
+        }
+        
+        if let Some(ref language) = self.language {
+            if language == "id" {
+                conditions.push("slug_id != null".to_string());
+            } else if language == "en" {
+                conditions.push("slug_en != null".to_string());
+            }
+        }
+        
+        if conditions.is_empty() {
+            String::new()
+        } else {
+            format!(" WHERE {}", conditions.join(" AND "))
+        }
+    }
+    
+    fn offset(&self) -> u32 {
+        let page = self.page.unwrap_or(1);
+        let limit = self.limit.unwrap_or(10);
+        (page - 1) * limit
+    }
+}
+
 /// Create/update article request
 #[derive(Debug, Deserialize, ToSchema)]
 pub struct ArticleRequest {
@@ -74,12 +104,29 @@ pub struct ArticleRequest {
     ),
 )]
 pub async fn list_articles(
-    State(_db): State<crate::db::DbState>,
-    Query(_query): Query<ListArticlesQuery>,
+    State(db): State<crate::db::DbState>,
+    Query(query): Query<ListArticlesQuery>,
 ) -> Result<Json<Vec<ArticleResponse>>, StatusCode> {
-    // TODO: Implement actual database query
-    // For now, return mock response
-    Ok(Json(vec![]))
+    let where_clause = query.build_where_clause();
+    let limit = query.limit.unwrap_or(10);
+    let offset = query.offset();
+    
+    let list_query = format!(
+        "SELECT * FROM articles{} ORDER BY created_at DESC LIMIT {} START {}",
+        where_clause, limit, offset
+    );
+    
+    let mut result = db::get_db()
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+        .query(list_query)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    
+    let articles: Vec<serde_json::Value> = result.take(0).unwrap_or_default();
+    let responses = articles.into_iter().filter_map(|a| serde_json::from_value(a).ok()).collect();
+    
+    Ok(Json(responses))
 }
 
 /// Get article by slug
@@ -96,11 +143,24 @@ pub async fn list_articles(
     ),
 )]
 pub async fn get_article(
-    State(_db): State<crate::db::DbState>,
-    Path(_slug): Path<String>,
+    State(db): State<crate::db::DbState>,
+    Path(slug): Path<String>,
 ) -> Result<Json<ArticleResponse>, StatusCode> {
-    // TODO: Implement actual database query
-    Err(StatusCode::NOT_FOUND)
+    let query = "SELECT * FROM articles WHERE slug_id = $slug OR slug_en = $slug LIMIT 1";
+    let mut result = db::get_db()
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+        .query(query)
+        .bind(("slug", &slug))
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    
+    let article: Option<serde_json::Value> = result.take(0).ok().flatten();
+    let article = article.ok_or(StatusCode::NOT_FOUND)?;
+    
+    serde_json::from_value(article)
+        .map(Json)
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
 }
 
 /// Create article
@@ -116,11 +176,39 @@ pub async fn get_article(
     ),
 )]
 pub async fn create_article(
-    State(_db): State<crate::db::DbState>,
-    Json(_req): Json<ArticleRequest>,
+    State(db): State<crate::db::DbState>,
+    Json(req): Json<ArticleRequest>,
 ) -> Result<Json<ArticleResponse>, StatusCode> {
-    // TODO: Implement actual database insert
-    Err(StatusCode::INTERNAL_SERVER_ERROR)
+    let slug_id = req.slug_id.clone().unwrap_or_else(|| req.title.to_lowercase().replace(' ', "-"));
+    let slug_en = req.slug_en.clone().unwrap_or_else(|| slug_id.clone());
+    let now = chrono::Utc::now().to_rfc3339();
+    
+    let insert_query = "CREATE articles SET title = $title, slug_id = $slug_id, slug_en = $slug_en, content_id = $content_id, content_en = $content_en, excerpt_id = $excerpt_id, excerpt_en = $excerpt_en, category = $category, image = $image, published = $published, translation_status = 'published', created_at = $now, updated_at = $now";
+    
+    let mut result = db::get_db()
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+        .query(insert_query)
+        .bind(("title", &req.title))
+        .bind(("slug_id", &slug_id))
+        .bind(("slug_en", &slug_en))
+        .bind(("content_id", &req.content_id))
+        .bind(("content_en", &req.content_en))
+        .bind(("excerpt_id", &req.excerpt_id))
+        .bind(("excerpt_en", &req.excerpt_en))
+        .bind(("category", &req.category))
+        .bind(("image", &req.image))
+        .bind(("published", &req.published.unwrap_or(false)))
+        .bind(("now", &now))
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    
+    let created: Option<serde_json::Value> = result.take(0).ok().flatten();
+    let article = created.ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+    
+    serde_json::from_value(article)
+        .map(Json)
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
 }
 
 /// Update article
@@ -139,12 +227,39 @@ pub async fn create_article(
     ),
 )]
 pub async fn update_article(
-    State(_db): State<crate::db::DbState>,
-    Path(_id): Path<String>,
-    Json(_req): Json<ArticleRequest>,
+    State(db): State<crate::db::DbState>,
+    Path(id): Path<String>,
+    Json(req): Json<ArticleRequest>,
 ) -> Result<Json<ArticleResponse>, StatusCode> {
-    // TODO: Implement actual database update
-    Err(StatusCode::NOT_FOUND)
+    let now = chrono::Utc::now().to_rfc3339();
+    
+    let update_query = "UPDATE articles SET title = $title, slug_id = $slug_id, slug_en = $slug_en, content_id = $content_id, content_en = $content_en, excerpt_id = $excerpt_id, excerpt_en = $excerpt_en, category = $category, image = $image, published = $published, updated_at = $now WHERE id = $id";
+    
+    let mut result = db::get_db()
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+        .query(update_query)
+        .bind(("id", &id))
+        .bind(("title", &req.title))
+        .bind(("slug_id", &req.slug_id.clone().unwrap_or_default()))
+        .bind(("slug_en", &req.slug_en.clone().unwrap_or_default()))
+        .bind(("content_id", &req.content_id))
+        .bind(("content_en", &req.content_en.clone().unwrap_or_default()))
+        .bind(("excerpt_id", &req.excerpt_id.clone().unwrap_or_default()))
+        .bind(("excerpt_en", &req.excerpt_en.clone().unwrap_or_default()))
+        .bind(("category", &req.category))
+        .bind(("image", &req.image.clone().unwrap_or_default()))
+        .bind(("published", &req.published.unwrap_or(false)))
+        .bind(("now", &now))
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    
+    let updated: Option<serde_json::Value> = result.take(0).ok().flatten();
+    let article = updated.ok_or(StatusCode::NOT_FOUND)?;
+    
+    serde_json::from_value(article)
+        .map(Json)
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
 }
 
 /// Delete article
@@ -162,11 +277,26 @@ pub async fn update_article(
     ),
 )]
 pub async fn delete_article(
-    State(_db): State<crate::db::DbState>,
-    Path(_id): Path<String>,
+    State(db): State<crate::db::DbState>,
+    Path(id): Path<String>,
 ) -> Result<StatusCode, StatusCode> {
-    // TODO: Implement actual database delete
-    Err(StatusCode::NOT_FOUND)
+    let delete_query = "DELETE articles WHERE id = $id";
+    
+    let mut result = db::get_db()
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+        .query(delete_query)
+        .bind(("id", &id))
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    
+    let deleted: Option<serde_json::Value> = result.take(0).ok().flatten();
+    
+    if deleted.is_some() {
+        Ok(StatusCode::OK)
+    } else {
+        Err(StatusCode::NOT_FOUND)
+    }
 }
 
 /// Register articles routes
