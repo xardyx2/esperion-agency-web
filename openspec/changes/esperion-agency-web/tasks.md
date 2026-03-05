@@ -2,8 +2,8 @@
 
 ## 1. Project Setup & Infrastructure
 
-- [ ] 1.1 Create monorepo structure: frontend/, backend/, infrastructure/
-- [ ] 1.2 Initialize Nuxt 4 project with `app/` directory in frontend/
+- [x] 1.1 Create monorepo structure: frontend/, backend/, infrastructure/ ✅ BERHASIL
+- [x] 1.2 Initialize Nuxt 4 project with `app/` directory in frontend/ ✅ BERHASIL
 - [ ] 1.3 Install Nuxt modules: @nuxt/ui, @nuxt/image, @nuxt/fonts, @nuxtjs/sitemap, @nuxtjs/robots, @nuxtjs/color-mode, Pinia, FormKit, VueUse
 - [ ] 1.4 Initialize Rust project with Cargo.toml: axum, tokio, utoipa, utoipa-scalar, argon2, jsonwebtoken, serde, thiserror, surrealdb
 - [ ] 1.5 Create Docker Compose: frontend (node:20-alpine), backend (rust:1.75), database (surrealdb:latest)
