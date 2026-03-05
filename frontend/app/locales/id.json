@@ -1,0 +1,113 @@
+{
+  "common": {
+    "loading": "Memuat...",
+    "error": "Terjadi kesalahan",
+    "success": "Berhasil",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "delete": "Hapus",
+    "edit": "Edit",
+    "view": "Lihat",
+    "search": "Cari",
+    "filter": "Filter",
+    "sort": "Urutkan",
+    "pagination": {
+      "previous": "Sebelumnya",
+      "next": "Selanjutnya",
+      "page": "Halaman",
+      "of": "dari",
+      "results": "hasil"
+    }
+  },
+  "navigation": {
+    "home": "Beranda",
+    "ourWorks": "Karya Kami",
+    "ourServices": "Layanan Kami",
+    "articles": "Artikel",
+    "about": "Tentang Kami",
+    "contact": "Hubungi Kami",
+    "contactUs": "Hubungi Kami",
+    "login": "Masuk",
+    "register": "Daftar",
+    "logout": "Keluar",
+    "dashboard": "Dasbor",
+    "agency": "Agensi",
+    "capital": "Modal"
+  },
+  "home": {
+    "hero": {
+      "slide1": "Strategi Digital Berbasis Data yang Meningkatkan ROI hingga 300%",
+      "slide1Sub": "Analytics, AI, dan Keahlian untuk Pertumbuhan Bisnis Anda",
+      "slide2": "Didukung oleh AI, Dikelola oleh Manusia",
+      "slide2Sub": "Solusi Digital Cerdas yang Tetap Personal",
+      "slide3": "30+ Campaign, 10+ Klien Puas, Banyak Kisah Sukses",
+      "slide3Sub": "Rekam Jejak yang Bicara Sendiri",
+      "slide4": "Lebih Dari Sekadar Agensi – Partner Digital Anda",
+      "slide4Sub": "Kolaborasi yang Menghasilkan Impact Nyata",
+      "slide5": "Masa Depan Digital Ada Di Sini",
+      "slide5Sub": "Inovasi Terbaru dalam Pemasaran & Teknologi Digital"
+    },
+    "whoAreWe": "Siapa Kami",
+    "ourServices": "Layanan Kami",
+    "ourClients": "Klien Kami",
+    "featuredWorks": "Karya Unggulan",
+    "latestArticles": "Artikel Terbaru",
+    "cta": {
+      "text": "Siap Mengubah Bisnis Digital Anda?",
+      "button": "Konsultasi Gratis"
+    }
+  },
+  "stats": {
+    "clients": "Klien",
+    "campaigns": "Campaign",
+    "works": "Karya",
+    "articles": "Artikel"
+  },
+  "footer": {
+    "company": "Tentang Perusahaan",
+    "services": "Layanan",
+    "contact": "Kontak",
+    "followUs": "Ikuti Kami",
+    "address": "Alamat",
+    "email": "Email",
+    "phone": "Telepon",
+    "copyright": "© 2026 Esperion Digital Agency. Hak Cipta Dilindungi."
+  },
+  "forms": {
+    "fullName": "Nama Lengkap",
+    "companyName": "Nama Perusahaan",
+    "email": "Email",
+    "phone": "Nomor Telepon",
+    "message": "Pesan",
+    "submit": "Kirim",
+    "required": "Wajib diisi",
+    "invalid": "Tidak valid",
+    "success": "Formulir berhasil dikirim",
+    "error": "Terjadi kesalahan saat mengirim"
+  },
+  "validation": {
+    "required": "Bidang ini wajib diisi",
+    "email": "Masukkan email yang valid",
+    "minLength": "Panjang minimal {length} karakter",
+    "maxLength": "Panjang maksimal {length} karakter",
+    "passwordMatch": "Kata sandi tidak cocok"
+  },
+  "auth": {
+    "login": "Masuk",
+    "register": "Daftar",
+    "email": "Email",
+    "password": "Kata Sandi",
+    "rememberMe": "Ingat Saya",
+    "forgotPassword": "Lupa Kata Sandi?",
+    "noAccount": "Belum punya akun?",
+    "haveAccount": "Sudah punya akun?",
+    "signUp": "Daftar Sekarang",
+    "signIn": "Masuk Sekarang"
+  },
+  "errors": {
+    "notFound": "Halaman tidak ditemukan",
+    "serverError": "Terjadi kesalahan server",
+    "unauthorized": "Tidak diizinkan",
+    "backToHome": "Kembali ke Beranda"
+  }
+}

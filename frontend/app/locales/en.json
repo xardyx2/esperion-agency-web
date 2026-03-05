@@ -1,0 +1,113 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page",
+      "of": "of",
+      "results": "results"
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "ourWorks": "Our Works",
+    "ourServices": "Our Services",
+    "articles": "Articles",
+    "about": "About Us",
+    "contact": "Contact",
+    "contactUs": "Contact Us",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "agency": "Agency",
+    "capital": "Capital"
+  },
+  "home": {
+    "hero": {
+      "slide1": "Data-Driven Digital Strategies that Increase ROI up to 300%",
+      "slide1Sub": "Analytics, AI, and Expertise for Your Business Growth",
+      "slide2": "Powered by AI, Managed by Humans",
+      "slide2Sub": "Smart Digital Solutions that Stay Personal",
+      "slide3": "30+ Campaigns, 10+ Happy Clients, Countless Success Stories",
+      "slide3Sub": "Track Record that Speaks for Itself",
+      "slide4": "More Than an Agency – Your Digital Partner",
+      "slide4Sub": "Collaboration that Produces Real Impact",
+      "slide5": "The Future of Digital is Here",
+      "slide5Sub": "Latest Innovation in Digital Marketing & Technology"
+    },
+    "whoAreWe": "Who Are We",
+    "ourServices": "Our Services",
+    "ourClients": "Our Clients",
+    "featuredWorks": "Featured Works",
+    "latestArticles": "Latest Articles",
+    "cta": {
+      "text": "Ready to Transform Your Digital Business?",
+      "button": "Free Consultation"
+    }
+  },
+  "stats": {
+    "clients": "Clients",
+    "campaigns": "Campaigns",
+    "works": "Works",
+    "articles": "Articles"
+  },
+  "footer": {
+    "company": "About Company",
+    "services": "Services",
+    "contact": "Contact",
+    "followUs": "Follow Us",
+    "address": "Address",
+    "email": "Email",
+    "phone": "Phone",
+    "copyright": "© 2026 Esperion Digital Agency. All Rights Reserved."
+  },
+  "forms": {
+    "fullName": "Full Name",
+    "companyName": "Company Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "message": "Message",
+    "submit": "Submit",
+    "required": "Required",
+    "invalid": "Invalid",
+    "success": "Form successfully submitted",
+    "error": "An error occurred while submitting"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email",
+    "minLength": "Minimum {length} characters",
+    "maxLength": "Maximum {length} characters",
+    "passwordMatch": "Passwords do not match"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember Me",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signUp": "Sign Up Now",
+    "signIn": "Sign In Now"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "serverError": "Server error occurred",
+    "unauthorized": "Unauthorized",
+    "backToHome": "Back to Home"
+  }
+}
