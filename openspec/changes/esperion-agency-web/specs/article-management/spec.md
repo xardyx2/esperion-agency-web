@@ -1,204 +1,230 @@
+# Article Management Specification
+
 ## ADDED Requirements
 
-### Requirement: Article List View
-The system SHALL display a list of all articles in the dashboard for management purposes.
+### Requirement: Translation Mapping for Multi-language Articles
 
-#### Scenario: View all articles
-- **WHEN** admin navigates to Articles > All Articles
-- **THEN** a table listing all articles SHALL be displayed
-- **AND** each row SHALL show: title, category, author, status, created date, and actions
+The system SHALL support translation mapping between Indonesian and English articles to enable proper language switching with URL preservation.
 
-#### Scenario: Pagination
-- **WHEN** there are more than 10 articles
-- **THEN** pagination controls SHALL be displayed
-- **AND** user SHALL be able to navigate between pages
+#### Schema Definition
 
-#### Scenario: Search articles
-- **WHEN** user types in the search box
-- **THEN** the article list SHALL filter by title match in real-time
+```sql
+-- Articles table with translation mapping
+DEFINE TABLE articles SCHEMAFULL;
 
-#### Scenario: Filter by category
-- **WHEN** user selects a category from the filter dropdown
-- **THEN** the article list SHALL show only articles in that category
+-- Core fields
+DEFINE FIELD title ON articles TYPE string;
+DEFINE FIELD slug_id ON articles TYPE string;  -- Indonesian slug
+DEFINE FIELD slug_en ON articles TYPE string;  -- English slug
+DEFINE FIELD content_id ON articles TYPE string;  -- Indonesian content
+DEFINE FIELD content_en ON articles TYPE string;  -- English content
+DEFINE FIELD excerpt_id ON articles TYPE option<string>;  -- Indonesian excerpt
+DEFINE FIELD excerpt_en ON articles TYPE option<string>;  -- English excerpt
 
-#### Scenario: Empty state
-- **WHEN** there are no articles
-- **THEN** a message "No articles yet. Create your first article!" SHALL be displayed
-- **AND** a "Create Article" button SHALL be shown
+-- Metadata
+DEFINE FIELD category ON articles TYPE string;
+DEFINE FIELD image ON articles TYPE option<string>;
+DEFINE FIELD author ON articles TYPE record<users>;
+DEFINE FIELD published ON articles TYPE bool DEFAULT false;
+DEFINE FIELD published_at ON articles TYPE option<datetime>;
 
-### Requirement: Create New Article
-The system SHALL allow authorized users to create new articles.
+-- Translation status
+DEFINE FIELD translation_status ON articles TYPE string DEFAULT 'draft';
+-- Values: 'draft', 'id_only', 'en_only', 'complete'
 
-#### Scenario: Access new article page
-- **WHEN** admin navigates to Articles > New Article
-- **THEN** the article editor page SHALL be displayed
-- **AND** the form SHALL include: title, slug, category, excerpt, content, and image fields
+-- Timestamps
+DEFINE FIELD created_at ON articles TYPE datetime DEFAULT time::now();
+DEFINE FIELD updated_at ON articles TYPE datetime;
 
-#### Scenario: Auto-generate slug
-- **WHEN** user enters a title
-- **THEN** the slug SHALL be auto-generated from the title
-- **AND** user SHALL be able to manually edit the slug
+-- Indexes for performance
+DEFINE INDEX idx_slug_id ON articles FIELDS (slug_id);
+DEFINE INDEX idx_slug_en ON articles FIELDS (slug_en);
+DEFINE INDEX idx_translation_status ON articles FIELDS (translation_status);
+```
 
-#### Scenario: Rich text editing
-- **WHEN** user clicks in the content field
-- **THEN** the Nuxt UI rich text editor SHALL be displayed
-- **AND** user SHALL be able to format text, add headings, lists, links, and images
+#### Translation Status Values
 
-#### Scenario: Category selection
-- **WHEN** user clicks the category dropdown
-- **THEN** a list of existing categories SHALL be displayed
-- **AND** user SHALL be able to create a new category
+| Status | Description | URL Access |
+|--------|-------------|------------|
+| `draft` | Neither translation complete | Not accessible |
+| `id_only` | Only Indonesian available | `/id/articles/slug-id` |
+| `en_only` | Only English available | `/en/articles/slug-en` |
+| `complete` | Both translations complete | Both URLs accessible |
 
-#### Scenario: Image upload
-- **WHEN** user uploads an image
-- **THEN** the image SHALL be stored in local storage
-- **AND** a preview SHALL be displayed
-- **AND** the image path SHALL be saved with the article
+#### Language Switching Behavior
 
-#### Scenario: Save draft
-- **WHEN** user clicks "Save Draft"
-- **THEN** the article SHALL be saved with published=false
-- **AND** user SHALL be redirected to article list
+```
+┌─────────────────────────────────────────────────────────────┐
+│  LANGUAGE SWITCHING FLOW                                    │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  User on /id/articles/apa-itu-agency                        │
+│           ↓                                                 │
+│  Click language switcher (EN)                               │
+│           ↓                                                 │
+│  Lookup article by slug_id = "apa-itu-agency"               │
+│           ↓                                                 │
+│  Get slug_en from database                                  │
+│           ↓                                                 │
+│  If slug_en exists:                                         │
+│    → Redirect to /en/articles/{slug_en}                     │
+│  Else:                                                      │
+│    → Show toast: "English version not available"            │
+│    → Stay on current page                                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
 
-#### Scenario: Publish article
-- **WHEN** user clicks "Publish"
-- **THEN** the article SHALL be saved with published=true
-- **AND** published_at timestamp SHALL be set
-- **AND** user SHALL be redirected to article list
+### Requirement: Auto-generate Slug from Title
 
-#### Scenario: Form validation
-- **WHEN** user submits without required fields (title, content)
-- **THEN** validation errors SHALL be displayed
-- **AND** the form SHALL NOT submit
+The system SHALL auto-generate URL-safe slugs from titles with manual override capability.
 
-### Requirement: Edit Article
-The system SHALL allow authorized users to edit existing articles.
+#### Slug Generation Rules
 
-#### Scenario: Access edit page
-- **WHEN** user clicks "Edit" on an article in the list
-- **THEN** the article editor SHALL load with existing content
-- **AND** all fields SHALL be pre-populated
+1. **Lowercase conversion**: All characters converted to lowercase
+2. **Special character handling**:
+   - Indonesian: `é` → `e`, `á` → `a`, `ñ` → `n`
+   - Spaces → hyphens (`-`)
+   - Multiple hyphens → single hyphen
+3. **Uniqueness**: Append `-1`, `-2`, etc. if slug exists
+4. **Manual override**: Authors can edit auto-generated slug
 
-#### Scenario: Update article
-- **WHEN** user modifies content and clicks "Save"
-- **THEN** the article SHALL be updated
-- **AND** updated_at timestamp SHALL be updated
-- **AND** a success message SHALL be displayed
+#### Examples
 
-#### Scenario: Publish draft
-- **WHEN** user edits a draft and clicks "Publish"
-- **THEN** the article SHALL be published
-- **AND** published_at timestamp SHALL be set to current time
+| Title | Auto-generated Slug |
+|-------|---------------------|
+| `Apa Itu Agency` | `apa-itu-agency` |
+| `Tips SEO untuk Pemula` | `tips-seo-untuk-pemula` |
+| `Strategi Digital Marketing 2026` | `strategi-digital-marketing-2026` |
+| `What Is Digital Marketing` | `what-is-digital-marketing` |
 
-#### Scenario: Unpublish article
-- **WHEN** user clicks "Unpublish" on a published article
-- **THEN** the published flag SHALL be set to false
-- **AND** the article SHALL no longer appear on the public website
+### Requirement: Translation Workflow
 
-### Requirement: Delete Article
-The system SHALL allow authorized users to delete articles.
+The system SHALL support a translation workflow for content authors.
 
-#### Scenario: Delete confirmation
-- **WHEN** user clicks "Delete" on an article
-- **THEN** a confirmation dialog SHALL appear
-- **AND** the message SHALL include the article title
+#### Workflow States
 
-#### Scenario: Confirm delete
-- **WHEN** user confirms deletion
-- **THEN** the article SHALL be permanently deleted from the database
-- **AND** the associated image SHALL remain in storage (orphaned)
-- **AND** user SHALL be redirected to article list
-- **AND** a success message SHALL be displayed
+```
+┌─────────────────────────────────────────────────────────────┐
+│  TRANSLATION WORKFLOW                                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  1. Create Indonesian Article                               │
+│     → translation_status = 'id_only'                        │
+│     → Accessible at: /id/articles/{slug_id}                 │
+│                                                             │
+│  2. Request Translation (optional)                          │
+│     → Click "Translate to English" button                   │
+│     → Auto-generate English draft using Alibaba AI          │
+│     → translation_status = 'en_draft'                       │
+│                                                             │
+│  3. Edit English Translation (manual)                       │
+│     → Review and edit auto-translated content               │
+│     → Add manual improvements                               │
+│                                                             │
+│  4. Publish English Version                                 │
+│     → translation_status = 'complete'                       │
+│     → Accessible at: /en/articles/{slug_en}                 │
+│     → Language switcher enabled                             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
 
-#### Scenario: Cancel delete
-- **WHEN** user cancels the deletion
-- **THEN** the article SHALL NOT be deleted
-- **AND** user SHALL remain on the current page
+### Requirement: Language Switcher with URL Mapping
 
-### Requirement: Article Schema Validation
-The system SHALL enforce strict schema validation for articles.
+The language switcher component SHALL map URLs correctly between languages.
 
-#### Scenario: Title validation
-- **WHEN** article is saved
-- **THEN** title SHALL be required, max 200 characters
+#### Implementation
 
-#### Scenario: Slug validation
-- **WHEN** article is saved
-- **THEN** slug SHALL be required, unique, URL-safe format
-- **AND** SHALL be auto-generated if not provided
+```typescript
+// frontend/app/components/ui/LanguageSwitcher.vue
 
-#### Scenario: Content validation
-- **WHEN** article is saved
-- **THEN** content SHALL be required, minimum 1 character
+async function switchLanguage(newLang: 'id' | 'en') {
+  const currentSlug = route.params.slug as string
+  const currentLang = route.params.locale as 'id' | 'en' || 'id'
+  
+  // Fetch article with translation mapping
+  const article = await $fetch(`/api/v1/articles/by-slug/${currentSlug}`)
+  
+  // Get target slug
+  const targetSlug = newLang === 'id' 
+    ? article.slug_id 
+    : article.slug_en
+  
+  // Redirect if translation exists
+  if (targetSlug) {
+    await navigateTo(`/${newLang}/articles/${targetSlug}`)
+  } else {
+    // Show error: translation not available
+    showToast({
+      title: 'Translation not available',
+      message: `This article is not available in ${newLang === 'id' ? 'Indonesian' : 'English'}`,
+      type: 'warning'
+    })
+  }
+}
+```
 
-#### Scenario: Category validation
-- **WHEN** article is saved
-- **THEN** category SHALL be required
-- **AND** SHALL be one of the predefined categories or a new valid category name
+### Requirement: API Endpoints for Translation
 
-#### Scenario: Excerpt validation
-- **WHEN** article is saved
-- **THEN** excerpt SHALL be optional, max 500 characters
-- **AND** if not provided, auto-generate from first 150 characters of content
+The system SHALL provide API endpoints for translation-related operations.
 
-### Requirement: Article Preview
-The system SHALL allow users to preview articles before publishing.
+#### Endpoints
 
-#### Scenario: Open preview
-- **WHEN** user clicks "Preview" button
-- **THEN** a new tab SHALL open with the article rendered as it would appear on the public website
-- **AND** the preview SHALL use ISR rendering simulation
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/articles/by-slug/:slug` | Get article by any slug (id or en) |
+| GET | `/api/v1/articles/:id/translations` | Get all translations for an article |
+| POST | `/api/v1/articles/:id/translate` | Auto-translate using Alibaba AI |
+| PUT | `/api/v1/articles/:id/translation-status` | Update translation status |
 
-#### Scenario: Preview draft
-- **WHEN** user previews a draft article
-- **THEN** the article SHALL be visible even though it's not published
-- **AND** a "Preview Mode" banner SHALL be displayed at the top
+#### Response Format
 
-### Requirement: Article List Public View
-The system SHALL display published articles on the public Articles page.
+```json
+// GET /api/v1/articles/by-slug/apa-itu-agency
+{
+  "id": "article_123",
+  "title": "Apa Itu Agency",
+  "slug_id": "apa-itu-agency",
+  "slug_en": "what-is-agency",
+  "content_id": "...",
+  "content_en": "...",
+  "translation_status": "complete",
+  "available_languages": ["id", "en"]
+}
+```
 
-#### Scenario: View published articles
-- **WHEN** visitor navigates to /articles
-- **THEN** only published articles SHALL be displayed
-- **AND** articles SHALL be sorted by published_at descending
+## Scenarios
 
-#### Scenario: Filter by category (public)
-- **WHEN** visitor clicks a category filter
-- **THEN** only articles in that category SHALL be displayed
-- **AND** the URL SHALL update with the category filter
+### Scenario: User shares Indonesian article to foreign friend
 
-#### Scenario: Search articles (public)
-- **WHEN** visitor uses the search box
-- **THEN** articles matching the search term in title or content SHALL be displayed
+- **WHEN** User A shares `/id/articles/apa-itu-agency` to User B (English speaker)
+- **AND** User B opens the link
+- **AND** User B's browser language is English
+- **THEN** Language prompt shows after 5 seconds
+- **AND** Prompt says "This article is available in English"
+- **WHEN** User B clicks "View in English"
+- **THEN** User B is redirected to `/en/articles/what-is-agency`
 
-#### Scenario: Pagination (public)
-- **WHEN** there are more than 9 published articles
-- **THEN** pagination SHALL be displayed (3 columns x 3 rows per page)
+### Scenario: Translation not available
 
-#### Scenario: Article detail view
-- **WHEN** visitor clicks on an article
-- **THEN** the full article SHALL be displayed with title, content, author, and published date
-- **AND** related articles SHALL be shown at the bottom
+- **WHEN** User clicks language switcher
+- **AND** Target language translation doesn't exist
+- **THEN** Toast shows "Translation not available"
+- **AND** User stays on current page
+- **AND** Badge shows "Available in: Indonesian"
 
-### Requirement: Image Management
-The system SHALL handle article images with local storage.
+### Scenario: Auto-generate English translation
 
-#### Scenario: Upload image
-- **WHEN** user selects an image file
-- **THEN** the image SHALL be uploaded to local storage
-- **AND** the file path SHALL be stored in the article record
+- **WHEN** Author clicks "Translate to English"
+- **AND** Article has Indonesian content
+- **THEN** Alibaba AI generates English draft
+- **AND** English fields are populated
+- **AND** Status changes to 'en_draft'
+- **AND** Author can review and edit
 
-#### Scenario: Image validation
-- **WHEN** user uploads a file
-- **THEN** only image files (jpg, jpeg, png, webp) SHALL be accepted
-- **AND** maximum file size SHALL be 5MB
+## Open Questions
 
-#### Scenario: Replace image
-- **WHEN** user uploads a new image for an existing article
-- **THEN** the old image SHALL remain in storage (manual cleanup required)
-- **AND** the new image path SHALL replace the old one in the article record
-
-#### Scenario: Delete article with image
-- **WHEN** an article is deleted
-- **THEN** the image SHALL NOT be automatically deleted
-- **AND** orphaned images SHALL be handled by a separate cleanup process
+1. Should auto-translation be triggered on article creation or manual trigger only?
+2. Should there be a review workflow before publishing translations?
+3. How to handle translation updates when original content changes?
