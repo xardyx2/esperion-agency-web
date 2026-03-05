@@ -11,9 +11,11 @@
  */
 
 pub mod user;
+pub mod media;
+pub mod work;
+pub mod service;
+pub mod client;
+pub mod contact;
+
 // TODO: Add remaining models
 // pub mod article;
-// pub mod work;
-// pub mod service;
-// pub mod client;
-// pub mod contact;

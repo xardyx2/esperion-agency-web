@@ -14,9 +14,8 @@
 pub mod geo;
 pub mod auth;
 pub mod articles;
-
-// TODO: Implement remaining handlers
-// pub mod works;
-// pub mod services;
-// pub mod clients;
-// pub mod contact;
+pub mod media;
+pub mod works;
+pub mod services;
+pub mod clients;
+pub mod contact;

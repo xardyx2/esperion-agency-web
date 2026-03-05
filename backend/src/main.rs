@@ -75,12 +75,25 @@ fn build_router() -> Router {
     
     // Register articles routes
     router = handlers::articles::register_routes(router);
+    
+    // Register media routes
+    router = handlers::media::register_routes(router);
+    
+    // Register works routes
+    router = handlers::works::register_routes(router);
+    
+    // Register services routes
+    router = handlers::services::register_routes(router);
+    
+    // Register clients routes
+    router = handlers::clients::register_routes(router);
+    
+    // Register contact routes
+    router = handlers::contact::register_routes(router);
 
     // TODO: Register other routes
-    // router = handlers::works::register_routes(router);
-    // router = handlers::services::register_routes(router);
-    // router = handlers::clients::register_routes(router);
-    // router = handlers::contact::register_routes(router);
+    // router = handlers::email::register_routes(router);
+    // router = handlers::analytics::register_routes(router);
 
     // Add CORS layer
     router = router.layer(

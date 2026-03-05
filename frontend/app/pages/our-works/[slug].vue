@@ -1,0 +1,180 @@
+<template>
+  <div class="min-h-screen bg-es-bg-primary dark:bg-es-bg-primary-dark">
+    <!-- Hero Image -->
+    <section class="relative h-[400px] md:h-[500px]">
+      <img :src="work.image" :alt="work.title" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-t from-es-bg-primary dark:from-es-bg-primary-dark to-transparent"></div>
+    </section>
+
+    <!-- Content -->
+    <section class="py-12 md:py-16 -mt-32 relative z-10">
+      <div class="container mx-auto px-4">
+        <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-2xl p-8 md:p-12 shadow-xl">
+          <!-- Header -->
+          <div class="flex flex-wrap items-center gap-4 mb-6">
+            <span class="px-4 py-1 bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 text-es-accent-primary dark:text-es-accent-primary-dark rounded-full text-sm font-medium">
+              {{ work.service }}
+            </span>
+            <span class="px-4 py-1 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark text-es-text-secondary dark:text-es-text-secondary-dark rounded-full text-sm">
+              {{ work.platform }}
+            </span>
+            <span v-if="work.featured" class="px-4 py-1 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-full text-sm font-semibold">
+              Featured Project
+            </span>
+          </div>
+
+          <h1 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
+            {{ work.title }}
+          </h1>
+
+          <div class="flex flex-wrap items-center gap-6 text-es-text-secondary dark:text-es-text-secondary-dark mb-8">
+            <div class="flex items-center gap-2">
+              <span>👤</span>
+              <span>Client: <strong class="text-es-text-primary dark:text-es-text-primary-dark">{{ work.client_name }}</strong></span>
+            </div>
+          </div>
+
+          <!-- Metrics -->
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12 p-6 bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-xl">
+            <div v-for="metric in work.metrics" :key="metric.label" class="text-center">
+              <div class="text-2xl md:text-3xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-1">
+                {{ metric.value }}{{ metric.suffix }}
+              </div>
+              <div class="text-xs md:text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ metric.label }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="prose prose-lg dark:prose-invert max-w-none mb-12">
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">Project Overview</h2>
+            <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
+              {{ work.description }}
+            </p>
+            <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+          </div>
+
+          <!-- Key Features -->
+          <div class="mb-12">
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">Key Features</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div v-for="feature in features" :key="feature" class="flex items-start gap-3">
+                <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
+                <span class="text-es-text-secondary dark:text-es-text-secondary-dark">{{ feature }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gallery -->
+          <div class="mb-12">
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">Project Gallery</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+              <img v-for="img in gallery" :key="img" :src="img" :alt="work.title" class="rounded-lg hover:shadow-lg transition-shadow" />
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <NuxtLink
+              to="/contact-us"
+              class="inline-flex justify-center items-center px-8 py-4 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
+            >
+              Start Your Project
+            </NuxtLink>
+            <NuxtLink
+              to="/our-works"
+              class="inline-flex justify-center items-center px-8 py-4 border-2 border-es-border dark:border-es-border-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:border-es-accent-primary dark:hover:border-es-accent-primary-dark transition-colors"
+            >
+              View All Works
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Works -->
+    <section class="py-12 md:py-16 bg-es-bg-secondary dark:bg-es-bg-secondary-dark">
+      <div class="container mx-auto px-4">
+        <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-8">
+          Related Projects
+        </h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <NuxtLink
+            v-for="related in relatedWorks"
+            :key="related.id"
+            :to="`/our-works/${related.slug}`"
+            class="group bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow"
+          >
+            <img :src="related.image" :alt="related.title" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+            <div class="p-6">
+              <h3 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-2 group-hover:text-es-accent-primary dark:group-hover:text-es-accent-primary-dark transition-colors">
+                {{ related.title }}
+              </h3>
+              <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
+                {{ related.service }}
+              </p>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+  </div>
+</template>
+
+<script setup lang="ts">
+const route = useRoute();
+
+// SEO Meta
+useSeoMeta({
+  title: 'Project Detail - Esperion Digital Agency',
+  description: 'View project details and case study.',
+});
+
+// Work data (in production, fetch from API)
+const work = ref({
+  id: 1,
+  slug: route.params.slug,
+  title: 'E-Commerce Platform Redesign',
+  description: 'Complete redesign of online store resulting in 45% increase in conversions and improved user experience.',
+  image: '/works/work-1.jpg',
+  service: 'Web Development',
+  platform: 'Shopify',
+  featured: true,
+  client_name: 'Fashion Retailer',
+  metrics: [
+    { label: 'Conversion', value: '45', suffix: '%' },
+    { label: 'Revenue', value: '120', suffix: '%' },
+    { label: 'Speed', value: '2.1', suffix: 's' },
+    { label: 'Users', value: '50', suffix: 'K' },
+    { label: 'Orders', value: '10', suffix: 'K/mo' },
+    { label: 'Satisfaction', value: '95', suffix: '%' },
+  ],
+});
+
+const features = [
+  'Custom Shopify theme development',
+  'Mobile-first responsive design',
+  'Advanced product filtering',
+  'Integrated payment gateway',
+  'Inventory management system',
+  'Customer account dashboard',
+  'SEO optimization',
+  'Performance optimization',
+];
+
+const gallery = [
+  '/works/gallery-1.jpg',
+  '/works/gallery-2.jpg',
+  '/works/gallery-3.jpg',
+  '/works/gallery-4.jpg',
+];
+
+const relatedWorks = [
+  { id: 2, slug: 'mobile-banking-app', title: 'Mobile Banking App', service: 'Mobile App Development', image: '/works/work-2.jpg' },
+  { id: 4, slug: 'restaurant-website', title: 'Restaurant Chain Website', service: 'Web Development', image: '/works/work-4.jpg' },
+  { id: 8, slug: 'ecommerce-mobile-app', title: 'E-Commerce Mobile App', service: 'Mobile App Development', image: '/works/work-8.jpg' },
+];
+</script>
