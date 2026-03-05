@@ -19,3 +19,4 @@ pub mod works;
 pub mod services;
 pub mod clients;
 pub mod contact;
+pub mod seo_score;

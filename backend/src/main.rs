@@ -90,6 +90,9 @@ fn build_router() -> Router {
     
     // Register contact routes
     router = handlers::contact::register_routes(router);
+    
+    // Register SEO routes
+    router = handlers::seo_score::register_routes(router);
 
     // TODO: Register other routes
     // router = handlers::email::register_routes(router);
