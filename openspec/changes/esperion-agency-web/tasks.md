@@ -42,9 +42,9 @@
 - [ ] 3.10 **NEW** Create translation memory system (save approved translations)
 - [ ] 3.11 **NEW** Add content publishing options (ID only / EN only / Both)
 
-## 4. Database Schema & Backend Foundation
+## 4. Database Schema & Backend Foundation ✅ PARTIAL
 
-- [ ] 4.1 Create SurrealDB connection module (backend/src/db/)
+- [x] 4.1 Create SurrealDB connection module (backend/src/db/) ✅ DB EXISTS
 - [ ] 4.2 Create schema migration system with version control
 - [ ] 4.3 Define users table: email, password_hash, full_name, role, phone, username, device_id
 - [ ] 4.4 Define articles table: title, slug, content, excerpt, category, image, author, published, published_at, language
@@ -64,7 +64,7 @@
 - [ ] 4.18 Create Rust model structs for all tables
 - [ ] 4.19 Implement database connection pooling using SurrealDB built-in
 
-## 5. Authentication Backend ✅ COMPLETE
+## 5. Authentication Backend ⚠️ NEEDS DB INTEGRATION
 
 - [x] 5.1 Create JWT utility with 7-day expiration + device_id claim ✅ (simplified for MVP)
 - [x] 5.2 Implement Argon2 password hashing ✅ BERHASIL
@@ -101,7 +101,7 @@
 - [ ] 6.13 **Unit Test**: Role-based permissions
 - [ ] 6.14 **Debug & Commit**: User management module
 
-## 7. Articles Backend API ✅ COMPLETE
+## 7. Articles Backend API ⚠️ NEEDS DB INTEGRATION
 
 - [x] 7.1 Create article model with multi-language support ✅ (in handlers)
 - [x] 7.2 Create article handlers module ✅ BERHASIL
@@ -318,7 +318,7 @@
 - [ ] 19.13 **Unit Test**: Navigation components
 - [ ] 19.14 **Debug & Commit**: Public layout
 
-## 20. Home Page Implementation ✅ COMPLETE
+## 20. Home Page Implementation ⚠️ NEEDS API INTEGRATION
 
 - [x] 20.1 Create home page at app/pages/index.vue
 - [ ] 20.2 Implement Section 1: Dynamic banner slider (5 slides, configurable via dashboard)
@@ -337,7 +337,7 @@
 - [ ] 20.15 **Unit Test**: Home page components
 - [ ] 20.16 **Debug & Commit**: Home page
 
-## 21. Our Works Page ✅ COMPLETE
+## 21. Our Works Page ⚠️ NEEDS API INTEGRATION
 
 - [x] 21.1 Create works page at app/pages/our-works.vue
 - [ ] 21.2 Create banner section component
@@ -354,7 +354,7 @@
 - [ ] 21.13 **Unit Test**: Works page components
 - [ ] 21.14 **Debug & Commit**: Our Works page
 
-## 22. Work Detail Page ✅ COMPLETE
+## 22. Work Detail Page ⚠️ NEEDS API INTEGRATION
 
 - [x] 22.1 Create work detail page at app/pages/our-works/[slug].vue
 - [ ] 22.2 Create hero image section
@@ -369,7 +369,7 @@
 - [ ] 22.11 **Unit Test**: Work detail components
 - [ ] 22.12 **Debug & Commit**: Work detail page
 
-## 23. Our Services Page ✅ COMPLETE
+## 23. Our Services Page ⚠️ NEEDS API INTEGRATION
 
 - [x] 23.1 Create services page at app/pages/our-services.vue
 - [ ] 23.2 Create banner section component
@@ -382,7 +382,7 @@
 - [ ] 23.9 **Unit Test**: Services page components
 - [ ] 23.10 **Debug & Commit**: Our Services page
 
-## 24. Service Detail Page ✅ COMPLETE
+## 24. Service Detail Page ⚠️ NEEDS API INTEGRATION
 
 - [x] 24.1 Create service detail page at app/pages/our-services/[slug].vue
 - [ ] 24.2 Create hero section with service icon
@@ -398,7 +398,7 @@
 - [ ] 24.12 **Unit Test**: Service detail components
 - [ ] 24.13 **Debug & Commit**: Service detail page
 
-## 25. Articles Page ✅ COMPLETE
+## 25. Articles Page ⚠️ NEEDS API INTEGRATION
 
 - [x] 25.1 Create articles page at app/pages/articles.vue
 - [ ] 25.2 Create banner section component
@@ -414,7 +414,7 @@
 - [ ] 25.12 **Unit Test**: Articles page components
 - [ ] 25.13 **Debug & Commit**: Articles page
 
-## 26. Article Detail Page ✅ COMPLETE
+## 26. Article Detail Page ⚠️ NEEDS API INTEGRATION
 
 - [x] 26.1 Create article detail page at app/pages/articles/[slug].vue
 - [ ] 26.2 Display article header (title, author, date, category)
