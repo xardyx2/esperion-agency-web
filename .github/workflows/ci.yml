@@ -1,0 +1,167 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_VERSION: '1.75'
+  NODE_VERSION: '20'
+
+jobs:
+  # Frontend Tests
+  frontend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+      
+      - name: Type check
+        working-directory: ./frontend
+        run: npm run type-check
+      
+      - name: Lint
+        working-directory: ./frontend
+        run: npm run lint
+      
+      - name: Unit tests
+        working-directory: ./frontend
+        run: npm run test
+
+  # Backend Tests
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+          override: true
+          components: rustfmt, clippy
+      
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            backend/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Format check
+        working-directory: ./backend
+        run: cargo fmt -- --check
+      
+      - name: Clippy lint
+        working-directory: ./backend
+        run: cargo clippy -- -D warnings
+      
+      - name: Build
+        working-directory: ./backend
+        run: cargo build --verbose
+      
+      - name: Run tests
+        working-directory: ./backend
+        run: cargo test --verbose
+
+  # Build and Deploy to Staging
+  deploy-staging:
+    needs: [frontend-test, backend-test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.esperion.com
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+      
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+      
+      - name: Build backend
+        working-directory: ./backend
+        run: cargo build --release
+      
+      - name: Deploy to staging
+        run: |
+          echo "Deploying to staging environment..."
+          # Add deployment script here
+          # Example: rsync, scp, or cloud provider CLI
+
+  # Build and Deploy to Production
+  deploy-production:
+    needs: [frontend-test, backend-test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://esperion.com
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+      
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+      
+      - name: Build backend
+        working-directory: ./backend
+        run: cargo build --release
+      
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production environment..."
+          # Add deployment script here
+          # Example: rsync, scp, or cloud provider CLI
+      
+      - name: Health check
+        run: |
+          echo "Running health check..."
+          # curl -f https://esperion.com/health || exit 1
+
+  # Auto-rollback on failure
+  auto-rollback:
+    needs: [deploy-production]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Trigger rollback
+        run: |
+          echo "Production deployment failed, triggering rollback..."
+          # Add rollback script here
+          # Example: git revert, or cloud provider rollback
