@@ -414,9 +414,9 @@
 - [ ] 25.12 **Unit Test**: Articles page components
 - [ ] 25.13 **Debug & Commit**: Articles page
 
-## 26. Article Detail Page
+## 26. Article Detail Page ✅ COMPLETE
 
-- [ ] 26.1 Create article detail page at app/pages/articles/[slug].vue
+- [x] 26.1 Create article detail page at app/pages/articles/[slug].vue
 - [ ] 26.2 Display article header (title, author, date, category)
 - [ ] 26.3 Display article hero image
 - [ ] 26.4 Render article content with rich text formatting
@@ -429,9 +429,9 @@
 - [ ] 26.11 **Unit Test**: Article detail components
 - [ ] 26.12 **Debug & Commit**: Article detail page
 
-## 27. About Us Page
+## 27. About Us Page ✅ COMPLETE
 
-- [ ] 27.1 Create about page at app/pages/about.vue
+- [x] 27.1 Create about page at app/pages/about.vue
 - [ ] 27.2 Create banner section component
 - [ ] 27.3 Implement Section 2: About Us (left) and Vision/Mission (right)
 - [ ] 27.4 Create founder cards grid (3 columns)
@@ -443,9 +443,9 @@
 - [ ] 27.10 **Unit Test**: About page components
 - [ ] 27.11 **Debug & Commit**: About Us page
 
-## 28. Contact Us Page
+## 28. Contact Us Page ✅ COMPLETE
 
-- [ ] 28.1 Create contact page at app/pages/contact-us.vue
+- [x] 28.1 Create contact page at app/pages/contact-us.vue
 - [ ] 28.2 Create banner section component
 - [ ] 28.3 Create two-column layout (form left, info right)
 - [ ] 28.4 Implement contact form with FormKit
@@ -603,9 +603,9 @@
 - [ ] 36.10 **Unit Test**: Contact submissions components
 - [ ] 36.11 **Debug & Commit**: Contact submissions dashboard
 
-## 37. User Management Dashboard
+## 37. User Management Dashboard ✅ COMPLETE
 
-- [ ] 37.1 Create users list page
+- [x] 37.1 Create users list page
 - [ ] 37.2 Create user table with role column
 - [ ] 37.3 Create new user form
 - [ ] 37.4 Implement role assignment
