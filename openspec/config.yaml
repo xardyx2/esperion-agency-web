@@ -1,0 +1,131 @@
+schema: spec-driven
+
+# Project context
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+context: |
+  ## ESPERION - DIGITAL AGENCY WEBSITE & DASHBOARD CMS
+
+  ### Tech Stack
+  **Frontend:**
+  - Framework: Nuxt 4 with Vue 3 Composition API (<script setup lang="ts">)
+  - UI Library: @nuxt/ui (Nuxt UI)
+  - Styling: TailwindCSS with custom Esperion Design System colors
+  - Animation: @vueuse/core for counting animations, Vue Carousel for sliders
+  - Forms: FormKit with Zod validation
+  - State: Pinia
+  - Modules: @nuxt/devtools, @nuxt/image, @nuxt/fonts, @nuxtjs/sitemap, @nuxtjs/robots, @nuxt/eslint, @nuxt/scripts, @formkit/auto-animate/nuxt, @nuxt/test-utils/module, @nuxtjs/a11y, nuxt-hints, @nuxtjs/color-mode
+
+  **Backend:**
+  - Language: Rust (latest stable)
+  - Framework: Axum with Tokio runtime
+  - API Docs: utoipa + utoipa-scalar for OpenAPI documentation
+  - Auth: argon2 (password hashing), jsonwebtoken (JWT)
+  - Serialization: serde, serde_json
+  - Error Handling: thiserror or anyhow
+
+  **Database:**
+  - SurrealDB 3.x with Rust SDK
+  - Strict Schema: DEFINE TABLE, DEFINE FIELD required
+  - Strongly-typed Rust structs mapping to SurrealDB tables
+
+  **Infrastructure:**
+  - Docker & Docker Compose for entire stack
+  - Hot Reload: Nuxt HMR, cargo-watch for Rust auto-recompile
+  - Port mapping for development
+
+  ### Rendering Strategy
+  - Public Pages (Home, Works, Services, Articles, About, Contact): ISR (Incremental Static Regeneration)
+  - Dashboard Pages (Agency CMS): CSR (Client-Side Rendering)
+  - Configure via routeRules in nuxt.config.ts
+
+  ### Esperion Design System - CRITICAL
+  **DILARANG menggunakan hex hardcoded colors di template .vue**
+
+  **Light Mode Colors:**
+  - Background: #FAFCFF
+  - Surface: #FFFFFF
+  - Text Primary: #102B4E
+  - Text Secondary: #475569
+  - Border: #E2E8F0
+  - Primary/Accent: #2B9EDB (Sky Blue)
+
+  **Dark Mode Colors:**
+  - Background: #0B1120
+  - Surface: #151E32
+  - Text Primary: #F8FAFC
+  - Text Secondary: #94A3B8
+  - Border: #1E293B
+  - Primary/Accent: #2B9EDB (Sky Blue)
+
+  **Color Distribution (60-30-10 Rule):**
+  - 60% Background colors
+  - 30% Surface/Secondary colors
+  - 10% Primary/Accent colors
+
+  **Implementation:**
+  - Configure Nuxt UI primary color to #2B9EDB in app.config.ts
+  - Add custom Tailwind colors in tailwind.config.ts using semantic names
+  - Use class names like: bg-esperion-light-bg, text-esperion-dark-text-primary
+
+  ### Project Structure
+  **Nuxt 4 Standard:**
+  - app/pages/ - Page components
+  - app/components/ - Reusable components
+  - app/layouts/ - Layout components
+  - app/composables/ - Vue composables
+  - app/stores/ - Pinia stores
+  - app/utils/ - Utility functions
+  - app/types/ - TypeScript types
+
+  **Rust Backend:**
+  - src/handlers/ - Request handlers
+  - src/models/ - Data models
+  - src/routes/ - Route definitions
+  - src/middleware/ - Auth & other middleware
+  - src/db/ - Database operations
+  - src/api/ - OpenAPI definitions
+
+  ### Code Quality Rules
+  - TypeScript: NO 'any' type, use explicit types
+  - Rust: Proper error handling, no unwrap() in production code
+  - All code must be complete and runnable (no "// rest of code here" comments)
+  - Type-safe API communication between frontend and backend
+  - Proper form validation with user-friendly error messages
+
+  ### Authentication Flow
+  - JWT-based authentication
+  - Bearer token in Authorization header
+  - Token refresh mechanism
+  - Role-based access control (Admin, Editor, Viewer)
+
+  ### External Integrations
+  - reCAPTCHA v3 for Contact form (Google Cloud)
+  - Local file storage for image uploads
+  - Future: TradingView webhook → Binance integration (Dashboard Capital)
+
+# Per-artifact rules
+rules:
+  proposal:
+    - Always include clear goals and non-goals sections
+    - Define success metrics for each feature
+    - Include tech stack references from project context
+    - Specify rendering strategy (ISR vs CSR) for each page type
+    - Mention Esperion Design System compliance requirements
+
+  design:
+    - Always use Esperion color palette semantic names (never hex codes in templates)
+    - Include Docker configuration for development environment
+    - Define API endpoints with request/response schemas
+    - Include SurrealDB schema definitions (DEFINE TABLE, DEFINE FIELD)
+    - Specify component structure and props
+    - Include error handling strategies
+    - Define security measures (auth, validation, sanitization)
+
+  tasks:
+    - Break down into small, implementable chunks (max 2-4 hours each)
+    - Include file paths for each task
+    - Specify expected outcomes and acceptance criteria
+    - Order tasks by dependencies (backend models before handlers, etc.)
+    - Include testing requirements where applicable
+    - Mark tasks that require external setup (reCAPTCHA keys, etc.)
