@@ -69,10 +69,14 @@ fn build_router() -> Router {
 
     // Register geo routes
     router = handlers::geo::register_routes(router);
+    
+    // Register auth routes
+    router = handlers::auth::register_routes(router);
+    
+    // Register articles routes
+    router = handlers::articles::register_routes(router);
 
     // TODO: Register other routes
-    // router = handlers::auth::register_routes(router);
-    // router = handlers::articles::register_routes(router);
     // router = handlers::works::register_routes(router);
     // router = handlers::services::register_routes(router);
     // router = handlers::clients::register_routes(router);

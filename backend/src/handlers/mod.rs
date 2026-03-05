@@ -12,10 +12,10 @@
  */
 
 pub mod geo;
+pub mod auth;
+pub mod articles;
 
 // TODO: Implement remaining handlers
-// pub mod auth;
-// pub mod articles;
 // pub mod works;
 // pub mod services;
 // pub mod clients;

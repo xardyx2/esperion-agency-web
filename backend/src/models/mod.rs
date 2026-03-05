@@ -10,8 +10,8 @@
  * - contact: Contact submission model
  */
 
-// TODO: Implement models
-// pub mod user;
+pub mod user;
+// TODO: Add remaining models
 // pub mod article;
 // pub mod work;
 // pub mod service;
