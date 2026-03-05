@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Frontend - Nuxt 4 Application
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.nuxt
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+      - NUXT_PUBLIC_API_BASE=http://backend:8080
+      - NUXT_RECAPTCHA_SITE_KEY=${NUXT_RECAPTCHA_SITE_KEY:-}
+      - NUXT_GA4_MEASUREMENT_ID=${NUXT_GA4_MEASUREMENT_ID:-}
+      - NUXT_CLARITY_PROJECT_ID=${NUXT_CLARITY_PROJECT_ID:-}
+      - NUXT_META_PIXEL_ID=${NUXT_META_PIXEL_ID:-}
+      - NUXT_TIKTOK_PIXEL_ID=${NUXT_TIKTOK_PIXEL_ID:-}
+      - NUXT_LINKEDIN_PIXEL_ID=${NUXT_LINKEDIN_PIXEL_ID:-}
+    depends_on:
+      - backend
+    networks:
+      - esperion-network
+
+  # Backend - Rust + Axum API
+  backend:
+    image: rust:1.75
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8080:8080"
+    command: cargo watch -x run
+    environment:
+      - DATABASE_URL=ws://database:8000
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+      - JWT_EXPIRATION=7d
+      - REFRESH_TOKEN_EXPIRATION=30d
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY:-}
+      - ALIBABA_AI_API_KEY=${ALIBABA_AI_API_KEY:-sk-sp-83766abe865e4c14af18ae9a918c7d8b}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - RUST_LOG=debug
+    depends_on:
+      - database
+    networks:
+      - esperion-network
+
+  # Database - SurrealDB 3.x
+  database:
+    image: surrealdb/surrealdb:latest
+    volumes:
+      - surreal-data:/data
+    ports:
+      - "8000:8000"
+    command: start --log debug --user ${SURREAL_USER:-root} --pass ${SURREAL_PASS:-root} /data
+    networks:
+      - esperion-network
+
+networks:
+  esperion-network:
+    driver: bridge
+
+volumes:
+  surreal-data:
