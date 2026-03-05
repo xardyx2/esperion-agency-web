@@ -9,6 +9,8 @@
  * - Query helpers
  */
 
+pub mod schema;
+
 use surrealdb::engine::remote::ws::Ws;
 use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
@@ -43,8 +45,60 @@ pub fn get_db() -> &'static Surreal<surrealdb::engine::remote::ws::Client> {
     DB.get().expect("Database not initialized")
 }
 
-// TODO: Implement schema migrations
-// pub mod migrations;
+/// Initialize database schema
+pub async fn init_schema() -> Result<(), Box<dyn std::error::Error>> {
+    let db = get_db();
+    
+    // Run schema SQL
+    let schema_sql = schema::get_schema();
+    let _: Vec<surrealdb::sql::Value> = db.query(&schema_sql).await?.take(0)?;
+    
+    tracing::info!("Database schema initialized");
+    
+    Ok(())
+}
 
-// TODO: Implement query helpers
-// pub mod queries;
+/// Seed initial data
+pub async fn seed_initial_data() -> Result<(), Box<dyn std::error::Error>> {
+    let db = get_db();
+    
+    // Seed default services if not exists
+    let services = vec![
+        ("Digital Advertising", "digital-advertising", "Ads yang Right Target, Right Time", "Average ROAS 4.5x"),
+        ("Marketplace Marketing", "marketplace-marketing", "Dominasi Shopee & Tokopedia", "Naik 150% dalam 3 bulan"),
+        ("Social Media Marketing", "social-media-marketing", "Engagement Bukan Sekedar Likes", "Average engagement 5.2%"),
+        ("Search Engine Optimization", "seo", "Ranking #1 untuk Keyword Kompetitif", "90% client halaman 1 dalam 90 hari"),
+        ("Consultant", "consultant", "Strategi yang Actionable", "Client implement 80%+ recommendation"),
+        ("Web & Mobile Development", "web-mobile-development", "Fast, Beautiful, Conversion-Optimized", "Load time < 2s, bounce rate turun 40%"),
+    ];
+    
+    for (title, slug, description, usp) in services {
+        // Check if service exists
+        let exists: Vec<(bool,)> = db.query("SELECT count() FROM services WHERE slug = $slug")
+            .bind(("slug", slug))
+            .await?
+            .take(0)?;
+        
+        if exists.is_empty() || exists[0].0 == 0 {
+            // Insert service
+            let _: Vec<surrealdb::sql::Value> = db.query(r#"
+                CREATE services SET
+                    title = $title,
+                    slug = $slug,
+                    description = $description,
+                    featured = true,
+                    display_order = 0
+            "#)
+            .bind(("title", title))
+            .bind(("slug", slug))
+            .bind(("description", description))
+            .await?;
+            
+            tracing::info!("Seeded service: {}", slug);
+        }
+    }
+    
+    tracing::info!("Initial data seeded");
+    
+    Ok(())
+}
