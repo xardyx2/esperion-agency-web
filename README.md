@@ -1,205 +1,177 @@
-# Esperion Agency Web
+# Esperion Digital Agency Web
 
-Esperion adalah platform all-in-one yang menggabungkan company profile website dengan dashboard CMS terintegrasi untuk mengelola konten secara mandiri.
+A modern full-stack web application for Esperion Digital Agency, built with Nuxt 4 (frontend) and Rust/Axum (backend).
 
-## 🚀 Quick Start
+## 🚀 Tech Stack
 
-### Prerequisites
+### Frontend
+- **Nuxt 4** - Vue.js framework with SSR/SSG
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first styling
+- **Esperion Design System** - Custom semantic colors
 
-- Node.js 20+
-- Rust 1.75+
-- Docker & Docker Compose
-- Git
-
-### Development Setup
-
-1. **Clone repository**
-```bash
-git clone <repository-url>
-cd esperion-agency-web
-```
-
-2. **Copy environment variables**
-```bash
-cp .env.example .env
-# Edit .env with your values
-```
-
-3. **Start with Docker Compose**
-```bash
-docker-compose up -d
-```
-
-4. **Access applications**
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8080
-- Backend API Docs: http://localhost:8080/scalar
-- SurrealDB: http://localhost:8000
-
-### Manual Development
-
-#### Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-#### Backend
-```bash
-cd backend
-cargo watch -x run
-```
+### Backend
+- **Rust** - High-performance systems language
+- **Axum** - Ergonomic web framework
+- **SurrealDB** - Multi-model database
+- **JWT + Argon2** - Secure authentication
 
 ## 📁 Project Structure
 
 ```
 esperion-agency-web/
 ├── frontend/              # Nuxt 4 application
-│   ├── app/              # Nuxt 4 app directory
-│   │   ├── pages/        # Page components
-│   │   ├── components/   # Reusable components
+│   ├── app/
+│   │   ├── components/   # Vue components
+│   │   ├── composables/  # Composable functions
 │   │   ├── layouts/      # Layout components
-│   │   ├── composables/  # Vue composables
-│   │   ├── stores/       # Pinia stores
-│   │   ├── utils/        # Utility functions
+│   │   ├── pages/        # Page components
 │   │   └── types/        # TypeScript types
-│   ├── nuxt.config.ts
-│   ├── tailwind.config.ts
-│   └── package.json
-├── backend/              # Rust + Axum API
-│   ├── src/
-│   │   ├── handlers/     # Request handlers
-│   │   ├── models/       # Data models
-│   │   ├── routes/       # Route definitions
-│   │   ├── middleware/   # Auth & CORS middleware
-│   │   ├── db/           # Database operations
-│   │   └── api/          # OpenAPI definitions
-│   ├── Cargo.toml
-│   └── Dockerfile
-├── infrastructure/       # Docker & deployment
-├── docker-compose.yml
-├── .env.example
-└── README.md
+│   ├── public/           # Static assets
+│   └── nuxt.config.ts    # Nuxt configuration
+├── backend/              # Rust application
+│   └── src/
+│       ├── handlers/     # API handlers
+│       ├── models/       # Data models
+│       ├── db/           # Database module
+│       └── main.rs       # Entry point
+└── openspec/             # OpenSpec specifications
 ```
 
-## 🛠 Tech Stack
+## 🛠️ Getting Started
 
-### Frontend
-- **Framework:** Nuxt 4 with Vue 3 Composition API
-- **UI Library:** Nuxt UI
-- **Styling:** TailwindCSS with Esperion Design System
-- **State:** Pinia
-- **Animations:** VueUse
-- **Forms:** FormKit
+### Prerequisites
+- Node.js 20+
+- Rust 1.75+
+- SurrealDB
 
-### Backend
-- **Language:** Rust
-- **Framework:** Axum
-- **Database:** SurrealDB 3.x
-- **Auth:** JWT + Argon2
-- **API Docs:** utoipa + utoipa-scalar
+### Installation
 
-### Infrastructure
-- **Containers:** Docker + Docker Compose
-- **Hot Reload:** Nuxt HMR + cargo-watch
-
-## 📋 Features
-
-### Public Website
-- 6 pages with ISR (Home, Our Works, Our Services, Articles, About Us, Contact Us)
-- Multi-language support (ID/EN)
-- SEO optimized with schema.org
-- Dynamic content via dashboard
-
-### Dashboard Agency
-- Article Management with AI generator
-- Media Library with WebP conversion
-- Works/Services/Clients management
-- Custom roles & permissions
-- Google Analytics integration
-- Email notifications
-
-### Dashboard Capital (Phase 2)
-- TradingView webhook → Binance Futures
-- Multi-robot trading
-- Advanced trailing stop
-
-## 🔐 Environment Variables
-
-See `.env.example` for all required variables:
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| JWT_SECRET | JWT signing key | (required) |
-| DATABASE_URL | SurrealDB connection | ws://localhost:8000 |
-| NUXT_RECAPTCHA_SITE_KEY | reCAPTCHA site key | (optional) |
-| ALIBABA_AI_API_KEY | Alibaba AI API key | (provided) |
-| SMTP_HOST | SMTP server host | (optional) |
-
-## 📖 Documentation
-
-- [API Documentation](http://localhost:8080/scalar)
-- [OpenSpec Tasks](openspec/changes/esperion-agency-web/tasks.md)
-- [Design Document](openspec/changes/esperion-agency-web/design.md)
-
-## 🚀 Deployment
-
-### 1panel Deployment
-
-1. Install 1panel on your server
-2. Create new application in 1panel
-3. Select Docker Compose deployment
-4. Upload docker-compose.yml
-5. Configure environment variables
-6. Deploy
-
-### Production Build
-
+1. **Clone the repository**
 ```bash
-# Frontend
-cd frontend
-npm run build
-
-# Backend
-cd backend
-cargo build --release
-
-# Docker
-docker-compose -f docker-compose.yml up -d
+git clone https://github.com/xardyx2/esperion-agency-web.git
+cd esperion-agency-web
 ```
 
-## 🧪 Testing
-
+2. **Install frontend dependencies**
 ```bash
-# Frontend tests
 cd frontend
-npm run test
-
-# Backend tests
-cd backend
-cargo test
-
-# E2E tests
-npm run test:e2e
+npm install
 ```
 
-## 📝 Development Workflow
+3. **Install backend dependencies**
+```bash
+cd backend
+cargo build
+```
 
-1. Create feature branch
-2. Implement changes
-3. Run tests
-4. Commit with conventional commits
-5. Create pull request
+4. **Start SurrealDB**
+```bash
+surreal start --user root --pass root memory
+```
 
-## 🤝 Contributing
+5. **Set up environment variables**
+```bash
+# Copy .env.example to .env
+cp .env.example .env
+```
 
-See our contributing guidelines for more information.
+6. **Run development servers**
+```bash
+# Frontend (port 3000)
+cd frontend && npm run dev
 
-## 📄 License
+# Backend (port 8080)
+cd backend && cargo run
+```
 
-MIT License
+## 📡 API Endpoints
 
-## 📞 Support
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/v1/auth/register | Register new user |
+| POST | /api/v1/auth/login | Login |
+| POST | /api/v1/auth/logout | Logout |
+| POST | /api/v1/auth/refresh | Refresh token |
 
-For support, email support@esperion.com or open an issue.
+### Articles
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/v1/articles | List articles |
+| GET | /api/v1/articles/:slug | Get article |
+| POST | /api/v1/articles | Create article |
+| PUT | /api/v1/articles/:id | Update article |
+| DELETE | /api/v1/articles/:id | Delete article |
+
+### Works
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/v1/works | List works |
+| GET | /api/v1/works/featured | Featured works |
+| POST | /api/v1/works | Create work |
+| PUT | /api/v1/works/:id | Update work |
+| DELETE | /api/v1/works/:id | Delete work |
+
+### Services
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/v1/services | List services |
+| POST | /api/v1/services | Create service |
+| PUT | /api/v1/services/:id | Update service |
+| DELETE | /api/v1/services/:id | Delete service |
+
+### Clients
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/v1/clients | List clients |
+| GET | /api/v1/clients/stats | Client statistics |
+| GET | /api/v1/clients/logos | Client logos |
+| POST | /api/v1/clients | Create client |
+| PUT | /api/v1/clients/:id | Update client |
+| DELETE | /api/v1/clients/:id | Delete client |
+
+### Contact
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/v1/contact | Submit contact form |
+| GET | /api/v1/contact/submissions | List submissions |
+| GET | /api/v1/contact/stats | Submission statistics |
+
+### SEO
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/v1/seo/calculate | Calculate SEO score |
+| GET | /api/v1/seo/:article_id | Get SEO score |
+| GET | /api/v1/seo/competitor/:keyword | Competitor analysis |
+
+## 📱 PWA Features
+
+- Offline support with service worker
+- Install prompt for mobile devices
+- Push notifications
+- Background sync
+
+## 🔒 Security
+
+- JWT authentication with 7-day expiration
+- Argon2 password hashing
+- CORS protection
+- Rate limiting (Phase 2)
+
+## 📊 Progress
+
+| Section | Status |
+|---------|--------|
+| Backend API | ✅ Complete |
+| Public Pages | ✅ Complete |
+| Dashboard Pages | ✅ Complete |
+| SEO Scoring | ✅ Complete |
+| PWA | ✅ Complete |
+| Nuxt Studio | 🔄 In Progress |
+| Documentation | 🔄 In Progress |
+| CI/CD | ⏳ Pending |
+
+## 📝 License
+
+Copyright © 2024 Esperion Digital Agency. All rights reserved.
