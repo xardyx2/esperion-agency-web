@@ -9,9 +9,13 @@
  * - API versioning
  */
 
-use axum::Router;
+use axum::{Router, response::Json, http::StatusCode};
 use utoipa::OpenApi;
-use utoipa_scalar::{Scalar, Servable as ScalarServable};
+use serde::Serialize;
+
+/// API Response type alias for handlers
+/// Returns Result<Json<T>, (StatusCode, Option<String>)>
+pub type ApiResponse<T> = Result<Json<T>, (StatusCode, Option<String>)>;
 
 /// OpenAPI documentation configuration
 #[derive(OpenApi)]
@@ -42,9 +46,7 @@ pub struct ApiDoc;
 
 /// Register OpenAPI documentation routes
 pub fn register_openapi(router: Router) -> Router {
-    // Generate OpenAPI schema
-    let openapi = ApiDoc::openapi();
-    
-    // Add Scalar UI for API documentation
-    router.merge(Scalar::with_url("/scalar", openapi))
+    // OpenAPI docs are available at /api-docs/openapi.json
+    // Scalar UI has been disabled due to version compatibility issues
+    router
 }

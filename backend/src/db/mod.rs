@@ -14,10 +14,16 @@ pub mod schema;
 use surrealdb::engine::remote::ws::Ws;
 use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
-use std::sync::OnceLock;
+use std::sync::{Arc, OnceLock};
+
+/// Database client type alias
+pub type Db = Surreal<surrealdb::engine::remote::ws::Client>;
+
+/// Database state type for Axum State extractor
+pub type DbState = Arc<Db>;
 
 /// Global database connection
-static DB: OnceLock<Surreal<surrealdb::engine::remote::ws::Client>> = OnceLock::new();
+static DB: OnceLock<Db> = OnceLock::new();
 
 /// Initialize database connection
 pub async fn init() -> Result<(), Box<dyn std::error::Error>> {
@@ -41,8 +47,13 @@ pub async fn init() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 /// Get database connection
-pub fn get_db() -> &'static Surreal<surrealdb::engine::remote::ws::Client> {
+pub fn get_db() -> &'static Db {
     DB.get().expect("Database not initialized")
+}
+
+/// Get database connection as Arc (for Axum State)
+pub fn get_db_state() -> DbState {
+    DB.get().cloned().expect("Database not initialized").into()
 }
 
 /// Initialize database schema

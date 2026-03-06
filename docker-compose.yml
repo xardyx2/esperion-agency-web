@@ -28,13 +28,13 @@ services:
 
   # Backend - Rust + Axum API
   backend:
-    image: rust:1.75
+    image: rust:latest
     working_dir: /app
     volumes:
       - ./backend:/app
     ports:
-      - "8080:8080"
-    command: cargo watch -x run
+      - "8081:8080"
+    command: cargo run --release
     environment:
       - DATABASE_URL=ws://database:8000
       - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
@@ -57,8 +57,7 @@ services:
     image: surrealdb/surrealdb:latest
     volumes:
       - surreal-data:/data
-    ports:
-      - "8000:8000"
+    # No port mapping - internal only (backend connects via Docker network)
     command: start --log debug --user ${SURREAL_USER:-root} --pass ${SURREAL_PASS:-root} /data
     networks:
       - esperion-network

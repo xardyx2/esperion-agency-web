@@ -15,13 +15,13 @@ use axum::{
     http::StatusCode,
     response::Json,
     Extension,
+    Router,
 };
 use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 
 use crate::api::ApiResponse;
-use crate::db::Db;
+use crate::db::DbState;
 use crate::models::client::{Client, ClientFilter, CreateClientRequest, UpdateClientRequest, ClientStatus, ClientStats, ClientStatusCounts, CategoryCount, ClientLogo};
 use crate::models::user::UserClaims;
 
@@ -62,7 +62,7 @@ pub struct ListClientsResponse {
     )
 )]
 pub async fn list_clients(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Query(filters): Query<ClientFilter>,
 ) -> ApiResponse<ListClientsResponse> {
     let where_clause = filters.to_where_clause();
@@ -106,7 +106,7 @@ pub async fn list_clients(
     )
 )]
 pub async fn get_client_stats(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
 ) -> ApiResponse<ClientStats> {
     // Get total count
     let total_query = "SELECT count() as count FROM clients";
@@ -188,7 +188,7 @@ pub async fn get_client_stats(
     )
 )]
 pub async fn get_client_logos(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Query(limit_query): Query<Option<u32>>,
 ) -> ApiResponse<Vec<ClientLogo>> {
     let limit = limit_query.unwrap_or(20);
@@ -216,7 +216,7 @@ pub async fn get_client_logos(
     )
 )]
 pub async fn get_client(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Path(id): Path<String>,
 ) -> ApiResponse<Client> {
     let query = "SELECT * FROM clients WHERE id = $id LIMIT 1";
@@ -238,10 +238,7 @@ pub async fn get_client(
     post,
     path = "/api/v1/clients",
     tag = "Clients",
-    request_body(
-        description = "Create client request",
-        content = "application/json"
-    ),
+    request_body = CreateClientRequest,
     responses(
         (status = 201, description = "Client created successfully", body = Client),
         (status = 400, description = "Bad request"),
@@ -253,7 +250,7 @@ pub async fn get_client(
     )
 )]
 pub async fn create_client(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Json(request): Json<CreateClientRequest>,
 ) -> ApiResponse<Client> {
@@ -303,10 +300,7 @@ pub async fn create_client(
     params(
         ("id" = String, Path, description = "Client ID")
     ),
-    request_body(
-        description = "Update client request",
-        content = "application/json"
-    ),
+    request_body = UpdateClientRequest,
     responses(
         (status = 200, description = "Client updated successfully", body = Client),
         (status = 404, description = "Client not found"),
@@ -318,7 +312,7 @@ pub async fn create_client(
     )
 )]
 pub async fn update_client(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
     Json(update): Json<UpdateClientRequest>,
@@ -400,7 +394,7 @@ pub async fn update_client(
     )
 )]
 pub async fn delete_client(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
 ) -> ApiResponse<serde_json::Value> {

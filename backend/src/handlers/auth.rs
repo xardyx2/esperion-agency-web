@@ -12,6 +12,7 @@ use axum::{
     extract::State,
     http::{StatusCode, header},
     Json,
+    Router,
 };
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
@@ -20,10 +21,11 @@ use argon2::{
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::db;
+use crate::api::ApiResponse;
+use crate::db::DbState;
 
 /// Register input
-#[derive(Debug, Deserialize, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct RegisterRequest {
     pub email: String,
     pub password: String,
@@ -33,14 +35,14 @@ pub struct RegisterRequest {
 }
 
 /// Login input
-#[derive(Debug, Deserialize, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct LoginRequest {
     pub email: String,
     pub password: String,
 }
 
 /// Auth response
-#[derive(Debug, Serialize, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct AuthResponse {
     pub user: UserResponse,
     pub token: String,
@@ -48,7 +50,7 @@ pub struct AuthResponse {
 }
 
 /// User response (without sensitive data)
-#[derive(Debug, Serialize, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct UserResponse {
     pub id: String,
     pub email: String,
@@ -89,17 +91,15 @@ fn verify_password(password: &str, hash: &str) -> bool {
     ),
 )]
 pub async fn register(
-    State(db): State<crate::db::DbState>,
+    State(db): State<DbState>,
     Json(req): Json<RegisterRequest>,
-) -> Result<Json<AuthResponse>, StatusCode> {
+) -> ApiResponse<AuthResponse> {
     // Hash password
     let password_hash = hash_password(&req.password)?;
     
     // Check if email already exists
     let check_query = "SELECT * FROM users WHERE email = $email LIMIT 1";
-    let mut check_result = db::get_db()
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    let mut check_result = db
         .query(check_query)
         .bind(("email", &req.email))
         .await
@@ -112,9 +112,7 @@ pub async fn register(
     
     // Insert user into database
     let insert_query = "CREATE users SET email = $email, password_hash = $password_hash, full_name = $full_name, username = $username, phone = $phone, role = 'editor', created_at = time::now()";
-    let mut insert_result = db::get_db()
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    let mut insert_result = db
         .query(insert_query)
         .bind(("email", &req.email))
         .bind(("password_hash", &password_hash))
@@ -159,14 +157,12 @@ pub async fn register(
     ),
 )]
 pub async fn login(
-    State(db): State<crate::db::DbState>,
+    State(db): State<DbState>,
     Json(req): Json<LoginRequest>,
-) -> Result<Json<AuthResponse>, StatusCode> {
+) -> ApiResponse<AuthResponse> {
     // Find user by email
     let query = "SELECT * FROM users WHERE email = $email LIMIT 1";
-    let mut result = db::get_db()
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    let mut result = db
         .query(query)
         .bind(("email", &req.email))
         .await
@@ -190,7 +186,7 @@ pub async fn login(
     let email = user.get("email").and_then(|v| v.as_str()).unwrap_or("").to_string();
     let full_name = user.get("full_name").and_then(|v| v.as_str()).unwrap_or("").to_string();
     let username = user.get("username").and_then(|v| v.as_str()).unwrap_or("").to_string();
-    let role = user.get("role").and_then(|v| v.as_str()).unwrap_or("editor").to_string();
+    let role = user.get("role").and_then(|v: &serde_json::Value| v.as_str()).unwrap_or("editor").to_string();
     
     // Generate JWT tokens
     let token = crate::middleware::generate_jwt(&user_id, &email, &role)?;

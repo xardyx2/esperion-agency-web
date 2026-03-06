@@ -13,12 +13,16 @@ use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
     Json,
+    Router,
 };
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+use crate::api::ApiResponse;
+use crate::db::DbState;
+
 /// Article response
-#[derive(Debug, Serialize, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct ArticleResponse {
     pub id: String,
     pub title: String,
@@ -39,7 +43,7 @@ pub struct ArticleResponse {
 }
 
 /// List articles query params
-#[derive(Debug, Deserialize, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, utoipa::IntoParams)]
 pub struct ListArticlesQuery {
     pub page: Option<u32>,
     pub limit: Option<u32>,
@@ -78,7 +82,7 @@ impl ListArticlesQuery {
 }
 
 /// Create/update article request
-#[derive(Debug, Deserialize, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct ArticleRequest {
     pub title: String,
     pub slug_id: Option<String>,
@@ -104,9 +108,9 @@ pub struct ArticleRequest {
     ),
 )]
 pub async fn list_articles(
-    State(db): State<crate::db::DbState>,
+    State(db): State<DbState>,
     Query(query): Query<ListArticlesQuery>,
-) -> Result<Json<Vec<ArticleResponse>>, StatusCode> {
+) -> ApiResponse<Vec<ArticleResponse>> {
     let where_clause = query.build_where_clause();
     let limit = query.limit.unwrap_or(10);
     let offset = query.offset();
@@ -116,9 +120,7 @@ pub async fn list_articles(
         where_clause, limit, offset
     );
     
-    let mut result = db::get_db()
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    let mut result = db
         .query(list_query)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
@@ -143,13 +145,11 @@ pub async fn list_articles(
     ),
 )]
 pub async fn get_article(
-    State(db): State<crate::db::DbState>,
+    State(db): State<DbState>,
     Path(slug): Path<String>,
-) -> Result<Json<ArticleResponse>, StatusCode> {
+) -> ApiResponse<ArticleResponse> {
     let query = "SELECT * FROM articles WHERE slug_id = $slug OR slug_en = $slug LIMIT 1";
-    let mut result = db::get_db()
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    let mut result = db
         .query(query)
         .bind(("slug", &slug))
         .await
@@ -176,18 +176,16 @@ pub async fn get_article(
     ),
 )]
 pub async fn create_article(
-    State(db): State<crate::db::DbState>,
+    State(db): State<DbState>,
     Json(req): Json<ArticleRequest>,
-) -> Result<Json<ArticleResponse>, StatusCode> {
+) -> ApiResponse<ArticleResponse> {
     let slug_id = req.slug_id.clone().unwrap_or_else(|| req.title.to_lowercase().replace(' ', "-"));
     let slug_en = req.slug_en.clone().unwrap_or_else(|| slug_id.clone());
     let now = chrono::Utc::now().to_rfc3339();
     
     let insert_query = "CREATE articles SET title = $title, slug_id = $slug_id, slug_en = $slug_en, content_id = $content_id, content_en = $content_en, excerpt_id = $excerpt_id, excerpt_en = $excerpt_en, category = $category, image = $image, published = $published, translation_status = 'published', created_at = $now, updated_at = $now";
     
-    let mut result = db::get_db()
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    let mut result = db
         .query(insert_query)
         .bind(("title", &req.title))
         .bind(("slug_id", &slug_id))
@@ -227,17 +225,15 @@ pub async fn create_article(
     ),
 )]
 pub async fn update_article(
-    State(db): State<crate::db::DbState>,
+    State(db): State<DbState>,
     Path(id): Path<String>,
     Json(req): Json<ArticleRequest>,
-) -> Result<Json<ArticleResponse>, StatusCode> {
+) -> ApiResponse<ArticleResponse> {
     let now = chrono::Utc::now().to_rfc3339();
     
     let update_query = "UPDATE articles SET title = $title, slug_id = $slug_id, slug_en = $slug_en, content_id = $content_id, content_en = $content_en, excerpt_id = $excerpt_id, excerpt_en = $excerpt_en, category = $category, image = $image, published = $published, updated_at = $now WHERE id = $id";
     
-    let mut result = db::get_db()
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    let mut result = db
         .query(update_query)
         .bind(("id", &id))
         .bind(("title", &req.title))
@@ -277,14 +273,12 @@ pub async fn update_article(
     ),
 )]
 pub async fn delete_article(
-    State(db): State<crate::db::DbState>,
+    State(db): State<DbState>,
     Path(id): Path<String>,
-) -> Result<StatusCode, StatusCode> {
+) -> ApiResponse<serde_json::Value> {
     let delete_query = "DELETE articles WHERE id = $id";
     
-    let mut result = db::get_db()
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    let mut result = db
         .query(delete_query)
         .bind(("id", &id))
         .await

@@ -83,7 +83,7 @@ pub struct AuthResponse {
 }
 
 /// JWT claims for authentication
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct JwtClaims {
     pub sub: String,      // User ID
     pub email: String,
@@ -92,3 +92,6 @@ pub struct JwtClaims {
     pub exp: i64,         // Expiration timestamp
     pub iat: i64,         // Issued at timestamp
 }
+
+/// User claims for extension trait (alias for JwtClaims)
+pub type UserClaims = JwtClaims;

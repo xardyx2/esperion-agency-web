@@ -12,13 +12,13 @@ use axum::{
     http::StatusCode,
     response::Json,
     Extension,
+    Router,
 };
 use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 
 use crate::api::ApiResponse;
-use crate::db::Db;
+use crate::db::DbState;
 use crate::models::seo_score::{SeoScore, SeoScoreBreakdown, CalculateSeoScoreRequest, CompetitorAnalysis};
 use crate::models::user::UserClaims;
 
@@ -85,7 +85,6 @@ pub fn calculate_seo_score(request: &CalculateSeoScoreRequest) -> SeoScoreRespon
     let title = &request.title;
     let slug = &request.slug;
     let content_lower = request.content.to_lowercase();
-    let title_lower = title.to_lowercase();
 
     // Keyword in title (5 points)
     if !title.is_empty() {
@@ -191,10 +190,7 @@ pub fn calculate_seo_score(request: &CalculateSeoScoreRequest) -> SeoScoreRespon
     post,
     path = "/api/v1/seo/calculate",
     tag = "SEO",
-    request_body(
-        description = "Article data for SEO analysis",
-        content = "application/json"
-    ),
+    request_body = CalculateSeoScoreRequest,
     responses(
         (status = 200, description = "SEO score calculated", body = SeoScoreResponse),
         (status = 401, description = "Unauthorized"),
@@ -205,7 +201,7 @@ pub fn calculate_seo_score(request: &CalculateSeoScoreRequest) -> SeoScoreRespon
     )
 )]
 pub async fn calculate_seo(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Json(request): Json<CalculateSeoScoreRequest>,
 ) -> ApiResponse<SeoScoreResponse> {
@@ -242,16 +238,11 @@ pub async fn calculate_seo(
     responses(
         (status = 200, description = "SEO score retrieved", body = SeoScoreResponse),
         (status = 404, description = "SEO score not found"),
-        (status = 401, description = "Unauthorized"),
         (status = 500, description = "Internal server error")
-    ),
-    security(
-        ("bearer_auth" = [])
     )
 )]
 pub async fn get_seo_score(
-    State(db): State<Arc<Db>>,
-    Extension(_claims): Extension<UserClaims>,
+    State(db): State<DbState>,
     Path(article_id): Path<String>,
 ) -> ApiResponse<SeoScoreResponse> {
     let query = "SELECT * FROM seo_scores WHERE article_id = $article_id LIMIT 1";
@@ -280,14 +271,10 @@ pub async fn get_seo_score(
         (status = 200, description = "Competitor analysis retrieved", body = CompetitorAnalysis),
         (status = 404, description = "Analysis not found"),
         (status = 500, description = "Internal server error")
-    ),
-    security(
-        ("bearer_auth" = [])
     )
 )]
 pub async fn get_competitor_analysis(
-    State(db): State<Arc<Db>>,
-    Extension(_claims): Extension<UserClaims>,
+    State(db): State<DbState>,
     Path(keyword): Path<String>,
 ) -> ApiResponse<CompetitorAnalysis> {
     let query = "SELECT * FROM competitor_analysis WHERE keyword = $keyword LIMIT 1";

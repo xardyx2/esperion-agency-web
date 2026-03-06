@@ -12,12 +12,15 @@ use axum::{
     extract::Request,
     http::StatusCode,
     Json,
+    Router,
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+use crate::api::ApiResponse;
+
 /// Geo location response
-#[derive(Debug, Serialize, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct GeoResponse {
     /// ISO 3166-1 alpha-2 country code (e.g., "ID", "US")
     pub country_code: String,
@@ -33,7 +36,7 @@ pub struct GeoResponse {
 }
 
 /// Detection method used
-#[derive(Debug, Serialize, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum DetectionMethod {
     /// Detected from Cloudflare CF-IPCountry header
@@ -95,7 +98,7 @@ fn get_language_from_country(country_code: &str) -> &str {
         (status = 500, description = "Internal server error"),
     ),
 )]
-pub async fn get_geo_info(request: Request) -> Result<Json<GeoResponse>, StatusCode> {
+pub async fn get_geo_info(request: Request) -> ApiResponse<GeoResponse> {
     let headers = request.headers();
     
     // Try to get country from Cloudflare CF-IPCountry header

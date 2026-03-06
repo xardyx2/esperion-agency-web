@@ -12,8 +12,8 @@ tower-http = { version = "0.5", features = ["cors"] }
 tokio = { version = "1", features = ["full"] }
 
 # OpenAPI documentation
-utoipa = { version = "4", features = ["axum_extras"] }
-utoipa-scalar = "0.1"
+utoipa = { version = "=4.2.3", features = ["axum_extras"] }
+utoipa-scalar = "=0.1.0"
 
 # Authentication
 argon2 = "0.5"
@@ -28,14 +28,14 @@ thiserror = "1"
 anyhow = "1"
 
 # Database
-surrealdb = "2"
+surrealdb = "=1.5.0"
 
 # Logging
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # Date/time
-chrono = { version = "0.4", features = ["serde"] }
+chrono = { version = "=0.4.38", features = ["serde"] }
 
 # UUID
 uuid = { version = "1", features = ["v4", "serde"] }

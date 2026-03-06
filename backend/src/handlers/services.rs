@@ -15,13 +15,13 @@ use axum::{
     http::StatusCode,
     response::Json,
     Extension,
+    Router,
 };
 use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 
 use crate::api::ApiResponse;
-use crate::db::Db;
+use crate::db::DbState;
 use crate::models::service::{Service, ServiceFilter, CreateServiceRequest, UpdateServiceRequest, DEFAULT_SERVICES};
 use crate::models::user::UserClaims;
 
@@ -60,7 +60,7 @@ pub struct ListServicesResponse {
     )
 )]
 pub async fn list_services(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Query(filters): Query<ServiceFilter>,
 ) -> ApiResponse<ListServicesResponse> {
     let where_clause = filters.to_where_clause();
@@ -108,7 +108,7 @@ pub async fn list_services(
     )
 )]
 pub async fn get_service(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Path(slug): Path<String>,
 ) -> ApiResponse<Service> {
     let query = "SELECT * FROM services WHERE slug = $slug LIMIT 1";
@@ -128,10 +128,7 @@ pub async fn get_service(
     post,
     path = "/api/v1/services",
     tag = "Services",
-    request_body(
-        description = "Create service request",
-        content = "application/json"
-    ),
+    request_body = CreateServiceRequest,
     responses(
         (status = 201, description = "Service created successfully", body = Service),
         (status = 400, description = "Bad request"),
@@ -143,7 +140,7 @@ pub async fn get_service(
     )
 )]
 pub async fn create_service(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Json(request): Json<CreateServiceRequest>,
 ) -> ApiResponse<Service> {
@@ -194,10 +191,7 @@ pub async fn create_service(
     params(
         ("id" = String, Path, description = "Service ID")
     ),
-    request_body(
-        description = "Update service request",
-        content = "application/json"
-    ),
+    request_body = UpdateServiceRequest,
     responses(
         (status = 200, description = "Service updated successfully", body = Service),
         (status = 404, description = "Service not found"),
@@ -209,7 +203,7 @@ pub async fn create_service(
     )
 )]
 pub async fn update_service(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
     Json(update): Json<UpdateServiceRequest>,
@@ -297,7 +291,7 @@ pub async fn update_service(
     )
 )]
 pub async fn delete_service(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
 ) -> ApiResponse<serde_json::Value> {
@@ -323,7 +317,7 @@ pub async fn delete_service(
 }
 
 /// Seed default services
-pub async fn seed_default_services(db: Arc<Db>) -> Result<(), String> {
+pub async fn seed_default_services(db: DbState) -> Result<(), String> {
     // Check if services already exist
     let query = "SELECT count() as count FROM services";
     let mut result = db.query(query).await.map_err(|e| format!("Failed to query services: {}", e))?;

@@ -28,6 +28,7 @@ mod db;
 mod api;
 
 use axum::Router;
+use std::sync::Arc;
 use tower_http::cors::CorsLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -47,8 +48,11 @@ async fn main() {
     // Initialize database connection
     db::init().await.expect("Failed to initialize database");
 
-    // Build router
-    let app = build_router();
+    // Get database state for Axum
+    let db_state = db::get_db_state();
+
+    // Build router with state
+    let app = build_router(db_state);
 
     // Get host and port from environment
     let host = std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
@@ -63,9 +67,9 @@ async fn main() {
 }
 
 /// Build the main router with all routes and middleware
-fn build_router() -> Router {
-    // Create base router
-    let mut router = Router::new();
+fn build_router(db_state: Arc<crate::db::Db>) -> Router {
+    // Create base router with state
+    let mut router = Router::new().with_state(db_state);
 
     // Register geo routes
     router = handlers::geo::register_routes(router);

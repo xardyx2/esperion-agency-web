@@ -13,13 +13,13 @@ use axum::{
     http::StatusCode,
     response::Json,
     Extension,
+    Router,
 };
 use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 
 use crate::api::ApiResponse;
-use crate::db::Db;
+use crate::db::DbState;
 use crate::models::contact::{ContactSubmission, ContactFilter, CreateContactRequest, UpdateContactRequest, ContactStatus, ContactStats, ContactStatusCounts, ServiceCount};
 use crate::models::user::UserClaims;
 
@@ -46,19 +46,7 @@ pub struct ListContactResponse {
     post,
     path = "/api/v1/contact",
     tag = "Contact",
-    request_body(
-        description = "Contact form submission",
-        content = "application/json",
-        example = json!({
-            "full_name": "John Doe",
-            "company_name": "Acme Corp",
-            "service": "Web Development",
-            "description": "We need a new website",
-            "email": "john@example.com",
-            "phone": "+1234567890",
-            "recaptcha_token": "..."
-        })
-    ),
+    request_body = CreateContactRequest,
     responses(
         (status = 201, description = "Contact form submitted successfully", body = ContactSubmission),
         (status = 400, description = "Bad request (invalid reCAPTCHA)"),
@@ -66,7 +54,7 @@ pub struct ListContactResponse {
     )
 )]
 pub async fn submit_contact(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Json(request): Json<CreateContactRequest>,
 ) -> ApiResponse<ContactSubmission> {
     // Verify reCAPTCHA if token provided
@@ -140,7 +128,7 @@ pub async fn submit_contact(
     )
 )]
 pub async fn list_submissions(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Query(filters): Query<ContactFilter>,
 ) -> ApiResponse<ListContactResponse> {
@@ -193,7 +181,7 @@ pub async fn list_submissions(
     )
 )]
 pub async fn get_submission(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
 ) -> ApiResponse<ContactSubmission> {
@@ -219,10 +207,7 @@ pub async fn get_submission(
     params(
         ("id" = String, Path, description = "Submission ID")
     ),
-    request_body(
-        description = "Update submission request",
-        content = "application/json"
-    ),
+    request_body = UpdateContactRequest,
     responses(
         (status = 200, description = "Submission updated successfully", body = ContactSubmission),
         (status = 404, description = "Submission not found"),
@@ -234,7 +219,7 @@ pub async fn get_submission(
     )
 )]
 pub async fn update_submission(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
     Json(update): Json<UpdateContactRequest>,
@@ -312,7 +297,7 @@ pub async fn update_submission(
     )
 )]
 pub async fn get_contact_stats(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
 ) -> ApiResponse<ContactStats> {
     // Get total count

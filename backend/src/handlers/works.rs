@@ -15,13 +15,13 @@ use axum::{
     http::StatusCode,
     response::Json,
     Extension,
+    Router,
 };
 use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 
 use crate::api::ApiResponse;
-use crate::db::Db;
+use crate::db::DbState;
 use crate::models::work::{Work, WorkFilter, CreateWorkRequest, UpdateWorkRequest};
 use crate::models::user::UserClaims;
 
@@ -62,7 +62,7 @@ pub struct ListWorksResponse {
     )
 )]
 pub async fn list_works(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Query(filters): Query<WorkFilter>,
 ) -> ApiResponse<ListWorksResponse> {
     let where_clause = filters.to_where_clause();
@@ -109,7 +109,7 @@ pub async fn list_works(
     )
 )]
 pub async fn list_featured_works(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Query(limit_query): Query<Option<u32>>,
 ) -> ApiResponse<Vec<Work>> {
     let limit = limit_query.unwrap_or(10);
@@ -137,7 +137,7 @@ pub async fn list_featured_works(
     )
 )]
 pub async fn get_work(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Path(slug): Path<String>,
 ) -> ApiResponse<Work> {
     let query = "SELECT * FROM works WHERE slug = $slug LIMIT 1";
@@ -157,21 +157,7 @@ pub async fn get_work(
     post,
     path = "/api/v1/works",
     tag = "Works",
-    request_body(
-        description = "Create work request",
-        content = "application/json",
-        example = json!({
-            "title": "E-Commerce Platform Redesign",
-            "slug": "ecommerce-platform-redesign",
-            "description": "Complete redesign of e-commerce platform",
-            "service": "Web Development",
-            "platform": "Shopify",
-            "image": "/uploads/2024/1/work1.jpg",
-            "client_name": "Client Corp",
-            "metrics": [{"label": "Conversion Rate", "value": "45", "suffix": "%"}],
-            "featured": true
-        })
-    ),
+    request_body = CreateWorkRequest,
     responses(
         (status = 201, description = "Work created successfully", body = Work),
         (status = 400, description = "Bad request"),
@@ -183,7 +169,7 @@ pub async fn get_work(
     )
 )]
 pub async fn create_work(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Json(request): Json<CreateWorkRequest>,
 ) -> ApiResponse<Work> {
@@ -229,10 +215,7 @@ pub async fn create_work(
     params(
         ("id" = String, Path, description = "Work ID")
     ),
-    request_body(
-        description = "Update work request",
-        content = "application/json"
-    ),
+    request_body = UpdateWorkRequest,
     responses(
         (status = 200, description = "Work updated successfully", body = Work),
         (status = 404, description = "Work not found"),
@@ -244,7 +227,7 @@ pub async fn create_work(
     )
 )]
 pub async fn update_work(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
     Json(update): Json<UpdateWorkRequest>,
@@ -332,7 +315,7 @@ pub async fn update_work(
     )
 )]
 pub async fn delete_work(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
 ) -> ApiResponse<serde_json::Value> {

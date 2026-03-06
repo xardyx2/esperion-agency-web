@@ -14,20 +14,18 @@ use axum::{
     http::StatusCode,
     response::Json,
     Extension,
+    Router,
 };
 use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 use tokio::fs::{self, File};
 use tokio::io::AsyncWriteExt;
 use uuid::Uuid;
 
 use crate::api::ApiResponse;
-use crate::db::Db;
+use crate::db::DbState;
 use crate::models::media::{Media, MediaType, MediaFilter, MediaUploadResponse};
 use crate::models::user::UserClaims;
-use axum::Router;
-use tower_http::auth::RequireAuthorizationLayer;
 
 /// Media API tags for OpenAPI
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -91,7 +89,7 @@ pub struct UploadResponse {
     )
 )]
 pub async fn list_media(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Query(filters): Query<MediaFilter>,
 ) -> ApiResponse<ListMediaResponse> {
     let where_clause = filters.to_where_clause();
@@ -140,7 +138,7 @@ pub async fn list_media(
     )
 )]
 pub async fn get_media(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Path(id): Path<String>,
 ) -> ApiResponse<Media> {
     let query = "SELECT * FROM media_library WHERE id = $id LIMIT 1";
@@ -160,10 +158,7 @@ pub async fn get_media(
     post,
     path = "/api/v1/media/upload",
     tag = "Media",
-    request_body(
-        description = "Multipart form data with 'file' field",
-        content = "multipart/form-data"
-    ),
+    request_body = UploadResponse,
     responses(
         (status = 201, description = "File uploaded successfully", body = UploadResponse),
         (status = 400, description = "Bad request"),
@@ -175,7 +170,7 @@ pub async fn get_media(
     )
 )]
 pub async fn upload_media(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(claims): Extension<UserClaims>,
     mut multipart: Multipart,
 ) -> ApiResponse<UploadResponse> {
@@ -202,8 +197,8 @@ pub async fn upload_media(
     
     // Create upload directory structure: uploads/{year}/{month}/
     let now = chrono::Utc::now();
-    let year = now.year();
-    let month = now.month();
+    let year = now.year_ce();
+    let month = now.month0() + 1;
     let upload_dir = format!("uploads/{}/{}/", year, month);
     
     // Ensure directory exists
@@ -227,14 +222,14 @@ pub async fn upload_media(
         // For now, we'll set it to None
     }
 
-    // Create media record
+    // Create media record - use claims.sub instead of claims.user_id
     let media = Media::new(
         file_name,
         format!("/{}/{}", upload_dir, new_filename),
         format!("/{}/{}", upload_dir, new_filename),
         media_type,
         data.len() as i64,
-        Some(Thing::from(("users", claims.user_id.as_str()))),
+        Some(Thing::from(("users", claims.sub.as_str()))),
     );
 
     // Save to database
@@ -278,11 +273,7 @@ pub async fn upload_media(
     params(
         ("id" = String, Path, description = "Media ID")
     ),
-    request_body(
-        description = "Update media request",
-        content = "application/json",
-        example = json!({"alt_text": "Description of the image"})
-    ),
+    request_body = UpdateMediaRequest,
     responses(
         (status = 200, description = "Media updated successfully", body = Media),
         (status = 404, description = "Media not found"),
@@ -294,7 +285,7 @@ pub async fn upload_media(
     )
 )]
 pub async fn update_media(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
     Json(update): Json<UpdateMediaRequest>,
@@ -358,7 +349,7 @@ pub async fn update_media(
     )
 )]
 pub async fn delete_media(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
 ) -> ApiResponse<serde_json::Value> {
@@ -403,7 +394,7 @@ pub async fn delete_media(
     )
 )]
 pub async fn get_media_stats(
-    State(db): State<Arc<Db>>,
+    State(db): State<DbState>,
 ) -> ApiResponse<serde_json::Value> {
     let query = r#"
         SELECT 
