@@ -17,6 +17,4 @@ pub mod service;
 pub mod client;
 pub mod contact;
 pub mod seo_score;
-
-// TODO: Add remaining models
-// pub mod article;
+pub mod article;

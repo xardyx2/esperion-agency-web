@@ -9,14 +9,13 @@
 
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
     response::Json,
     Extension,
     Router,
 };
+use axum::http::StatusCode;
 use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
-
 use crate::api::ApiResponse;
 use crate::db::DbState;
 use crate::models::seo_score::{SeoScore, SeoScoreBreakdown, CalculateSeoScoreRequest, CompetitorAnalysis};
@@ -204,7 +203,7 @@ pub async fn calculate_seo(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Json(request): Json<CalculateSeoScoreRequest>,
-) -> ApiResponse<SeoScoreResponse> {
+) -> Result<Json<SeoScoreResponse>, (StatusCode, String)> {
     // Calculate score
     let score_response = calculate_seo_score(&request);
 
@@ -217,9 +216,10 @@ pub async fn calculate_seo(
     let query = "CREATE seo_scores CONTENT $content";
     let mut result = db.query(query)
         .bind(("content", serde_json::to_value(&seo_score).map_err(|e| {
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to serialize SEO score: {}", e))))
+            (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to serialize SEO score: {}", e))
         })?))
-        .await?;
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Database error: {}", e)))?;
 
     let _: Option<SeoScore> = result.take(0).ok().flatten();
 
@@ -244,17 +244,19 @@ pub async fn calculate_seo(
 pub async fn get_seo_score(
     State(db): State<DbState>,
     Path(article_id): Path<String>,
-) -> ApiResponse<SeoScoreResponse> {
+) -> Result<Json<SeoScoreResponse>, (StatusCode, String)> {
     let query = "SELECT * FROM seo_scores WHERE article_id = $article_id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("article_id", Thing::from(("articles", article_id.as_str()))))
-        .await?;
+        .bind(("article_id", article_id.as_str()))
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Database error: {}", e)))?;
 
-    let score: Option<SeoScore> = result.take(0)?;
+    let score: Option<SeoScore> = result.take(0)
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Parse error: {}", e)))?;
 
     match score {
         Some(s) => Ok(Json(SeoScoreResponse::from_score(s))),
-        None => Err((StatusCode::NOT_FOUND, Json(Some("SEO score not found".to_string())))),
+        None => Err((StatusCode::NOT_FOUND, "SEO score not found".to_string())),
     }
 }
 
@@ -276,17 +278,19 @@ pub async fn get_seo_score(
 pub async fn get_competitor_analysis(
     State(db): State<DbState>,
     Path(keyword): Path<String>,
-) -> ApiResponse<CompetitorAnalysis> {
+) -> Result<Json<CompetitorAnalysis>, (StatusCode, String)> {
     let query = "SELECT * FROM competitor_analysis WHERE keyword = $keyword LIMIT 1";
     let mut result = db.query(query)
         .bind(("keyword", keyword.as_str()))
-        .await?;
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Database error: {}", e)))?;
 
-    let analysis: Option<CompetitorAnalysis> = result.take(0)?;
+    let analysis: Option<CompetitorAnalysis> = result.take(0)
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Parse error: {}", e)))?;
 
     match analysis {
         Some(a) => Ok(Json(a)),
-        None => Err((StatusCode::NOT_FOUND, Json(Some("Competitor analysis not found".to_string())))),
+        None => Err((StatusCode::NOT_FOUND, "Competitor analysis not found".to_string())),
     }
 }
 

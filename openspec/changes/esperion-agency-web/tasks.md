@@ -206,69 +206,69 @@
 - [x] 12.12 **Unit Test**: Contact form submission
 - [x] 12.13 **Debug & Commit**: Contact module
 
-## 13. Email System ✅ COMPLETE
+## 13. Email System ⏸️ DEFERRED TO PHASE 2
 
-- [x] 13.1 Create email service abstraction layer
-- [x] 13.2 Implement built-in SMTP sender
-- [x] 13.3 Implement SendGrid integration
-- [x] 13.4 Implement Mailgun integration
-- [x] 13.5 Implement Amazon SES integration
-- [x] 13.6 Implement Postmark integration
-- [x] 13.7 Implement SMTP2GO integration
-- [x] 13.8 Create email template editor in dashboard
-- [x] 13.9 Implement delivery tracking
-- [x] 13.10 Create email settings page in dashboard (provider selection, credentials)
-- [x] 13.11 **Unit Test**: Email sending with all providers
-- [x] 13.12 **Debug & Commit**: Email system module
+- [ ] 13.1 Create email service abstraction layer
+- [ ] 13.2 Implement built-in SMTP sender
+- [ ] 13.3 Implement SendGrid integration
+- [ ] 13.4 Implement Mailgun integration
+- [ ] 13.5 Implement Amazon SES integration
+- [ ] 13.6 Implement Postmark integration
+- [ ] 13.7 Implement SMTP2GO integration
+- [ ] 13.8 Create email template editor in dashboard
+- [ ] 13.9 Implement delivery tracking
+- [ ] 13.10 Create email settings page in dashboard (provider selection, credentials)
+- [ ] 13.11 **Unit Test**: Email sending with all providers
+- [ ] 13.12 **Debug & Commit**: Email system module
 
-## 14. Analytics Dashboard ✅ COMPLETE
+## 14. Analytics Dashboard ⏸️ DEFERRED TO PHASE 2
 
-- [x] 14.1 Create Google Analytics 4 integration
-- [x] 14.2 Implement Google Tag Manager for custom events
-- [x] 14.3 Create dashboard home stats widgets (total articles, works, clients, contacts)
-- [x] 14.4 Implement charts (Vue Charts + Chart.js) for stats
-- [x] 14.5 Implement user behavior tracking (country, city, top pages)
-- [x] 14.6 Implement Microsoft Clarity integration for heatmaps
-- [x] 14.7 Create real-time stats WebSocket endpoint
-- [x] 14.8 **NEW** Implement Meta Pixel integration
-- [x] 14.9 **NEW** Implement TikTok Pixel integration
-- [x] 14.10 **NEW** Implement LinkedIn Pixel integration
-- [x] 14.11 **NEW** Implement custom journey tracking
-- [x] 14.12 **NEW** Create user-defined funnel builder
-- [x] 14.13 **NEW** Implement journey path rotation/comparison
-- [x] 14.14 **NEW** Create enterprise analytics dashboard
-- [x] 14.15 **Unit Test**: Analytics data collection
-- [x] 14.16 **Debug & Commit**: Analytics module
+- [ ] 14.1 Create Google Analytics 4 integration
+- [ ] 14.2 Implement Google Tag Manager for custom events
+- [ ] 14.3 Create dashboard home stats widgets (total articles, works, clients, contacts)
+- [ ] 14.4 Implement charts (Vue Charts + Chart.js) for stats
+- [ ] 14.5 Implement user behavior tracking (country, city, top pages)
+- [ ] 14.6 Implement Microsoft Clarity integration for heatmaps
+- [ ] 14.7 Create real-time stats WebSocket endpoint
+- [ ] 14.8 **NEW** Implement Meta Pixel integration
+- [ ] 14.9 **NEW** Implement TikTok Pixel integration
+- [ ] 14.10 **NEW** Implement LinkedIn Pixel integration
+- [ ] 14.11 **NEW** Implement custom journey tracking
+- [ ] 14.12 **NEW** Create user-defined funnel builder
+- [ ] 14.13 **NEW** Implement journey path rotation/comparison
+- [ ] 14.14 **NEW** Create enterprise analytics dashboard
+- [ ] 14.15 **Unit Test**: Analytics data collection
+- [ ] 14.16 **Debug & Commit**: Analytics module
 
-## 15. Backup & Restore System ✅ COMPLETE
+## 15. Backup & Restore System ⏸️ DEFERRED TO PHASE 2
 
-- [x] 15.1 Create backup service module
-- [x] 15.2 Implement database backup (SurrealDB export)
-- [x] 15.3 Implement files backup
-- [x] 15.4 Implement selective backup (choose scope)
-- [x] 15.5 Implement scheduled backup (daily/weekly/monthly)
-- [x] 15.6 Implement backup retention policy
-- [x] 15.7 Implement backup encryption (optional)
-- [x] 15.8 Implement one-click restore (selective)
-- [x] 15.9 Create backup/restore UI in dashboard
-- [x] 15.10 Implement Updraft-style backup mechanism
-- [x] 15.11 **Unit Test**: Backup and restore operations
-- [x] 15.12 **Debug & Commit**: Backup module
+- [ ] 15.1 Create backup service module
+- [ ] 15.2 Implement database backup (SurrealDB export)
+- [ ] 15.3 Implement files backup
+- [ ] 15.4 Implement selective backup (choose scope)
+- [ ] 15.5 Implement scheduled backup (daily/weekly/monthly)
+- [ ] 15.6 Implement backup retention policy
+- [ ] 15.7 Implement backup encryption (optional)
+- [ ] 15.8 Implement one-click restore (selective)
+- [ ] 15.9 Create backup/restore UI in dashboard
+- [ ] 15.10 Implement Updraft-style backup mechanism
+- [ ] 15.11 **Unit Test**: Backup and restore operations
+- [ ] 15.12 **Debug & Commit**: Backup module
 
-## 16. Monitoring & Alerting ✅ COMPLETE
+## 16. Monitoring & Alerting ⏸️ DEFERRED TO PHASE 2
 
-- [x] 16.1 Setup Uptime Kuma for uptime monitoring
-- [x] 16.2 Setup Sentry for error tracking (free tier)
-- [x] 16.3 Implement performance monitoring (free solution)
-- [x] 16.4 Create alerting service module
-- [x] 16.5 Implement email alerts
-- [x] 16.6 Implement push notifications alerts
-- [x] 16.7 Implement Google Chat alerts
-- [x] 16.8 Implement Discord alerts
-- [x] 16.9 Implement Telegram alerts
-- [x] 16.10 Create alert settings page in dashboard
-- [x] 16.11 **Unit Test**: Alert triggering
-- [x] 16.12 **Debug & Commit**: Monitoring module
+- [ ] 16.1 Setup Uptime Kuma for uptime monitoring
+- [ ] 16.2 Setup Sentry for error tracking (free tier)
+- [ ] 16.3 Implement performance monitoring (free solution)
+- [ ] 16.4 Create alerting service module
+- [ ] 16.5 Implement email alerts
+- [ ] 16.6 Implement push notifications alerts
+- [ ] 16.7 Implement Google Chat alerts
+- [ ] 16.8 Implement Discord alerts
+- [ ] 16.9 Implement Telegram alerts
+- [ ] 16.10 Create alert settings page in dashboard
+- [ ] 16.11 **Unit Test**: Alert triggering
+- [ ] 16.12 **Debug & Commit**: Monitoring module
 
 ## 17. Backend Main Application ✅ COMPLETE
 
