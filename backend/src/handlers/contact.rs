@@ -75,6 +75,31 @@ async fn verify_recaptcha(token: &str, secret_key: &str) -> Result<f32, Recaptch
     Ok(result.score)
 }
 
+impl From<AppError> for crate::api::ApiError {
+    fn from(app_error: AppError) -> Self {
+        match app_error {
+            AppError::RecaptchaFailed => {
+                crate::api::ApiError {
+                    status: axum::http::StatusCode::BAD_REQUEST,
+                    message: Some("reCAPTCHA verification failed".to_string()),
+                }
+            }
+            AppError::RecaptchaTokenMissing => {
+                crate::api::ApiError {
+                    status: axum::http::StatusCode::BAD_REQUEST,
+                    message: Some("reCAPTCHA token is required".to_string()),
+                }
+            }
+            AppError::InternalServerError(msg) => {
+                crate::api::ApiError {
+                    status: axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                    message: Some(format!("Internal server error: {}", msg)),
+                }
+            }
+        }
+    }
+}
+
 /// POST /api/v1/contact
 /// Submit a new contact form
 #[utoipa::path(
@@ -96,7 +121,7 @@ pub async fn submit_contact(
 ) -> ApiResponse<ContactSubmission> {
     // Get reCAPTCHA secret key from environment
     let recaptcha_secret = std::env::var("RECAPTCHA_SECRET_KEY")
-        .map_err(|_| AppError::InternalServerError("RECAPTCHA_SECRET_KEY not configured".to_string()))?;
+        .map_err(|_| crate::api::internal_error("RECAPTCHA_SECRET_KEY not configured"))?;
     let min_score: f32 = std::env::var("RECAPTCHA_MIN_SCORE")
         .unwrap_or_else(|_| "0.5".to_string())
         .parse()
@@ -107,17 +132,17 @@ pub async fn submit_contact(
         match verify_recaptcha(&token, &recaptcha_secret).await {
             Ok(score) => {
                 if score < min_score {
-                    return Err(AppError::RecaptchaFailed);
+                    return Err(crate::api::bad_request_error("reCAPTCHA verification failed"));
                 }
                 Some(score)
             }
             Err(e) => {
                 tracing::error!("reCAPTCHA verification failed: {}", e);
-                return Err(AppError::RecaptchaFailed);
+                return Err(crate::api::bad_request_error("reCAPTCHA verification failed"));
             }
         }
     } else {
-        return Err(AppError::RecaptchaTokenMissing);
+        return Err(crate::api::bad_request_error("reCAPTCHA token is required"));
     };
 
     let mut submission = ContactSubmission::new(
@@ -416,7 +441,7 @@ pub async fn get_contact_stats(
 }
 
 /// Register contact routes
-pub fn register_routes<T>(router: Router<T>) -> Router<T> {
+pub fn register_routes<T>(router: Router<T>) -> Router<T> where T: Clone + Send + Sync + 'static {
     router
         .route("/api/v1/contact", axum::routing::post(submit_contact))
         .route("/api/v1/contact/submissions", axum::routing::get(list_submissions))

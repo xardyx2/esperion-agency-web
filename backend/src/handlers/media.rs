@@ -75,6 +75,48 @@ fn get_webp_quality() -> u8 {
         .unwrap_or(80)
 }
 
+/// Get whether to keep original files from environment, default to true
+fn get_keep_original_images() -> bool {
+    dotenv().ok(); // Load .env file if it exists
+    std::env::var("KEEP_ORIGINAL_IMAGES")
+        .unwrap_or_else(|_| "true".to_string())
+        .parse()
+        .unwrap_or(true)
+}
+
+/// Get image size configuration from environment, default to standard sizes
+fn get_image_sizes() -> Vec<(String, u32, u32)> {
+    dotenv().ok(); // Load .env file if it exists
+    let sizes_str = std::env::var("IMAGE_SIZES")
+        .unwrap_or_else(|_| "thumbnail:150x150,small:300x300,medium:600x600,large:1200x1200".to_string());
+    
+    let mut sizes = Vec::new();
+    for size_part in sizes_str.split(',') {
+        if let [name, dims] = size_part.trim().split(':').collect::<Vec<_>>()[..] {
+            if let [width_str, height_str] = dims.split('x').collect::<Vec<_>>()[..] {
+                if let (Ok(width), Ok(height)) = (width_str.parse::<u32>(), height_str.parse::<u32>()) {
+                    sizes.push((name.to_string(), width, height));
+                } else {
+                    // Use default sizes if parsing fails
+                    break;
+                }
+            }
+        }
+    }
+    
+    // Use defaults if parsing failed
+    if sizes.is_empty() {
+        sizes = vec![
+            ("thumbnail".to_string(), 150, 150),
+            ("small".to_string(), 300, 300),
+            ("medium".to_string(), 600, 600),
+            ("large".to_string(), 1200, 1200),
+        ];
+    }
+    
+    sizes
+}
+
 /// Get image size configuration from environment, default to standard sizes
 fn get_image_sizes() -> Vec<(String, u32, u32)> {
     dotenv().ok(); // Load .env file if it exists
@@ -293,36 +335,28 @@ pub async fn upload_media(
             webp_path = Some(webp_file_path.clone());
         }
         
-        // Create thumbnails if the original WebP conversion was successful
-        if !output_path.exists() {
-            if let Ok(created_thumbs) = processor.create_thumbnails(input_path, Path::new(&processed_dir)) {
-                // The processor creates thumbnails named as "{original}_{size_name}.webp"
-                // We'll update media sizes but won't actually register the individual thumbnail files here
-            }
+        // Create thumbnails if the original WebP conversion was successful 
+        if output_path.exists() {
+            // For this implementation, we'll create sizes based on the configuration from environment variables
+            let configured_sizes = get_image_sizes();
             
-            // For this implementation, we'll create the same sizes as thumbnails
-            // Using the webp_file_path as base
-            let sizes = vec![
-                ("thumbnail", 150, 150),
-                ("small", 300, 300),
-                ("medium", 600, 600),
-                ("large", 1200, 1200),
-            ];
-            
-            for (name, width, height) in sizes {
-                let thumb_path = format!("{}{}_{}.webp", processed_dir, file_name.replace('.', "_"), name);
-                if let Ok(_) = processor.resize_and_convert_to_webp(input_path, std::path::Path::new(&thumb_path), width, height) {
+            for (name, width, height) in configured_sizes {
+                let thumb_filename = format!("{}{}_{}.webp", processed_dir, file_name.replace('.', "_"), name);
+                let thumb_path = std::path::Path::new(&thumb_filename);
+                
+                // Use the processor to resize and convert to WebP 
+                if let Ok(_) = processor.resize_and_convert_to_webp(input_path, thumb_path, width, height) {
                     let media_size = MediaSize {
-                        name: name.to_string(),
+                        name: name.clone(),
                         width,
                         height,
-                        path: thumb_path.clone(),
+                        path: thumb_filename.clone(),
                     };
                     media_sizes.push(media_size);
                     
                     // Set the thumbnail path to the smallest size if not set yet
                     if thumbnail_path.is_none() && name == "thumbnail" {
-                        thumbnail_path = Some(thumb_path.clone());
+                        thumbnail_path = Some(thumb_filename.clone());
                     }
                 }
             }
