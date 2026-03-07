@@ -5,11 +5,11 @@ edition = "2021"
 
 [dependencies]
 # Web framework
-axum = "0.7"
-tower-http = { version = "0.5", features = ["cors"] }
+axum = { version = "=0.7.9", features = ["multipart", "macros"] }
+tower-http = { version = "=0.5.2", features = ["cors"] }
 
 # Async runtime
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "=1.42.0", features = ["full"] }
 
 # OpenAPI documentation
 utoipa = { version = "=4.2.3", features = ["axum_extras"] }
@@ -41,7 +41,7 @@ chrono = { version = "=0.4.38", features = ["serde"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 
 # HTTP client (for external APIs)
-reqwest = { version = "0.12", features = ["json"] }
+reqwest = { version = "=0.12.9", features = ["json"] }
 
 [dev-dependencies]
 tokio-test = "0.4"

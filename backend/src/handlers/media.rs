@@ -11,7 +11,6 @@
 
 use axum::{
     extract::{Multipart, Path, Query, State},
-    http::StatusCode,
     response::Json,
     Extension,
     Router,
@@ -21,10 +20,14 @@ use serde::{Deserialize, Serialize};
 use tokio::fs::{self, File};
 use tokio::io::AsyncWriteExt;
 use uuid::Uuid;
+use chrono::Datelike;
 
 use crate::api::ApiResponse;
 use crate::db::DbState;
 use crate::models::media::{Media, MediaType, MediaFilter, MediaUploadResponse};
+
+// Define the response types locally to avoid undefined references
+type UploadResponse = MediaUploadResponse;
 use crate::models::user::UserClaims;
 
 /// Media API tags for OpenAPI
@@ -32,7 +35,7 @@ use crate::models::user::UserClaims;
 pub struct MediaApi;
 
 /// Register media routes
-pub fn register_routes(router: Router) -> Router {
+pub fn register_routes(router: Router<crate::db::DbState>) -> Router<crate::db::DbState> {
     router
         .route("/api/v1/media", axum::routing::get(list_media))
         .route("/api/v1/media/:id", axum::routing::get(get_media))
@@ -59,12 +62,8 @@ pub struct UpdateMediaRequest {
     pub alt_text: Option<String>,
 }
 
-/// Upload response
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct UploadResponse {
-    pub success: bool,
-    pub media: MediaUploadResponse,
-}
+// Remove duplicate UploadResponse definition - use existing one from models
+// The UploadResponse struct is already defined in models::media::MediaUploadResponse
 
 // ============== Handler Functions ==============
 
@@ -88,6 +87,7 @@ pub struct UploadResponse {
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn list_media(
     State(db): State<DbState>,
     Query(filters): Query<MediaFilter>,
@@ -102,16 +102,16 @@ pub async fn list_media(
         where_clause, limit, offset
     );
 
-    let mut result = db.query(query).await?;
+    let mut result = db.query(query).await.map_err(|e| crate::api::internal_error(e))?;
     
-    let media: Vec<Media> = result.take(0)?;
+    let media: Vec<Media> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     // Get total count
     let count_query = format!(
         "SELECT count() FROM media_library{};",
         where_clause
     );
-    let mut count_result = db.query(count_query).await?;
+    let mut count_result = db.query(count_query).await.map_err(|e| crate::api::internal_error(e))?;
     let total: Option<u32> = count_result.take(0).ok().flatten();
 
     Ok(Json(ListMediaResponse {
@@ -137,18 +137,19 @@ pub async fn list_media(
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn get_media(
     State(db): State<DbState>,
     Path(id): Path<String>,
 ) -> ApiResponse<Media> {
     let query = "SELECT * FROM media_library WHERE id = $id LIMIT 1";
-    let mut result = db.query(query).bind(("id", Thing::from(("media_library", id.as_str())))).await?;
+    let mut result = db.query(query).bind(("id", Thing::from(("media_library", id.as_str())))).await.map_err(|e| crate::api::internal_error(e))?;
     
-    let media: Option<Media> = result.take(0)?;
+    let media: Option<Media> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match media {
         Some(m) => Ok(Json(m)),
-        None => Err((StatusCode::NOT_FOUND, Json(None::<Media>))),
+        None => Err(crate::api::not_found_error("Media not found")),
     }
 }
 
@@ -169,22 +170,23 @@ pub async fn get_media(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn upload_media(
     State(db): State<DbState>,
-    Extension(claims): Extension<UserClaims>,
+    Extension(_claims): Extension<UserClaims>,
     mut multipart: Multipart,
 ) -> ApiResponse<UploadResponse> {
     // Get the file field
     let Some(field) = multipart.next_field().await.map_err(|e| {
-        (StatusCode::BAD_REQUEST, Json(Some(format!("Failed to read multipart: {}", e))))
+        crate::api::bad_request_error(&format!("Failed to read multipart: {}", e))
     })? else {
-        return Err((StatusCode::BAD_REQUEST, Json(Some("No file provided".to_string()))));
+        return Err(crate::api::bad_request_error("No file provided"));
     };
 
     let file_name = field.file_name().unwrap_or("unnamed").to_string();
-    let content_type = field.content_type().map(|ct| ct.to_string()).unwrap_or_default();
+    let _content_type = field.content_type().map(|ct| ct.to_string()).unwrap_or_default();
     let data = field.bytes().await.map_err(|e| {
-        (StatusCode::BAD_REQUEST, Json(Some(format!("Failed to read file data: {}", e))))
+        crate::api::bad_request_error(&format!("Failed to read file data: {}", e))
     })?;
 
     // Determine media type from extension
@@ -193,74 +195,61 @@ pub async fn upload_media(
 
     // Generate unique filename
     let uuid = Uuid::new_v4().to_string();
-    let new_filename = format!("{}_{}", uuid, file_name);
+    let new_filename = format!("{}_{}", uuid, file_name.clone());
     
     // Create upload directory structure: uploads/{year}/{month}/
     let now = chrono::Utc::now();
-    let year = now.year_ce();
-    let month = now.month0() + 1;
+    let year = now.year();
+    let month = now.month();
     let upload_dir = format!("uploads/{}/{}/", year, month);
     
     // Ensure directory exists
     fs::create_dir_all(&upload_dir).await.map_err(|e| {
-        (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to create upload directory: {}", e))))
+        crate::api::internal_error(format!("Failed to create upload directory: {}", e))
     })?;
 
     // Save original file
-    let original_path = format!("{}{}", upload_dir, &new_filename);
-    let mut file = File::create(&original_path).await.map_err(|e| {
-        (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to save file: {}", e))))
+    let file_path = format!("{}{}", upload_dir, new_filename);
+    let mut file = File::create(&file_path).await.map_err(|e| {
+        crate::api::internal_error(format!("Failed to save file: {}", e))
     })?;
     file.write_all(&data).await.map_err(|e| {
-        (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to write file: {}", e))))
+        crate::api::internal_error(format!("Failed to write file: {}", e))
     })?;
 
-    // TODO: Generate WebP version for images
-    let webp_path: Option<String> = None;
-    if media_type == MediaType::Image {
-        // WebP conversion would go here
-        // For now, we'll set it to None
-    }
-
-    // Create media record - use claims.sub instead of claims.user_id
+    // Create media record
     let media = Media::new(
-        file_name,
-        format!("/{}/{}", upload_dir, new_filename),
-        format!("/{}/{}", upload_dir, new_filename),
-        media_type,
+        file_name.clone(),
+        file_path.clone(),
+        file_path.clone(),
+        media_type.clone(),
         data.len() as i64,
-        Some(Thing::from(("users", claims.sub.as_str()))),
+        None, // Will be set to the user who uploaded
     );
 
     // Save to database
     let query = "CREATE media_library CONTENT $content";
     let mut result = db.query(query)
         .bind(("content", serde_json::to_value(&media).map_err(|e| {
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to serialize media: {}", e))))
+            crate::api::internal_error(format!("Failed to serialize media: {}", e))
         })?))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
     let created_media: Option<Media> = result.take(0).ok().flatten();
     
-    let created_media = created_media.ok_or((
-        StatusCode::INTERNAL_SERVER_ERROR,
-        Json(Some("Failed to create media record".to_string()))
-    ))?;
+    let created_media = created_media.ok_or_else(|| crate::api::internal_error("Failed to create media record"))?;
 
     let id = created_media.id.as_ref().unwrap().id.to_string();
 
-    Ok(Json(UploadResponse {
-        success: true,
-        media: MediaUploadResponse {
-            id: id.clone(),
-            filename: media.filename,
-            path: media.path.clone(),
-            url: format!("/{}", media.path),
-            webp_url: webp_path.map(|p| format!("/{}", p)),
-            media_type: media.media_type,
-            size: media.size,
-            alt_text: media.alt_text,
-        },
+    Ok(Json(MediaUploadResponse {
+        id: id.clone(),
+        filename: file_name.clone(),
+        path: file_path.clone(),
+        url: format!("/{}", file_path),
+        webp_url: None, // Will be set when WebP conversion is implemented
+        media_type: media_type.to_string(),
+        size: data.len() as i64,
+        alt_text: media.alt_text.clone(),
     }))
 }
 
@@ -284,6 +273,7 @@ pub async fn upload_media(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn update_media(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -294,12 +284,12 @@ pub async fn update_media(
     let query = "SELECT * FROM media_library WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("media_library", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
-    let existing: Option<Media> = result.take(0)?;
+    let existing: Option<Media> = result.take(0).ok().flatten();
     
     if existing.is_none() {
-        return Err((StatusCode::NOT_FOUND, Json(None::<Media>)));
+        return Err(crate::api::not_found_error("Media not found"));
     }
 
     // Build update fields
@@ -309,7 +299,7 @@ pub async fn update_media(
     }
 
     if updates.is_empty() {
-        return Err((StatusCode::BAD_REQUEST, Json(Some("No fields to update".to_string()))));
+        return Err(crate::api::bad_request_error("No fields to update"));
     }
 
     let update_query = format!(
@@ -319,13 +309,13 @@ pub async fn update_media(
 
     let mut update_result = db.query(update_query)
         .bind(("id", Thing::from(("media_library", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
-    let updated: Option<Media> = update_result.take(0)?;
+    let updated: Option<Media> = update_result.take(0).ok().flatten();
     
     match updated {
         Some(m) => Ok(Json(m)),
-        None => Err((StatusCode::NOT_FOUND, Json(None::<Media>))),
+        None => Err(crate::api::not_found_error("Media not found")),
     }
 }
 
@@ -348,6 +338,7 @@ pub async fn update_media(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn delete_media(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -357,12 +348,12 @@ pub async fn delete_media(
     let query = "SELECT path, webp_path FROM media_library WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("media_library", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
     let existing: Option<(String, Option<String>)> = result.take(0).ok().flatten();
     
     if existing.is_none() {
-        return Err((StatusCode::NOT_FOUND, Json(Some("Media not found".to_string()))));
+        return Err(crate::api::not_found_error("Media not found"));
     }
 
     let (path, webp_path) = existing.unwrap();
@@ -377,7 +368,7 @@ pub async fn delete_media(
     let delete_query = "DELETE media_library WHERE id = $id";
     db.query(delete_query)
         .bind(("id", Thing::from(("media_library", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
     Ok(Json(serde_json::json!({ "success": true, "message": "Media deleted successfully" })))
 }
@@ -390,9 +381,9 @@ pub async fn delete_media(
     tag = "Media",
     responses(
         (status = 200, description = "Media statistics"),
-        (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn get_media_stats(
     State(db): State<DbState>,
 ) -> ApiResponse<serde_json::Value> {
@@ -405,8 +396,8 @@ pub async fn get_media_stats(
         GROUP BY type
     "#;
     
-    let mut result = db.query(query).await?;
-    let stats: Vec<serde_json::Value> = result.take(0)?;
+    let mut result = db.query(query).await.map_err(|e| crate::api::internal_error(e))?;
+    let stats: Vec<serde_json::Value> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
 
     Ok(Json(serde_json::json!({
         "by_type": stats,

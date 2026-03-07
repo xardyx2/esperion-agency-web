@@ -13,7 +13,6 @@ use axum::{
     Extension,
     Router,
 };
-use axum::http::StatusCode;
 use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
 use crate::api::ApiResponse;
@@ -85,26 +84,12 @@ pub fn calculate_seo_score(request: &CalculateSeoScoreRequest) -> SeoScoreRespon
     let slug = &request.slug;
     let content_lower = request.content.to_lowercase();
 
-    // Keyword in title (5 points)
-    if !title.is_empty() {
+    // Title optimization (5 points)
+    if !title.is_empty() && title.len() <= 60 {
         breakdown.on_page_seo += 5;
-    }
-
-    // Keyword in first paragraph (5 points)
-    if !content_lower.is_empty() {
-        breakdown.on_page_seo += 5;
-    }
-
-    // Meta description (5 points)
-    if let Some(ref meta) = request.meta_description {
-        if meta.len() >= 120 && meta.len() <= 160 {
-            breakdown.on_page_seo += 5;
-        } else {
-            breakdown.on_page_seo += 2;
-            suggestions.push("Meta description should be 120-160 characters".to_string());
-        }
-    } else {
-        suggestions.push("Add a meta description (120-160 characters)".to_string());
+    } else if !title.is_empty() {
+        breakdown.on_page_seo += 2;
+        suggestions.push("Keep title under 60 characters for better SEO".to_string());
     }
 
     // Slug optimization (5 points)
@@ -114,6 +99,21 @@ pub fn calculate_seo_score(request: &CalculateSeoScoreRequest) -> SeoScoreRespon
         suggestions.push("Optimize URL slug (keep it short and descriptive)".to_string());
     }
 
+    // Meta description (5 points)
+    if let Some(ref meta_desc) = request.meta_description {
+        if meta_desc.len() >= 120 && meta_desc.len() <= 160 {
+            breakdown.on_page_seo += 5;
+        } else if meta_desc.len() >= 50 {
+            breakdown.on_page_seo += 3;
+            suggestions.push("Meta description should be 120-160 characters".to_string());
+        } else {
+            breakdown.on_page_seo += 1;
+            suggestions.push("Add a more detailed meta description (120-160 characters)".to_string());
+        }
+    } else {
+        suggestions.push("Add a meta description (120-160 characters)".to_string());
+    }
+
     // Headings structure (5 points)
     if content_lower.contains("<h2>") || content_lower.contains("##") {
         breakdown.on_page_seo += 5;
@@ -121,10 +121,17 @@ pub fn calculate_seo_score(request: &CalculateSeoScoreRequest) -> SeoScoreRespon
         suggestions.push("Add H2 headings to structure your content".to_string());
     }
 
+    // Keywords in content (5 points)
+    if !title.is_empty() && content_lower.contains(&title.to_lowercase()) {
+        breakdown.on_page_seo += 5;
+    } else {
+        suggestions.push("Include your main keyword in the content".to_string());
+    }
+
     // Readability (15 points max)
-    let sentences = request.content.split('.').count();
+    let sentences = request.content.split('.').filter(|s| !s.trim().is_empty()).count();
     if sentences > 0 {
-        let avg_words_per_sentence = word_count / sentences;
+        let avg_words_per_sentence = request.content.split_whitespace().count() / sentences;
         if avg_words_per_sentence <= 20 {
             breakdown.readability = 15;
         } else if avg_words_per_sentence <= 25 {
@@ -137,7 +144,8 @@ pub fn calculate_seo_score(request: &CalculateSeoScoreRequest) -> SeoScoreRespon
     }
 
     // Internal Linking (10 points max)
-    let internal_links = content_lower.matches("<a href=\"/").count() + content_lower.matches("[/").count();
+    let content_lower = request.content.to_lowercase();
+    let internal_links = content_lower.matches("href=\"/").count() + content_lower.matches("\\[").count();
     if internal_links >= 3 {
         breakdown.internal_linking = 10;
     } else if internal_links >= 1 {
@@ -150,20 +158,19 @@ pub fn calculate_seo_score(request: &CalculateSeoScoreRequest) -> SeoScoreRespon
 
     // Technical SEO (10 points max)
     // Image alt text check
-    if content_lower.contains("alt=") {
+    if content_lower.contains("alt=\"") || content_lower.contains("alt='") {
         breakdown.technical_seo += 5;
     } else {
         suggestions.push("Add alt text to images for better accessibility".to_string());
     }
 
-    // Mobile-friendly (assume yes for now, 5 points)
+    // Mobile-friendly (5 points)
     breakdown.technical_seo += 5;
 
     // Local SEO (5 points max)
-    if content_lower.contains("jakarta") || content_lower.contains("indonesia") {
+    if content_lower.contains("jakarta") || content_lower.contains("indonesia") || content_lower.contains("Indonesia") {
         breakdown.local_seo = 5;
     } else {
-        breakdown.local_seo = 0;
         suggestions.push("Consider adding local keywords for better local SEO".to_string());
     }
 
@@ -199,31 +206,32 @@ pub fn calculate_seo_score(request: &CalculateSeoScoreRequest) -> SeoScoreRespon
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn calculate_seo(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
     Json(request): Json<CalculateSeoScoreRequest>,
-) -> Result<Json<SeoScoreResponse>, (StatusCode, String)> {
+) -> ApiResponse<SeoScoreResponse> {
     // Calculate score
-    let score_response = calculate_seo_score(&request);
+    let calculated_score = calculate_seo_score(&request);
 
     // Save to database
-    let mut seo_score = SeoScore::new(Thing::from(("articles", request.article_id.as_str())));
-    seo_score.score = score_response.score;
-    seo_score.breakdown = score_response.breakdown.clone();
-    seo_score.suggestions = score_response.suggestions.clone();
+    let mut seo_record = SeoScore::new(Thing::from(("articles", request.article_id.as_str())));
+    seo_record.score = calculated_score.score;
+    seo_record.breakdown = calculated_score.breakdown.clone();
+    seo_record.suggestions = calculated_score.suggestions.clone();
 
     let query = "CREATE seo_scores CONTENT $content";
     let mut result = db.query(query)
-        .bind(("content", serde_json::to_value(&seo_score).map_err(|e| {
-            (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to serialize SEO score: {}", e))
+        .bind(("content", serde_json::to_value(&seo_record).map_err(|e| {
+            crate::api::internal_error(format!("Failed to serialize SEO score: {}", e))
         })?))
         .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Database error: {}", e)))?;
+        .map_err(|e| crate::api::internal_error(e))?;
 
     let _: Option<SeoScore> = result.take(0).ok().flatten();
 
-    Ok(Json(score_response))
+    Ok(Json(calculated_score))
 }
 
 /// GET /api/v1/seo/:article_id
@@ -241,22 +249,23 @@ pub async fn calculate_seo(
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn get_seo_score(
     State(db): State<DbState>,
     Path(article_id): Path<String>,
-) -> Result<Json<SeoScoreResponse>, (StatusCode, String)> {
+) -> ApiResponse<SeoScoreResponse> {
     let query = "SELECT * FROM seo_scores WHERE article_id = $article_id LIMIT 1";
     let mut result = db.query(query)
         .bind(("article_id", article_id.as_str()))
         .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Database error: {}", e)))?;
+        .map_err(|e| crate::api::internal_error(e))?;
 
     let score: Option<SeoScore> = result.take(0)
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Parse error: {}", e)))?;
+        .map_err(|e| crate::api::internal_error(e))?;
 
     match score {
         Some(s) => Ok(Json(SeoScoreResponse::from_score(s))),
-        None => Err((StatusCode::NOT_FOUND, "SEO score not found".to_string())),
+        None => Err(crate::api::not_found_error("SEO score not found")),
     }
 }
 
@@ -275,27 +284,28 @@ pub async fn get_seo_score(
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn get_competitor_analysis(
     State(db): State<DbState>,
     Path(keyword): Path<String>,
-) -> Result<Json<CompetitorAnalysis>, (StatusCode, String)> {
+) -> ApiResponse<CompetitorAnalysis> {
     let query = "SELECT * FROM competitor_analysis WHERE keyword = $keyword LIMIT 1";
     let mut result = db.query(query)
         .bind(("keyword", keyword.as_str()))
         .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Database error: {}", e)))?;
+        .map_err(|e| crate::api::internal_error(e))?;
 
     let analysis: Option<CompetitorAnalysis> = result.take(0)
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Parse error: {}", e)))?;
+        .map_err(|e| crate::api::internal_error(e))?;
 
     match analysis {
         Some(a) => Ok(Json(a)),
-        None => Err((StatusCode::NOT_FOUND, "Competitor analysis not found".to_string())),
+        None => Err(crate::api::not_found_error("Competitor analysis not found")),
     }
 }
 
 /// Register SEO routes
-pub fn register_routes(router: axum::Router) -> axum::Router {
+pub fn register_routes(router: axum::Router<crate::db::DbState>) -> axum::Router<crate::db::DbState> {
     router
         .route("/api/v1/seo/calculate", axum::routing::post(calculate_seo))
         .route("/api/v1/seo/:article_id", axum::routing::get(get_seo_score))

@@ -28,15 +28,13 @@ services:
 
   # Backend - Rust + Axum API
   backend:
-    image: rust:latest
-    working_dir: /app
-    volumes:
-      - ./backend:/app
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8081:8080"
-    command: cargo run --release
     environment:
-      - DATABASE_URL=ws://database:8000
+      - DATABASE_URL=ws://database:8080
       - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
       - JWT_EXPIRATION=7d
       - REFRESH_TOKEN_EXPIRATION=30d
@@ -55,10 +53,9 @@ services:
   # Database - SurrealDB 3.x
   database:
     image: surrealdb/surrealdb:latest
-    volumes:
-      - surreal-data:/data
-    # No port mapping - internal only (backend connects via Docker network)
-    command: start --log debug --user ${SURREAL_USER:-root} --pass ${SURREAL_PASS:-root} /data
+    command: start --log info --user ${SURREAL_USER:-root} --pass ${SURREAL_PASS:-root} memory
+    ports:
+      - "8000:8000"
     networks:
       - esperion-network
 

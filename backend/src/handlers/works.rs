@@ -12,7 +12,6 @@
 
 use axum::{
     extract::{Path, Query, State},
-    http::StatusCode,
     response::Json,
     Extension,
     Router,
@@ -61,6 +60,7 @@ pub struct ListWorksResponse {
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn list_works(
     State(db): State<DbState>,
     Query(filters): Query<WorkFilter>,
@@ -75,15 +75,15 @@ pub async fn list_works(
         where_clause, limit, offset
     );
 
-    let mut result = db.query(query).await?;
-    let works: Vec<Work> = result.take(0)?;
+    let mut result = db.query(query).await.map_err(|e| crate::api::internal_error(e.to_string()))?;
+    let works: Vec<Work> = result.take(0).map_err(|e| crate::api::internal_error(e.to_string()))?;
 
     // Get total count
     let count_query = format!(
         "SELECT count() FROM works{};",
         where_clause
     );
-    let mut count_result = db.query(count_query).await?;
+    let mut count_result = db.query(count_query).await.map_err(|e| crate::api::internal_error(e))?;
     let total: Option<u32> = count_result.take(0).ok().flatten();
 
     Ok(Json(ListWorksResponse {
@@ -108,6 +108,7 @@ pub async fn list_works(
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn list_featured_works(
     State(db): State<DbState>,
     Query(limit_query): Query<Option<u32>>,
@@ -115,8 +116,8 @@ pub async fn list_featured_works(
     let limit = limit_query.unwrap_or(10);
     
     let query = "SELECT * FROM works WHERE featured = true ORDER BY created_at DESC LIMIT $limit";
-    let mut result = db.query(query).bind(("limit", limit)).await?;
-    let works: Vec<Work> = result.take(0)?;
+    let mut result = db.query(query).bind(("limit", limit)).await.map_err(|e| crate::api::internal_error(e))?;
+    let works: Vec<Work> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
 
     Ok(Json(works))
 }
@@ -136,18 +137,19 @@ pub async fn list_featured_works(
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn get_work(
     State(db): State<DbState>,
     Path(slug): Path<String>,
 ) -> ApiResponse<Work> {
     let query = "SELECT * FROM works WHERE slug = $slug LIMIT 1";
-    let mut result = db.query(query).bind(("slug", slug)).await?;
+    let mut result = db.query(query).bind(("slug", slug)).await.map_err(|e| crate::api::internal_error(e))?;
     
-    let work: Option<Work> = result.take(0)?;
+    let work: Option<Work> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match work {
         Some(w) => Ok(Json(w)),
-        None => Err((StatusCode::NOT_FOUND, Json(None::<Work>))),
+        None => Err(crate::api::not_found_error("Work not found")),
     }
 }
 
@@ -168,6 +170,7 @@ pub async fn get_work(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn create_work(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -194,15 +197,15 @@ pub async fn create_work(
     let query = "CREATE works CONTENT $content";
     let mut result = db.query(query)
         .bind(("content", serde_json::to_value(&work).map_err(|e| {
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to serialize work: {}", e))))
+            crate::api::internal_error(format!("Failed to serialize work: {}", e))
         })?))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
-    let created_work: Option<Work> = result.take(0).ok().flatten();
+    let created_work: Option<Work> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match created_work {
         Some(w) => Ok(Json(w)),
-        None => Err((StatusCode::INTERNAL_SERVER_ERROR, Json(Some("Failed to create work".to_string())))),
+        None => Err(crate::api::internal_error("Failed to create work")),
     }
 }
 
@@ -226,6 +229,7 @@ pub async fn create_work(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn update_work(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -236,12 +240,12 @@ pub async fn update_work(
     let query = "SELECT * FROM works WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("works", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
-    let existing: Option<Work> = result.take(0)?;
+    let existing: Option<Work> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     if existing.is_none() {
-        return Err((StatusCode::NOT_FOUND, Json(None::<Work>)));
+        return Err(crate::api::not_found_error("Work not found"));
     }
 
     // Build update fields
@@ -269,13 +273,13 @@ pub async fn update_work(
     }
     if let Some(metrics) = update.metrics {
         let metrics_json = serde_json::to_string(&metrics).map_err(|e| {
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to serialize metrics: {}", e))))
+            crate::api::internal_error(format!("Failed to serialize metrics: {}", e))
         })?;
         updates.push(format!("metrics = {}", metrics_json));
     }
 
     if updates.is_empty() {
-        return Err((StatusCode::BAD_REQUEST, Json(Some("No fields to update".to_string()))));
+        return Err(crate::api::bad_request_error("No fields to update"));
     }
 
     let update_query = format!(
@@ -285,13 +289,13 @@ pub async fn update_work(
 
     let mut update_result = db.query(update_query)
         .bind(("id", Thing::from(("works", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
-    let updated: Option<Work> = update_result.take(0)?;
+    let updated: Option<Work> = update_result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match updated {
         Some(w) => Ok(Json(w)),
-        None => Err((StatusCode::NOT_FOUND, Json(None::<Work>))),
+        None => Err(crate::api::not_found_error("Work not found")),
     }
 }
 
@@ -314,6 +318,7 @@ pub async fn update_work(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn delete_work(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -323,25 +328,25 @@ pub async fn delete_work(
     let query = "SELECT * FROM works WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("works", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
-    let existing: Option<Work> = result.take(0)?;
+    let existing: Option<Work> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     if existing.is_none() {
-        return Err((StatusCode::NOT_FOUND, Json(Some("Work not found".to_string()))));
+        return Err(crate::api::not_found_error("Work not found"));
     }
 
     // Delete from database
     let delete_query = "DELETE works WHERE id = $id";
     db.query(delete_query)
         .bind(("id", Thing::from(("works", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
     Ok(Json(serde_json::json!({ "success": true, "message": "Work deleted successfully" })))
 }
 
 /// Register works routes
-pub fn register_routes(router: axum::Router) -> axum::Router {
+pub fn register_routes(router: axum::Router<crate::db::DbState>) -> axum::Router<crate::db::DbState> {
     router
         .route("/api/v1/works", axum::routing::get(list_works))
         .route("/api/v1/works/featured", axum::routing::get(list_featured_works))

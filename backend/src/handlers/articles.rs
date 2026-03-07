@@ -11,7 +11,6 @@
 
 use axum::{
     extract::{Path, Query, State},
-    http::StatusCode,
     Json,
     Router,
 };
@@ -107,6 +106,7 @@ pub struct ArticleRequest {
         (status = 401, description = "Unauthorized"),
     ),
 )]
+#[axum::debug_handler]
 pub async fn list_articles(
     State(db): State<DbState>,
     Query(query): Query<ListArticlesQuery>,
@@ -116,14 +116,14 @@ pub async fn list_articles(
     let offset = query.offset();
     
     let list_query = format!(
-        "SELECT * FROM articles{} ORDER BY created_at DESC LIMIT {} START {}",
+        "SELECT * FROM articles{} ORDER BY created_at DESC LIMIT {} START {};",
         where_clause, limit, offset
     );
     
     let mut result = db
         .query(list_query)
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| crate::api::internal_error(e))?;
     
     let articles: Vec<serde_json::Value> = result.take(0).unwrap_or_default();
     let responses = articles.into_iter().filter_map(|a| serde_json::from_value(a).ok()).collect();
@@ -144,6 +144,7 @@ pub async fn list_articles(
         (status = 404, description = "Article not found"),
     ),
 )]
+#[axum::debug_handler]
 pub async fn get_article(
     State(db): State<DbState>,
     Path(slug): Path<String>,
@@ -153,14 +154,14 @@ pub async fn get_article(
         .query(query)
         .bind(("slug", &slug))
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| crate::api::internal_error(e))?;
     
     let article: Option<serde_json::Value> = result.take(0).ok().flatten();
-    let article = article.ok_or(StatusCode::NOT_FOUND)?;
+    let article = article.ok_or_else(|| crate::api::not_found_error("Article not found"))?;
     
     serde_json::from_value(article)
         .map(Json)
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+        .map_err(|_| crate::api::internal_error("Failed to parse article"))
 }
 
 /// Create article
@@ -175,6 +176,7 @@ pub async fn get_article(
         (status = 401, description = "Unauthorized"),
     ),
 )]
+#[axum::debug_handler]
 pub async fn create_article(
     State(db): State<DbState>,
     Json(req): Json<ArticleRequest>,
@@ -199,14 +201,14 @@ pub async fn create_article(
         .bind(("published", &req.published.unwrap_or(false)))
         .bind(("now", &now))
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| crate::api::internal_error(e))?;
     
     let created: Option<serde_json::Value> = result.take(0).ok().flatten();
-    let article = created.ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+    let article = created.ok_or_else(|| crate::api::internal_error("Failed to create article"))?;
     
     serde_json::from_value(article)
         .map(Json)
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+        .map_err(|_| crate::api::internal_error("Failed to parse article"))
 }
 
 /// Update article
@@ -224,6 +226,7 @@ pub async fn create_article(
         (status = 401, description = "Unauthorized"),
     ),
 )]
+#[axum::debug_handler]
 pub async fn update_article(
     State(db): State<DbState>,
     Path(id): Path<String>,
@@ -248,14 +251,14 @@ pub async fn update_article(
         .bind(("published", &req.published.unwrap_or(false)))
         .bind(("now", &now))
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| crate::api::internal_error(e))?;
     
     let updated: Option<serde_json::Value> = result.take(0).ok().flatten();
-    let article = updated.ok_or(StatusCode::NOT_FOUND)?;
+    let article = updated.ok_or_else(|| crate::api::not_found_error("Article not found"))?;
     
     serde_json::from_value(article)
         .map(Json)
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+        .map_err(|_| crate::api::internal_error("Failed to parse article"))
 }
 
 /// Delete article
@@ -272,6 +275,7 @@ pub async fn update_article(
         (status = 401, description = "Unauthorized"),
     ),
 )]
+#[axum::debug_handler]
 pub async fn delete_article(
     State(db): State<DbState>,
     Path(id): Path<String>,
@@ -282,19 +286,22 @@ pub async fn delete_article(
         .query(delete_query)
         .bind(("id", &id))
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| crate::api::internal_error(e))?;
     
     let deleted: Option<serde_json::Value> = result.take(0).ok().flatten();
     
     if deleted.is_some() {
-        Ok(StatusCode::OK)
+        Ok(Json(serde_json::json!({
+            "message": "Article deleted",
+            "id": id
+        })))
     } else {
-        Err(StatusCode::NOT_FOUND)
+        Err(crate::api::not_found_error("Article not found"))
     }
 }
 
 /// Register articles routes
-pub fn register_routes(router: axum::Router) -> axum::Router {
+pub fn register_routes(router: Router<crate::db::DbState>) -> Router<crate::db::DbState> {
     use axum::routing::{delete, get, post, put};
     
     router

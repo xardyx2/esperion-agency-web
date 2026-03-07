@@ -12,7 +12,6 @@
 
 use axum::{
     extract::{Path, Query, State},
-    http::StatusCode,
     response::Json,
     Extension,
     Router,
@@ -59,6 +58,7 @@ pub struct ListServicesResponse {
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn list_services(
     State(db): State<DbState>,
     Query(filters): Query<ServiceFilter>,
@@ -73,15 +73,15 @@ pub async fn list_services(
         where_clause, limit, offset
     );
 
-    let mut result = db.query(query).await?;
-    let services: Vec<Service> = result.take(0)?;
+    let mut result = db.query(query).await.map_err(|e| crate::api::internal_error(e.to_string()))?;
+    let services: Vec<Service> = result.take(0).map_err(|e| crate::api::internal_error(e.to_string()))?;
 
     // Get total count
     let count_query = format!(
         "SELECT count() FROM services{};",
         where_clause
     );
-    let mut count_result = db.query(count_query).await?;
+    let mut count_result = db.query(count_query).await.map_err(|e| crate::api::internal_error(e))?;
     let total: Option<u32> = count_result.take(0).ok().flatten();
 
     Ok(Json(ListServicesResponse {
@@ -107,18 +107,19 @@ pub async fn list_services(
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn get_service(
     State(db): State<DbState>,
     Path(slug): Path<String>,
 ) -> ApiResponse<Service> {
     let query = "SELECT * FROM services WHERE slug = $slug LIMIT 1";
-    let mut result = db.query(query).bind(("slug", slug)).await?;
+    let mut result = db.query(query).bind(("slug", slug)).await.map_err(|e| crate::api::internal_error(e))?;
     
-    let service: Option<Service> = result.take(0)?;
+    let service: Option<Service> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match service {
         Some(s) => Ok(Json(s)),
-        None => Err((StatusCode::NOT_FOUND, Json(None::<Service>))),
+        None => Err(crate::api::not_found_error("Service not found")),
     }
 }
 
@@ -139,6 +140,7 @@ pub async fn get_service(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn create_service(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -170,15 +172,15 @@ pub async fn create_service(
     let query = "CREATE services CONTENT $content";
     let mut result = db.query(query)
         .bind(("content", serde_json::to_value(&service).map_err(|e| {
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to serialize service: {}", e))))
+            crate::api::internal_error(format!("Failed to serialize service: {}", e))
         })?))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
-    let created_service: Option<Service> = result.take(0).ok().flatten();
+    let created_service: Option<Service> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match created_service {
         Some(s) => Ok(Json(s)),
-        None => Err((StatusCode::INTERNAL_SERVER_ERROR, Json(Some("Failed to create service".to_string())))),
+        None => Err(crate::api::internal_error("Failed to create service")),
     }
 }
 
@@ -202,6 +204,7 @@ pub async fn create_service(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn update_service(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -212,12 +215,12 @@ pub async fn update_service(
     let query = "SELECT * FROM services WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("services", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
-    let existing: Option<Service> = result.take(0)?;
+    let existing: Option<Service> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     if existing.is_none() {
-        return Err((StatusCode::NOT_FOUND, Json(None::<Service>)));
+        return Err(crate::api::not_found_error("Service not found"));
     }
 
     // Build update fields
@@ -239,19 +242,19 @@ pub async fn update_service(
     }
     if let Some(pricing_table) = update.pricing_table {
         let pricing_json = serde_json::to_string(&pricing_table).map_err(|e| {
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to serialize pricing table: {}", e))))
+            crate::api::internal_error(format!("Failed to serialize pricing table: {}", e))
         })?;
         updates.push(format!("pricing_table = {}", pricing_json));
     }
     if let Some(faq) = update.faq {
         let faq_json = serde_json::to_string(&faq).map_err(|e| {
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to serialize FAQ: {}", e))))
+            crate::api::internal_error(format!("Failed to serialize FAQ: {}", e))
         })?;
         updates.push(format!("faq = {}", faq_json));
     }
 
     if updates.is_empty() {
-        return Err((StatusCode::BAD_REQUEST, Json(Some("No fields to update".to_string()))));
+        return Err(crate::api::bad_request_error("No fields to update"));
     }
 
     let update_query = format!(
@@ -261,13 +264,13 @@ pub async fn update_service(
 
     let mut update_result = db.query(update_query)
         .bind(("id", Thing::from(("services", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
-    let updated: Option<Service> = update_result.take(0)?;
+    let updated: Option<Service> = update_result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match updated {
         Some(s) => Ok(Json(s)),
-        None => Err((StatusCode::NOT_FOUND, Json(None::<Service>))),
+        None => Err(crate::api::not_found_error("Service not found")),
     }
 }
 
@@ -290,6 +293,7 @@ pub async fn update_service(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn delete_service(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -299,19 +303,19 @@ pub async fn delete_service(
     let query = "SELECT * FROM services WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("services", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
-    let existing: Option<Service> = result.take(0)?;
+    let existing: Option<Service> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     if existing.is_none() {
-        return Err((StatusCode::NOT_FOUND, Json(Some("Service not found".to_string()))));
+        return Err(crate::api::not_found_error("Service not found"));
     }
 
     // Delete from database
     let delete_query = "DELETE services WHERE id = $id";
     db.query(delete_query)
         .bind(("id", Thing::from(("services", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
     Ok(Json(serde_json::json!({ "success": true, "message": "Service deleted successfully" })))
 }
@@ -354,7 +358,7 @@ pub async fn seed_default_services(db: DbState) -> Result<(), String> {
 }
 
 /// Register services routes
-pub fn register_routes(router: axum::Router) -> axum::Router {
+pub fn register_routes(router: axum::Router<crate::db::DbState>) -> axum::Router<crate::db::DbState> {
     router
         .route("/api/v1/services", axum::routing::get(list_services))
         .route("/api/v1/services/:slug", axum::routing::get(get_service))

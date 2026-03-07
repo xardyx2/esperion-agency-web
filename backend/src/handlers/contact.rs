@@ -10,7 +10,6 @@
 
 use axum::{
     extract::{Path, Query, State},
-    http::StatusCode,
     response::Json,
     Extension,
     Router,
@@ -20,7 +19,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::api::ApiResponse;
 use crate::db::DbState;
-use crate::models::contact::{ContactSubmission, ContactFilter, CreateContactRequest, UpdateContactRequest, ContactStatus, ContactStats, ContactStatusCounts, ServiceCount};
+use crate::models::contact::{ContactSubmission, ContactFilter, CreateContactRequest, UpdateContactRequest, ContactStats, ContactStatusCounts, ServiceCount};
 use crate::models::user::UserClaims;
 
 /// Contact API tags for OpenAPI
@@ -53,6 +52,7 @@ pub struct ListContactResponse {
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn submit_contact(
     State(db): State<DbState>,
     Json(request): Json<CreateContactRequest>,
@@ -89,18 +89,18 @@ pub async fn submit_contact(
     let query = "CREATE contact_submissions CONTENT $content";
     let mut result = db.query(query)
         .bind(("content", serde_json::to_value(&submission).map_err(|e| {
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to serialize submission: {}", e))))
+            crate::api::internal_error(format!("Failed to serialize submission: {}", e))
         })?))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
-    let created_submission: Option<ContactSubmission> = result.take(0).ok().flatten();
+    let created_submission: Option<ContactSubmission> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     // TODO: Send email notification
     // TODO: Send Google Chat webhook notification
 
     match created_submission {
         Some(s) => Ok(Json(s)),
-        None => Err((StatusCode::INTERNAL_SERVER_ERROR, Json(Some("Failed to create submission".to_string())))),
+        None => Err(crate::api::internal_error("Failed to create submission")),
     }
 }
 
@@ -127,6 +127,7 @@ pub async fn submit_contact(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn list_submissions(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -142,15 +143,15 @@ pub async fn list_submissions(
         where_clause, limit, offset
     );
 
-    let mut result = db.query(query).await?;
-    let submissions: Vec<ContactSubmission> = result.take(0)?;
+    let mut result = db.query(query).await.map_err(|e| crate::api::internal_error(e))?;
+    let submissions: Vec<ContactSubmission> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
 
     // Get total count
     let count_query = format!(
         "SELECT count() FROM contact_submissions{};",
         where_clause
     );
-    let mut count_result = db.query(count_query).await?;
+    let mut count_result = db.query(count_query).await.map_err(|e| crate::api::internal_error(e))?;
     let total: Option<u32> = count_result.take(0).ok().flatten();
 
     Ok(Json(ListContactResponse {
@@ -180,6 +181,7 @@ pub async fn list_submissions(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn get_submission(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -188,13 +190,13 @@ pub async fn get_submission(
     let query = "SELECT * FROM contact_submissions WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("contact_submissions", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
-    let submission: Option<ContactSubmission> = result.take(0)?;
+    let submission: Option<ContactSubmission> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match submission {
         Some(s) => Ok(Json(s)),
-        None => Err((StatusCode::NOT_FOUND, Json(None::<ContactSubmission>))),
+        None => Err(crate::api::not_found_error("Submission not found")),
     }
 }
 
@@ -218,6 +220,7 @@ pub async fn get_submission(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn update_submission(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -228,12 +231,12 @@ pub async fn update_submission(
     let query = "SELECT * FROM contact_submissions WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("contact_submissions", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
-    let existing: Option<ContactSubmission> = result.take(0)?;
+    let existing: Option<ContactSubmission> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     if existing.is_none() {
-        return Err((StatusCode::NOT_FOUND, Json(None::<ContactSubmission>)));
+        return Err(crate::api::not_found_error("Submission not found"));
     }
 
     // Build update fields
@@ -261,7 +264,7 @@ pub async fn update_submission(
     }
 
     if updates.is_empty() {
-        return Err((StatusCode::BAD_REQUEST, Json(Some("No fields to update".to_string()))));
+        return Err(crate::api::bad_request_error("No fields to update"));
     }
 
     let update_query = format!(
@@ -271,13 +274,13 @@ pub async fn update_submission(
 
     let mut update_result = db.query(update_query)
         .bind(("id", Thing::from(("contact_submissions", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
-    let updated: Option<ContactSubmission> = update_result.take(0)?;
+    let updated: Option<ContactSubmission> = update_result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match updated {
         Some(s) => Ok(Json(s)),
-        None => Err((StatusCode::NOT_FOUND, Json(None::<ContactSubmission>))),
+        None => Err(crate::api::not_found_error("Submission not found")),
     }
 }
 
@@ -296,13 +299,14 @@ pub async fn update_submission(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn get_contact_stats(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
 ) -> ApiResponse<ContactStats> {
     // Get total count
     let total_query = "SELECT count() as count FROM contact_submissions";
-    let mut total_result = db.query(total_query).await?;
+    let mut total_result = db.query(total_query).await.map_err(|e| crate::api::internal_error(e))?;
     let total_result: Option<Vec<serde_json::Value>> = total_result.take(0).ok();
     let total = total_result
         .and_then(|r| r.first().and_then(|v| v.get("count").and_then(|c| c.as_u64()).map(|c| c as u32)))
@@ -310,7 +314,7 @@ pub async fn get_contact_stats(
 
     // Get counts by status
     let status_query = "SELECT status, count() as count FROM contact_submissions GROUP BY status";
-    let mut status_result = db.query(status_query).await?;
+    let mut status_result = db.query(status_query).await.map_err(|e| crate::api::internal_error(e))?;
     let status_results: Option<Vec<serde_json::Value>> = status_result.take(0).ok();
     
     let mut new = 0u32;
@@ -337,7 +341,7 @@ pub async fn get_contact_stats(
 
     // Get counts by service
     let service_query = "SELECT service, count() as count FROM contact_submissions GROUP BY service";
-    let mut service_result = db.query(service_query).await?;
+    let mut service_result = db.query(service_query).await.map_err(|e| crate::api::internal_error(e))?;
     let service_results: Option<Vec<serde_json::Value>> = service_result.take(0).ok();
     
     let mut by_service = Vec::new();
@@ -358,7 +362,7 @@ pub async fn get_contact_stats(
 }
 
 /// Register contact routes
-pub fn register_routes(router: axum::Router) -> axum::Router {
+pub fn register_routes(router: Router<crate::db::DbState>) -> Router<crate::db::DbState> {
     router
         .route("/api/v1/contact", axum::routing::post(submit_contact))
         .route("/api/v1/contact/submissions", axum::routing::get(list_submissions))

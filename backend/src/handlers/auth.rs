@@ -10,18 +10,18 @@
 
 use axum::{
     extract::State,
-    http::{StatusCode, header},
+    http::StatusCode,
     Json,
     Router,
 };
 use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
+    password_hash::{rand_core::OsRng, PasswordHasher, PasswordVerifier, SaltString},
     Argon2,
 };
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::api::ApiResponse;
+use crate::api::{ApiResponse, internal_error, bad_request_error};
 use crate::db::DbState;
 
 /// Register input
@@ -72,10 +72,13 @@ fn hash_password(password: &str) -> Result<String, StatusCode> {
 
 /// Verify password
 fn verify_password(password: &str, hash: &str) -> bool {
-    let parsed_hash = PasswordHash::new(hash).ok()?;
-    Argon2::default()
-        .verify_password(password.as_bytes(), &parsed_hash)
-        .is_ok()
+    let parsed_hash = argon2::PasswordHash::new(hash).ok();
+    match parsed_hash {
+        Some(parsed) => Argon2::default()
+            .verify_password(password.as_bytes(), &parsed)
+            .is_ok(),
+        None => false,
+    }
 }
 
 /// Register new user
@@ -95,7 +98,8 @@ pub async fn register(
     Json(req): Json<RegisterRequest>,
 ) -> ApiResponse<AuthResponse> {
     // Hash password
-    let password_hash = hash_password(&req.password)?;
+    let password_hash = hash_password(&req.password)
+        .map_err(|e| internal_error(e))?;
     
     // Check if email already exists
     let check_query = "SELECT * FROM users WHERE email = $email LIMIT 1";
@@ -103,11 +107,11 @@ pub async fn register(
         .query(check_query)
         .bind(("email", &req.email))
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| internal_error(e))?;
     
     let existing: Option<serde_json::Value> = check_result.take(0).ok().flatten();
     if existing.is_some() {
-        return Err(StatusCode::BAD_REQUEST);
+        return Err(bad_request_error("Email already exists"));
     }
     
     // Insert user into database
@@ -120,15 +124,22 @@ pub async fn register(
         .bind(("username", &req.username))
         .bind(("phone", &req.phone))
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| internal_error(e))?;
     
     let created: Option<serde_json::Value> = insert_result.take(0).ok().flatten();
-    let user_data = created.ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+    let user_data = created.ok_or(internal_error("Failed to create user"))?;
+    
+    // Extract user ID
+    let user_id = user_data.get("id")
+        .and_then(|v| v.as_str())
+        .unwrap_or("unknown")
+        .to_string();
     
     // Generate JWT tokens
-    let user_id = user_data.get("id").and_then(|v| v.as_str()).unwrap_or("unknown").to_string();
-    let token = crate::middleware::generate_jwt(&user_id, &req.email, "editor")?;
-    let refresh_token = crate::middleware::generate_jwt(&user_id, &req.email, "refresh")?;
+    let token = crate::middleware::generate_jwt(&user_id, &req.email, "editor")
+        .map_err(|_| internal_error("Failed to generate token"))?;
+    let refresh_token = crate::middleware::generate_jwt(&user_id, &req.email, "refresh")
+        .map_err(|_| internal_error("Failed to generate refresh token"))?;
     
     let response = AuthResponse {
         user: UserResponse {
@@ -166,31 +177,48 @@ pub async fn login(
         .query(query)
         .bind(("email", &req.email))
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| internal_error(e))?;
     
     let user_data: Option<serde_json::Value> = result.take(0).ok().flatten();
-    let user = user_data.ok_or(StatusCode::UNAUTHORIZED)?;
+    let user = user_data.ok_or(bad_request_error("Invalid credentials"))?;
     
     // Verify password
     let password_hash = user.get("password_hash")
         .and_then(|v| v.as_str())
-        .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+        .ok_or(internal_error("Invalid password hash"))?;
     
     let password_valid = verify_password(&req.password, password_hash);
     if !password_valid {
-        return Err(StatusCode::UNAUTHORIZED);
+        return Err(crate::api::bad_request_error("Invalid credentials"));
     }
     
     // Extract user data
-    let user_id = user.get("id").and_then(|v| v.as_str()).unwrap_or("unknown").to_string();
-    let email = user.get("email").and_then(|v| v.as_str()).unwrap_or("").to_string();
-    let full_name = user.get("full_name").and_then(|v| v.as_str()).unwrap_or("").to_string();
-    let username = user.get("username").and_then(|v| v.as_str()).unwrap_or("").to_string();
-    let role = user.get("role").and_then(|v: &serde_json::Value| v.as_str()).unwrap_or("editor").to_string();
+    let user_id = user.get("id")
+        .and_then(|v| v.as_str())
+        .unwrap_or("unknown")
+        .to_string();
+    let email = user.get("email")
+        .and_then(|v| v.as_str())
+        .unwrap_or("")
+        .to_string();
+    let full_name = user.get("full_name")
+        .and_then(|v| v.as_str())
+        .unwrap_or("")
+        .to_string();
+    let username = user.get("username")
+        .and_then(|v| v.as_str())
+        .unwrap_or("")
+        .to_string();
+    let role = user.get("role")
+        .and_then(|v: &serde_json::Value| v.as_str())
+        .unwrap_or("editor")
+        .to_string();
     
     // Generate JWT tokens
-    let token = crate::middleware::generate_jwt(&user_id, &email, &role)?;
-    let refresh_token = crate::middleware::generate_jwt(&user_id, &email, "refresh")?;
+    let token = crate::middleware::generate_jwt(&user_id, &email, &role)
+        .map_err(|_| internal_error("Failed to generate token"))?;
+    let refresh_token = crate::middleware::generate_jwt(&user_id, &email, "refresh")
+        .map_err(|_| internal_error("Failed to generate refresh token"))?;
     
     let response = AuthResponse {
         user: UserResponse {
@@ -217,9 +245,9 @@ pub async fn login(
         (status = 401, description = "Unauthorized"),
     ),
 )]
-pub async fn logout() -> Result<StatusCode, StatusCode> {
-    // TODO: Invalidate token
-    Ok(StatusCode::OK)
+pub async fn logout() -> ApiResponse<serde_json::Value> {
+    // TODO: Invalidate token in production
+    Ok(Json(serde_json::json!({ "message": "Logout successful" })))
 }
 
 /// Refresh token
@@ -232,8 +260,8 @@ pub async fn logout() -> Result<StatusCode, StatusCode> {
         (status = 401, description = "Invalid refresh token"),
     ),
 )]
-pub async fn refresh_token() -> Result<Json<AuthResponse>, StatusCode> {
-    // TODO: Implement token refresh
+pub async fn refresh_token() -> ApiResponse<AuthResponse> {
+    // TODO: Implement proper token refresh logic
     let response = AuthResponse {
         user: UserResponse {
             id: "user_1".to_string(),
@@ -250,7 +278,7 @@ pub async fn refresh_token() -> Result<Json<AuthResponse>, StatusCode> {
 }
 
 /// Register auth routes
-pub fn register_routes(router: axum::Router) -> axum::Router {
+pub fn register_routes(router: Router<crate::db::DbState>) -> Router<crate::db::DbState> {
     use axum::routing::post;
     
     router

@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 use crate::models::user::{JwtClaims, UserRole};
 
 /// Generate a JWT token for a user
-pub fn generate_jwt(user_id: &str, email: &str, role: &str) -> Result<String, StatusCode> {
+pub fn generate_jwt(user_id: &str, email: &str, _role: &str) -> Result<String, crate::api::ApiError> {
     let now = Utc::now();
     
     let claims = JwtClaims {
@@ -32,7 +32,7 @@ pub fn generate_jwt(user_id: &str, email: &str, role: &str) -> Result<String, St
     let secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "esperion-secret-key-change-in-production".to_string());
     
     encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes()))
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+        .map_err(|_| crate::api::internal_error("Failed to generate JWT"))
 }
 
 /// Verify a JWT token

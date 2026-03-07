@@ -10,7 +10,6 @@
 
 use axum::{
     extract::Request,
-    http::StatusCode,
     Json,
     Router,
 };
@@ -50,7 +49,7 @@ pub enum DetectionMethod {
 }
 
 /// Country to language mapping
-const COUNTRY_LANG_MAP: &[(&str, &str)] = &[
+const COUNTRY_LANGUAGE_MAP: &[(&str, &str)] = &[
     // Indonesian-speaking countries
     ("ID", "id"),
     
@@ -78,7 +77,7 @@ const COUNTRY_LANG_MAP: &[(&str, &str)] = &[
 
 /// Get language from country code
 fn get_language_from_country(country_code: &str) -> &str {
-    COUNTRY_LANG_MAP
+    COUNTRY_LANGUAGE_MAP
         .iter()
         .find(|(code, _)| *code == country_code)
         .map(|(_, lang)| *lang)
@@ -92,7 +91,6 @@ fn get_language_from_country(country_code: &str) -> &str {
     get,
     path = "/api/geo",
     tag = "Geo",
-    description = "Get IP-based geolocation information using Cloudflare headers",
     responses(
         (status = 200, description = "Geo information", body = GeoResponse),
         (status = 500, description = "Internal server error"),
@@ -104,9 +102,10 @@ pub async fn get_geo_info(request: Request) -> ApiResponse<GeoResponse> {
     // Try to get country from Cloudflare CF-IPCountry header
     // This is the most reliable method when deployed behind Cloudflare
     if let Some(cf_country) = headers.get("cf-ipcountry") {
-        if let Ok(country_code) = cf_country.to_str() {
-            let country_code = country_code.to_uppercase();
+        if let Ok(country_code_str) = cf_country.to_str() {
+            let country_code = country_code_str.to_uppercase();
             let language = get_language_from_country(&country_code);
+            let language_string = language.to_string();
             
             tracing::info!(
                 country_code = %country_code,
@@ -117,7 +116,7 @@ pub async fn get_geo_info(request: Request) -> ApiResponse<GeoResponse> {
             
             return Ok(Json(GeoResponse {
                 country_code,
-                language: language.to_string(),
+                language: language_string,
                 success: true,
                 method: DetectionMethod::Cloudflare,
             }));
@@ -127,7 +126,7 @@ pub async fn get_geo_info(request: Request) -> ApiResponse<GeoResponse> {
     // Fallback: Try to get country from X-Forwarded-For header
     // This is less reliable but works for non-Cloudflare deployments
     if let Some(forwarded) = headers.get("x-forwarded-for") {
-        if let Ok(forwarded_str) = forwarded.to_str() {
+        if let Ok(_forwarded_str) = forwarded.to_str() {  // Prefix with underscore to indicate it's intentionally unused
             // In a real implementation, you would use an IP geolocation service here
             // For now, we'll return a default response
             tracing::warn!("X-Forwarded-For header present but IP geolocation not implemented");
@@ -153,6 +152,9 @@ pub async fn get_geo_info(request: Request) -> ApiResponse<GeoResponse> {
 }
 
 /// Register geo routes
-pub fn register_routes(router: axum::Router) -> axum::Router {
-    router.route("/api/geo", axum::routing::get(get_geo_info))
+pub fn register_routes<S>(router: Router<S>) -> Router<S> 
+where 
+    S: Clone + Send + Sync + 'static,
+{
+    router.route("/api/v1/geo", axum::routing::get(get_geo_info))
 }

@@ -62,7 +62,8 @@ pub async fn init_schema() -> Result<(), Box<dyn std::error::Error>> {
     
     // Run schema SQL
     let schema_sql = schema::get_schema();
-    let _: Vec<surrealdb::sql::Value> = db.query(&schema_sql).await?.take(0)?;
+    let mut schema_result = db.query(&schema_sql).await?;
+    let _result: Vec<surrealdb::sql::Value> = schema_result.take(0)?;
     
     tracing::info!("Database schema initialized");
     
@@ -83,16 +84,25 @@ pub async fn seed_initial_data() -> Result<(), Box<dyn std::error::Error>> {
         ("Web & Mobile Development", "web-mobile-development", "Fast, Beautiful, Conversion-Optimized", "Load time < 2s, bounce rate turun 40%"),
     ];
     
-    for (title, slug, description, usp) in services {
+    for (title, slug, description, _usp) in services {
         // Check if service exists
-        let exists: Vec<(bool,)> = db.query("SELECT count() FROM services WHERE slug = $slug")
+        let mut check_result = db.query("SELECT count() FROM services WHERE slug = $slug")
             .bind(("slug", slug))
-            .await?
-            .take(0)?;
+            .await?;
         
-        if exists.is_empty() || exists[0].0 == 0 {
+        let count_result: Vec<surrealdb::sql::Value> = check_result.take(0)?;  // Get Vec<Value>
+        let count_value = if !count_result.is_empty() {
+            if let surrealdb::sql::Value::Number(num) = &count_result[0] {
+                num.to_int() // Get as integer
+            } else {
+                0
+            }
+        } else {
+            0
+        };
+        if count_value == 0 {
             // Insert service
-            let _: Vec<surrealdb::sql::Value> = db.query(r#"
+            let mut insert_result = db.query(r#"
                 CREATE services SET
                     title = $title,
                     slug = $slug,
@@ -105,7 +115,10 @@ pub async fn seed_initial_data() -> Result<(), Box<dyn std::error::Error>> {
             .bind(("description", description))
             .await?;
             
-            tracing::info!("Seeded service: {}", slug);
+            let created_service: Option<surrealdb::sql::Value> = insert_result.take(0).ok().flatten();
+            if created_service.is_some() {
+                tracing::info!("Seeded service: {}", slug);
+            }
         }
     }
     

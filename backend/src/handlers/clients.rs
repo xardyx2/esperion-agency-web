@@ -12,7 +12,6 @@
 
 use axum::{
     extract::{Path, Query, State},
-    http::StatusCode,
     response::Json,
     Extension,
     Router,
@@ -61,6 +60,7 @@ pub struct ListClientsResponse {
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn list_clients(
     State(db): State<DbState>,
     Query(filters): Query<ClientFilter>,
@@ -75,15 +75,15 @@ pub async fn list_clients(
         where_clause, limit, offset
     );
 
-    let mut result = db.query(query).await?;
-    let clients: Vec<Client> = result.take(0)?;
+    let mut result = db.query(query).await.map_err(|e| crate::api::internal_error(e))?;
+    let clients: Vec<Client> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
 
     // Get total count
     let count_query = format!(
         "SELECT count() FROM clients{};",
         where_clause
     );
-    let mut count_result = db.query(count_query).await?;
+    let mut count_result = db.query(count_query).await.map_err(|e| crate::api::internal_error(e))?;
     let total: Option<u32> = count_result.take(0).ok().flatten();
 
     Ok(Json(ListClientsResponse {
@@ -105,12 +105,13 @@ pub async fn list_clients(
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn get_client_stats(
     State(db): State<DbState>,
 ) -> ApiResponse<ClientStats> {
     // Get total count
     let total_query = "SELECT count() as count FROM clients";
-    let mut total_result = db.query(total_query).await?;
+    let mut total_result = db.query(total_query).await.map_err(|e| crate::api::internal_error(e))?;
     let total_result: Option<Vec<serde_json::Value>> = total_result.take(0).ok();
     let total = total_result
         .and_then(|r| r.first().and_then(|v| v.get("count").and_then(|c| c.as_u64()).map(|c| c as u32)))
@@ -118,7 +119,7 @@ pub async fn get_client_stats(
 
     // Get featured count
     let featured_query = "SELECT count() as count FROM clients WHERE featured = true";
-    let mut featured_result = db.query(featured_query).await?;
+    let mut featured_result = db.query(featured_query).await.map_err(|e| crate::api::internal_error(e))?;
     let featured_result: Option<Vec<serde_json::Value>> = featured_result.take(0).ok();
     let featured = featured_result
         .and_then(|r| r.first().and_then(|v| v.get("count").and_then(|c| c.as_u64()).map(|c| c as u32)))
@@ -126,7 +127,7 @@ pub async fn get_client_stats(
 
     // Get counts by status
     let status_query = "SELECT status, count() as count FROM clients GROUP BY status";
-    let mut status_result = db.query(status_query).await?;
+    let mut status_result = db.query(status_query).await.map_err(|e| crate::api::internal_error(e))?;
     let status_results: Option<Vec<serde_json::Value>> = status_result.take(0).ok();
     
     let mut active = 0u32;
@@ -149,7 +150,7 @@ pub async fn get_client_stats(
 
     // Get counts by category
     let category_query = "SELECT category, count() as count FROM clients WHERE category != null GROUP BY category";
-    let mut category_result = db.query(category_query).await?;
+    let mut category_result = db.query(category_query).await.map_err(|e| crate::api::internal_error(e))?;
     let category_results: Option<Vec<serde_json::Value>> = category_result.take(0).ok();
     
     let by_category = Vec::new();
@@ -187,6 +188,7 @@ pub async fn get_client_stats(
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn get_client_logos(
     State(db): State<DbState>,
     Query(limit_query): Query<Option<u32>>,
@@ -194,8 +196,8 @@ pub async fn get_client_logos(
     let limit = limit_query.unwrap_or(20);
     
     let query = "SELECT id, name, logo, category FROM clients WHERE featured = true ORDER BY created_at DESC LIMIT $limit";
-    let mut result = db.query(query).bind(("limit", limit)).await?;
-    let logos: Vec<ClientLogo> = result.take(0)?;
+    let mut result = db.query(query).bind(("limit", limit)).await.map_err(|e| crate::api::internal_error(e))?;
+    let logos: Vec<ClientLogo> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
 
     Ok(Json(logos))
 }
@@ -215,6 +217,7 @@ pub async fn get_client_logos(
         (status = 500, description = "Internal server error")
     )
 )]
+#[axum::debug_handler]
 pub async fn get_client(
     State(db): State<DbState>,
     Path(id): Path<String>,
@@ -222,13 +225,13 @@ pub async fn get_client(
     let query = "SELECT * FROM clients WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("clients", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
-    let client: Option<Client> = result.take(0)?;
+    let client: Option<Client> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match client {
         Some(c) => Ok(Json(c)),
-        None => Err((StatusCode::NOT_FOUND, Json(None::<Client>))),
+        None => Err(crate::api::not_found_error("Client not found")),
     }
 }
 
@@ -249,6 +252,7 @@ pub async fn get_client(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn create_client(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -279,15 +283,15 @@ pub async fn create_client(
     let query = "CREATE clients CONTENT $content";
     let mut result = db.query(query)
         .bind(("content", serde_json::to_value(&client).map_err(|e| {
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(Some(format!("Failed to serialize client: {}", e))))
+            crate::api::internal_error(format!("Failed to serialize client: {}", e))
         })?))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
-    let created_client: Option<Client> = result.take(0).ok().flatten();
+    let created_client: Option<Client> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match created_client {
         Some(c) => Ok(Json(c)),
-        None => Err((StatusCode::INTERNAL_SERVER_ERROR, Json(Some("Failed to create client".to_string())))),
+        None => Err(crate::api::internal_error("Failed to create client")),
     }
 }
 
@@ -311,6 +315,7 @@ pub async fn create_client(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn update_client(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -321,12 +326,12 @@ pub async fn update_client(
     let query = "SELECT * FROM clients WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("clients", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
-    let existing: Option<Client> = result.take(0)?;
+    let existing: Option<Client> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     if existing.is_none() {
-        return Err((StatusCode::NOT_FOUND, Json(None::<Client>)));
+        return Err(crate::api::not_found_error("Client not found"));
     }
 
     // Build update fields
@@ -354,7 +359,7 @@ pub async fn update_client(
     }
 
     if updates.is_empty() {
-        return Err((StatusCode::BAD_REQUEST, Json(Some("No fields to update".to_string()))));
+        return Err(crate::api::bad_request_error("No fields to update"));
     }
 
     let update_query = format!(
@@ -364,13 +369,13 @@ pub async fn update_client(
 
     let mut update_result = db.query(update_query)
         .bind(("id", Thing::from(("clients", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
-    let updated: Option<Client> = update_result.take(0)?;
+    let updated: Option<Client> = update_result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     match updated {
         Some(c) => Ok(Json(c)),
-        None => Err((StatusCode::NOT_FOUND, Json(None::<Client>))),
+        None => Err(crate::api::not_found_error("Client not found")),
     }
 }
 
@@ -393,6 +398,7 @@ pub async fn update_client(
         ("bearer_auth" = [])
     )
 )]
+#[axum::debug_handler]
 pub async fn delete_client(
     State(db): State<DbState>,
     Extension(_claims): Extension<UserClaims>,
@@ -402,25 +408,25 @@ pub async fn delete_client(
     let query = "SELECT * FROM clients WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("clients", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
     
-    let existing: Option<Client> = result.take(0)?;
+    let existing: Option<Client> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
     if existing.is_none() {
-        return Err((StatusCode::NOT_FOUND, Json(Some("Client not found".to_string()))));
+        return Err(crate::api::not_found_error("Client not found"));
     }
 
     // Delete from database
     let delete_query = "DELETE clients WHERE id = $id";
     db.query(delete_query)
         .bind(("id", Thing::from(("clients", id.as_str()))))
-        .await?;
+        .await.map_err(|e| crate::api::internal_error(e))?;
 
     Ok(Json(serde_json::json!({ "success": true, "message": "Client deleted successfully" })))
 }
 
 /// Register clients routes
-pub fn register_routes(router: axum::Router) -> axum::Router {
+pub fn register_routes(router: Router<crate::db::DbState>) -> Router<crate::db::DbState> {
     router
         .route("/api/v1/clients", axum::routing::get(list_clients))
         .route("/api/v1/clients/stats", axum::routing::get(get_client_stats))

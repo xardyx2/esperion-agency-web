@@ -14,6 +14,7 @@
 pub mod geo;
 pub mod auth;
 pub mod articles;
+pub mod health;
 pub mod media;
 pub mod works;
 pub mod services;
