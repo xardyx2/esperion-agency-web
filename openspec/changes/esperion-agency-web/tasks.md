@@ -30,39 +30,39 @@
 
 ## 3. Multi-language System
 
-- [ ] 3.1 Create i18n configuration with /id/ and /en/ URL prefix
-- [ ] 3.2 Create locale detection middleware (IP-based auto-detect)
-- [ ] 3.3 Create language switcher component
-- [ ] 3.4 Create translation files for UI strings (id.json, en.json)
-- [ ] 3.5 Integrate Alibaba AI API for content translation
-- [ ] 3.6 Create translation management page in dashboard
-- [ ] 3.7 Implement fallback to English for missing translations
-- [ ] 3.8 Configure ISR per-language routes
-- [ ] 3.9 **NEW** Implement translation review workflow (AI translate → human review)
-- [ ] 3.10 **NEW** Create translation memory system (save approved translations)
-- [ ] 3.11 **NEW** Add content publishing options (ID only / EN only / Both)
+- [~] 3.1 Create i18n configuration with /id/ and /en/ URL prefix // PARTIAL - route rules exist
+- [x] 3.2 Create locale detection middleware (IP-based auto-detect) ✅ VERIFIED - exists
+- [x] 3.3 Create language switcher component ✅ VERIFIED - exists
+- [x] 3.4 Create translation files for UI strings (id.json, en.json) ✅ VERIFIED - exists
+- [~] 3.5 Integrate Alibaba AI API for content translation // PARTIAL - frontend only
+- [ ] 3.6 Create translation management page in dashboard // NOT STARTED
+- [x] 3.7 Implement fallback to English for missing translations ✅ VERIFIED - implemented
+- [x] 3.8 Configure ISR per-language routes ✅ VERIFIED - exists
+- [ ] 3.9 **NEW** Implement translation review workflow (AI translate → human review) // NOT STARTED
+- [~] 3.10 **NEW** Create translation memory system (save approved translations) // PARTIAL - cache exists
+- [~] 3.11 **NEW** Add content publishing options (ID only / EN only / Both) // PARTIAL - DB fields exist
 
 ## 4. Database Schema & Backend Foundation ✅ PARTIAL
 
 - [x] 4.1 Create SurrealDB connection module (backend/src/db/) ✅ DB EXISTS
-- [ ] 4.2 Create schema migration system with version control
-- [ ] 4.3 Define users table: email, password_hash, full_name, role, phone, username, device_id
-- [ ] 4.4 Define articles table: title, slug, content, excerpt, category, image, author, published, published_at, language
-- [ ] 4.5 Define works table: title, slug, description, service, platform, image, metrics, client_name, featured
-- [ ] 4.6 Define services table: title, slug, description, icon, featured, pricing_table, faq
-- [ ] 4.7 Define clients table: name, logo, testimonial, featured, category, status, internal_notes
-- [ ] 4.8 Define contact_submissions table: full_name, company_name, service, description, email, phone
-- [ ] 4.9 Define media_library table: filename, path, alt_text, year, month, type, size, webp_path, original_path
-- [ ] 4.10 Define sessions table: user_id, device_id, token, expires_at, ip_address, user_agent
-- [ ] 4.11 Define activity_logs table: user_id, action, entity, entity_id, timestamp, details
-- [ ] 4.12 Define settings table: key, value, type, category
-- [ ] 4.13 Define backup_history table: type, scope, path, created_at, encrypted
-- [ ] 4.14 **NEW** Define seo_scores table: article_id, score, breakdown, created_at
-- [ ] 4.15 **NEW** Define competitor_analysis table: keyword, data, fetched_at, source
-- [ ] 4.16 **NEW** Define user_sessions table: session_id, user_id, entry_point, page_views, events, conversion
-- [ ] 4.17 **NEW** Define translation_memory table: source_text, translated_text, source_lang, target_lang, approved
-- [ ] 4.18 Create Rust model structs for all tables
-- [ ] 4.19 Implement database connection pooling using SurrealDB built-in
+- [ ] 4.2 Create schema migration system with version control // NOT IMPLEMENTED
+- [x] 4.3 Define users table: email, password_hash, full_name, role, phone, username, device_id ✅ IMPLEMENTED
+- [x] 4.4 Define articles table: title, slug, content, excerpt, category, image, author, published, published_at, language ✅ IMPLEMENTED
+- [x] 4.5 Define works table: title, slug, description, service, platform, image, metrics, client_name, featured ✅ IMPLEMENTED
+- [x] 4.6 Define services table: title, slug, description, icon, featured, pricing_table, faq ✅ IMPLEMENTED
+- [x] 4.7 Define clients table: name, logo, testimonial, featured, category, status, internal_notes ✅ IMPLEMENTED
+- [x] 4.8 Define contact_submissions table: full_name, company_name, service, description, email, phone ✅ IMPLEMENTED
+- [x] 4.9 Define media_library table: filename, path, alt_text, year, month, type, size, webp_path, original_path ✅ IMPLEMENTED
+- [x] 4.10 Define sessions table: user_id, device_id, token, expires_at, ip_address, user_agent ✅ IMPLEMENTED
+- [x] 4.11 Define activity_logs table: user_id, action, entity, entity_id, timestamp, details ✅ IMPLEMENTED
+- [x] 4.12 Define settings table: key, value, type, category ✅ IMPLEMENTED
+- [ ] 4.13 Define backup_history table: type, scope, path, created_at, encrypted // NOT IMPLEMENTED
+- [~] 4.14 **NEW** Define seo_scores table: article_id, score, breakdown, created_at // PARTIAL - models exist
+- [~] 4.15 **NEW** Define competitor_analysis table: keyword, data, fetched_at, source // PARTIAL - models exist
+- [ ] 4.16 **NEW** Define user_sessions table: session_id, user_id, entry_point, page_views, events, conversion // NOT IMPLEMENTED
+- [ ] 4.17 **NEW** Define translation_memory table: source_text, translated_text, source_lang, target_lang, approved // NOT IMPLEMENTED
+- [x] 4.18 Create Rust model structs for all tables ✅ MOSTLY DONE - structs exist
+- [ ] 4.19 Implement database connection pooling using SurrealDB built-in // NOT IMPLEMENTED
 
 ## 5. Authentication Backend ✅ COMPLETE (DB Integrated)
 
@@ -73,8 +73,8 @@
 - [x] 5.5 Create session management handlers ✅ (in handlers)
 - [x] 5.6 Implement POST /api/v1/auth/register ✅ BERHASIL
 - [x] 5.7 Implement POST /api/v1/auth/login with device tracking ✅ BERHASIL
-- [x] 5.8 Implement POST /api/v1/auth/logout ✅ BERHASIL
-- [x] 5.9 Implement POST /api/v1/auth/refresh ✅ BERHASIL
+- [x] 5.8 Implement POST /api/v1/auth/logout ✅ STUB - TODO comment only
+- [x] 5.9 Implement POST /api/v1/auth/refresh ✅ MOCK - Returns mock data
 - [x] 5.10 Implement GET /api/v1/auth/sessions (list all sessions) ⏸️ (Phase 2)
 - [x] 5.11 Implement DELETE /api/v1/auth/sessions/:id (force logout) ⏸️ (Phase 2)
 - [x] 5.12 Implement rate limiting (per-endpoint + global, Binance-style) ⏸️ (Phase 2)
@@ -290,8 +290,8 @@
 
 - [x] 18.1 Create TypeScript types for all API responses
 - [x] 18.2 Create API composable for backend communication
-- [x] 18.3 Create auth store with Pinia (login, logout, token management)
-- [x] 18.4 Create user store with Pinia (current user state)
+- [ ] 18.3 Create auth store with Pinia (login, logout, token management) // NOT FOUND
+- [ ] 18.4 Create user store with Pinia (current user state) // NOT FOUND
 - [x] 18.5 Create error handling composable
 - [x] 18.6 Create loading state composable
 - [x] 18.7 Set up Nuxt routeRules for ISR on public pages
@@ -692,34 +692,34 @@
 - [x] 42.7 **Unit Test**: Accessibility features
 - [x] 42.8 **Debug & Commit**: Accessibility implementation
 
-## 43. Testing & Quality Assurance ✅ COMPLETE
+## 43. Testing & Quality Assurance ⚠️ PARTIALLY COMPLETE
 
 - [x] 43.1 Setup Vitest for frontend unit testing
-- [x] 43.2 Create unit tests for composables
-- [x] 43.3 Create component tests for critical components
-- [x] 43.4 Setup backend integration tests
-- [x] 43.5 Create API endpoint tests
-- [x] 43.6 Test all form validations
-- [x] 43.7 Test authentication flow
-- [x] 43.8 Test ISR rendering for public pages
-- [x] 43.9 Test responsive design on multiple viewports
-- [x] 43.10 Test accessibility (keyboard navigation, screen reader)
-- [x] 43.11 Test dark mode toggle functionality
-- [x] 43.12 Performance testing (Lighthouse scores)
-- [x] 43.13 Setup Playwright for E2E testing
-- [x] 43.14 Create E2E tests for critical flows
-- [x] 43.15 Setup visual regression testing
-- [x] 43.16 Setup load testing (k6)
+- [~] 43.2 Create unit tests for composables // FAILING - invalid imports
+- [~] 43.3 Create component tests for critical components // FAILING - invalid imports
+- [ ] 43.4 Setup backend integration tests // NOT IMPLEMENTED
+- [ ] 43.5 Create API endpoint tests // NOT IMPLEMENTED
+- [ ] 43.6 Test all form validations // NOT IMPLEMENTED
+- [ ] 43.7 Test authentication flow // NOT IMPLEMENTED
+- [ ] 43.8 Test ISR rendering for public pages // NOT IMPLEMENTED
+- [ ] 43.9 Test responsive design on multiple viewports // NOT IMPLEMENTED
+- [ ] 43.10 Test accessibility (keyboard navigation, screen reader) // NOT IMPLEMENTED
+- [ ] 43.11 Test dark mode toggle functionality // NOT IMPLEMENTED
+- [ ] 43.12 Performance testing (Lighthouse scores) // NOT IMPLEMENTED
+- [ ] 43.13 Setup Playwright for E2E testing // NOT FOUND
+- [ ] 43.14 Create E2E tests for critical flows // NOT FOUND
+- [ ] 43.15 Setup visual regression testing // NOT FOUND
+- [ ] 43.16 Setup load testing (k6) // NOT FOUND
 - [x] 43.17 **Debug & Commit**: Testing setup
 
-## 44. CI/CD Pipeline ✅ COMPLETE
+## 44. CI/CD Pipeline ⚠️ PARTIALLY COMPLETE
 
 - [x] 44.1 Create GitHub Actions workflow
-- [x] 44.2 Configure staging environment (auto-deploy on push)
-- [x] 44.3 Configure production environment (manual approval)
-- [x] 44.4 Implement auto-rollback on failure
-- [x] 44.5 Create 1panel deployment documentation
-- [x] 44.6 Test CI/CD pipeline end-to-end
+- [~] 44.2 Configure staging environment (auto-deploy on push) // PLACEHOLDER only
+- [~] 44.3 Configure production environment (manual approval) // PLACEHOLDER only
+- [~] 44.4 Implement auto-rollback on failure // PLACEHOLDER only
+- [~] 44.5 Create 1panel deployment documentation // PLACEHOLDER only
+- [~] 44.6 Test CI/CD pipeline end-to-end // PLACEHOLDER only
 - [x] 44.7 **Debug & Commit**: CI/CD pipeline
 
 ## 45. Documentation ✅ COMPLETE
