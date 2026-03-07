@@ -20,7 +20,9 @@ export default defineNuxtConfig({
     '@nuxtjs/a11y',
     'nuxt-hints',
     '@nuxtjs/color-mode',
+    '@nuxtjs/i18n',
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
   ],
 
   // Color mode configuration
@@ -160,6 +162,24 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       ],
     },
+  },
+
+  // i18n configuration
+  i18n: {
+    strategy: 'prefix',
+    locales: [
+      { code: 'id', iso: 'id-ID', name: 'Bahasa Indonesia', file: 'id.json' },
+      { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' }
+    ],
+    defaultLocale: 'id',
+    lazy: true,
+    langDir: 'locales',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
+      fallbackLocale: 'id'
+    }
   },
 
   // Runtime config

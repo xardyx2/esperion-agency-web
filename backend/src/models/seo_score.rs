@@ -1,28 +1,31 @@
 /**
  * SEO Score Model
- * 
+ *
  * Represents SEO scoring results for articles
  * Used for tracking and improving article SEO
  */
-
 use serde::{Deserialize, Serialize};
 use surrealdb::sql::Thing;
 
 /// SEO Score breakdown
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SeoScoreBreakdown {
-    pub content_quality: u32,      // 35 points max
-    pub on_page_seo: u32,          // 25 points max
-    pub readability: u32,          // 15 points max
-    pub internal_linking: u32,     // 10 points max
-    pub technical_seo: u32,        // 10 points max
-    pub local_seo: u32,            // 5 points max
+    pub content_quality: u32,  // 35 points max
+    pub on_page_seo: u32,      // 25 points max
+    pub readability: u32,      // 15 points max
+    pub internal_linking: u32, // 10 points max
+    pub technical_seo: u32,    // 10 points max
+    pub local_seo: u32,        // 5 points max
 }
 
 impl SeoScoreBreakdown {
     pub fn total(&self) -> u32 {
-        self.content_quality + self.on_page_seo + self.readability + 
-        self.internal_linking + self.technical_seo + self.local_seo
+        self.content_quality
+            + self.on_page_seo
+            + self.readability
+            + self.internal_linking
+            + self.technical_seo
+            + self.local_seo
     }
 }
 

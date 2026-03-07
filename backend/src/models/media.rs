@@ -1,13 +1,12 @@
+use chrono::Datelike;
 /**
  * Media Model
- * 
+ *
  * Represents media files in the media library
  * Used for image/video upload and management
  */
-
 use serde::{Deserialize, Serialize};
 use surrealdb::sql::Thing;
-use chrono::Datelike;
 
 /// Media file types
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -54,6 +53,15 @@ impl MediaType {
     }
 }
 
+/// Media size variant with path metadata
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MediaSize {
+    pub name: String,
+    pub width: u32,
+    pub height: u32,
+    pub path: String,
+}
+
 /// Media file record
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Media {
@@ -68,6 +76,9 @@ pub struct Media {
     pub size: i64,
     pub webp_path: Option<String>,
     pub original_path: String,
+    pub thumbnail_path: Option<String>,
+    pub sizes: Vec<MediaSize>,
+    pub keep_original: bool,
     pub uploaded_by: Option<Thing>,
     pub created_at: Option<String>,
 }
@@ -83,7 +94,7 @@ impl Media {
         uploaded_by: Option<Thing>,
     ) -> Self {
         let now = chrono::Utc::now();
-        
+
         Self {
             id: None,
             filename,
@@ -95,6 +106,9 @@ impl Media {
             size,
             webp_path: None,
             original_path,
+            thumbnail_path: None,
+            sizes: Vec::new(),
+            keep_original: true, // Default to keeping originals
             uploaded_by,
             created_at: Some(now.to_rfc3339()),
         }
@@ -111,6 +125,24 @@ impl Media {
         self.webp_path = Some(webp_path);
         self
     }
+
+    /// Set thumbnail path for the media
+    pub fn with_thumbnail_path(mut self, thumbnail_path: String) -> Self {
+        self.thumbnail_path = Some(thumbnail_path);
+        self
+    }
+
+    /// Add media sizes
+    pub fn with_sizes(mut self, sizes: Vec<MediaSize>) -> Self {
+        self.sizes = sizes;
+        self
+    }
+
+    /// Set whether to keep the original file
+    pub fn with_keep_original(mut self, keep_original: bool) -> Self {
+        self.keep_original = keep_original;
+        self
+    }
 }
 
 /// Media upload response
@@ -121,6 +153,9 @@ pub struct MediaUploadResponse {
     pub path: String,
     pub url: String,
     pub webp_url: Option<String>,
+    pub thumbnail_url: Option<String>,
+    pub sizes: Vec<MediaSize>,
+    pub keep_original: bool,
     pub media_type: String,
     pub size: i64,
     pub alt_text: Option<String>,

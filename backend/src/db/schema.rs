@@ -1,9 +1,9 @@
 /**
  * Database Schema Module
- * 
+ *
  * Defines SurrealDB schema for Esperion project
  * Includes all table definitions, fields, and indexes
- * 
+ *
  * Usage: Run these SQL statements to initialize database
  */
 
@@ -146,6 +146,12 @@ DEFINE FIELD device_type ON analytics_events TYPE option<string>;
 DEFINE FIELD metadata ON analytics_events TYPE option<object>;
 DEFINE FIELD created_at ON analytics_events TYPE datetime DEFAULT time::now();
 
+-- Token blacklisting table for revoked refresh tokens
+DEFINE TABLE token_blacklist SCHEMAFULL;
+DEFINE FIELD token ON token_blacklist TYPE string;
+DEFINE FIELD invalidated_at ON token_blacklist TYPE datetime DEFAULT time::now();
+DEFINE FIELD expires_at ON token_blacklist TYPE datetime;
+
 -- Site settings table
 DEFINE TABLE site_settings SCHEMAFULL;
 DEFINE FIELD key ON site_settings TYPE string;
@@ -226,5 +232,6 @@ pub const TABLES: &[&str] = &[
     "activity_logs",
     "translation_cache",
     "analytics_events",
+    "token_blacklist",
     "site_settings",
 ];

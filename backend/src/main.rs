@@ -20,21 +20,135 @@
  * - JSON Web Token: Authentication
  */
 
+use clap::Parser;
+use clap::Subcommand;
+use std::sync::Arc;
+use axum::{extract::FromRef, Router};
+
+use dotenvy;
+
 mod handlers;
 mod models;
 mod routes;
 mod middleware;
 mod db;
 mod api;
+mod services;
+mod errors;
 
-use axum::Router;
-use std::sync::Arc;
-use tower_http::cors::CorsLayer;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+/// Combined application state holding both database and email service
+#[derive(Clone)]
+pub struct AppState {
+    pub db: Arc<crate::db::Db>,
+    pub email_service: crate::services::email::EmailService,
+}
+
+/// Implement FromRef to allow extraction of individual state components in handlers
+impl FromRef<AppState> for Arc<crate::db::Db> {
+    fn from_ref(app_state: &AppState) -> Arc<crate::db::Db> {
+        app_state.db.clone()
+    }
+}
+
+impl FromRef<AppState> for crate::services::email::EmailService {
+    fn from_ref(app_state: &AppState) -> crate::services::email::EmailService {
+        app_state.email_service.clone()
+    }
+}
+
+#[derive(Parser)]
+#[command(name = "esperion-backend")]
+#[command(about = "Backend API for Esperion Digital Agency", long_about = None)]
+struct Cli {
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Run database migrations
+    Migrate,
+    
+    /// Rollback last database migration
+    MigrateRollback {
+        /// Specific migration version to rollback (optional)
+        #[arg(short, long)]
+        version: Option<String>,
+    },
+    
+    /// Show migration status
+    MigrateStatus,
+}
 
 #[tokio::main]
-async fn main() {
-    // Initialize logging
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Load environment variables from .env file if available
+    let _ = dotenvy::dotenv().ok();
+
+    // Parse command line arguments
+    let cli = Cli::parse();
+
+    // Handle migration commands
+    match &cli.command {
+        Some(Commands::Migrate) => {
+            // Initialize database connection with migrations
+            let db = crate::db::init_with_migrations().await?;
+            
+            let manager = crate::db::migrations::MigrationManager::new(db.clone());
+            let applied = manager.get_applied_migrations().await?;
+            
+            println!("Applied migrations: {} found", applied.len());
+            for migration in applied {
+                println!("  ✓ {}: {}", migration.version, migration.name);
+            }
+            return Ok(());
+        }
+        Some(Commands::MigrateStatus) => {
+            // Initialize database connection
+            crate::db::init().await.expect("Failed to initialize database");
+            
+            let db_ref = crate::db::get_db().clone();
+            let manager = crate::db::migrations::MigrationManager::new(db_ref);
+            manager.init().await?;
+            let (applied, pending) = manager.status().await?;
+            
+            println!("Applied migrations: {} found", applied.len());
+            for migration in applied {
+                println!("  ✓ {}: {}", migration.version, migration.name);
+            }
+            
+            println!("Pending migrations: {} found", pending.len());
+            for migration in pending {
+                println!("  ○ {}: {}", migration.version, migration.name);
+            }
+            return Ok(());
+        }
+        Some(Commands::MigrateRollback { version }) => {
+            // Initialize database connection
+            crate::db::init().await.expect("Failed to initialize database");
+            
+            let db_ref = crate::db::get_db().clone();
+            let manager = crate::db::migrations::MigrationManager::new(db_ref);
+            manager.init().await?;
+            
+            let result = manager.rollback(version.as_deref()).await;
+            match result {
+                Ok(migrated_version) => {
+                    println!("Rolled back migration: {}", migrated_version);
+                }
+                Err(e) => {
+                    eprintln!("Failed to rollback migration: {}", e);
+                    std::process::exit(1);
+                }
+            }
+            return Ok(());
+        }
+        None => {
+            // Continue with normal server startup
+        }
+    }
+
+    // Initialize logging for server mode
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -45,14 +159,45 @@ async fn main() {
 
     tracing::info!("Starting Esperion Backend API...");
 
-    // Initialize database connection
-    db::init().await.expect("Failed to initialize database");
+    // Use migration-powered init for database
+    let db_state = db::init_with_migrations().await?.into();
 
-    // Get database state for Axum
-    let db_state = db::get_db_state();
+    // Initialize the email service with configuration from environment
+    let email_settings = crate::models::email::EmailSettings {
+        provider: std::env::var("EMAIL_PROVIDER")
+            .unwrap_or_else(|_| "smtp".to_string()),
+        smtp_host: std::env::var("SMTP_HOST").ok(),
+        smtp_port: std::env::var("SMTP_PORT")
+            .ok()
+            .and_then(|port| port.parse::<u16>().ok()),
+        smtp_username: std::env::var("SMTP_USER").ok(),
+        smtp_password: std::env::var("SMTP_PASS").ok(),
+        smtp_encryption: Some(std::env::var("SMTP_ENCRYPTION")
+            .unwrap_or_else(|_| "starttls".to_string())),
+        api_key: std::env::var("SENDGRID_API_KEY")
+            .or_else(|_| std::env::var("MAILGUN_API_KEY"))
+            .or_else(|_| std::env::var("POSTMARK_API_KEY"))
+            .or_else(|_| std::env::var("SMTP2GO_API_KEY"))
+            .ok(),
+        from_address: std::env::var("EMAIL_FROM")
+            .unwrap_or_else(|_| "noreply@esperion.agency".to_string()),
+        domain: std::env::var("MAILGUN_DOMAIN").or_else(|_| std::env::var("EMAIL_DOMAIN")).ok(),
+        region: std::env::var("AWS_REGION").or_else(|_| std::env::var("SES_REGION")).ok(),
+        access_key_id: std::env::var("AWS_ACCESS_KEY_ID").ok(),
+        secret_access_key: std::env::var("AWS_SECRET_ACCESS_KEY").ok(),
+    };
 
-    // Build router with state
-    let app = build_router(db_state);
+    // Create the email service based on configuration
+    let email_service = crate::services::email::EmailService::new(&email_settings)
+        .map_err(|e| format!("Failed to initialize email service: {}", e))?;
+
+    // Combine the states
+    let app_state = AppState {
+        db: db_state,
+        email_service,
+    };
+
+    let app = build_router(app_state);
 
     // Get host and port from environment
     let host = std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
@@ -62,16 +207,19 @@ async fn main() {
     tracing::info!("Listening on {}", addr);
 
     // Start server
-    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(&addr).await?;
+    axum::serve(listener, app).await?;
+
+    Ok(())
 }
 
 /// Build the main router with all routes and middleware
-fn build_router(db_state: Arc<crate::db::Db>) -> Router {
+fn build_router(state: AppState) -> axum::Router {
     use axum::routing::{get, post, put, delete};
+    use tower_http::cors::CorsLayer;
     
     // Create base router with all routes registered directly, then add state
-    Router::new()
+    axum::Router::new()
         // Geo routes
         .route("/api/geo", get(handlers::geo::get_geo_info))
         // Auth routes
@@ -123,10 +271,15 @@ fn build_router(db_state: Arc<crate::db::Db>) -> Router {
         .route("/api/v1/seo/calculate", post(handlers::seo_score::calculate_seo))
         .route("/api/v1/seo/:article_id", get(handlers::seo_score::get_seo_score))
         .route("/api/v1/seo/competitor/:keyword", get(handlers::seo_score::get_competitor_analysis))
+        // Article translation routes
+        .route("/api/v1/articles/:id/translate", post(handlers::translation::translate_article))
+        // Email routes
+        .route("/api/v1/email/contact-notification", post(handlers::email::send_contact_notification))
+        .route("/api/v1/email/send", post(handlers::email::send_email))
         // Health routes
         .route("/health", get(handlers::health::health_check))
         // Add CORS layer
         .layer(CorsLayer::very_permissive())
         // Add state at the end
-        .with_state(db_state)
+        .with_state(state)
 }

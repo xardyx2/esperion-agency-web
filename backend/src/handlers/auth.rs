@@ -18,11 +18,25 @@ use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, PasswordVerifier, SaltString},
     Argon2,
 };
+use chrono::{Duration, Utc};
+use jsonwebtoken::{encode, decode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 use crate::api::{ApiResponse, internal_error, bad_request_error};
 use crate::db::DbState;
+
+/// Request for the logout endpoint containing refresh_token
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct LogoutRequest {
+    pub refresh_token: String,
+}
+
+/// Request for refreshing tokens containing the refresh_token
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct RefreshRequest {
+    pub refresh_token: String,
+}
 
 /// Register input
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -135,10 +149,10 @@ pub async fn register(
         .unwrap_or("unknown")
         .to_string();
     
-    // Generate JWT tokens
-    let token = crate::middleware::generate_jwt(&user_id, &req.email, "editor")
+    // Generate JWT tokens - short-lived access token, long-lived refresh token
+    let token = crate::middleware::generate_short_access_token(&user_id, &req.email, "editor")
         .map_err(|_| internal_error("Failed to generate token"))?;
-    let refresh_token = crate::middleware::generate_jwt(&user_id, &req.email, "refresh")
+    let refresh_token = crate::middleware::generate_long_refresh_token(&user_id, &req.email)
         .map_err(|_| internal_error("Failed to generate refresh token"))?;
     
     let response = AuthResponse {
@@ -214,10 +228,10 @@ pub async fn login(
         .unwrap_or("editor")
         .to_string();
     
-    // Generate JWT tokens
-    let token = crate::middleware::generate_jwt(&user_id, &email, &role)
+    // Generate JWT tokens - short-lived access token, long-lived refresh token
+    let token = crate::middleware::generate_short_access_token(&user_id, &email, &role)
         .map_err(|_| internal_error("Failed to generate token"))?;
-    let refresh_token = crate::middleware::generate_jwt(&user_id, &email, "refresh")
+    let refresh_token = crate::middleware::generate_long_refresh_token(&user_id, &email)
         .map_err(|_| internal_error("Failed to generate refresh token"))?;
     
     let response = AuthResponse {
@@ -239,39 +253,139 @@ pub async fn login(
 #[utoipa::path(
     post,
     path = "/api/v1/auth/logout",
+    request_body = LogoutRequest,
     tag = "Auth",
     responses(
         (status = 200, description = "Logout successful"),
         (status = 401, description = "Unauthorized"),
+        (status = 500, description = "Internal server error"),
     ),
 )]
-pub async fn logout() -> ApiResponse<serde_json::Value> {
-    // TODO: Invalidate token in production
-    Ok(Json(serde_json::json!({ "message": "Logout successful" })))
+pub async fn logout(
+    State(db): State<DbState>,
+    Json(req): Json<LogoutRequest>,
+) -> ApiResponse<serde_json::Value> {
+    // Add refresh token to blacklist
+    let now = chrono::Utc::now();
+    let fifteen_days_later = now + chrono::Duration::days(15); // Store for 15 days to prevent reuse
+    
+    let query = "
+        CREATE token_blacklist SET 
+            token = $refresh_token, 
+            invalidated_at = time::now(),
+            expires_at = $expires_at
+    ";
+    
+    let mut result = db
+        .query(query)
+        .bind(("refresh_token", &req.refresh_token))
+        .bind(("expires_at", &fifteen_days_later))
+        .await
+        .map_err(|e| internal_error(e))?;
+    
+    let _: Option<serde_json::Value> = result.take(0).ok().flatten();
+    
+    Ok(Json(serde_json::json!({
+        "message": "Logout successful",
+        "success": true
+    })))
 }
 
-/// Refresh token
+/// Refresh token - receives refresh token, validates it hasn't been blacklisted,
+/// verifies its signature and validity, and generates new access + refresh tokens
 #[utoipa::path(
     post,
     path = "/api/v1/auth/refresh",
+    request_body = RefreshRequest,
     tag = "Auth",
     responses(
         (status = 200, description = "Token refreshed", body = AuthResponse),
         (status = 401, description = "Invalid refresh token"),
+        (status = 500, description = "Internal server error"),
     ),
 )]
-pub async fn refresh_token() -> ApiResponse<AuthResponse> {
-    // TODO: Implement proper token refresh logic
+pub async fn refresh_token(
+    State(db): State<DbState>,
+    Json(req): Json<RefreshRequest>,
+) -> ApiResponse<AuthResponse> {
+    // Check if refresh token is blacklisted
+    let blacklist_check_query = "
+        SELECT * FROM token_blacklist 
+        WHERE token = $refresh_token 
+        AND expires_at >= time::now()
+        LIMIT 1
+    ";
+    let mut blacklist_result = db
+        .query(blacklist_check_query)
+        .bind(("refresh_token", &req.refresh_token))
+        .await
+        .map_err(|e| internal_error(e))?;
+    
+    let blacklisted_token: Option<serde_json::Value> = blacklist_result.take(0).ok().flatten();
+    if blacklisted_token.is_some() {
+        return Err(bad_request_error("Token has been revoked"));
+    }
+    
+    // Verify the refresh token by decoding JWT  
+    let secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "esperion-secret-key-change-in-production".to_string());
+    
+    let token_data = jsonwebtoken::decode::<crate::models::user::JwtClaims>(
+        &req.refresh_token,
+        &jsonwebtoken::DecodingKey::from_secret(secret.as_bytes()),
+        &jsonwebtoken::Validation::default(),
+    ).map_err(|_| bad_request_error("Invalid refresh token"))?;
+    
+    let claims = token_data.claims;
+    
+    // Now get the user by their ID from the database to get current user info
+    let user_query = "SELECT * FROM users WHERE id = $id LIMIT 1";
+    let mut user_result = db
+        .query(user_query)
+        .bind(("id", &claims.sub))
+        .await
+        .map_err(|e| internal_error(e))?;
+        
+    let user_data: Option<serde_json::Value> = user_result.take(0).ok().flatten();
+    let user = user_data.ok_or(bad_request_error("User not found"))?;
+
+    // Extract user data
+    let user_id = user.get("id").and_then(|v| v.as_str()).unwrap_or(&claims.sub).to_string();
+    let email = user.get("email").and_then(|v| v.as_str()).unwrap_or(&claims.email).to_string();
+    let full_name = user.get("full_name").and_then(|v: &serde_json::Value| v.as_str()).unwrap_or("").to_string();
+    let username = user.get("username").and_then(|v: &serde_json::Value| v.as_str()).unwrap_or("").to_string();
+    let role_str = user.get("role").and_then(|v: &serde_json::Value| v.as_str()).unwrap_or("editor");
+
+    // Invalidate the old refresh token by adding it to blacklist
+    let now = chrono::Utc::now();
+    let fifteen_days_later = now + chrono::Duration::days(15);
+    let invalidate_query = "
+        CREATE token_blacklist SET 
+            token = $refresh_token, 
+            invalidated_at = time::now(),
+            expires_at = $expires_at
+    ";
+    let _ = db
+        .query(invalidate_query)
+        .bind(("refresh_token", &req.refresh_token))
+        .bind(("expires_at", &fifteen_days_later))
+        .await
+        .map_err(|e| internal_error(e))?;
+    
+    // Generate new access token (15 minute expiry) 
+    // and new refresh token (30 day expiry) with current user data
+    let access_token = crate::middleware::generate_short_access_token(&user_id, &email, role_str)?; // 15 min access token
+    let new_refresh_token = crate::middleware::generate_long_refresh_token(&user_id, &email)?; // 30 day refresh token
+    
     let response = AuthResponse {
         user: UserResponse {
-            id: "user_1".to_string(),
-            email: "test@example.com".to_string(),
-            full_name: "Test User".to_string(),
-            username: "testuser".to_string(),
-            role: "editor".to_string(),
+            id: user_id,
+            email,
+            full_name,
+            username,
+            role: role_str.to_string(),
         },
-        token: "mock_jwt_token".to_string(),
-        refresh_token: "mock_refresh_token".to_string(),
+        token: access_token,
+        refresh_token: new_refresh_token,
     };
     
     Ok(Json(response))
@@ -286,4 +400,106 @@ pub fn register_routes(router: Router<crate::db::DbState>) -> Router<crate::db::
         .route("/api/v1/auth/login", post(login))
         .route("/api/v1/auth/logout", post(logout))
         .route("/api/v1/auth/refresh", post(refresh_token))
+}
+
+#[cfg(test)]
+mod auth_tests {
+    use super::*;
+    use axum::body::Body;
+    use axum::http::Request;
+    use tower::ServiceExt;
+    use surrealdb::engine::local::Mem;
+    use surrealdb::Surreal;
+
+    #[tokio::test]
+    async fn test_logout_adds_token_to_blacklist() {
+        let db = surrealdb::Surreal::init::<Mem>().await.unwrap();
+        db.use_ns("test").use_db("test").await.unwrap();
+        
+        let db_state = DbState { db: db.clone() };
+        let app = Router::new().route("/logout", post(logout)).with_state(db_state);
+        
+        // Test that logout blacklists the refresh token
+        let refresh_token = "test_refresh_token_for_blacklisting";
+        let request_payload = serde_json::json!({"refresh_token": refresh_token});
+        let request_body = serde_json::to_string(&request_payload).unwrap();
+        
+        let response = app
+            .oneshot(Request::builder()
+                    .uri("/logout")
+                    .method("POST")
+                    .header("content-type", "application/json")
+                    .body(Body::from(request_body)))
+            .await
+            .unwrap();
+            
+        assert_eq!(response.status(), StatusCode::OK);
+        
+        // Verify the token was indeed added to the blacklist in the database
+        let blacklisted_tokens: Vec<serde_json::Value> = db
+            .query("SELECT * FROM token_blacklist WHERE token = $token")
+            .bind(("token", refresh_token))
+            .await
+            .unwrap()
+            .take(0)
+            .unwrap();
+            
+        assert_eq!(blacklisted_tokens.len(), 1);
+        assert_eq!(blacklisted_tokens[0]["token"], refresh_token);
+    }
+
+    #[tokio::test]
+    async fn test_register_creates_user_and_returns_tokens() {
+        let db = surrealdb::Surreal::init::<Mem>().await.unwrap();
+        db.use_ns("test").use_db("test").await.unwrap();
+        
+        let db_state = DbState { db: db.clone() };
+        let app = Router::new().route("/register", post(register)).with_state(db_state);
+        
+        let register_payload = serde_json::json!({
+            "email": "newuser@example.com",
+            "password": "securepassword123",
+            "full_name": "New User",
+            "username": "newuser"
+        });
+        let request_body = serde_json::to_string(&register_payload).unwrap();
+        
+        let mut response = app
+            .oneshot(Request::builder()
+                    .uri("/register")
+                    .method("POST")
+                    .header("content-type", "application/json")
+                    .body(Body::from(request_body)))
+            .await
+            .unwrap();
+            
+        assert_eq!(response.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    // Test that login fails for nonexistent user
+    async fn test_login_fails_for_nonexistent_user() {
+        let db = surrealdb::Surreal::init::<Mem>().await.unwrap();
+        db.use_ns("test").use_db("test").await.unwrap();
+        
+        let db_state = DbState { db: db.clone() };
+        let app = Router::new().route("/login", post(login)).with_state(db_state);
+        
+        let login_payload = serde_json::json!({
+            "email": "nonexistent@example.com",
+            "password": "wrongpassword"
+        });
+        let request_body = serde_json::to_string(&login_payload).unwrap();
+        
+        let response = app
+            .oneshot(Request::builder()
+                    .uri("/login")
+                    .method("POST")
+                    .header("content-type", "application/json")
+                    .body(Body::from(request_body)))
+            .await
+            .unwrap();
+            
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    }
 }

@@ -9,6 +9,7 @@
  * - services: Services CRUD
  * - clients: Clients CRUD
  * - contact: Contact form submission
+ * - translation: Automated content translation
  */
 
 pub mod geo;
@@ -21,3 +22,5 @@ pub mod services;
 pub mod clients;
 pub mod contact;
 pub mod seo_score;
+pub mod translation;
+pub mod email;

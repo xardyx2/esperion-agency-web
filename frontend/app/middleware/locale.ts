@@ -1,58 +1,24 @@
 /**
  * Locale Detection Middleware
  * Auto-detects user locale and redirects to appropriate URL prefix
+ * Works with @nuxtjs/i18n module
  * 
- * Usage: Add to pages that need locale detection
- * 
- * @usage
- * ```ts
- * // In a page component
- * definePageMeta({
- *   middleware: ['locale']
- * })
- * ```
+ * Usage: Auto-applied by @nuxtjs/i18n when using detectBrowserLanguage
  */
 
-export default defineNuxtRouteMiddleware(async (to) => {
-  // Skip if already has locale prefix
+export default defineNuxtRouteMiddleware((to) => {
+  // With @nuxtjs/i18n configured with detectBrowserLanguage,
+  // the locale detection and redirection is handled by the module
+  // This middleware can be kept for additional logic if needed
+  // but basic redirection functionality is provided by @nuxtjs/i18n
+  
+  // Skip if already has locale prefix - handled by module
   if (to.path.startsWith('/id') || to.path.startsWith('/en')) {
     return
   }
-
-  // Detect locale from browser/storage
-  const detected = detectLocale()
   
-  // Redirect to locale-prefixed path
-  return navigateTo(`/${detected}${to.path}`)
+  // Additional custom logic can go here if needed
+  // For example, custom locale resolution or logging
+  
+  // For now, return early since @nuxtjs/i18n handles redirectOn: 'root'
 })
-
-/**
- * Helper function to detect locale
- * Matches the logic in useI18n composable
- */
-function detectLocale(): 'id' | 'en' {
-  // Check saved preference first (client-side only)
-  if (import.meta.client && typeof localStorage !== 'undefined') {
-    const saved = localStorage.getItem('esperion_locale') as 'id' | 'en'
-    if (saved && ['id', 'en'].includes(saved)) {
-      return saved
-    }
-  }
-  
-  // Check if we can get locale from request headers (server-side)
-  if (import.meta.server) {
-    const event = useRequestEvent()
-    const acceptLanguage = event?.headers.get('accept-language')
-    if (acceptLanguage) {
-      if (acceptLanguage.toLowerCase().includes('id')) {
-        return 'id'
-      }
-      if (acceptLanguage.toLowerCase().includes('en')) {
-        return 'en'
-      }
-    }
-  }
-  
-  // Default to Indonesian
-  return 'id'
-}

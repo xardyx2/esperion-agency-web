@@ -1,0 +1,10 @@
+{
+  "name": "esperion-load-tests",
+  "version": "1.0.0",
+  "scripts": {
+    "test:auth": "k6 run auth-load.js",
+    "test:api": "k6 run api-load.js",
+    "test:contact": "k6 run contact-form-load.js",
+    "test:all": "k6 run auth-load.js && k6 run api-load.js && k6 run contact-form-load.js"
+  }
+}

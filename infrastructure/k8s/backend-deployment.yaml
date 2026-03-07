@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esperion-backend
+  namespace: esperion
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: esperion-backend
+  template:
+    metadata:
+      labels:
+        app: esperion-backend
+    spec:
+      containers:
+      - name: backend
+        image: esperion/backend:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: esperion-config
+        - secretRef:
+            name: esperion-secrets
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"

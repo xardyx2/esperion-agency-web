@@ -1,10 +1,9 @@
 /**
  * Service Model
- * 
+ *
  * Represents services offered by the agency
  * Used for showcasing services on the website
  */
-
 use serde::{Deserialize, Serialize};
 use surrealdb::sql::Thing;
 
@@ -49,11 +48,7 @@ pub struct Service {
 
 impl Service {
     /// Create a new service record
-    pub fn new(
-        title: String,
-        slug: String,
-        description: String,
-    ) -> Self {
+    pub fn new(title: String, slug: String, description: String) -> Self {
         Self {
             id: None,
             title,
@@ -151,10 +146,34 @@ pub struct UpdateServiceRequest {
 
 /// Default services for seeding
 pub const DEFAULT_SERVICES: &[(&str, &str, &str)] = &[
-    ("Web Development", "web-development", "Custom web applications and websites built with modern technologies"),
-    ("Mobile App Development", "mobile-app-development", "Native and cross-platform mobile applications"),
-    ("UI/UX Design", "ui-ux-design", "User-centered design for digital products"),
-    ("Digital Marketing", "digital-marketing", "SEO, SEM, and social media marketing strategies"),
-    ("E-Commerce Solutions", "ecommerce-solutions", "Complete online store setup and optimization"),
-    ("Consulting", "consulting", "Technology and digital transformation consulting"),
+    (
+        "Web Development",
+        "web-development",
+        "Custom web applications and websites built with modern technologies",
+    ),
+    (
+        "Mobile App Development",
+        "mobile-app-development",
+        "Native and cross-platform mobile applications",
+    ),
+    (
+        "UI/UX Design",
+        "ui-ux-design",
+        "User-centered design for digital products",
+    ),
+    (
+        "Digital Marketing",
+        "digital-marketing",
+        "SEO, SEM, and social media marketing strategies",
+    ),
+    (
+        "E-Commerce Solutions",
+        "ecommerce-solutions",
+        "Complete online store setup and optimization",
+    ),
+    (
+        "Consulting",
+        "consulting",
+        "Technology and digital transformation consulting",
+    ),
 ];

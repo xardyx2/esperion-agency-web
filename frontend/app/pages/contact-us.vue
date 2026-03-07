@@ -259,21 +259,57 @@ const isSubmitting = ref(false);
 const handleSubmit = async () => {
   isSubmitting.value = true;
   
-  // TODO: Implement actual API call
-  // await useContactApi().submit(form.value);
-  
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  alert('Thank you for your message! We will get back to you soon.');
-  form.value = {
-    fullName: '',
-    companyName: '',
-    email: '',
-    phone: '',
-    service: '',
-    description: '',
-  };
-  isSubmitting.value = false;
+  try {
+    // Get the runtime config that contains the reCAPTCHA site key
+    const config = useRuntimeConfig();
+    const recaptchaSiteKey = config.public.recaptchaSiteKey;
+    
+    let recaptchaToken = null;
+    
+    // Execute reCAPTCHA if site key is configured and reCAPTCHA is loaded
+    if (recaptchaSiteKey && typeof window !== 'undefined' && window.grecaptcha) {
+      try {
+        recaptchaToken = await window.grecaptcha.execute(recaptchaSiteKey, {action: 'contact'});
+      } catch (recaptchaError) {
+        console.warn('reCAPTCHA execution failed, continuing without token:', recaptchaError);
+        // Continue with form submission even if reCAPTCHA fails, letting the backend decide
+      }
+    } else if (recaptchaSiteKey) {
+      console.warn('reCAPTCHA library not loaded, attempting to execute without it');
+    }
+    
+    // Prepare the API payload with reCAPTCHA token (if available)
+    const payload = {
+      full_name: form.value.fullName,
+      company_name: form.value.companyName || undefined,
+      email: form.value.email || undefined,
+      phone: form.value.phone || undefined,
+      service: form.value.service,
+      description: form.value.description,
+      recaptcha_token: recaptchaToken || undefined,
+    };
+    
+    // Call the contact API
+    const { submit } = useContactApi();
+    await submit(payload);
+    
+    // Show success notification
+    alert('Thank you for your message! We will get back to you soon.');
+    
+    // Reset form
+    form.value = {
+      fullName: '',
+      companyName: '',
+      email: '',
+      phone: '',
+      service: '',
+      description: '',
+    };
+  } catch (error) {
+    console.error('Error submitting contact form:', error);
+    alert('There was an error submitting your message. Please try again.');
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>

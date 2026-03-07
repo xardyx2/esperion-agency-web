@@ -1,10 +1,9 @@
 /**
  * Contact Submission Model
- * 
+ *
  * Represents contact form submissions
  * Used for managing leads and inquiries
  */
-
 use serde::{Deserialize, Serialize};
 use surrealdb::sql::Thing;
 
@@ -66,11 +65,7 @@ pub struct ContactSubmission {
 
 impl ContactSubmission {
     /// Create a new contact submission
-    pub fn new(
-        full_name: String,
-        service: String,
-        description: String,
-    ) -> Self {
+    pub fn new(full_name: String, service: String, description: String) -> Self {
         Self {
             id: None,
             full_name,

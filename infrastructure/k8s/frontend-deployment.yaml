@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esperion-frontend
+  namespace: esperion
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: esperion-frontend
+  template:
+    metadata:
+      labels:
+        app: esperion-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: esperion/frontend:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: esperion-config
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

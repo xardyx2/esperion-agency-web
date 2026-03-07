@@ -9,7 +9,11 @@
  * - Query helpers
  */
 
+#[macro_use]
+extern crate lazy_static;
+
 pub mod schema;
+pub mod migrations;
 
 use surrealdb::engine::remote::ws::Ws;
 use surrealdb::opt::auth::Root;
@@ -56,6 +60,29 @@ pub fn get_db_state() -> DbState {
     DB.get().cloned().expect("Database not initialized").into()
 }
 
+/// Initialize database connection with migrations
+pub async fn init_with_migrations() -> Result<Db, Box<dyn std::error::Error>> {
+    let db = Surreal::new::<Ws>("127.0.0.1:8000").await?;
+    
+    // Sign in as root
+    db.signin(Root {
+        username: "root",
+        password: "root",
+    }).await?;
+    
+    // Select namespace and database
+    db.use_ns("esperion").use_db("esperion_db").await?;
+    
+    // Run migrations
+    crate::db::migrations::run_migrations(db.clone()).await.map_err(|e| {
+        Box::<dyn std::error::Error>::from(format!("Migration failed: {}", e))
+    })?;
+    
+    tracing::info!("Database initialized with migrations");
+    
+    Ok(db)
+}
+
 /// Initialize database schema
 pub async fn init_schema() -> Result<(), Box<dyn std::error::Error>> {
     let db = get_db();
@@ -65,7 +92,7 @@ pub async fn init_schema() -> Result<(), Box<dyn std::error::Error>> {
     let mut schema_result = db.query(&schema_sql).await?;
     let _result: Vec<surrealdb::sql::Value> = schema_result.take(0)?;
     
-    tracing::info!("Database schema initialized");
+    tracing::info!("Database schema initially loaded from schema file");
     
     Ok(())
 }

@@ -1,4 +1,12 @@
 {
+  "nav": {
+    "home": "Beranda",
+    "works": "Karya Kami",
+    "services": "Layanan",
+    "articles": "Artikel", 
+    "about": "Tentang",
+    "contact": "Kontak"
+  },
   "common": {
     "loading": "Memuat...",
     "error": "Terjadi kesalahan",
@@ -17,7 +25,10 @@
       "page": "Halaman",
       "of": "dari",
       "results": "hasil"
-    }
+    },
+    "readMore": "Baca Selengkapnya",
+    "learnMore": "Pelajari",
+    "submit": "Kirim"
   },
   "navigation": {
     "home": "Beranda",

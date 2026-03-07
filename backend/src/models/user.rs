@@ -1,10 +1,9 @@
 /**
  * User Model
- * 
+ *
  * Represents a user account in the system
  * Used for authentication and authorization
  */
-
 use serde::{Deserialize, Serialize};
 use surrealdb::sql::Datetime;
 use utoipa::ToSchema;
@@ -85,12 +84,12 @@ pub struct AuthResponse {
 /// JWT claims for authentication
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct JwtClaims {
-    pub sub: String,      // User ID
+    pub sub: String, // User ID
     pub email: String,
     pub role: UserRole,
     pub device_id: Option<String>,
-    pub exp: i64,         // Expiration timestamp
-    pub iat: i64,         // Issued at timestamp
+    pub exp: i64, // Expiration timestamp
+    pub iat: i64, // Issued at timestamp
 }
 
 /// User claims for extension trait (alias for JwtClaims)

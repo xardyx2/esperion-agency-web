@@ -11,6 +11,9 @@ tower-http = { version = "=0.5.2", features = ["cors"] }
 # Async runtime
 tokio = { version = "=1.42.0", features = ["full"] }
 
+# CLI
+clap = { version = "4.0", features = ["derive"] }
+
 # OpenAPI documentation
 utoipa = { version = "=4.2.3", features = ["axum_extras"] }
 utoipa-scalar = "=0.1.0"
@@ -29,6 +32,8 @@ anyhow = "1"
 
 # Database
 surrealdb = "=1.5.0"
+sha2 = "0.10"
+lazy_static = "1.4"
 
 # Logging
 tracing = "0.1"
@@ -41,7 +46,22 @@ chrono = { version = "=0.4.38", features = ["serde"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 
 # HTTP client (for external APIs)
-reqwest = { version = "=0.12.9", features = ["json"] }
+reqwest = { version = "=0.12.9", features = ["json", "multipart"] }
+
+# Image processing
+image = { version = "0.25", features = ["jpeg", "png", "webp"] }
+webp = "0.3"
+
+# Environment variables
+dotenvy = "0.15"
+
+# Email utilities
+lettre = { version = "^0.11.3", features = ["tokio1-native-tls", "smtp-transport", "pool", "builder"] }
+
+# Async traits
+async-trait = "=0.1.83"
 
 [dev-dependencies]
 tokio-test = "0.4"
+tempfile = "3"
+image = "0.25"

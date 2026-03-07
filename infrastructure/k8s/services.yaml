@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: esperion
+spec:
+  selector:
+    app: esperion-frontend
+  ports:
+  - port: 80
+    targetPort: 3000
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: esperion
+spec:
+  selector:
+    app: esperion-backend
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: surrealdb
+  namespace: esperion
+spec:
+  selector:
+    app: surrealdb
+  ports:
+  - port: 8000
+  type: ClusterIP

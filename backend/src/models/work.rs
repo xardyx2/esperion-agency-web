@@ -1,10 +1,9 @@
 /**
  * Work Model
- * 
+ *
  * Represents portfolio work in the works table
  * Used for showcasing completed projects
  */
-
 use serde::{Deserialize, Serialize};
 use surrealdb::sql::Thing;
 
@@ -60,7 +59,11 @@ impl Work {
 
     /// Add a metric to the work
     pub fn with_metric(mut self, label: String, value: String, suffix: Option<String>) -> Self {
-        self.metrics.push(WorkMetric { label, value, suffix });
+        self.metrics.push(WorkMetric {
+            label,
+            value,
+            suffix,
+        });
         self
     }
 

@@ -1,10 +1,9 @@
 /**
  * Client Model
- * 
+ *
  * Represents clients of the agency
  * Used for showcasing client logos and testimonials
  */
-
 use serde::{Deserialize, Serialize};
 use surrealdb::sql::Thing;
 
@@ -58,10 +57,7 @@ impl ClientStatus {
 
 impl Client {
     /// Create a new client record
-    pub fn new(
-        name: String,
-        logo: String,
-    ) -> Self {
+    pub fn new(name: String, logo: String) -> Self {
         Self {
             id: None,
             name,

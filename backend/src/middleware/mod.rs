@@ -16,15 +16,31 @@ use serde::{Deserialize, Serialize};
 use crate::models::user::{JwtClaims, UserRole};
 
 /// Generate a JWT token for a user
-pub fn generate_jwt(user_id: &str, email: &str, _role: &str) -> Result<String, crate::api::ApiError> {
+pub fn generate_jwt(user_id: &str, email: &str, role: &str) -> Result<String, crate::api::ApiError> {
     let now = Utc::now();
+    
+    // Map string role to UserRole enum or special "refresh" token
+    let user_role = if role == "refresh" {
+        UserRole::Editor // For refresh tokens, we use a neutral role
+    } else {
+        // Attempt to map string to appropriate role
+        match role.to_lowercase().as_str() {
+            "admin" => UserRole::Admin,
+            "viewer" => UserRole::Viewer,
+            _ => UserRole::Editor, // default to editor
+        }
+    };
     
     let claims = JwtClaims {
         sub: user_id.to_string(),
         email: email.to_string(),
-        role: UserRole::Editor, // Default role, can be customized
+        role: user_role,
         device_id: None,
-        exp: (now + Duration::hours(24)).timestamp(),
+        exp: if role == "refresh" {
+            (now + Duration::days(30)).timestamp() // 30 days for refresh token
+        } else {
+            (now + Duration::hours(24)).timestamp() // 24 hours for regular token - retaining compatibility
+        },
         iat: now.timestamp(),
     };
 
@@ -33,6 +49,54 @@ pub fn generate_jwt(user_id: &str, email: &str, _role: &str) -> Result<String, c
     
     encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes()))
         .map_err(|_| crate::api::internal_error("Failed to generate JWT"))
+}
+
+/// Generate a short-lived access token (15 minutes) for enhanced security after login/refresh
+pub fn generate_short_access_token(user_id: &str, email: &str, role: &str) -> Result<String, crate::api::ApiError> {
+    let now = Utc::now();
+    
+    // Map string role to UserRole enum
+    let user_role = match role.to_lowercase().as_str() {
+        "admin" => crate::models::user::UserRole::Admin,
+        "viewer" => crate::models::user::UserRole::Viewer,
+        _ => crate::models::user::UserRole::Editor, // default to editor
+    };
+    
+    let claims = JwtClaims {
+        sub: user_id.to_string(),
+        email: email.to_string(),
+        role: user_role,
+        device_id: None,
+        exp: (now + Duration::minutes(15)).timestamp(), // 15 minutes for access token (enhanced security)
+        iat: now.timestamp(),
+    };
+
+    // Use a secret key from environment variable in production
+    let secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "esperion-secret-key-change-in-production".to_string());
+    
+    encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes()))
+        .map_err(|_| crate::api::internal_error("Failed to generate JWT"))
+}
+
+/// Generate a long-lived refresh token (30 days) 
+pub fn generate_long_refresh_token(user_id: &str, email: &str) -> Result<String, crate::api::ApiError> {
+    let now = Utc::now();
+    
+    // For refresh tokens, we use a generic role for validation purposes
+    let claims = JwtClaims {
+        sub: user_id.to_string(),
+        email: email.to_string(),
+        role: crate::models::user::UserRole::Editor, // Generic role
+        device_id: None,
+        exp: (now + Duration::days(30)).timestamp(), // 30 days for refresh token
+        iat: now.timestamp(),
+    };
+
+    // Use a secret key from environment variable in production
+    let secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "esperion-secret-key-change-in-production".to_string());
+    
+    encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes()))
+        .map_err(|_| crate::api::internal_error("Failed to generate refresh token"))
 }
 
 /// Verify a JWT token

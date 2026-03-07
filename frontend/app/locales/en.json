@@ -1,4 +1,12 @@
 {
+  "nav": {
+    "home": "Home",
+    "works": "Our Works",
+    "services": "Services",
+    "articles": "Articles",
+    "about": "About", 
+    "contact": "Contact"
+  },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
@@ -17,7 +25,10 @@
       "page": "Page",
       "of": "of",
       "results": "results"
-    }
+    },
+    "readMore": "Read More",
+    "learnMore": "Learn More", 
+    "submit": "Submit"
   },
   "navigation": {
     "home": "Home",

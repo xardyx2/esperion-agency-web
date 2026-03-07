@@ -1,12 +1,11 @@
 /**
  * Article Model
- * 
+ *
  * Represents an article with multi-language support:
  * - Indonesian (id) and English (en) content
  * - Translation status tracking
  * - SEO-friendly slugs
  */
-
 use serde::{Deserialize, Serialize};
 use surrealdb::sql::Thing;
 
@@ -171,7 +170,10 @@ impl ArticleFilter {
         }
 
         if let Some(ref status) = self.translation_status {
-            conditions.push(format!("translation_status = '{}'", status.replace('\'', "''")));
+            conditions.push(format!(
+                "translation_status = '{}'",
+                status.replace('\'', "''")
+            ));
         }
 
         if conditions.is_empty() {
