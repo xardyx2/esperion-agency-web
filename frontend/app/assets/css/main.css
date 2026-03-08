@@ -1,0 +1,383 @@
+/* Esperion Design System - Main CSS */
+@import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Custom CSS Variables for Esperion Design System */
+:root {
+  /* Light Mode Colors */
+  --es-bg-primary: #FAFCFF;
+  --es-bg-secondary: #FFFFFF;
+  --es-bg-tertiary: #F1F5F9;
+  --es-bg-inverse: #FFFFFF;
+  --es-text-primary: #102B4E;
+  --es-text-secondary: #475569;
+  --es-text-tertiary: #64748B;
+  --es-text-inverse: #FFFFFF;
+  --es-border: #E2E8F0;
+  --es-accent-primary: #2B9EDB;
+  --es-accent-primary-hover: #1B7FB8;
+  --es-accent-secondary: #7CC6FE;
+  --es-success: #10B981;
+  --es-warning: #F59E0B;
+  --es-error: #EF4444;
+  --es-info: #3B82F6;
+
+  /* Dark Mode Colors */
+  --es-bg-primary-dark: #0B1120;
+  --es-bg-secondary-dark: #151E32;
+  --es-bg-tertiary-dark: #1E293B;
+  --es-bg-inverse-dark: #0B1120;
+  --es-text-primary-dark: #F8FAFC;
+  --es-text-secondary-dark: #94A3B8;
+  --es-text-tertiary-dark: #64748B;
+  --es-text-inverse-dark: #0B1120;
+  --es-border-dark: #1E293B;
+  --es-accent-primary-dark: #2B9EDB;
+  --es-accent-primary-hover-dark: #4DB3E5;
+  --es-accent-secondary-dark: #0EA5E9;
+  --es-success-dark: #34D399;
+  --es-warning-dark: #FBBF24;
+  --es-error-dark: #F87171;
+  --es-info-dark: #60A5FA;
+}
+
+@theme inline {
+  --color-es-bg-primary: var(--es-bg-primary);
+  --color-es-bg-secondary: var(--es-bg-secondary);
+  --color-es-bg-tertiary: var(--es-bg-tertiary);
+  --color-es-bg-inverse: var(--es-bg-inverse);
+  --color-es-bg-primary-dark: var(--es-bg-primary-dark);
+  --color-es-bg-secondary-dark: var(--es-bg-secondary-dark);
+  --color-es-bg-tertiary-dark: var(--es-bg-tertiary-dark);
+  --color-es-bg-inverse-dark: var(--es-bg-inverse-dark);
+  --color-es-text-primary: var(--es-text-primary);
+  --color-es-text-secondary: var(--es-text-secondary);
+  --color-es-text-tertiary: var(--es-text-tertiary);
+  --color-es-text-inverse: var(--es-text-inverse);
+  --color-es-text-primary-dark: var(--es-text-primary-dark);
+  --color-es-text-secondary-dark: var(--es-text-secondary-dark);
+  --color-es-text-tertiary-dark: var(--es-text-tertiary-dark);
+  --color-es-text-inverse-dark: var(--es-text-inverse-dark);
+  --color-es-border: var(--es-border);
+  --color-es-border-dark: var(--es-border-dark);
+  --color-es-accent-primary: var(--es-accent-primary);
+  --color-es-accent-primary-hover: var(--es-accent-primary-hover);
+  --color-es-accent-secondary: var(--es-accent-secondary);
+  --color-es-accent-primary-dark: var(--es-accent-primary-dark);
+  --color-es-accent-primary-hover-dark: var(--es-accent-primary-hover-dark);
+  --color-es-accent-secondary-dark: var(--es-accent-secondary-dark);
+  --color-es-success: var(--es-success);
+  --color-es-warning: var(--es-warning);
+  --color-es-error: var(--es-error);
+  --color-es-info: var(--es-info);
+  --color-es-success-dark: var(--es-success-dark);
+  --color-es-warning-dark: var(--es-warning-dark);
+  --color-es-error-dark: var(--es-error-dark);
+  --color-es-info-dark: var(--es-info-dark);
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--es-bg-primary);
+  color: var(--es-text-primary);
+  color-scheme: light;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--es-bg-primary);
+  color: var(--es-text-primary);
+}
+
+/* Dark mode */
+.dark {
+  background-color: var(--es-bg-primary-dark);
+  color: var(--es-text-primary-dark);
+  color-scheme: dark;
+}
+
+.dark body {
+  background-color: var(--es-bg-primary-dark);
+  color: var(--es-text-primary-dark);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--es-bg-tertiary);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--es-bg-tertiary-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--es-text-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--es-text-secondary);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--es-text-tertiary-dark);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--es-text-secondary-dark);
+}
+
+/* Focus Styles */
+:focus-visible {
+  outline: 2px solid var(--es-accent-primary);
+  outline-offset: 2px;
+}
+
+.dark :focus-visible {
+  outline-color: var(--es-accent-primary-dark);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--es-accent-primary);
+  color: var(--es-text-inverse);
+}
+
+.dark ::selection {
+  background-color: var(--es-accent-primary-dark);
+  color: var(--es-text-inverse-dark);
+}
+
+/* Utility Classes */
+.es-gradient-primary {
+  background: linear-gradient(135deg, var(--es-accent-primary) 0%, var(--es-accent-secondary) 100%);
+}
+
+.dark .es-gradient-primary {
+  background: linear-gradient(135deg, var(--es-accent-primary-dark) 0%, var(--es-accent-secondary-dark) 100%);
+}
+
+.es-gradient-text {
+  background: linear-gradient(135deg, var(--es-accent-primary) 0%, var(--es-accent-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .es-gradient-text {
+  background: linear-gradient(135deg, var(--es-accent-primary-dark) 0%, var(--es-accent-secondary-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animation Utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.es-animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.es-animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+.es-animate-slide-down {
+  animation: slideDown 0.4s ease-out;
+}
+
+.es-animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Staggered Animation Delays */
+.es-stagger-1 {
+  animation-delay: 0.1s;
+}
+
+.es-stagger-2 {
+  animation-delay: 0.2s;
+}
+
+.es-stagger-3 {
+  animation-delay: 0.3s;
+}
+
+.es-stagger-4 {
+  animation-delay: 0.4s;
+}
+
+.es-stagger-5 {
+  animation-delay: 0.5s;
+}
+
+/* Card Hover Effects */
+.es-card-hover {
+  transition: all 0.3s ease;
+}
+
+.es-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.dark .es-card-hover:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Button Variants */
+.es-btn-primary {
+  background-color: var(--es-accent-primary);
+  color: var(--es-text-inverse);
+  transition: all 0.2s ease;
+}
+
+.es-btn-primary:hover {
+  background-color: var(--es-accent-primary-hover);
+}
+
+.dark .es-btn-primary {
+  background-color: var(--es-accent-primary-dark);
+}
+
+.dark .es-btn-primary:hover {
+  background-color: var(--es-accent-primary-hover-dark);
+}
+
+/* Glass Effect */
+.es-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .es-glass {
+  background: rgba(21, 30, 50, 0.8);
+}
+
+/* Text Gradient */
+.es-text-gradient {
+  background: linear-gradient(135deg, var(--es-accent-primary) 0%, var(--es-accent-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Line Clamp Utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Container Extensions */
+.container {
+  max-width: 1280px;
+}
+
+/* Prose Styles for Content */
+.prose {
+  max-width: 65ch;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--es-text-primary);
+}
+
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6 {
+  color: var(--es-text-primary-dark);
+}
+
+.prose a {
+  color: var(--es-accent-primary);
+  text-decoration: underline;
+}
+
+.dark .prose a {
+  color: var(--es-accent-primary-dark);
+}
+
+.prose p {
+  line-height: 1.7;
+  color: var(--es-text-secondary);
+}
+
+.dark .prose p {
+  color: var(--es-text-secondary-dark);
+}

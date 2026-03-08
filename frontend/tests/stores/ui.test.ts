@@ -12,7 +12,6 @@ describe('UI Store', () => {
   it('should initialize with default values', () => {
     const uiStore = useUiStore();
     
-    expect(uiStore.theme).toBe('light');
     expect(uiStore.sidebarCollapsed).toBe(false);
     expect(uiStore.notifications).toEqual([]);
   });
@@ -20,27 +19,9 @@ describe('UI Store', () => {
   it('should have getters', () => {
     const uiStore = useUiStore();
     
-    expect(uiStore.currentTheme).toBe('light');
     expect(uiStore.isSidebarCollapsed).toBe(false);
     expect(uiStore.allNotifications).toEqual([]);
     expect(uiStore.unreadNotifications).toEqual([]);
-  });
-
-  it('should toggle theme', () => {
-    const uiStore = useUiStore();
-    
-    uiStore.toggleTheme();
-    expect(uiStore.theme).toBe('dark');
-    
-    uiStore.toggleTheme();
-    expect(uiStore.theme).toBe('light');
-  });
-
-  it('should set theme directly', () => {
-    const uiStore = useUiStore();
-    
-    uiStore.setTheme('dark');
-    expect(uiStore.theme).toBe('dark');
   });
 
   it('should toggle sidebar', () => {

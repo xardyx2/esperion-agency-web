@@ -166,8 +166,8 @@ defineExpose({
         <div
           class="rounded-lg shadow-lg"
           :class="[
-            'bg-esperion-light-surface dark:bg-esperion-dark-surface',
-            'border border-esperion-light-border dark:border-esperion-dark-border',
+            'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
+            'border border-es-border dark:border-es-border-dark',
           ]"
         >
           <!-- Content -->
@@ -183,7 +183,7 @@ defineExpose({
                 <p
                   class="text-sm font-medium"
                   :class="[
-                    'text-esperion-light-text-primary dark:text-esperion-dark-text-primary',
+                    'text-es-text-primary dark:text-es-text-primary-dark',
                   ]"
                 >
                   {{ currentLabels.title }}
@@ -196,7 +196,7 @@ defineExpose({
                     @click="handleSwitch"
                     class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
                     :class="[
-                      'bg-esperion-primary hover:bg-blue-600 text-white',
+                      'bg-es-accent-primary hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:hover:bg-es-accent-primary-hover-dark text-es-text-inverse dark:text-es-text-inverse-dark',
                     ]"
                   >
                     {{ currentLabels.button }}
@@ -205,10 +205,10 @@ defineExpose({
                     @click="handleDismiss"
                     class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
                     :class="[
-                      'bg-esperion-light-surface dark:bg-esperion-dark-surface',
-                      'border border-esperion-light-border dark:border-esperion-dark-border',
-                      'text-esperion-light-text-primary dark:text-esperion-dark-text-primary',
-                      'hover:bg-gray-50 dark:hover:bg-gray-800',
+                      'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
+                      'border border-es-border dark:border-es-border-dark',
+                      'text-es-text-primary dark:text-es-text-primary-dark',
+                      'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
                     ]"
                   >
                     {{ currentLabels.dismiss }}
@@ -221,8 +221,8 @@ defineExpose({
                 @click="handleDismiss"
                 class="flex-shrink-0 ml-2"
                 :class="[
-                  'text-esperion-light-text-secondary dark:text-esperion-dark-text-secondary',
-                  'hover:text-esperion-light-text-primary dark:hover:text-esperion-dark-text-primary',
+                  'text-es-text-secondary dark:text-es-text-secondary-dark',
+                  'hover:text-es-text-primary dark:hover:text-es-text-primary-dark',
                 ]"
                 aria-label="Dismiss"
               >

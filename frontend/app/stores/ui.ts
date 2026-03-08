@@ -10,47 +10,23 @@ export interface Notification {
 }
 
 interface UIState {
-  theme: 'light' | 'dark';
   sidebarCollapsed: boolean;
   notifications: Notification[];
 }
 
 export const useUiStore = defineStore('ui', {
   state: (): UIState => ({
-    theme: 'light' as 'light' | 'dark',
     sidebarCollapsed: false,
     notifications: [],
   }),
 
   getters: {
-    currentTheme: (state) => state.theme,
     isSidebarCollapsed: (state) => state.sidebarCollapsed,
     allNotifications: (state) => state.notifications,
     unreadNotifications: (state) => state.notifications.filter(n => !n.read),
   },
 
   actions: {
-    toggleTheme() {
-      this.theme = this.theme === 'light' ? 'dark' : 'light';
-      
-      // Update the document class for theme consistency
-      if (process.client) {
-        const html = window.document.documentElement;
-        html.classList.remove('light', 'dark');
-        html.classList.add(this.theme);
-      }
-    },
-
-    setTheme(theme: 'light' | 'dark') {
-      this.theme = theme;
-      
-      if (process.client) {
-        const html = window.document.documentElement;
-        html.classList.remove('light', 'dark');
-        html.classList.add(this.theme);
-      }
-    },
-
     toggleSidebar() {
       this.sidebarCollapsed = !this.sidebarCollapsed;
     },
@@ -105,24 +81,11 @@ export const useUiStore = defineStore('ui', {
 
     clearAllNotifications() {
       this.notifications = [];
-    },
-
-    loadThemeFromStorage() {
-      if (process.client) {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light' || savedTheme === 'dark') {
-          this.theme = savedTheme;
-          
-          const html = window.document.documentElement;
-          html.classList.remove('light', 'dark');
-          html.classList.add(this.theme);
-        }
-      }
     }
   },
 
   persist: {
     key: 'ui-store',
-    pick: ['theme', 'sidebarCollapsed'],
+    pick: ['sidebarCollapsed'],
   },
 });

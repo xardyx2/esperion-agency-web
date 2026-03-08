@@ -2,31 +2,38 @@ import type { Config } from 'tailwindcss'
 
 export default {
   darkMode: 'class',
-  cssVariables: true,
   content: [
     './app/**/*.{js,ts,jsx,tsx,vue}',
     './components/**/*.{js,ts,jsx,tsx,vue}',
   ],
   theme: {
     extend: {
-      // Esperion Design System Colors
+      // Canonical Esperion public theme aliases
       colors: {
-        // Light Mode
-        'esperion-light-bg': '#FAFCFF',
-        'esperion-light-surface': '#FFFFFF',
-        'esperion-light-text-primary': '#102B4E',
-        'esperion-light-text-secondary': '#475569',
-        'esperion-light-border': '#E2E8F0',
-
-        // Dark Mode
-        'esperion-dark-bg': '#0B1120',
-        'esperion-dark-surface': '#151E32',
-        'esperion-dark-text-primary': '#F8FAFC',
-        'esperion-dark-text-secondary': '#94A3B8',
-        'esperion-dark-border': '#1E293B',
-
-        // Primary/Accent (both modes)
-        'esperion-primary': '#2B9EDB',
+        'es-bg-primary': 'var(--es-bg-primary)',
+        'es-bg-secondary': 'var(--es-bg-secondary)',
+        'es-bg-tertiary': 'var(--es-bg-tertiary)',
+        'es-bg-inverse': 'var(--es-bg-inverse)',
+        'es-bg-primary-dark': 'var(--es-bg-primary-dark)',
+        'es-bg-secondary-dark': 'var(--es-bg-secondary-dark)',
+        'es-bg-tertiary-dark': 'var(--es-bg-tertiary-dark)',
+        'es-bg-inverse-dark': 'var(--es-bg-inverse-dark)',
+        'es-text-primary': 'var(--es-text-primary)',
+        'es-text-secondary': 'var(--es-text-secondary)',
+        'es-text-tertiary': 'var(--es-text-tertiary)',
+        'es-text-inverse': 'var(--es-text-inverse)',
+        'es-text-primary-dark': 'var(--es-text-primary-dark)',
+        'es-text-secondary-dark': 'var(--es-text-secondary-dark)',
+        'es-text-tertiary-dark': 'var(--es-text-tertiary-dark)',
+        'es-text-inverse-dark': 'var(--es-text-inverse-dark)',
+        'es-border': 'var(--es-border)',
+        'es-border-dark': 'var(--es-border-dark)',
+        'es-accent-primary': 'var(--es-accent-primary)',
+        'es-accent-primary-hover': 'var(--es-accent-primary-hover)',
+        'es-accent-secondary': 'var(--es-accent-secondary)',
+        'es-accent-primary-dark': 'var(--es-accent-primary-dark)',
+        'es-accent-primary-hover-dark': 'var(--es-accent-primary-hover-dark)',
+        'es-accent-secondary-dark': 'var(--es-accent-secondary-dark)',
       },
       // Font family (optional customization)
       fontFamily: {

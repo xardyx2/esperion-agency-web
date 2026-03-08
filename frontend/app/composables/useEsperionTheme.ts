@@ -84,8 +84,8 @@ export function useEsperionTheme() {
    */
   const getBgClass = (mode: 'light' | 'dark' = 'light') => {
     return mode === 'dark' 
-      ? 'bg-esperion-dark-bg' 
-      : 'bg-esperion-light-bg'
+      ? 'bg-es-bg-primary-dark' 
+      : 'bg-es-bg-primary'
   }
 
   /**
@@ -94,12 +94,12 @@ export function useEsperionTheme() {
   const getTextClass = (mode: 'light' | 'dark' = 'light', variant: 'primary' | 'secondary' = 'primary') => {
     if (mode === 'dark') {
       return variant === 'primary' 
-        ? 'text-esperion-dark-text-primary' 
-        : 'text-esperion-dark-text-secondary'
+        ? 'text-es-text-primary-dark' 
+        : 'text-es-text-secondary-dark'
     }
     return variant === 'primary' 
-      ? 'text-esperion-light-text-primary' 
-      : 'text-esperion-light-text-secondary'
+      ? 'text-es-text-primary' 
+      : 'text-es-text-secondary'
   }
 
   return {

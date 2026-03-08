@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   showFlags: true,
 })
 
-const { locale, setLocale, isIndonesian } = useI18n()
+const { locale, setLocale } = useI18n()
 
 // Language options
 const languages = [
@@ -64,9 +64,9 @@ function toggleLanguage() {
       v-if="variant === 'toggle'"
       :class="[
         'inline-flex items-center gap-2 rounded-lg transition-colors',
-        'bg-esperion-light-surface dark:bg-esperion-dark-surface',
-        'border border-esperion-light-border dark:border-esperion-dark-border',
-        'hover:bg-gray-50 dark:hover:bg-gray-800',
+        'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
+        'border border-es-border dark:border-es-border-dark',
+        'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
         sizeClasses[size],
       ]"
       @click="toggleLanguage"
@@ -81,9 +81,9 @@ function toggleLanguage() {
       <button
         :class="[
           'inline-flex items-center gap-2 rounded-lg transition-colors',
-          'bg-esperion-light-surface dark:bg-esperion-dark-surface',
-          'border border-esperion-light-border dark:border-esperion-dark-border',
-          'hover:bg-gray-50 dark:hover:bg-gray-800',
+          'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
+          'border border-es-border dark:border-es-border-dark',
+          'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
           sizeClasses[size],
         ]"
         :aria-label="'Select language'"
@@ -99,8 +99,8 @@ function toggleLanguage() {
       <div
         class="absolute right-0 mt-2 w-48 rounded-lg shadow-lg z-50"
         :class="[
-          'bg-esperion-light-surface dark:bg-esperion-dark-surface',
-          'border border-esperion-light-border dark:border-esperion-dark-border',
+          'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
+          'border border-es-border dark:border-es-border-dark',
         ]"
       >
         <button
@@ -108,8 +108,8 @@ function toggleLanguage() {
           :key="lang.code"
           :class="[
             'w-full px-4 py-2 text-left transition-colors',
-            'hover:bg-gray-50 dark:hover:bg-gray-800',
-            locale === lang.code ? 'bg-esperion-primary/10' : '',
+            'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
+            locale === lang.code ? 'bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10' : '',
             sizeClasses[size],
           ]"
           @click="switchToLanguage(lang.code)"
@@ -128,8 +128,8 @@ function toggleLanguage() {
         :class="[
           'inline-flex items-center gap-1 rounded-lg transition-colors',
           locale === lang.code
-            ? 'bg-esperion-primary text-white'
-            : 'bg-esperion-light-surface dark:bg-esperion-dark-surface border border-esperion-light-border dark:border-esperion-dark-border',
+            ? 'bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark'
+            : 'bg-es-bg-secondary dark:bg-es-bg-secondary-dark border border-es-border dark:border-es-border-dark text-es-text-primary dark:text-es-text-primary-dark',
           'hover:opacity-80',
           sizeClasses[size],
         ]"

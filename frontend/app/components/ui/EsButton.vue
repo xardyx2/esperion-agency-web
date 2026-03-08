@@ -39,8 +39,8 @@ const handleClick = (event: MouseEvent) => {
 
 // Variant classes following Esperion 60-30-10 rule
 const variantClasses = {
-  primary: 'bg-esperion-primary hover:bg-blue-600 text-white',
-  secondary: 'bg-esperion-light-surface dark:bg-esperion-dark-surface border border-esperion-light-border dark:border-esperion-dark-border text-esperion-light-text-primary dark:text-esperion-dark-text-primary hover:bg-gray-50 dark:hover:bg-gray-800',
+  primary: 'bg-es-accent-primary hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:hover:bg-es-accent-primary-hover-dark text-es-text-inverse dark:text-es-text-inverse-dark',
+  secondary: 'bg-es-bg-secondary dark:bg-es-bg-secondary-dark border border-es-border dark:border-es-border-dark text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
   danger: 'bg-red-600 hover:bg-red-700 text-white',
 }
 
@@ -57,7 +57,7 @@ const sizeClasses = {
     :type="type"
     :disabled="disabled || loading"
     :class="[
-      'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-esperion-primary',
+      'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-es-accent-primary dark:focus:ring-es-accent-primary-dark',
       variantClasses[variant],
       sizeClasses[size],
       (disabled || loading) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',

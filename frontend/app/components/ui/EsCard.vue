@@ -27,9 +27,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Variant classes following Esperion 60-30-10 rule
 const variantClasses = {
-  default: 'bg-esperion-light-surface dark:bg-esperion-dark-surface border border-esperion-light-border dark:border-esperion-dark-border',
-  elevated: 'bg-esperion-light-surface dark:bg-esperion-dark-surface shadow-lg',
-  outlined: 'bg-transparent border-2 border-esperion-primary',
+  default: 'bg-es-bg-secondary dark:bg-es-bg-secondary-dark border border-es-border dark:border-es-border-dark',
+  elevated: 'bg-es-bg-secondary dark:bg-es-bg-secondary-dark shadow-lg',
+  outlined: 'bg-transparent border-2 border-es-accent-primary dark:border-es-accent-primary-dark',
 }
 
 // Padding classes
@@ -59,7 +59,7 @@ const hoverClass = computed(() => {
     ]"
   >
     <!-- Header slot -->
-    <div v-if="$slots.header" class="mb-4 pb-4 border-b border-esperion-light-border dark:border-esperion-dark-border">
+    <div v-if="$slots.header" class="mb-4 pb-4 border-b border-es-border dark:border-es-border-dark">
       <slot name="header" />
     </div>
 
@@ -67,7 +67,7 @@ const hoverClass = computed(() => {
     <slot />
 
     <!-- Footer slot -->
-    <div v-if="$slots.footer" class="mt-4 pt-4 border-t border-esperion-light-border dark:border-esperion-dark-border">
+    <div v-if="$slots.footer" class="mt-4 pt-4 border-t border-es-border dark:border-es-border-dark">
       <slot name="footer" />
     </div>
   </div>
