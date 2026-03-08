@@ -6,10 +6,10 @@
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="container mx-auto px-4 text-center">
           <h1 class="text-4xl md:text-5xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Our Services
+            Layanan Kami
           </h1>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-lg max-w-2xl mx-auto">
-            Comprehensive digital solutions to transform your business
+            Solusi digital yang disusun untuk membantu bisnis bergerak lebih jelas dan lebih siap tumbuh
           </p>
         </div>
       </div>
@@ -22,7 +22,7 @@
           <NuxtLink
             v-for="service in services"
             :key="service.slug"
-            :to="`/our-services/${service.slug}`"
+            :to="localePath(`/our-services/${service.slug}`)"
             class="group bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-lg p-8 shadow-md hover:shadow-xl transition-all"
           >
             <div class="w-16 h-16 mb-6 rounded-xl bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 flex items-center justify-center group-hover:bg-es-accent-primary dark:group-hover:bg-es-accent-primary-dark transition-colors">
@@ -35,7 +35,7 @@
               {{ service.description }}
             </p>
             <div class="flex items-center text-es-accent-primary dark:text-es-accent-primary-dark font-medium">
-              Learn More <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+              Pelajari Detailnya <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </NuxtLink>
         </div>
@@ -47,10 +47,10 @@
       <div class="container mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Why Choose Esperion?
+            Kenapa Memilih Esperion?
           </h2>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark max-w-2xl mx-auto">
-            We deliver exceptional results through our expertise and dedication
+            Kami menggabungkan strategi, eksekusi, dan kolaborasi yang rapi untuk hasil yang lebih terarah
           </p>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -71,16 +71,16 @@
     <section class="py-16 md:py-24 bg-es-accent-primary dark:bg-es-accent-primary-dark">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-es-text-inverse dark:text-es-text-inverse-dark mb-4">
-          Ready to Start Your Project?
+          Siap Memulai Proyek Anda?
         </h2>
         <p class="text-es-text-inverse/90 dark:text-es-text-inverse-dark/90 text-lg mb-8 max-w-2xl mx-auto">
-          Let's discuss how we can help transform your digital presence
+          Ceritakan konteks bisnis Anda, lalu kami bantu petakan solusi digital yang paling relevan.
         </p>
         <NuxtLink
-          to="/contact-us"
+          :to="localePath('/contact-us')"
           class="inline-flex items-center px-8 py-4 bg-es-bg-inverse dark:bg-es-bg-inverse-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark transition-colors"
         >
-          Get a Free Consultation
+          Jadwalkan Konsultasi
         </NuxtLink>
       </div>
     </section>
@@ -88,57 +88,60 @@
 </template>
 
 <script setup lang="ts">
+import { publicServices } from '../data/public-content';
+
 // SEO Meta
+const pageUrl = 'https://esperion.id/id/our-services';
+const localePath = useLocalePath();
+
 useSeoMeta({
-  title: 'Our Services - Esperion Digital Agency',
-  description: 'Explore our comprehensive digital services including web development, mobile apps, UI/UX design, and digital marketing.',
-  ogTitle: 'Our Services',
-  ogDescription: 'Comprehensive digital solutions for your business.',
+  title: 'Layanan Digital Marketing Terbaik di Jakarta - Esperion Agency',
+  description: 'Temukan layanan digital terlengkap dari Esperion Agency di Jakarta. Web development, aplikasi mobile, SEO, marketing digital, dan UI/UX design profesional.',
+  ogTitle: 'Layanan Digital Agency Jakarta - Esperion',
+  ogDescription: 'Layanan digital marketing, pengembangan web dan aplikasi mobile profesional di Jakarta.',
+  ogImage: '/images/services-banner.jpg',
+  ogUrl: pageUrl,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Layanan Digital Agency Jakarta - Esperion',
+  twitterDescription: 'Web development, mobile app, dan digital marketing terbaik untuk bisnis di Indonesia.',
+  twitterImage: '/images/services-banner.jpg',
+  ogLocale: 'id_ID',
 });
 
-const services = [
-  { 
-    slug: 'web-development', 
-    title: 'Web Development', 
-    description: 'Custom websites and web applications built with modern technologies like React, Vue, and Node.js. From simple landing pages to complex enterprise systems.',
-    icon: '💻'
-  },
-  { 
-    slug: 'mobile-app-development', 
-    title: 'Mobile App Development', 
-    description: 'Native and cross-platform mobile applications for iOS and Android using React Native, Flutter, and Swift.',
-    icon: '📱'
-  },
-  { 
-    slug: 'ui-ux-design', 
-    title: 'UI/UX Design', 
-    description: 'User-centered design that creates intuitive and engaging experiences. Wireframes, prototypes, and polished interfaces.',
-    icon: '🎨'
-  },
-  { 
-    slug: 'digital-marketing', 
-    title: 'Digital Marketing', 
-    description: 'SEO, SEM, social media marketing, and content strategies to grow your online presence and drive conversions.',
-    icon: '📈'
-  },
-  { 
-    slug: 'ecommerce-solutions', 
-    title: 'E-Commerce Solutions', 
-    description: 'Complete online store setup with Shopify, WooCommerce, and custom solutions. Payment integration and inventory management.',
-    icon: '🛒'
-  },
-  { 
-    slug: 'consulting', 
-    title: 'Digital Consulting', 
-    description: 'Technology strategy and digital transformation consulting to help your business stay competitive in the digital age.',
-    icon: '💡'
-  },
-];
+// Define schema for the services page
+useSchemaOrg([
+  defineWebPage({
+    '@type': 'CollectionPage',
+    name: 'Layanan Esperion Digital Agency',
+    description: 'Berbagai layanan digital profesional untuk membantu pertumbuhan bisnis Anda di Indonesia',
+    url: pageUrl,
+    dateModified: new Date().toISOString()
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Beranda',
+        item: 'https://esperion.id/id'
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Layanan Kami',
+        item: pageUrl
+      }
+    ]
+  })
+]);
+
+const services = publicServices;
 
 const reasons = [
-  { icon: '🏆', title: 'Proven Track Record', description: '150+ successful projects delivered' },
-  { icon: '👥', title: 'Expert Team', description: '25+ skilled professionals' },
-  { icon: '⚡', title: 'Fast Delivery', description: 'Agile methodology for quick turnaround' },
-  { icon: '💬', title: '24/7 Support', description: 'Dedicated support team always available' },
+  { icon: '🏆', title: 'Track record teruji', description: 'Lebih dari 150 proyek digital telah kami rampungkan.' },
+  { icon: '👥', title: 'Tim lintas disiplin', description: 'Strategi, desain, dan pengembangan bergerak dalam satu alur kerja.' },
+  { icon: '⚡', title: 'Eksekusi bertahap', description: 'Pendekatan iteratif membantu keputusan bergerak cepat tanpa kehilangan arah.' },
+  { icon: '💬', title: 'Komunikasi terbuka', description: 'Setiap tahap kerja dibangun dengan konteks, dokumentasi, dan ekspektasi yang jelas.' },
 ];
 </script>

@@ -19,7 +19,7 @@
               {{ work.platform }}
             </span>
             <span v-if="work.featured" class="px-4 py-1 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-full text-sm font-semibold">
-              Featured Project
+               Proyek Sorotan
             </span>
           </div>
 
@@ -30,7 +30,7 @@
           <div class="flex flex-wrap items-center gap-6 text-es-text-secondary dark:text-es-text-secondary-dark mb-8">
             <div class="flex items-center gap-2">
               <span>👤</span>
-              <span>Client: <strong class="text-es-text-primary dark:text-es-text-primary-dark">{{ work.client_name }}</strong></span>
+               <span>Klien: <strong class="text-es-text-primary dark:text-es-text-primary-dark">{{ work.client_name }}</strong></span>
             </div>
           </div>
 
@@ -48,18 +48,18 @@
 
           <!-- Description -->
           <div class="prose prose-lg dark:prose-invert max-w-none mb-12">
-            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">Project Overview</h2>
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">Ringkasan Proyek</h2>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
               {{ work.description }}
             </p>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              Halaman ini menampilkan gambaran singkat hasil kerja, ruang lingkup utama, dan indikator hasil yang paling relevan untuk memahami konteks proyek tanpa mengklaim detail rahasia yang belum dipublikasikan.
             </p>
           </div>
 
           <!-- Key Features -->
           <div class="mb-12">
-            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">Key Features</h2>
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">Ruang Lingkup Utama</h2>
             <div class="grid md:grid-cols-2 gap-4">
               <div v-for="feature in features" :key="feature" class="flex items-start gap-3">
                 <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
@@ -70,7 +70,7 @@
 
           <!-- Gallery -->
           <div class="mb-12">
-            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">Project Gallery</h2>
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">Galeri Proyek</h2>
             <div class="grid md:grid-cols-2 gap-4">
               <img v-for="img in gallery" :key="img" :src="img" :alt="work.title" class="rounded-lg hover:shadow-lg transition-shadow" />
             </div>
@@ -79,16 +79,16 @@
           <!-- CTA -->
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <NuxtLink
-              to="/contact-us"
+              :to="localePath('/contact-us')"
               class="inline-flex justify-center items-center px-8 py-4 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
             >
-              Start Your Project
+              Mulai Diskusi Proyek
             </NuxtLink>
             <NuxtLink
-              to="/our-works"
+              :to="localePath('/our-works')"
               class="inline-flex justify-center items-center px-8 py-4 border-2 border-es-border dark:border-es-border-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:border-es-accent-primary dark:hover:border-es-accent-primary-dark transition-colors"
             >
-              View All Works
+              Lihat Semua Portofolio
             </NuxtLink>
           </div>
         </div>
@@ -99,13 +99,13 @@
     <section class="py-12 md:py-16 bg-es-bg-secondary dark:bg-es-bg-secondary-dark">
       <div class="container mx-auto px-4">
         <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-8">
-          Related Projects
+          Proyek Terkait
         </h2>
         <div class="grid md:grid-cols-3 gap-6">
           <NuxtLink
             v-for="related in relatedWorks"
             :key="related.id"
-            :to="`/our-works/${related.slug}`"
+            :to="localePath(`/our-works/${related.slug}`)"
             class="group bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow"
           >
             <img :src="related.image" :alt="related.title" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -125,56 +125,41 @@
 </template>
 
 <script setup lang="ts">
+import { findPublicWorkBySlug, getRelatedWorks } from '../../data/public-content';
+
 const route = useRoute();
+const localePath = useLocalePath();
 
-// SEO Meta
+const slugParam = computed(() => {
+  const raw = route.params.slug;
+
+  if (Array.isArray(raw)) {
+    return raw[0] ?? '';
+  }
+
+  return typeof raw === 'string' ? raw : '';
+});
+
+const work = computed(() => {
+  const record = findPublicWorkBySlug(slugParam.value);
+
+  if (!record) {
+    throw createError({ statusCode: 404, statusMessage: 'Work not found' });
+  }
+
+  return record;
+});
+
+const features = computed(() => work.value.features);
+const gallery = computed(() => work.value.gallery);
+const relatedWorks = computed(() => getRelatedWorks(work.value.slug, 3));
+
 useSeoMeta({
-  title: 'Project Detail - Esperion Digital Agency',
-  description: 'View project details and case study.',
+  title: () => `${work.value.title} - Esperion Digital Agency`,
+  description: () => work.value.description,
+  ogTitle: () => `${work.value.title} - Esperion Digital Agency`,
+  ogDescription: () => work.value.description,
+  ogImage: () => work.value.image,
+  ogType: 'article'
 });
-
-// Work data (in production, fetch from API)
-const work = ref({
-  id: 1,
-  slug: route.params.slug,
-  title: 'E-Commerce Platform Redesign',
-  description: 'Complete redesign of online store resulting in 45% increase in conversions and improved user experience.',
-  image: '/works/work-1.jpg',
-  service: 'Web Development',
-  platform: 'Shopify',
-  featured: true,
-  client_name: 'Fashion Retailer',
-  metrics: [
-    { label: 'Conversion', value: '45', suffix: '%' },
-    { label: 'Revenue', value: '120', suffix: '%' },
-    { label: 'Speed', value: '2.1', suffix: 's' },
-    { label: 'Users', value: '50', suffix: 'K' },
-    { label: 'Orders', value: '10', suffix: 'K/mo' },
-    { label: 'Satisfaction', value: '95', suffix: '%' },
-  ],
-});
-
-const features = [
-  'Custom Shopify theme development',
-  'Mobile-first responsive design',
-  'Advanced product filtering',
-  'Integrated payment gateway',
-  'Inventory management system',
-  'Customer account dashboard',
-  'SEO optimization',
-  'Performance optimization',
-];
-
-const gallery = [
-  '/works/gallery-1.jpg',
-  '/works/gallery-2.jpg',
-  '/works/gallery-3.jpg',
-  '/works/gallery-4.jpg',
-];
-
-const relatedWorks = [
-  { id: 2, slug: 'mobile-banking-app', title: 'Mobile Banking App', service: 'Mobile App Development', image: '/works/work-2.jpg' },
-  { id: 4, slug: 'restaurant-website', title: 'Restaurant Chain Website', service: 'Web Development', image: '/works/work-4.jpg' },
-  { id: 8, slug: 'ecommerce-mobile-app', title: 'E-Commerce Mobile App', service: 'Mobile App Development', image: '/works/work-8.jpg' },
-];
 </script>

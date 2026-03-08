@@ -25,7 +25,7 @@
             <!-- What We Offer -->
             <div class="mb-12">
               <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-                What We Offer
+                Cakupan Layanan
               </h2>
               <div class="grid md:grid-cols-2 gap-6">
                 <div v-for="feature in features" :key="feature.title" class="flex gap-4">
@@ -47,7 +47,7 @@
             <!-- Process -->
             <div class="mb-12">
               <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-                Our Process
+                Alur Kerja
               </h2>
               <div class="space-y-6">
                 <div v-for="(step, index) in process" :key="step.title" class="flex gap-4">
@@ -72,26 +72,26 @@
             <!-- Pricing -->
             <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-6 mb-8">
               <h3 class="text-xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-                Starting From
+                 Estimasi Mulai Dari
               </h3>
               <div class="text-4xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
                 {{ service.pricing }}
               </div>
               <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm mb-4">
-                Custom quotes available based on project scope
+                 Estimasi akhir menyesuaikan ruang lingkup, kompleksitas, dan kebutuhan integrasi.
               </p>
               <NuxtLink
-                to="/contact-us"
+                :to="localePath('/contact-us')"
                 class="w-full inline-flex justify-center items-center px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
               >
-                Get a Quote
+                 Minta Estimasi
               </NuxtLink>
             </div>
 
             <!-- FAQ -->
             <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-6">
               <h3 class="text-xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-                Frequently Asked Questions
+                 Pertanyaan yang Sering Muncul
               </h3>
               <div class="space-y-4">
                 <div v-for="faq in faqs" :key="faq.question" class="border-b border-es-border dark:border-es-border-dark pb-4 last:border-0 last:pb-0">
@@ -113,13 +113,13 @@
     <section class="py-12 md:py-16 bg-es-bg-secondary dark:bg-es-bg-secondary-dark">
       <div class="container mx-auto px-4">
         <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-8">
-          Related Services
+          Layanan Terkait
         </h2>
         <div class="grid md:grid-cols-3 gap-6">
           <NuxtLink
             v-for="related in relatedServices"
             :key="related.slug"
-            :to="`/our-services/${related.slug}`"
+            :to="localePath(`/our-services/${related.slug}`)"
             class="group bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg p-6 shadow-md hover:shadow-xl transition-all"
           >
             <div class="text-3xl mb-4">{{ related.icon }}</div>
@@ -138,16 +138,16 @@
     <section class="py-16 md:py-24 bg-es-accent-primary dark:bg-es-accent-primary-dark">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-es-text-inverse dark:text-es-text-inverse-dark mb-4">
-          Ready to Get Started?
+          Siap Melangkah ke Tahap Berikutnya?
         </h2>
         <p class="text-es-text-inverse/90 dark:text-es-text-inverse-dark/90 text-lg mb-8 max-w-2xl mx-auto">
-          Let's discuss your project and find the perfect solution for your business
+          Ceritakan konteks bisnis Anda, lalu kami bantu menyusun pendekatan yang paling relevan.
         </p>
         <NuxtLink
-          to="/contact-us"
+          :to="localePath('/contact-us')"
           class="inline-flex items-center px-8 py-4 bg-es-bg-inverse dark:bg-es-bg-inverse-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark transition-colors"
         >
-          Contact Us Today
+          Hubungi Tim Esperion
         </NuxtLink>
       </div>
     </section>
@@ -155,51 +155,105 @@
 </template>
 
 <script setup lang="ts">
+import { findPublicServiceBySlug, getRelatedServices } from '../../data/public-content';
+
 const route = useRoute();
+const localePath = useLocalePath();
+const { locale } = useI18n();
 
-// SEO Meta
+const slugParam = computed(() => {
+  const raw = route.params.slug;
+
+  if (Array.isArray(raw)) {
+    return raw[0] ?? '';
+  }
+
+  return typeof raw === 'string' ? raw : '';
+});
+
+const service = computed(() => {
+  const record = findPublicServiceBySlug(slugParam.value);
+
+  if (!record) {
+    throw createError({ statusCode: 404, statusMessage: 'Service not found' });
+  }
+
+  return record;
+});
+
+const features = computed(() => service.value.features);
+const process = computed(() => service.value.process);
+const faqs = computed(() => service.value.faqs);
+const relatedServices = computed(() => getRelatedServices(service.value.slug, 3));
+
+const serviceName = computed(() => service.value.title);
+const serviceSlug = computed(() => service.value.slug);
+const localePrefix = computed(() => (locale.value === 'en' ? 'en' : 'id'));
+
+const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/our-services/${serviceSlug.value}`);
+const imageUrl = computed(() => `/images/service-${serviceSlug.value.replace(/-/g, '')}.jpg`);
+
 useSeoMeta({
-  title: 'Service Detail - Esperion Digital Agency',
-  description: 'Learn more about our digital services.',
+  title: () => `${serviceName.value} Jakarta | Jasa ${serviceName.value} Terbaik`,
+  description: () => `Kami menawarkan layanan ${service.value.description.toLowerCase()}. Solusi terbaik untuk memajukan bisnis Anda.`,
+  ogTitle: () => `${serviceName.value} Jakarta | Jasa ${serviceName.value} Terbaik`,
+  ogDescription: () => `Kami menawarkan layanan ${service.value.description.toLowerCase()}. Solusi terbaik untuk memajukan bisnis Anda.`,
+  ogImage: () => imageUrl.value || '/images/hero-service-development.jpg',
+  ogUrl: () => pageUrl.value,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => `${serviceName.value} Jakarta | Jasa ${serviceName.value} Terbaik`,
+  twitterDescription: () => `Kami menawarkan layanan ${service.value.description.toLowerCase()}. Solusi terbaik untuk memajukan bisnis Anda.`,
+  twitterImage: () => imageUrl.value || '/images/hero-service-development.jpg',
+  ogLocale: () => (locale.value === 'en' ? 'en_US' : 'id_ID')
 });
 
-// Service data (in production, fetch from API based on slug)
-const service = ref({
-  slug: route.params.slug,
-  title: 'Web Development',
-  description: 'Custom websites and web applications built with modern technologies.',
-  icon: '💻',
-  pricing: '$5,000',
-});
-
-const features = [
-  { icon: '🎨', title: 'Custom Design', description: 'Unique designs tailored to your brand' },
-  { icon: '⚡', title: 'Fast Performance', description: 'Optimized for speed and efficiency' },
-  { icon: '📱', title: 'Mobile Responsive', description: 'Perfect on all devices' },
-  { icon: '🔒', title: 'Secure', description: 'Built with security best practices' },
-  { icon: '🔍', title: 'SEO Optimized', description: 'Ready to rank on search engines' },
-  { icon: '🛠️', title: 'Easy Maintenance', description: 'Simple to update and manage' },
-];
-
-const process = [
-  { title: 'Discovery', description: 'We learn about your business, goals, and requirements' },
-  { title: 'Planning', description: 'Create detailed project plan and timeline' },
-  { title: 'Design', description: 'Design wireframes and visual mockups' },
-  { title: 'Development', description: 'Build your solution using agile methodology' },
-  { title: 'Testing', description: 'Thorough testing for quality assurance' },
-  { title: 'Launch', description: 'Deploy and monitor your project' },
-];
-
-const faqs = [
-  { question: 'How long does a typical project take?', answer: 'Most projects take 4-12 weeks depending on complexity and scope.' },
-  { question: 'What technologies do you use?', answer: 'We use modern technologies like React, Vue, Node.js, and more based on project needs.' },
-  { question: 'Do you provide ongoing support?', answer: 'Yes, we offer maintenance and support packages for all our projects.' },
-  { question: 'Can you work with existing designs?', answer: 'Absolutely! We can work with your existing designs or create new ones.' },
-];
-
-const relatedServices = [
-  { slug: 'mobile-app-development', title: 'Mobile App Development', description: 'Native and cross-platform mobile apps', icon: '📱' },
-  { slug: 'ui-ux-design', title: 'UI/UX Design', description: 'User-centered design solutions', icon: '🎨' },
-  { slug: 'ecommerce-solutions', title: 'E-Commerce Solutions', description: 'Complete online store solutions', icon: '🛒' },
-];
+useSchemaOrg([
+  defineWebPage({
+    '@type': 'CollectionPage',
+    name: service.value.title,
+    description: service.value.description,
+    url: pageUrl.value,
+    image: imageUrl.value || '/images/hero-service-development.jpg',
+    dateModified: new Date().toISOString()
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Beranda',
+        item: `https://esperion.id/${localePrefix.value}`
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Layanan',
+        item: `https://esperion.id/${localePrefix.value}/our-services`
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: service.value.title,
+        item: pageUrl.value
+      }
+    ]
+  }),
+  defineQuestion({
+    name: 'Berapa lama waktu yang dibutuhkan untuk menyelesaikan proyek?',
+    acceptedAnswer: 'Durasi rata-rata untuk sebuah proyek adalah 4-12 minggu tergantung pada kompleksitas dan lingkup pekerjaan.'
+  }),
+  defineQuestion({
+    name: 'Apa saja teknologi yang digunakan?',
+    acceptedAnswer: 'Kami menggunakan teknologi modern seperti React, Vue, Node.js, dan lainnya sesuai kebutuhan proyek Anda.'
+  }),
+  defineQuestion({
+    name: 'Apakah Anda menyediakan dukungan purna jual?',
+    acceptedAnswer: 'Ya, kami menawarkan paket pemeliharaan dan dukungan untuk semua proyek yang kami kerjakan.'
+  }),
+  defineQuestion({
+    name: 'Dapatkah Anda bekerja dengan desain yang sudah ada?',
+    acceptedAnswer: 'Tentu! Kami bisa bekerja dengan desain yang sudah Anda miliki atau membuat yang baru dari awal.'
+  })
+]);
 </script>

@@ -1,10 +1,21 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
-  devtools: { enabled: true },
+const isDev = process.env.NODE_ENV !== 'production'
 
-  // Nuxt 4 app directory
-  srcDir: 'app/',
+export default ({
+  compatibilityDate: '2024-11-01',
+  srcDir: '.',
+  devtools: { enabled: true },
+  pages: true,
+  dir: {
+    pages: 'app/pages'
+  },
+
+  components: [
+    {
+      path: '~/app/components',
+      pathPrefix: false
+    }
+  ],
 
   // Modules
   modules: [
@@ -13,12 +24,10 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
+    'nuxt-schema-org',
     '@nuxt/eslint',
     '@nuxt/scripts',
     '@formkit/auto-animate/nuxt',
-    '@nuxt/test-utils/module',
-    '@nuxtjs/a11y',
-    'nuxt-hints',
     '@nuxtjs/color-mode',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
@@ -31,7 +40,7 @@ export default defineNuxtConfig({
   },
 
   // Route rules for ISR (public pages) and CSR (dashboard)
-  routeRules: {
+  routeRules: isDev ? {} : {
     // Home page - 60s revalidation
     '/': { isr: 60 },
     '/id/**': { isr: 60 },
@@ -132,20 +141,35 @@ export default defineNuxtConfig({
 
   // Image configuration
   image: {
-    format: ['webp', 'png'],
+    format: ['webp', 'avif', 'png'],
     quality: 80,
+    densities: [1, 2],
+    provider: 'ipx',
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+      '2xl': 1536,
+    }
   },
 
   // TypeScript configuration
   typescript: {
     strict: true,
-    typeCheck: true,
+    typeCheck: false,
+  },
+
+  experimental: {
+    appManifest: false,
   },
 
   // Vite configuration
   vite: {
     vue: {
-      scriptDefineProps: ['modelValue'],
+      scriptSetup: true,
     },
   },
 
@@ -163,6 +187,11 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+  // CSS files
+  css: [
+    '~/app/assets/css/main.css',
+  ],
 
   // i18n configuration
   i18n: {

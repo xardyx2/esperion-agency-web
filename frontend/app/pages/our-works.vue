@@ -6,10 +6,10 @@
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="container mx-auto px-4 text-center">
           <h1 class="text-4xl md:text-5xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Our Works
+            Portofolio Kami
           </h1>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-lg max-w-2xl mx-auto">
-            Explore our portfolio of successful projects across various industries
+            Lihat contoh pendekatan kerja Esperion di berbagai kebutuhan digital
           </p>
         </div>
       </div>
@@ -40,7 +40,7 @@
               v-model="selectedPlatform"
               class="px-4 py-2 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark border border-es-border dark:border-es-border-dark rounded-lg text-es-text-secondary dark:text-es-text-secondary-dark focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:focus:ring-es-accent-primary-dark"
             >
-              <option value="">All Platforms</option>
+              <option value="">Semua Platform</option>
               <option v-for="platform in platforms" :key="platform" :value="platform">
                 {{ platform }}
               </option>
@@ -51,7 +51,7 @@
               @click="clearFilters"
               class="px-4 py-2 text-es-accent-primary dark:text-es-accent-primary-dark hover:underline text-sm font-medium"
             >
-              Clear Filters
+              Reset Filter
             </button>
           </div>
         </div>
@@ -64,7 +64,7 @@
         <!-- Results Count -->
         <div class="mb-8">
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-            Showing {{ filteredWorks.length }} of {{ works.length }} projects
+            Menampilkan {{ filteredWorks.length }} dari {{ works.length }} proyek
           </p>
         </div>
 
@@ -72,16 +72,16 @@
         <div v-if="filteredWorks.length === 0" class="text-center py-16">
           <div class="text-6xl mb-4">🔍</div>
           <h3 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-            No projects found
+            Proyek tidak ditemukan
           </h3>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark mb-4">
-            Try adjusting your filters to see more results
+            Coba ubah filter untuk melihat hasil lain
           </p>
           <button
             @click="clearFilters"
             class="px-6 py-2 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-medium hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
           >
-            Clear All Filters
+            Reset Semua Filter
           </button>
         </div>
 
@@ -90,7 +90,7 @@
           <NuxtLink
             v-for="work in visibleWorks"
             :key="work.id"
-            :to="`/our-works/${work.slug}`"
+            :to="localePath(`/our-works/${work.slug}`)"
             class="group bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all"
           >
             <div class="relative overflow-hidden">
@@ -100,7 +100,7 @@
                 class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
               />
               <div v-if="work.featured" class="absolute top-4 right-4 px-3 py-1 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark text-xs font-semibold rounded-full">
-                Featured
+                 Sorotan
               </div>
             </div>
             <div class="p-6">
@@ -134,7 +134,7 @@
             @click="loadMore"
             class="px-8 py-3 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-medium hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors"
           >
-            See More Projects
+            Lihat Proyek Lainnya
           </button>
         </div>
       </div>
@@ -143,13 +143,17 @@
 </template>
 
 <script setup lang="ts">
+import { publicWorks } from '../data/public-content';
+
 // SEO Meta
 useSeoMeta({
-  title: 'Our Works - Esperion Digital Agency Portfolio',
-  description: 'Browse our portfolio of successful digital projects including web development, mobile apps, and UI/UX design.',
-  ogTitle: 'Our Works Portfolio',
-  ogDescription: 'Explore our successful digital projects.',
+  title: 'Portofolio - Proyek Pilihan Esperion',
+  description: 'Jelajahi portofolio proyek digital Esperion, mulai dari website, aplikasi mobile, hingga pengalaman produk yang lebih terarah.',
+  ogTitle: 'Portofolio Esperion',
+  ogDescription: 'Lihat beberapa proyek digital pilihan dari Esperion.',
 });
+
+const localePath = useLocalePath();
 
 // State
 const selectedService = ref('');
@@ -158,213 +162,20 @@ const visibleCount = ref(6);
 
 // All Services for filter
 const allServices = [
-  { value: '', label: 'All Services' },
-  { value: 'Web Development', label: 'Web Development' },
-  { value: 'Mobile App Development', label: 'Mobile App Development' },
+  { value: '', label: 'Semua Layanan' },
+  { value: 'Web Development', label: 'Pengembangan Web' },
+  { value: 'Mobile App Development', label: 'Aplikasi Mobile' },
   { value: 'UI/UX Design', label: 'UI/UX Design' },
   { value: 'Digital Marketing', label: 'Digital Marketing' },
   { value: 'E-Commerce Solutions', label: 'E-Commerce' },
-  { value: 'Consulting', label: 'Consulting' },
+  { value: 'Consulting', label: 'Konsultasi' },
 ];
 
 // Available platforms
 const platforms = ['Shopify', 'React Native', 'Next.js', 'Nuxt', 'Flutter', 'WordPress', 'Laravel', 'Vue.js'];
 
 // Works data
-const works = ref([
-  { 
-    id: 1, 
-    slug: 'ecommerce-platform-redesign', 
-    title: 'E-Commerce Platform Redesign', 
-    description: 'Complete redesign of online store resulting in 45% increase in conversions and improved user experience.',
-    image: '/works/work-1.jpg', 
-    service: 'Web Development', 
-    platform: 'Shopify',
-    featured: true,
-    client_name: 'Fashion Retailer',
-    metrics: [
-      { label: 'Conversion Increase', value: '45', suffix: '%' },
-      { label: 'Revenue Growth', value: '120', suffix: '%' },
-      { label: 'Page Speed', value: '2.1', suffix: 's' },
-    ]
-  },
-  { 
-    id: 2, 
-    slug: 'mobile-banking-app', 
-    title: 'Mobile Banking App', 
-    description: 'Secure and intuitive mobile banking experience with biometric authentication and real-time notifications.',
-    image: '/works/work-2.jpg', 
-    service: 'Mobile App Development', 
-    platform: 'React Native',
-    featured: true,
-    client_name: 'Regional Bank',
-    metrics: [
-      { label: 'Downloads', value: '50', suffix: 'K+' },
-      { label: 'App Rating', value: '4.8', suffix: '/5' },
-      { label: 'Active Users', value: '30', suffix: 'K' },
-    ]
-  },
-  { 
-    id: 3, 
-    slug: 'healthcare-portal', 
-    title: 'Healthcare Patient Portal', 
-    description: 'Comprehensive patient management system with telemedicine capabilities and electronic health records.',
-    image: '/works/work-3.jpg', 
-    service: 'Web Development', 
-    platform: 'Next.js',
-    featured: true,
-    client_name: 'Healthcare Network',
-    metrics: [
-      { label: 'Patients Served', value: '100', suffix: 'K+' },
-      { label: 'Doctors', value: '500', suffix: '+' },
-      { label: 'Uptime', value: '99.9', suffix: '%' },
-    ]
-  },
-  { 
-    id: 4, 
-    slug: 'restaurant-website', 
-    title: 'Restaurant Chain Website', 
-    description: 'Multi-location website with online ordering integration and real-time menu management.',
-    image: '/works/work-4.jpg', 
-    service: 'Web Development', 
-    platform: 'Nuxt',
-    featured: false,
-    client_name: 'Restaurant Group',
-    metrics: [
-      { label: 'Locations', value: '25', suffix: '+' },
-      { label: 'Online Orders', value: '10', suffix: 'K/mo' },
-      { label: 'SEO Traffic', value: '200', suffix: '%' },
-    ]
-  },
-  { 
-    id: 5, 
-    slug: 'fitness-tracking-app', 
-    title: 'Fitness Tracking App', 
-    description: 'Comprehensive fitness tracking application with AI-powered workout recommendations and nutrition planning.',
-    image: '/works/work-5.jpg', 
-    service: 'Mobile App Development', 
-    platform: 'Flutter',
-    featured: true,
-    client_name: 'Fitness Startup',
-    metrics: [
-      { label: 'Active Users', value: '25', suffix: 'K' },
-      { label: 'Workouts Tracked', value: '1', suffix: 'M+' },
-      { label: 'App Rating', value: '4.7', suffix: '/5' },
-    ]
-  },
-  { 
-    id: 6, 
-    slug: 'saas-dashboard-ui', 
-    title: 'SaaS Dashboard UI Design', 
-    description: 'Modern and intuitive dashboard design for B2B SaaS platform with complex data visualization.',
-    image: '/works/work-6.jpg', 
-    service: 'UI/UX Design', 
-    platform: 'Vue.js',
-    featured: false,
-    client_name: 'SaaS Company',
-    metrics: [
-      { label: 'User Engagement', value: '60', suffix: '%' },
-      { label: 'Task Completion', value: '85', suffix: '%' },
-      { label: 'NPS Score', value: '72', suffix: '' },
-    ]
-  },
-  { 
-    id: 7, 
-    slug: 'digital-marketing-campaign', 
-    title: 'Digital Marketing Campaign', 
-    description: 'Integrated digital marketing campaign across multiple channels driving brand awareness and lead generation.',
-    image: '/works/work-7.jpg', 
-    service: 'Digital Marketing', 
-    platform: 'WordPress',
-    featured: false,
-    client_name: 'Tech Startup',
-    metrics: [
-      { label: 'Lead Increase', value: '300', suffix: '%' },
-      { label: 'CTR', value: '4.5', suffix: '%' },
-      { label: 'ROI', value: '450', suffix: '%' },
-    ]
-  },
-  { 
-    id: 8, 
-    slug: 'ecommerce-mobile-app', 
-    title: 'E-Commerce Mobile App', 
-    description: 'Native shopping app with AR product visualization and seamless checkout experience.',
-    image: '/works/work-8.jpg', 
-    service: 'Mobile App Development', 
-    platform: 'React Native',
-    featured: false,
-    client_name: 'Retail Brand',
-    metrics: [
-      { label: 'App Sales', value: '35', suffix: '%' },
-      { label: 'Retention Rate', value: '45', suffix: '%' },
-      { label: 'Avg Order Value', value: '85', suffix: '$' },
-    ]
-  },
-  { 
-    id: 9, 
-    slug: 'corporate-website', 
-    title: 'Corporate Website Redesign', 
-    description: 'Enterprise website redesign with improved navigation and content management system.',
-    image: '/works/work-9.jpg', 
-    service: 'Web Development', 
-    platform: 'Laravel',
-    featured: false,
-    client_name: 'Corporation',
-    metrics: [
-      { label: 'Page Views', value: '500', suffix: 'K/mo' },
-      { label: 'Bounce Rate', value: '-40', suffix: '%' },
-      { label: 'Load Time', value: '1.8', suffix: 's' },
-    ]
-  },
-  { 
-    id: 10, 
-    slug: 'brand-identity-design', 
-    title: 'Brand Identity Design', 
-    description: 'Complete brand identity package including logo, color palette, and brand guidelines.',
-    image: '/works/work-10.jpg', 
-    service: 'UI/UX Design', 
-    platform: 'Nuxt',
-    featured: false,
-    client_name: 'Startup',
-    metrics: [
-      { label: 'Brand Recognition', value: '75', suffix: '%' },
-      { label: 'Social Engagement', value: '200', suffix: '%' },
-      { label: 'Website Traffic', value: '150', suffix: '%' },
-    ]
-  },
-  { 
-    id: 11, 
-    slug: 'seo-optimization-project', 
-    title: 'SEO Optimization Project', 
-    description: 'Comprehensive SEO strategy resulting in top rankings for competitive keywords.',
-    image: '/works/work-11.jpg', 
-    service: 'Digital Marketing', 
-    platform: 'WordPress',
-    featured: false,
-    client_name: 'Service Company',
-    metrics: [
-      { label: 'Organic Traffic', value: '400', suffix: '%' },
-      { label: 'Keyword Rankings', value: '50', suffix: '+' },
-      { label: 'Backlinks', value: '200', suffix: '+' },
-    ]
-  },
-  { 
-    id: 12, 
-    slug: 'digital-transformation-consulting', 
-    title: 'Digital Transformation Consulting', 
-    description: 'Strategic consulting for enterprise digital transformation initiative.',
-    image: '/works/work-12.jpg', 
-    service: 'Consulting', 
-    platform: 'Nuxt',
-    featured: false,
-    client_name: 'Enterprise',
-    metrics: [
-      { label: 'Cost Reduction', value: '30', suffix: '%' },
-      { label: 'Efficiency Gain', value: '50', suffix: '%' },
-      { label: 'Employee Satisfaction', value: '85', suffix: '%' },
-    ]
-  },
-]);
+const works = ref(publicWorks);
 
 // Computed
 const filteredWorks = computed(() => {
