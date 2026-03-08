@@ -6,10 +6,10 @@
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="container mx-auto px-4 text-center">
           <h1 class="text-4xl md:text-5xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Contact Us
+            Hubungi Kami
           </h1>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-lg max-w-2xl mx-auto">
-            Let's discuss your project and find the perfect solution
+            Ceritakan kebutuhan Anda, lalu kami bantu petakan langkah digital yang paling relevan.
           </p>
         </div>
       </div>
@@ -23,21 +23,21 @@
           <div class="lg:col-span-2">
             <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-8">
               <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-                Send Us a Message
+                Kirim Brief Anda
               </h2>
               <form @submit.prevent="handleSubmit" class="space-y-6">
                 <div class="grid md:grid-cols-2 gap-6">
                   <!-- Full Name -->
                   <div>
                     <label for="fullName" class="block text-sm font-medium text-es-text-primary dark:text-es-text-primary-dark mb-2">
-                      Full Name <span class="text-es-accent-primary">*</span>
+                       Nama Lengkap <span class="text-es-accent-primary">*</span>
                     </label>
                     <input
                       id="fullName"
                       v-model="form.fullName"
                       type="text"
                       required
-                      placeholder="John Doe"
+                       placeholder="Nama Anda"
                       class="w-full px-4 py-3 bg-es-bg-primary dark:bg-es-bg-primary-dark border border-es-border dark:border-es-border-dark rounded-lg text-es-text-primary dark:text-es-text-primary-dark focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:focus:ring-es-accent-primary-dark"
                     />
                   </div>
@@ -45,13 +45,13 @@
                   <!-- Company Name -->
                   <div>
                     <label for="companyName" class="block text-sm font-medium text-es-text-primary dark:text-es-text-primary-dark mb-2">
-                      Company Name
+                       Nama Perusahaan
                     </label>
                     <input
                       id="companyName"
                       v-model="form.companyName"
                       type="text"
-                      placeholder="Your Company"
+                       placeholder="Nama perusahaan atau brand"
                       class="w-full px-4 py-3 bg-es-bg-primary dark:bg-es-bg-primary-dark border border-es-border dark:border-es-border-dark rounded-lg text-es-text-primary dark:text-es-text-primary-dark focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:focus:ring-es-accent-primary-dark"
                     />
                   </div>
@@ -76,7 +76,7 @@
                   <!-- Phone -->
                   <div>
                     <label for="phone" class="block text-sm font-medium text-es-text-primary dark:text-es-text-primary-dark mb-2">
-                      Phone
+                       Nomor Telepon
                     </label>
                     <input
                       id="phone"
@@ -91,7 +91,7 @@
                 <!-- Service -->
                 <div>
                   <label for="service" class="block text-sm font-medium text-es-text-primary dark:text-es-text-primary-dark mb-2">
-                    Service <span class="text-es-accent-primary">*</span>
+                     Layanan yang Dibutuhkan <span class="text-es-accent-primary">*</span>
                   </label>
                   <select
                     id="service"
@@ -99,28 +99,28 @@
                     required
                     class="w-full px-4 py-3 bg-es-bg-primary dark:bg-es-bg-primary-dark border border-es-border dark:border-es-border-dark rounded-lg text-es-text-primary dark:text-es-text-primary-dark focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:focus:ring-es-accent-primary-dark"
                   >
-                    <option value="">Select a service</option>
-                    <option value="Web Development">Web Development</option>
-                    <option value="Mobile App Development">Mobile App Development</option>
+                    <option value="">Pilih layanan</option>
+                    <option value="Web Development">Pengembangan Web</option>
+                    <option value="Mobile App Development">Aplikasi Mobile</option>
                     <option value="UI/UX Design">UI/UX Design</option>
                     <option value="Digital Marketing">Digital Marketing</option>
-                    <option value="E-Commerce Solutions">E-Commerce Solutions</option>
-                    <option value="Consulting">Consulting</option>
-                    <option value="Other">Other</option>
+                    <option value="E-Commerce Solutions">Solusi E-Commerce</option>
+                    <option value="Consulting">Konsultasi Digital</option>
+                    <option value="Other">Lainnya</option>
                   </select>
                 </div>
 
                 <!-- Description -->
                 <div>
                   <label for="description" class="block text-sm font-medium text-es-text-primary dark:text-es-text-primary-dark mb-2">
-                    Project Description <span class="text-es-accent-primary">*</span>
+                     Ringkasan Proyek <span class="text-es-accent-primary">*</span>
                   </label>
                   <textarea
                     id="description"
                     v-model="form.description"
                     rows="6"
                     required
-                    placeholder="Tell us about your project, goals, and timeline..."
+                     placeholder="Ceritakan tujuan, konteks, dan target waktu proyek Anda..."
                     class="w-full px-4 py-3 bg-es-bg-primary dark:bg-es-bg-primary-dark border border-es-border dark:border-es-border-dark rounded-lg text-es-text-primary dark:text-es-text-primary-dark focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:focus:ring-es-accent-primary-dark resize-none"
                   ></textarea>
                 </div>
@@ -131,8 +131,8 @@
                   :disabled="isSubmitting"
                   class="w-full px-8 py-4 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span v-if="!isSubmitting">Send Message</span>
-                  <span v-else>Sending...</span>
+                  <span v-if="!isSubmitting">Kirim Pesan</span>
+                  <span v-else>Mengirim...</span>
                 </button>
               </form>
             </div>
@@ -143,13 +143,13 @@
             <!-- Contact Details -->
             <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-8">
               <h3 class="text-xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-                Contact Information
+                 Informasi Kontak
               </h3>
               <div class="space-y-4">
                 <div class="flex items-start gap-4">
                   <span class="text-2xl">📍</span>
                   <div>
-                    <h4 class="font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">Address</h4>
+                    <h4 class="font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">Lokasi</h4>
                     <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
                       Jakarta, Indonesia
                     </p>
@@ -158,7 +158,7 @@
                 <div class="flex items-start gap-4">
                   <span class="text-2xl">📱</span>
                   <div>
-                    <h4 class="font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">Phone / WhatsApp</h4>
+                    <h4 class="font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">Telepon / WhatsApp</h4>
                     <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
                       +62 812 3456 7890
                     </p>
@@ -169,16 +169,16 @@
                   <div>
                     <h4 class="font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">Email</h4>
                     <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
-                      hello@esperion.com
+                      hello@esperion.id
                     </p>
                   </div>
                 </div>
                 <div class="flex items-start gap-4">
                   <span class="text-2xl">🕐</span>
                   <div>
-                    <h4 class="font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">Business Hours</h4>
+                    <h4 class="font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">Jam Operasional</h4>
                     <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
-                      Monday - Friday: 9:00 AM - 6:00 PM WIB
+                      Senin - Jumat: 09.00 - 18.00 WIB
                     </p>
                   </div>
                 </div>
@@ -188,22 +188,22 @@
             <!-- Social Media -->
             <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-8">
               <h3 class="text-xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-                Follow Us
+                 Ikuti Esperion
               </h3>
               <div class="flex flex-wrap gap-4">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-2xl hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
+                 <a href="https://instagram.com/esperion_id" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-2xl hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
                   📷
                 </a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-2xl hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
+                 <a href="https://facebook.com/esperiondigital" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-2xl hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
                   👍
                 </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-2xl hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
+                 <a href="https://linkedin.com/company/esperiondigital" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-2xl hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
                   💼
                 </a>
-                <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-2xl hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
+                 <a href="https://tiktok.com/@esperion_id" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-2xl hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
                   🎵
                 </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-2xl hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
+                 <a href="https://twitter.com/esperion_id" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-2xl hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
                   𝕏
                 </a>
               </div>
@@ -218,15 +218,15 @@
       <div class="container mx-auto px-4">
         <div class="text-center mb-8">
           <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-            Our Location
+            Lokasi Kami
           </h2>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-            Visit us at our Jakarta office
+            Informasi alamat detail akan ditampilkan setelah materi publik final dikonfirmasi
           </p>
         </div>
         <div class="rounded-xl overflow-hidden h-[400px] bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center">
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-            🗺️ Map placeholder - Integrate with Google Maps
+            🗺️ Placeholder peta - menunggu detail lokasi publik resmi
           </p>
         </div>
       </div>
@@ -235,13 +235,50 @@
 </template>
 
 <script setup lang="ts">
+import { useContactApi } from '../composables/useApi'
+
 // SEO Meta
 useSeoMeta({
-  title: 'Contact Us - Esperion Digital Agency',
-  description: 'Get in touch with Esperion Digital Agency. We are here to help transform your digital presence.',
-  ogTitle: 'Contact Esperion',
-  ogDescription: 'Let us discuss your project.',
+  title: 'Hubungi Kami - Esperion Digital Agency Jakarta',
+  description: 'Kontak Esperion Digital Agency di Jakarta. Kami siap membantu transormasi digital bisnis Anda. Konsultasi GRATIS!',
+  ogTitle: 'Kontak Esperion - Digital Agency Jakarta',
+  ogDescription: 'Hubungi kami untuk konsultasi GRATIS tentang proyek digital Anda.',
+  ogImage: '/images/contact-banner.jpg',
+  ogUrl: 'https://esperion.id/id/contact-us',
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Kontak Esperion - Digital Agency Jakarta',
+  twitterDescription: 'Hubungi kami untuk konsultasi GRATIS tentang proyek digital Anda.',
+  twitterImage: '/images/contact-banner.jpg',
+  ogLocale: 'id_ID',
 });
+
+// Define schema for the contact page
+useSchemaOrg([
+  defineWebPage({
+    '@type': 'ContactPage',
+    name: 'Hubungi Kami - Esperion Digital Agency',
+    description: 'Halaman kontak untuk Esperion Digital Agency di Jakarta',
+    url: 'https://esperion.id/id/contact-us',
+    dateModified: new Date().toISOString()
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Beranda',
+        item: 'https://esperion.id/id'
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Kontak Kami',
+        item: 'https://esperion.id/id/contact-us'
+      }
+    ]
+  })
+]);
 
 // Form state
 const form = ref({
@@ -267,9 +304,15 @@ const handleSubmit = async () => {
     let recaptchaToken = null;
     
     // Execute reCAPTCHA if site key is configured and reCAPTCHA is loaded
-    if (recaptchaSiteKey && typeof window !== 'undefined' && window.grecaptcha) {
+    const windowWithRecaptcha = window as Window & {
+      grecaptcha?: {
+        execute: (siteKey: string, options: { action: string }) => Promise<string>
+      }
+    }
+
+    if (recaptchaSiteKey && typeof window !== 'undefined' && windowWithRecaptcha.grecaptcha) {
       try {
-        recaptchaToken = await window.grecaptcha.execute(recaptchaSiteKey, {action: 'contact'});
+        recaptchaToken = await windowWithRecaptcha.grecaptcha.execute(recaptchaSiteKey, { action: 'contact' });
       } catch (recaptchaError) {
         console.warn('reCAPTCHA execution failed, continuing without token:', recaptchaError);
         // Continue with form submission even if reCAPTCHA fails, letting the backend decide
@@ -293,8 +336,7 @@ const handleSubmit = async () => {
     const { submit } = useContactApi();
     await submit(payload);
     
-    // Show success notification
-    alert('Thank you for your message! We will get back to you soon.');
+    alert('Terima kasih. Brief Anda sudah terkirim dan tim Esperion akan segera menghubungi Anda.');
     
     // Reset form
     form.value = {
@@ -307,7 +349,7 @@ const handleSubmit = async () => {
     };
   } catch (error) {
     console.error('Error submitting contact form:', error);
-    alert('There was an error submitting your message. Please try again.');
+    alert('Terjadi kendala saat mengirim pesan. Silakan coba beberapa saat lagi.');
   } finally {
     isSubmitting.value = false;
   }

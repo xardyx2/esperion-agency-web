@@ -7,6 +7,7 @@
  */
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 
 // Page metadata
 useSeoMeta({
@@ -93,7 +94,7 @@ const content = computed(() => ({
           - **Portabilitas**: Menerima data dalam format terstruktur
           - **Keberatan**: Menolak pemrosesan data tertentu
           
-          Untuk menggunakan hak ini, hubungi: privacy@esperion.com
+           Untuk menggunakan hak ini, hubungi: privacy@esperion.id
         `,
       },
       {
@@ -135,9 +136,9 @@ const content = computed(() => ({
         content: `
           Jika Anda memiliki pertanyaan tentang kebijakan privasi ini:
           
-          **Email**: privacy@esperion.com
-          **Alamat**: [Alamat Perusahaan Anda]
-          **Telepon**: [Nomor Telepon Anda]
+           **Email**: privacy@esperion.id
+           **Alamat**: Detail alamat publik menunggu konfirmasi final
+           **Telepon**: Detail telepon legal menunggu konfirmasi final
           
           Untuk keluhan, Anda dapat menghubungi otoritas perlindungan data setempat.
         `,
@@ -219,7 +220,7 @@ const content = computed(() => ({
           - **Portability**: Receive data in a structured format
           - **Objection**: Object to certain data processing
           
-          To exercise these rights, contact: privacy@esperion.com
+           To exercise these rights, contact: privacy@esperion.id
         `,
       },
       {
@@ -261,9 +262,9 @@ const content = computed(() => ({
         content: `
           If you have questions about this privacy policy:
           
-          **Email**: privacy@esperion.com
-          **Address**: [Your Company Address]
-          **Phone**: [Your Phone Number]
+           **Email**: privacy@esperion.id
+           **Address**: Public address details are pending final confirmation
+           **Phone**: Legal contact number is pending final confirmation
           
           For complaints, you may contact your local data protection authority.
         `,
@@ -283,7 +284,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
         <h1
           class="text-4xl font-bold mb-4"
           :class="[
-            'text-esperion-light-text-primary dark:text-esperion-dark-text-primary',
+            'text-es-text-primary dark:text-es-text-primary-dark',
           ]"
         >
           {{ currentContent.title }}
@@ -291,7 +292,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
         <p
           class="text-sm"
           :class="[
-            'text-esperion-light-text-secondary dark:text-esperion-dark-text-secondary',
+            'text-es-text-secondary dark:text-es-text-secondary-dark',
           ]"
         >
           {{ currentContent.lastUpdated }}
@@ -308,7 +309,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
           <h2
             class="text-2xl font-semibold mb-4"
             :class="[
-              'text-esperion-light-text-primary dark:text-esperion-dark-text-primary',
+              'text-es-text-primary dark:text-es-text-primary-dark',
             ]"
           >
             {{ section.title }}
@@ -316,7 +317,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
           <div
             class="whitespace-pre-line"
             :class="[
-              'text-esperion-light-text-secondary dark:text-esperion-dark-text-secondary',
+              'text-es-text-secondary dark:text-es-text-secondary-dark',
             ]"
             v-html="section.content"
           />
@@ -326,8 +327,8 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
       <!-- Back to Home -->
       <div class="mt-12">
         <NuxtLink
-          to="/"
-          class="inline-flex items-center gap-2 text-esperion-primary hover:underline"
+          :to="localePath('/')"
+          class="inline-flex items-center gap-2 text-es-accent-primary dark:text-es-accent-primary-dark hover:underline"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -341,7 +342,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
 
 <style scoped>
 .prose :deep(a) {
-  color: #2B9EDB;
+  color: inherit;
   text-decoration: underline;
 }
 

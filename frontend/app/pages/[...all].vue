@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useLanguageDetect } from '../composables/useLanguageDetect'
+
 /**
  * Custom 404 Page
  * 
@@ -7,8 +9,10 @@
  * Auto-detects user language and offers redirect to correct language version
  */
 
-const { locale, detectLanguage } = useI18n()
+const { locale } = useI18n()
+const { detectLanguage } = useLanguageDetect()
 const route = useRoute()
+const localePath = useLocalePath()
 
 // Page metadata
 useSeoMeta({
@@ -89,7 +93,7 @@ function switchToSuggestedLang() {
       <h1
         class="text-9xl font-bold mb-4"
         :class="[
-          'text-esperion-primary',
+          'text-es-accent-primary dark:text-es-accent-primary-dark',
         ]"
       >
         {{ currentContent.title }}
@@ -99,7 +103,7 @@ function switchToSuggestedLang() {
       <h2
         class="text-3xl font-semibold mb-6"
         :class="[
-          'text-esperion-light-text-primary dark:text-esperion-dark-text-primary',
+          'text-es-text-primary dark:text-es-text-primary-dark',
         ]"
       >
         {{ currentContent.subtitle }}
@@ -109,7 +113,7 @@ function switchToSuggestedLang() {
       <p
         class="text-lg mb-8"
         :class="[
-          'text-esperion-light-text-secondary dark:text-esperion-dark-text-secondary',
+          'text-es-text-secondary dark:text-es-text-secondary-dark',
         ]"
       >
         {{ currentContent.message }}
@@ -120,14 +124,14 @@ function switchToSuggestedLang() {
         v-if="currentContent.possibleReasons.length > 0"
         class="mb-8 p-6 rounded-lg"
         :class="[
-          'bg-esperion-light-surface dark:bg-esperion-dark-surface',
-          'border border-esperion-light-border dark:border-esperion-dark-border',
+          'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
+          'border border-es-border dark:border-es-border-dark',
         ]"
       >
         <h3
           class="text-lg font-semibold mb-3"
           :class="[
-            'text-esperion-light-text-primary dark:text-esperion-dark-text-primary',
+            'text-es-text-primary dark:text-es-text-primary-dark',
           ]"
         >
           {{ locale === 'id' ? 'Kemungkinan Penyebab:' : 'Possible Reasons:' }}
@@ -138,10 +142,10 @@ function switchToSuggestedLang() {
             :key="reason"
             class="flex items-start gap-2"
             :class="[
-              'text-esperion-light-text-secondary dark:text-esperion-dark-text-secondary',
+              'text-es-text-secondary dark:text-es-text-secondary-dark',
             ]"
           >
-            <span class="text-esperion-primary mt-1">•</span>
+            <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">•</span>
             <span>{{ reason }}</span>
           </li>
         </ul>
@@ -152,7 +156,7 @@ function switchToSuggestedLang() {
         <h3
           class="text-lg font-semibold mb-3"
           :class="[
-            'text-esperion-light-text-primary dark:text-esperion-dark-text-primary',
+            'text-es-text-primary dark:text-es-text-primary-dark',
           ]"
         >
           {{ locale === 'id' ? 'Saran Kami:' : 'Our Suggestions:' }}
@@ -163,10 +167,10 @@ function switchToSuggestedLang() {
             :key="suggestion"
             class="flex items-start gap-2"
             :class="[
-              'text-esperion-light-text-secondary dark:text-esperion-dark-text-secondary',
+              'text-es-text-secondary dark:text-es-text-secondary-dark',
             ]"
           >
-            <span class="text-esperion-primary mt-1">✓</span>
+            <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
             <span>{{ suggestion }}</span>
           </li>
         </ul>
@@ -175,10 +179,10 @@ function switchToSuggestedLang() {
       <!-- Action Buttons -->
       <div class="flex flex-wrap justify-center gap-4 mb-8">
         <NuxtLink
-          to="/"
+          :to="localePath('/')"
           class="inline-flex items-center px-6 py-3 text-base font-medium rounded-lg transition-colors"
           :class="[
-            'bg-esperion-primary hover:bg-blue-600 text-white',
+            'bg-es-accent-primary hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:hover:bg-es-accent-primary-hover-dark text-es-text-inverse dark:text-es-text-inverse-dark',
           ]"
         >
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,13 +192,13 @@ function switchToSuggestedLang() {
         </NuxtLink>
 
         <NuxtLink
-          to="/contact-us"
+          :to="localePath('/contact-us')"
           class="inline-flex items-center px-6 py-3 text-base font-medium rounded-lg transition-colors"
           :class="[
-            'bg-esperion-light-surface dark:bg-esperion-dark-surface',
-            'border border-esperion-light-border dark:border-esperion-dark-border',
-            'text-esperion-light-text-primary dark:text-esperion-dark-text-primary',
-            'hover:bg-gray-50 dark:hover:bg-gray-800',
+            'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
+            'border border-es-border dark:border-es-border-dark',
+            'text-es-text-primary dark:text-es-text-primary-dark',
+            'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
           ]"
         >
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,14 +213,14 @@ function switchToSuggestedLang() {
         v-if="showLanguagePrompt"
         class="mt-8 p-4 rounded-lg"
         :class="[
-          'bg-esperion-primary/10',
-          'border border-esperion-primary/20',
+          'bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10',
+          'border border-es-accent-primary/20 dark:border-es-accent-primary-dark/20',
         ]"
       >
         <p
           class="mb-3"
           :class="[
-            'text-esperion-light-text-primary dark:text-esperion-dark-text-primary',
+              'text-es-text-primary dark:text-es-text-primary-dark',
           ]"
         >
           {{ locale === 'id' 
@@ -228,9 +232,9 @@ function switchToSuggestedLang() {
           @click="switchToSuggestedLang"
           class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors"
           :class="[
-            'bg-esperion-primary hover:bg-blue-600 text-white',
-          ]"
-        >
+             'bg-es-accent-primary hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:hover:bg-es-accent-primary-hover-dark text-es-text-inverse dark:text-es-text-inverse-dark',
+           ]"
+         >
           {{ locale === 'id' ? 'Lihat dalam Bahasa Inggris' : 'View in Indonesian' }}
         </button>
       </div>

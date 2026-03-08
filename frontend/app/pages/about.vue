@@ -6,10 +6,10 @@
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="container mx-auto px-4 text-center">
           <h1 class="text-4xl md:text-5xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            About Us
+            Tentang Kami
           </h1>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-lg max-w-2xl mx-auto">
-            Get to know the team behind Esperion Digital Agency
+            Mengenal cara Esperion membangun kerja sama, kualitas, dan arah digital yang konsisten
           </p>
         </div>
       </div>
@@ -19,58 +19,58 @@
     <section class="py-12 md:py-16">
       <div class="container mx-auto px-4">
         <div class="grid md:grid-cols-2 gap-12 items-start">
-          <!-- About Us -->
+          <!-- Tentang Esperion -->
           <div>
             <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-              About Esperion
+              Tentang Esperion
             </h2>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed mb-6">
-              Esperion is a full-service digital agency based in Jakarta, Indonesia. Founded in 2014, we have been helping businesses of all sizes transform their digital presence and achieve their goals through innovative technology solutions.
+              Esperion adalah mitra digital yang membantu bisnis menyiapkan pengalaman online yang lebih jelas, lebih cepat, dan lebih siap tumbuh. Kami bekerja dengan pendekatan strategis agar setiap keputusan desain dan pengembangan tetap terhubung dengan tujuan bisnis.
             </p>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed mb-6">
-              Our team of passionate designers, developers, and strategists work together to deliver exceptional results that exceed expectations. We believe in building long-term partnerships with our clients, understanding their unique challenges, and crafting tailored solutions that drive real business growth.
+              Tim kami menggabungkan riset, desain, pengembangan, dan validasi agar solusi yang dirilis tidak hanya terlihat baik, tetapi juga terasa relevan bagi pengguna dan mudah dikembangkan oleh bisnis Anda.
             </p>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
-              With over 150 successful projects and 80+ happy clients, we have established ourselves as a trusted partner for digital transformation.
+              Fokus kami bukan sekadar meluncurkan halaman baru, tetapi membantu bisnis membangun fondasi digital yang bisa dipakai untuk tahap pertumbuhan berikutnya.
             </p>
           </div>
 
           <!-- Vision & Mission -->
           <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-8">
             <h3 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-              Our Vision & Mission
+              Visi dan Misi
             </h3>
             <div class="space-y-6">
               <div>
                 <div class="flex items-center gap-3 mb-3">
                   <span class="text-3xl">🎯</span>
-                  <h4 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">Vision</h4>
+                  <h4 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">Visi</h4>
                 </div>
                 <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-                  To be the leading digital transformation partner for businesses in Southeast Asia, empowering them to thrive in the digital age.
+                  Menjadi mitra digital yang membantu bisnis mengambil keputusan lebih percaya diri melalui pengalaman brand dan produk yang rapi, relevan, dan berkelanjutan.
                 </p>
               </div>
               <div>
                 <div class="flex items-center gap-3 mb-3">
                   <span class="text-3xl">🚀</span>
-                  <h4 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">Mission</h4>
+                  <h4 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">Misi</h4>
                 </div>
                 <ul class="space-y-2 text-es-text-secondary dark:text-es-text-secondary-dark">
                   <li class="flex items-start gap-2">
                     <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-                    <span>Deliver innovative digital solutions that drive business growth</span>
+                    <span>Menyusun solusi digital yang selaras dengan tujuan bisnis dan kebutuhan pengguna</span>
                   </li>
                   <li class="flex items-start gap-2">
                     <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-                    <span>Build lasting partnerships based on trust and results</span>
+                    <span>Membangun kerja sama jangka panjang lewat komunikasi yang terbuka dan hasil yang terukur</span>
                   </li>
                   <li class="flex items-start gap-2">
                     <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-                    <span>Continuously innovate and stay ahead of industry trends</span>
+                    <span>Menjaga kualitas eksekusi sambil terus menyesuaikan diri dengan perubahan pasar</span>
                   </li>
                   <li class="flex items-start gap-2">
                     <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-                    <span>Foster a culture of excellence and continuous learning</span>
+                    <span>Mendorong budaya belajar, dokumentasi, dan perbaikan berkelanjutan di setiap proyek</span>
                   </li>
                 </ul>
               </div>
@@ -88,25 +88,25 @@
             <div class="text-4xl md:text-5xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
               150+
             </div>
-            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Projects Completed</div>
+            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Proyek Terselesaikan</div>
           </div>
           <div class="text-center">
             <div class="text-4xl md:text-5xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
               80+
             </div>
-            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Happy Clients</div>
+            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Kolaborasi Klien</div>
           </div>
           <div class="text-center">
             <div class="text-4xl md:text-5xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
               10+
             </div>
-            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Years Experience</div>
+            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Tahun Pengalaman</div>
           </div>
           <div class="text-center">
             <div class="text-4xl md:text-5xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
               25+
             </div>
-            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Team Members</div>
+            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Talenta Inti</div>
           </div>
         </div>
       </div>
@@ -115,31 +115,16 @@
     <!-- Founders Section -->
     <section class="py-12 md:py-16">
       <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Meet Our Founders
-          </h2>
-          <p class="text-es-text-secondary dark:text-es-text-secondary-dark max-w-2xl mx-auto">
-            The visionary leaders who started Esperion with a dream to transform businesses through technology
-          </p>
-        </div>
-        <div class="grid md:grid-cols-3 gap-8">
-          <div v-for="founder in founders" :key="founder.name" class="text-center">
-            <div class="w-48 h-48 mx-auto mb-6 rounded-full bg-es-bg-secondary dark:bg-es-bg-secondary-dark overflow-hidden">
-              <img :src="founder.image" :alt="founder.name" class="w-full h-full object-cover" />
-            </div>
-            <h3 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">
-              {{ founder.name }}
-            </h3>
-            <p class="text-es-accent-primary dark:text-es-accent-primary-dark mb-4">
-              {{ founder.role }}
-            </p>
-            <div class="flex justify-center gap-4">
-              <a v-for="social in founder.social" :key="social.platform" :href="social.url" class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors">
-                <span class="text-xl">{{ social.icon }}</span>
-              </a>
-            </div>
+        <div class="max-w-3xl mx-auto text-center bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-2xl p-8 md:p-10">
+          <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-es-bg-primary dark:bg-es-bg-primary-dark overflow-hidden flex items-center justify-center">
+            <img src="/placeholders/first-party/founder-identity-required.svg" alt="Profil founder menunggu materi resmi" class="w-full h-full object-cover" />
           </div>
+          <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
+            Profil Kepemimpinan Sedang Diperbarui
+          </h2>
+          <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
+            Informasi founder dan materi kepemimpinan publik belum dipublikasikan di repositori ini. Kami menahan identitas resmi sampai profil, foto, dan tautan yang benar-benar disetujui siap ditampilkan.
+          </p>
         </div>
       </div>
     </section>
@@ -149,10 +134,10 @@
       <div class="container mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Our Core Values
+            Nilai Kerja Kami
           </h2>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark max-w-2xl mx-auto">
-            The principles that guide everything we do
+            Prinsip yang menjaga cara kerja Esperion tetap konsisten di setiap kolaborasi
           </p>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -173,16 +158,16 @@
     <section class="py-16 md:py-24 bg-es-accent-primary dark:bg-es-accent-primary-dark">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-es-text-inverse dark:text-es-text-inverse-dark mb-4">
-          Ready to Work With Us?
+          Siap Bekerja Bersama Esperion?
         </h2>
         <p class="text-es-text-inverse/90 dark:text-es-text-inverse-dark/90 text-lg mb-8 max-w-2xl mx-auto">
-          Let's discuss how we can help transform your digital presence
+          Mari diskusikan prioritas bisnis Anda dan tentukan langkah digital yang paling relevan.
         </p>
         <NuxtLink
           to="/contact-us"
           class="inline-flex items-center px-8 py-4 bg-es-bg-inverse dark:bg-es-bg-inverse-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark transition-colors"
         >
-          Get in Touch
+          Hubungi Kami
         </NuxtLink>
       </div>
     </section>
@@ -191,63 +176,70 @@
 
 <script setup lang="ts">
 // SEO Meta
+const pageUrl = 'https://esperion.id/id/about';
+
 useSeoMeta({
-  title: 'About Us - Esperion Digital Agency',
-  description: 'Learn about Esperion Digital Agency, our team, vision, and mission to transform businesses through digital solutions.',
-  ogTitle: 'About Esperion',
-  ogDescription: 'Get to know the team behind Esperion Digital Agency.',
+  title: 'Tentang Esperion Digital Agency Jakarta - Solusi Digital Terbaik',
+  description: 'Kenali Esperion Digital Agency di Jakarta. Tim ahli dalam pengembangan web, aplikasi mobile, digital marketing, dan layanan digital terlengkap untuk bisnis Anda di Indonesia.',
+  ogTitle: 'Tentang Esperion - Digital Agency Jakarta',
+  ogDescription: 'Esperion adalah agensi digital paling inovatif di Jakarta, memberikan solusi untuk pertumbuhan bisnis Anda.',
+  ogImage: '/images/about-esperion-agency.jpg',
+  ogUrl: pageUrl,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Tentang Esperion - Digital Agency Jakarta',
+  twitterDescription: 'Kenali lebih dalam tentang tim dan visi Esperion dalam membantu pertumbuhan bisnis digital di Indonesia.',
+  twitterImage: '/images/about-esperion-agency.jpg',
+  ogLocale: 'id_ID',
 });
 
-const founders = [
-  {
-    name: 'Alex Chen',
-    role: 'CEO & Co-Founder',
-    image: '/founders/founder-1.jpg',
-    social: [
-      { platform: 'LinkedIn', icon: '💼', url: '#' },
-      { platform: 'Twitter', icon: '🐦', url: '#' },
-    ],
-  },
-  {
-    name: 'Sarah Williams',
-    role: 'CTO & Co-Founder',
-    image: '/founders/founder-2.jpg',
-    social: [
-      { platform: 'LinkedIn', icon: '💼', url: '#' },
-      { platform: 'GitHub', icon: '🐙', url: '#' },
-    ],
-  },
-  {
-    name: 'Michael Tan',
-    role: 'Creative Director & Co-Founder',
-    image: '/founders/founder-3.jpg',
-    social: [
-      { platform: 'LinkedIn', icon: '💼', url: '#' },
-      { platform: 'Instagram', icon: '📷', url: '#' },
-    ],
-  },
-];
+// Define schema for the about page
+useSchemaOrg([
+  defineWebPage({
+    '@type': 'AboutPage',
+    name: 'Tentang Esperion Digital Agency',
+    description: 'Beranda profil perusahaan dan tim yang membangun layanan digital di Jakarta',
+    url: pageUrl,
+    dateModified: new Date().toISOString()
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Beranda',
+        item: 'https://esperion.id/id'
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Tentang Kami',
+        item: pageUrl
+      }
+    ]
+  })
+]);
 
 const values = [
   {
     icon: '🎯',
-    title: 'Excellence',
-    description: 'We strive for excellence in everything we do, delivering high-quality results that exceed expectations.',
+    title: 'Kualitas yang disengaja',
+    description: 'Kami menjaga detail, dokumentasi, dan konsistensi agar hasil akhir terasa rapi sejak hari pertama diluncurkan.',
   },
   {
     icon: '🤝',
-    title: 'Integrity',
-    description: 'We build trust through honest communication, transparency, and ethical business practices.',
+    title: 'Kepercayaan yang jujur',
+    description: 'Kami lebih memilih komunikasi yang jelas dan realistis dibanding janji yang terdengar besar tetapi tidak bisa diverifikasi.',
   },
   {
     icon: '💡',
-    title: 'Innovation',
-    description: 'We embrace new ideas and technologies to create cutting-edge solutions for our clients.',
+    title: 'Eksplorasi yang terarah',
+    description: 'Teknologi baru kami pakai ketika benar-benar membantu bisnis bergerak lebih cepat dan lebih efisien.',
   },
   {
     icon: '👥',
-    title: 'Collaboration',
-    description: 'We believe in the power of teamwork and partnership to achieve great results.',
+    title: 'Kolaborasi terbuka',
+    description: 'Kami bekerja sebagai partner diskusi, bukan sekadar vendor, agar keputusan penting tetap punya konteks yang tepat.',
   },
 ];
 </script>
