@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "pending": [
+    {
+      "requested_final_path": "/founders/founder-1.jpg",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/founder-identity-required.svg",
+      "reason": "founder identity requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/founders/founder-2.jpg",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/founder-identity-required.svg",
+      "reason": "founder identity requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/founders/founder-3.jpg",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/founder-identity-required.svg",
+      "reason": "founder identity requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/logos/client-1.png",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/client-logo-required.svg",
+      "reason": "client logo requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/logos/client-2.png",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/client-logo-required.svg",
+      "reason": "client logo requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/logos/client-3.png",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/client-logo-required.svg",
+      "reason": "client logo requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/logos/client-4.png",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/client-logo-required.svg",
+      "reason": "client logo requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/logos/client-5.png",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/client-logo-required.svg",
+      "reason": "client logo requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/logos/client-6.png",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/client-logo-required.svg",
+      "reason": "client logo requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/logos/client-7.png",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/client-logo-required.svg",
+      "reason": "client logo requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/logos/client-8.png",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/client-logo-required.svg",
+      "reason": "client logo requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/images/logo.svg",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/brand-mark-required.svg",
+      "reason": "official brand mark requires stakeholder-provided original"
+    },
+    {
+      "requested_final_path": "/logo.png",
+      "status": "missing",
+      "placeholder_path": "/placeholders/first-party/brand-mark-required.svg",
+      "reason": "official brand mark requires stakeholder-provided original"
+    }
+  ]
+}
