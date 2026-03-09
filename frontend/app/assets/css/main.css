@@ -105,41 +105,21 @@ body {
   color: var(--es-text-primary-dark);
 }
 
-/* Theme gradient sweep animation */
-html {
-  position: relative;
-  overflow: hidden;
-}
-
-html::before {
-  content: '';
-  position: fixed;
-  top: -100%;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, 
-    var(--es-bg-primary) 0%, 
-    var(--es-bg-primary-dark) 100%
-  );
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0;
-}
-
-/* Animate when theme class changes */
-html.theme-transitioning::before {
-  animation: gradientSweep 0.5s ease-out forwards;
-}
-
-@keyframes gradientSweep {
-  0% {
-    top: -100%;
-    opacity: 1;
+/* Theme transitions - Industry standard 100ms fade */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    transition: background-color 100ms ease, color 100ms ease;
   }
-  100% {
-    top: 100%;
-    opacity: 0;
+  
+  body, body * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 100ms;
+    transition-timing-function: ease;
+  }
+  
+  /* Exclude media elements for performance */
+  img, video, canvas, svg, iframe {
+    transition: none;
   }
 }
 
@@ -419,3 +399,25 @@ html.theme-transitioning::before {
 .dark .prose p {
   color: var(--es-text-secondary-dark);
 }
+
+/* Smooth Theme Transitions (Nuxt Color Mode Pattern - 0.3s) */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    color-scheme: light dark;
+  }
+  
+  body {
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  /* Exclude media elements from transitions */
+  img, video, canvas, svg, iframe {
+    transition: none;
+  }
+  
+  /* Smooth transitions for interactive elements */
+  button, a, input, select, textarea {
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  }
+}
+

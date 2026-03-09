@@ -95,6 +95,9 @@
 const route = useRoute();
 const localePath = useLocalePath();
 const { t } = useI18n();
+const appearanceOpen = ref(false);
+const { theme, toggleTheme } = useTheme();
+const { locale, setLocale } = useI18n();
 
 const isActive = (href: string) => {
   const localizedHref = localePath(href);
@@ -107,6 +110,23 @@ const navItems = computed(() => [
   { href: '/our-services', label: t('nav.services') },
   { href: '/articles', label: t('nav.articles') },
   { href: '/about', label: t('nav.about') },
+]);
+
+// Appearance dropdown items
+const appearanceItems = computed(() => [
+  {
+    label: t('nav.appearance'),
+    icon: 'i-heroicons-globe-americas',
+    items: [
+      { label: t('language.indonesian'), value: 'id', click: () => setLocale('id') },
+      { label: t('language.english'), value: 'en', click: () => setLocale('en') }
+    ]
+  },
+  {
+    label: t('nav.darkMode'),
+    icon: isDark.value ? 'i-heroicons-sun' : 'i-heroicons-moon',
+    click: toggleTheme
+  }
 ]);
 </script>
 

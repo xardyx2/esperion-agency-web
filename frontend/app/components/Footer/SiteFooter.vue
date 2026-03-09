@@ -133,21 +133,7 @@
             {{ t('footer.copyright', { year: new Date().getFullYear() }) }}
           </p>
           
-          <!-- Language & Theme Toggles -->
-          <div class="flex items-center space-x-4">
-            <LanguageSwitcher variant="buttons" size="sm" :showFlags="true" />
-            
-            <!-- Theme Toggle -->
-            <button
-              @click="toggleTheme"
-              class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg transition-colors bg-es-bg-secondary dark:bg-es-bg-secondary-dark border border-es-border dark:border-es-border-dark hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark"
-              :aria-label="isDark ? t('aria.switchToLightMode') : t('aria.switchToDarkMode')"
-            >
-              <span v-if="isDark" class="text-lg" role="img" :aria-label="t('aria.lightMode')">☀️</span>
-              <span v-else class="text-lg" role="img" :aria-label="t('aria.darkMode')">🌙</span>
-            </button>
-          </div>
-          
+
           <div class="flex space-x-6">
             <NuxtLink 
               :to="localePath('/privacy-policy')" 
@@ -175,10 +161,6 @@ const localePath = useLocalePath();
 const { t } = useI18n();
 const colorMode = useColorMode();
 const isDark = computed(() => colorMode.value === 'dark');
-
-const toggleTheme = () => {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
-};
 
 const quickLinks = computed(() => [
   { href: '/', label: t('nav.home') },
