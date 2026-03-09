@@ -95,9 +95,11 @@
 const route = useRoute();
 const localePath = useLocalePath();
 const { t } = useI18n();
-const appearanceOpen = ref(false);
-const { theme, toggleTheme } = useTheme();
+const { theme, isDark, toggleTheme } = useTheme();
 const { locale, setLocale } = useI18n();
+
+const appearanceOpen = ref(false);
+const mobileMenuOpen = ref(false);
 
 const isActive = (href: string) => {
   const localizedHref = localePath(href);
