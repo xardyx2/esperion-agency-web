@@ -186,7 +186,7 @@
           </NuxtLink>
         </div>
 
-        <div class="relative">
+        <div class="relative" @mouseenter="pauseCarousel" @mouseleave="resumeCarousel">
           <div class="overflow-hidden">
             <div 
               class="flex transition-transform duration-500 ease-in-out"
@@ -543,6 +543,7 @@ const cta = {
 
 // Auto-rotate banner
 let bannerInterval: NodeJS.Timeout;
+let worksInterval: NodeJS.Timeout;
 onMounted(() => {
   bannerInterval = setInterval(() => {
     currentSlide.value = (currentSlide.value + 1) % bannerSlides.length;
@@ -552,6 +553,16 @@ onMounted(() => {
   setInterval(() => {
     currentLogoSlide.value = (currentLogoSlide.value + 1) % clients.value.length;
   }, 3000);
+
+  // Auto-rotate works carousel
+  worksInterval = setInterval(() => {
+    const maxSlide = featuredWorks.value.length - worksVisible.value;
+    if (currentWorkSlide.value >= maxSlide) {
+      currentWorkSlide.value = 0; // Loop back to start
+    } else {
+      currentWorkSlide.value++;
+    }
+  }, 5000);
 
   // Responsive adjustments
   const updateResponsive = () => {
@@ -572,6 +583,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearInterval(bannerInterval);
+  clearInterval(worksInterval);
 });
 
 // Work slider navigation
@@ -579,11 +591,47 @@ const nextWork = () => {
   if (currentWorkSlide.value < featuredWorks.value.length - worksVisible.value) {
     currentWorkSlide.value++;
   }
+  // Reset interval on manual navigation
+  clearInterval(worksInterval);
+  worksInterval = setInterval(() => {
+    const maxSlide = featuredWorks.value.length - worksVisible.value;
+    if (currentWorkSlide.value >= maxSlide) {
+      currentWorkSlide.value = 0;
+    } else {
+      currentWorkSlide.value++;
+    }
+  }, 5000);
 };
 
 const prevWork = () => {
   if (currentWorkSlide.value > 0) {
     currentWorkSlide.value--;
   }
+  // Reset interval on manual navigation
+  clearInterval(worksInterval);
+  worksInterval = setInterval(() => {
+    const maxSlide = featuredWorks.value.length - worksVisible.value;
+    if (currentWorkSlide.value >= maxSlide) {
+      currentWorkSlide.value = 0;
+    } else {
+      currentWorkSlide.value++;
+    }
+  }, 5000);
+};
+
+const pauseCarousel = () => {
+  clearInterval(worksInterval);
+};
+
+const resumeCarousel = () => {
+  clearInterval(worksInterval);
+  worksInterval = setInterval(() => {
+    const maxSlide = featuredWorks.value.length - worksVisible.value;
+    if (currentWorkSlide.value >= maxSlide) {
+      currentWorkSlide.value = 0;
+    } else {
+      currentWorkSlide.value++;
+    }
+  }, 5000);
 };
 </script>
