@@ -114,7 +114,16 @@ const localePath = useLocalePath();
 const isDark = computed(() => colorMode.value === 'dark');
 
 const toggleTheme = () => {
+  // Add theme-transitioning class to trigger gradient sweep animation
+  document.documentElement.classList.add('theme-transitioning');
+  
+  // Toggle theme
   colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
+  
+  // Remove class after animation completes (500ms)
+  setTimeout(() => {
+    document.documentElement.classList.remove('theme-transitioning');
+  }, 500);
 };
 
 const isActive = (href: string) => {

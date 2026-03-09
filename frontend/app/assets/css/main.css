@@ -105,15 +105,42 @@ body {
   color: var(--es-text-primary-dark);
 }
 
-/* Smooth theme transitions */
+/* Theme gradient sweep animation */
 html {
-  transition: background-color 300ms ease, color 300ms ease;
+  position: relative;
+  overflow: hidden;
 }
 
-body, * {
-  transition-property: background-color, border-color, color;
-  transition-duration: 300ms;
-  transition-timing-function: ease-in-out;
+html::before {
+  content: '';
+  position: fixed;
+  top: -100%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, 
+    var(--es-bg-primary) 0%, 
+    var(--es-bg-primary-dark) 100%
+  );
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+}
+
+/* Animate when theme class changes */
+html.theme-transitioning::before {
+  animation: gradientSweep 0.5s ease-out forwards;
+}
+
+@keyframes gradientSweep {
+  0% {
+    top: -100%;
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
 }
 
 /* Custom Scrollbar */
