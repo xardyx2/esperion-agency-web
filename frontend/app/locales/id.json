@@ -1,11 +1,22 @@
 {
   "nav": {
     "home": "Beranda",
-    "works": "Karya Kami",
+    "works": "Portofolio",
     "services": "Layanan",
-    "articles": "Artikel", 
+    "articles": "Artikel",
     "about": "Tentang",
-    "contact": "Kontak"
+    "contact": "Hubungi Kami",
+    "appearance": "Tampilan",
+    "darkMode": "Mode Gelap",
+    "aria": {
+      "home": "Beranda Esperion",
+      "openMenu": "Buka menu",
+      "closeMenu": "Tutup menu"
+    }
+  },
+  "language": {
+    "indonesian": "Bahasa Indonesia",
+    "english": "Inggris"
   },
   "common": {
     "loading": "Memuat...",
@@ -19,6 +30,10 @@
     "search": "Cari",
     "filter": "Filter",
     "sort": "Urutkan",
+    "reset": "Reset",
+    "readMore": "Baca Selengkapnya",
+    "learnMore": "Pelajari",
+    "submit": "Kirim",
     "pagination": {
       "previous": "Sebelumnya",
       "next": "Selanjutnya",
@@ -26,99 +41,225 @@
       "of": "dari",
       "results": "hasil"
     },
-    "readMore": "Baca Selengkapnya",
-    "learnMore": "Pelajari",
-    "submit": "Kirim"
-  },
-  "navigation": {
-    "home": "Beranda",
-    "ourWorks": "Karya Kami",
-    "ourServices": "Layanan Kami",
-    "articles": "Artikel",
-    "about": "Tentang Kami",
-    "contact": "Hubungi Kami",
-    "contactUs": "Hubungi Kami",
-    "login": "Masuk",
-    "register": "Daftar",
-    "logout": "Keluar",
-    "dashboard": "Dasbor",
-    "agency": "Agensi",
-    "capital": "Modal"
+    "aria": {
+      "close": "Tutup",
+      "menu": "Menu",
+      "location": "Lokasi",
+      "phone": "Telepon",
+      "email": "Email",
+      "businessHours": "Jam operasional"
+    }
   },
   "home": {
     "hero": {
-      "slide1": "Strategi Digital Berbasis Data yang Meningkatkan ROI hingga 300%",
-      "slide1Sub": "Analytics, AI, dan Keahlian untuk Pertumbuhan Bisnis Anda",
-      "slide2": "Didukung oleh AI, Dikelola oleh Manusia",
-      "slide2Sub": "Solusi Digital Cerdas yang Tetap Personal",
-      "slide3": "30+ Campaign, 10+ Klien Puas, Banyak Kisah Sukses",
-      "slide3Sub": "Rekam Jejak yang Bicara Sendiri",
-      "slide4": "Lebih Dari Sekadar Agensi – Partner Digital Anda",
-      "slide4Sub": "Kolaborasi yang Menghasilkan Impact Nyata",
-      "slide5": "Masa Depan Digital Ada Di Sini",
-      "slide5Sub": "Inovasi Terbaru dalam Pemasaran & Teknologi Digital"
+      "slide1Title": "Bangun Kehadiran Digital Anda",
+      "slide1Sub": "Solusi terpercaya untuk bisnis Indonesia",
+      "slide1Desc": "Kami merancang website dan produk digital yang membantu bisnis tampil jelas, cepat, dan siap berkembang.",
+      "slide1Cta": "Mulai Konsultasi",
+      "slide2Title": "Siap untuk Fase Pertumbuhan Berikutnya?",
+      "slide2Sub": "Solusi digital untuk fase tumbuh berikutnya",
+      "slide2Desc": "Dari perencanaan sampai peluncuran, Esperion membantu tim Anda merilis pengalaman digital yang relevan dan terukur.",
+      "slide2Cta": "Lihat Portofolio",
+      "slide3Title": "Tim Kecil, Dampak Nyata",
+      "slide3Sub": "Tim kecil yang fokus pada hasil nyata",
+      "slide3Desc": "Kami menggabungkan strategi, desain, dan pengembangan untuk menghadirkan pengalaman digital yang konsisten dengan brand Anda.",
+      "slide3Cta": "Pelajari Lebih Lanjut",
+      "slide4Title": "Layanan Digital Lengkap",
+      "slide4Sub": "Layanan Digital Lengkap",
+      "slide4Desc": "Dari web development hingga digital marketing, kami menyediakan solusi end-to-end untuk transformasi digital.",
+      "slide4Cta": "Jelajahi Layanan",
+      "slide5Title": "Dipercaya oleh Bisnis yang Berkembang",
+      "slide5Sub": "Dipercaya oleh Bisnis yang Berkembang",
+      "slide5Desc": "Bergabung dengan bisnis yang telah tumbuh bersama Esperion melalui solusi digital yang terukur dan berdampak.",
+      "slide5Cta": "Lihat Testimoni"
     },
-    "whoAreWe": "Siapa Kami",
-    "ourServices": "Layanan Kami",
-    "ourClients": "Klien Kami",
-    "featuredWorks": "Karya Unggulan",
-    "latestArticles": "Artikel Terbaru",
+    "whoAreWe": {
+      "title": "Tentang Esperion",
+      "description": "Esperion adalah mitra digital untuk bisnis yang membutuhkan arah, eksekusi, dan pengalaman brand yang konsisten. Kami menggabungkan strategi, desain, dan pengembangan agar setiap peluncuran terasa lebih siap dan lebih relevan.",
+      "value1": "Strategi yang jelas",
+      "value2": "Eksekusi yang rapi",
+      "value3": "Kolaborasi terbuka",
+      "value4": "Fokus pada hasil"
+    },
+    "ourServices": {
+      "title": "Layanan Kami",
+      "subtitle": "Solusi digital yang dirancang untuk target bisnis Anda",
+      "cta": "Lihat Semua Layanan"
+    },
+    "stats": {
+      "projects": "Proyek Diselesaikan",
+      "clients": "Kolaborasi Klien",
+      "experience": "Tahun Pengalaman",
+      "talent": "Talenta Inti"
+    },
+    "clientLogos": {
+      "placeholder": "Materi logo klien ditampilkan setelah persetujuan publikasi",
+      "namePlaceholder": "Logo klien menunggu persetujuan publikasi"
+    },
+    "featuredWorks": {
+      "title": "Karya Unggulan",
+      "subtitle": "Sorotan proyek yang mewakili pendekatan kerja Esperion",
+      "cta": "Lihat Semua Portofolio →"
+    },
+    "articles": {
+      "title": "Artikel Terbaru",
+      "subtitle": "Insight singkat, pembelajaran, dan pembaruan dari tim Esperion",
+      "cta": "Lihat Semua Artikel →",
+      "readMore": "Baca Selengkapnya →"
+    },
     "cta": {
-      "text": "Siap Mengubah Bisnis Digital Anda?",
-      "button": "Konsultasi Gratis"
+      "title": "Siap untuk Langkah Digital Berikutnya?",
+      "description": "Ceritakan konteks bisnis Anda, lalu kami bantu memetakan solusi yang paling relevan untuk tahap pertumbuhan berikutnya.",
+      "button": "Mulai Diskusi Hari Ini"
+    },
+    "aria": {
+      "slideNav": "Ke slide ${index}",
+      "prevSlide": "Slide sebelumnya",
+      "nextSlide": "Slide berikutnya"
     }
   },
-  "stats": {
-    "clients": "Klien",
-    "campaigns": "Campaign",
-    "works": "Karya",
-    "articles": "Artikel"
+  "services": {
+    "banner": {
+      "title": "Layanan Kami",
+      "description": "Solusi digital yang dirancang untuk membantu bisnis Anda bergerak lebih jelas dan lebih siap tumbuh"
+    },
+    "cta": {
+      "learnMore": "Pelajari Detailnya"
+    },
+    "whyChooseUs": {
+      "title": "Kenapa Memilih Esperion?",
+      "description": "Kami menggabungkan strategi, eksekusi, dan kolaborasi yang rapi untuk hasil yang lebih terarah"
+    },
+    "reasons": {
+      "trackRecord": {
+        "title": "Track record teruji",
+        "description": "Lebih dari 150 proyek digital telah kami rampungkan."
+      },
+      "team": {
+        "title": "Tim lintas disiplin",
+        "description": "Strategi, desain, dan pengembangan bergerak dalam satu alur kerja."
+      },
+      "execution": {
+        "title": "Eksekusi bertahap",
+        "description": "Pendekatan iteratif membantu keputusan bergerak cepat tanpa kehilangan arah."
+      },
+      "communication": {
+        "title": "Komunikasi terbuka",
+        "description": "Setiap tahap kerja dibangun dengan konteks, dokumentasi, dan ekspektasi yang jelas."
+      }
+    },
+    "ctaSection": {
+      "title": "Siap Memulai Proyek Anda?",
+      "description": "Ceritakan konteks bisnis Anda, lalu kami bantu petakan solusi digital yang paling relevan.",
+      "button": "Jadwalkan Konsultasi"
+    }
+  },
+  "articles": {
+    "banner": {
+      "title": "Artikel",
+      "description": "Insight, pembelajaran, dan pembaruan dari tim Esperion"
+    },
+    "filters": {
+      "allCategories": "Semua Kategori",
+      "marketing": "Pemasaran",
+      "design": "Desain",
+      "development": "Pengembangan",
+      "ecommerce": "E-Commerce",
+      "business": "Bisnis",
+      "reset": "Reset"
+    },
+    "search": {
+      "placeholder": "Cari artikel..."
+    },
+    "results": {
+      "count": "Menampilkan {visible} dari {total} artikel"
+    },
+    "emptyState": {
+      "title": "Artikel tidak ditemukan",
+      "description": "Coba ubah kata kunci atau filter yang dipilih",
+      "resetButton": "Reset Semua Filter"
+    },
+    "loadMore": {
+      "button": "Muat Artikel Lainnya"
+    },
+    "newsletter": {
+      "title": "Ikuti Pembaruan dari Esperion",
+      "description": "Dapatkan artikel dan pembaruan terbaru langsung ke email Anda",
+      "placeholder": "Masukkan email Anda",
+      "subscribeButton": "Berlangganan",
+      "successMessage": "Terima kasih, Anda sudah terdaftar untuk menerima pembaruan dari Esperion."
+    },
+    "seo": {
+      "title": "Artikel - Insight Digital dari Esperion",
+      "description": "Baca artikel, insight, dan pembelajaran seputar pengembangan web, desain, dan pemasaran digital dari tim Esperion.",
+      "ogTitle": "Artikel Esperion",
+      "ogDescription": "Insight dan pembaruan dari tim Esperion."
+    }
   },
   "footer": {
-    "company": "Tentang Perusahaan",
-    "services": "Layanan",
-    "contact": "Kontak",
+    "companyDescription": "Esperion membantu bisnis bertumbuh lewat strategi, desain, dan pengembangan digital yang terarah.",
+    "quickLinks": "Navigasi Cepat",
+    "ourServices": "Layanan Kami",
+    "contactUs": "Hubungi Kami",
     "followUs": "Ikuti Kami",
-    "address": "Alamat",
-    "email": "Email",
+    "contact": {
+      "city": "Jakarta, Indonesia",
+      "addressPending": "Alamat lengkap menunggu konfirmasi publikasi",
+      "businessHours": "Senin-Jumat: 09.00-17.00 WIB"
+    },
+    "services": {
+      "webDevelopment": "Web Development",
+      "mobileAppDevelopment": "Mobile App Development",
+      "uiUxDesign": "UI/UX Design",
+      "digitalMarketing": "Digital Marketing",
+      "ecommerceSolutions": "E-Commerce Solutions",
+      "digitalConsulting": "Digital Consulting"
+    },
+    "copyright": "© {{year}} Esperion. Seluruh hak cipta dilindungi.",
+    "privacyPolicy": "Kebijakan Privasi",
+    "termsOfService": "Syarat Layanan"
+  },
+  "social": {
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "linkedin": "LinkedIn",
+    "tiktok": "TikTok",
+    "twitter": "Twitter"
+  },
+  "aria": {
+    "location": "Lokasi",
     "phone": "Telepon",
-    "copyright": "© 2026 Esperion Digital Agency. Hak Cipta Dilindungi."
-  },
-  "forms": {
-    "fullName": "Nama Lengkap",
-    "companyName": "Nama Perusahaan",
     "email": "Email",
-    "phone": "Nomor Telepon",
-    "message": "Pesan",
-    "submit": "Kirim",
-    "required": "Wajib diisi",
-    "invalid": "Tidak valid",
-    "success": "Formulir berhasil dikirim",
-    "error": "Terjadi kesalahan saat mengirim"
+    "businessHours": "Jam operasional",
+    "switchToLightMode": "Ubah ke mode terang",
+    "switchToDarkMode": "Ubah ke mode gelap",
+    "lightMode": "Mode terang",
+    "darkMode": "Mode gelap"
   },
-  "validation": {
-    "required": "Bidang ini wajib diisi",
-    "email": "Masukkan email yang valid",
-    "minLength": "Panjang minimal {length} karakter",
-    "maxLength": "Panjang maksimal {length} karakter",
-    "passwordMatch": "Kata sandi tidak cocok"
+  "breadcrumb": {
+    "home": "Beranda",
+    "services": "Layanan Kami",
+    "works": "Portofolio",
+    "articles": "Artikel"
   },
-  "auth": {
-    "login": "Masuk",
-    "register": "Daftar",
-    "email": "Email",
-    "password": "Kata Sandi",
-    "rememberMe": "Ingat Saya",
-    "forgotPassword": "Lupa Kata Sandi?",
-    "noAccount": "Belum punya akun?",
-    "haveAccount": "Sudah punya akun?",
-    "signUp": "Daftar Sekarang",
-    "signIn": "Masuk Sekarang"
-  },
-  "errors": {
-    "notFound": "Halaman tidak ditemukan",
-    "serverError": "Terjadi kesalahan server",
-    "unauthorized": "Tidak diizinkan",
-    "backToHome": "Kembali ke Beranda"
+  "seo": {
+    "home": {
+      "title": "Jasa Digital Marketing Terbaik di Jakarta - Esperion",
+      "description": "Temukan layanan digital terlengkap dari Esperion Agency. Web development, SEO, dan marketing digital profesional untuk bisnis Indonesia.",
+      "ogTitle": "Digital Agency Jakarta - Esperion",
+      "ogDescription": "Layanan digital marketing, pengembangan web dan aplikasi mobile profesional di Jakarta."
+    },
+    "services": {
+      "title": "Layanan Digital Marketing Terbaik - Esperion Agency",
+      "description": "Jasa digital marketing, web development, SEO, dan UI/UX design profesional untuk bisnis Indonesia.",
+      "ogTitle": "Layanan Digital Agency Jakarta - Esperion",
+      "ogDescription": "Layanan digital marketing, pengembangan web dan aplikasi mobile profesional di Jakarta."
+    },
+    "articles": {
+      "title": "Artikel - Insight Digital dari Esperion",
+      "description": "Baca artikel, insight, dan pembelajaran seputar pengembangan web, desain, dan pemasaran digital dari tim Esperion.",
+      "ogTitle": "Artikel Esperion",
+      "ogDescription": "Insight dan pembaruan dari tim Esperion."
+    }
   }
 }

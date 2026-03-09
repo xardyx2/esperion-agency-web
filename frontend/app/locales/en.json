@@ -1,11 +1,22 @@
 {
   "nav": {
     "home": "Home",
-    "works": "Our Works",
+    "works": "Portfolio",
     "services": "Services",
     "articles": "Articles",
-    "about": "About", 
-    "contact": "Contact"
+    "about": "About",
+    "contact": "Contact Us",
+    "appearance": "Appearance",
+    "darkMode": "Dark Mode",
+    "aria": {
+      "home": "Esperion Home",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
+    }
+  },
+  "language": {
+    "indonesian": "Indonesian",
+    "english": "English"
   },
   "common": {
     "loading": "Loading...",
@@ -19,6 +30,10 @@
     "search": "Search",
     "filter": "Filter",
     "sort": "Sort",
+    "reset": "Reset",
+    "readMore": "Read More",
+    "learnMore": "Learn More",
+    "submit": "Submit",
     "pagination": {
       "previous": "Previous",
       "next": "Next",
@@ -26,99 +41,225 @@
       "of": "of",
       "results": "results"
     },
-    "readMore": "Read More",
-    "learnMore": "Learn More", 
-    "submit": "Submit"
-  },
-  "navigation": {
-    "home": "Home",
-    "ourWorks": "Our Works",
-    "ourServices": "Our Services",
-    "articles": "Articles",
-    "about": "About Us",
-    "contact": "Contact",
-    "contactUs": "Contact Us",
-    "login": "Login",
-    "register": "Register",
-    "logout": "Logout",
-    "dashboard": "Dashboard",
-    "agency": "Agency",
-    "capital": "Capital"
+    "aria": {
+      "close": "Close",
+      "menu": "Menu",
+      "location": "Location",
+      "phone": "Phone",
+      "email": "Email",
+      "businessHours": "Business hours"
+    }
   },
   "home": {
     "hero": {
-      "slide1": "Data-Driven Digital Strategies that Increase ROI up to 300%",
-      "slide1Sub": "Analytics, AI, and Expertise for Your Business Growth",
-      "slide2": "Powered by AI, Managed by Humans",
-      "slide2Sub": "Smart Digital Solutions that Stay Personal",
-      "slide3": "30+ Campaigns, 10+ Happy Clients, Countless Success Stories",
-      "slide3Sub": "Track Record that Speaks for Itself",
-      "slide4": "More Than an Agency – Your Digital Partner",
-      "slide4Sub": "Collaboration that Produces Real Impact",
-      "slide5": "The Future of Digital is Here",
-      "slide5Sub": "Latest Innovation in Digital Marketing & Technology"
+      "slide1Title": "Build Your Digital Presence",
+      "slide1Sub": "Build a Stronger Digital Presence",
+      "slide1Desc": "We design websites and digital products that help businesses stand out clearly, quickly, and ready to grow.",
+      "slide1Cta": "Start Consultation",
+      "slide2Title": "Ready for Next Growth Phase?",
+      "slide2Sub": "Digital Solutions for Your Next Growth Phase",
+      "slide2Desc": "From planning to launch, Esperion helps your team release relevant and measurable digital experiences.",
+      "slide2Cta": "View Portfolio",
+      "slide3Title": "Small Team, Real Impact",
+      "slide3Sub": "Small Team, Real Impact",
+      "slide3Desc": "We combine strategy, design, and development to deliver digital experiences consistent with your brand.",
+      "slide3Cta": "Learn More",
+      "slide4Title": "Comprehensive Digital Services",
+      "slide4Sub": "Comprehensive Digital Services",
+      "slide4Desc": "From web development to digital marketing, we provide end-to-end solutions for digital transformation.",
+      "slide4Cta": "Explore Services",
+      "slide5Title": "Trusted by Growing Businesses",
+      "slide5Sub": "Trusted by Growing Businesses",
+      "slide5Desc": "Join businesses that have grown with Esperion through measurable and impactful digital solutions.",
+      "slide5Cta": "View Testimonials"
     },
-    "whoAreWe": "Who Are We",
-    "ourServices": "Our Services",
-    "ourClients": "Our Clients",
-    "featuredWorks": "Featured Works",
-    "latestArticles": "Latest Articles",
+    "whoAreWe": {
+      "title": "About Esperion",
+      "description": "Esperion is a digital partner for businesses that need direction, execution, and consistent brand experience.",
+      "value1": "Clear Strategy",
+      "value2": "Neat Execution",
+      "value3": "Open Collaboration",
+      "value4": "Results-Focused"
+    },
+    "ourServices": {
+      "title": "Our Services",
+      "subtitle": "Digital solutions designed for your business targets",
+      "cta": "View All Services"
+    },
+    "stats": {
+      "projects": "Projects Completed",
+      "clients": "Client Collaborations",
+      "experience": "Years of Experience",
+      "talent": "Core Talent"
+    },
+    "clientLogos": {
+      "placeholder": "Client logo materials displayed after publication approval",
+      "namePlaceholder": "Client logo awaiting publication approval"
+    },
+    "featuredWorks": {
+      "title": "Featured Works",
+      "subtitle": "Project highlights representing Esperion's work approach",
+      "cta": "View All Portfolio →"
+    },
+    "articles": {
+      "title": "Latest Articles",
+      "subtitle": "Brief insights, learnings, and updates from the Esperion team",
+      "cta": "View All Articles →",
+      "readMore": "Read More →"
+    },
     "cta": {
-      "text": "Ready to Transform Your Digital Business?",
-      "button": "Free Consultation"
+      "title": "Ready for Your Next Digital Step?",
+      "description": "Tell us about your business context, and we'll help map the most relevant solutions.",
+      "button": "Start Discussion Today"
+    },
+    "aria": {
+      "slideNav": "Go to slide",
+      "prevSlide": "Previous slide",
+      "nextSlide": "Next slide"
     }
   },
-  "stats": {
-    "clients": "Clients",
-    "campaigns": "Campaigns",
-    "works": "Works",
-    "articles": "Articles"
+  "services": {
+    "banner": {
+      "title": "Our Services",
+      "description": "Digital solutions designed to help your business move more clearly and grow better"
+    },
+    "cta": {
+      "learnMore": "Learn More"
+    },
+    "whyChooseUs": {
+      "title": "Why Choose Esperion?",
+      "description": "We combine strategy, execution, and neat collaboration for more focused results"
+    },
+    "reasons": {
+      "trackRecord": {
+        "title": "Proven Track Record",
+        "description": "More than 150 digital projects completed."
+      },
+      "team": {
+        "title": "Cross-disciplinary Team",
+        "description": "Strategy, design, and development moving in one workflow."
+      },
+      "execution": {
+        "title": "Step-by-step Execution",
+        "description": "Iterative approach helps decisions move quickly without losing direction."
+      },
+      "communication": {
+        "title": "Open Communication",
+        "description": "Every work phase is built with context, documentation, and clear expectations."
+      }
+    },
+    "ctaSection": {
+      "title": "Ready to Start Your Project?",
+      "description": "Tell us about your business context, and we'll help map the most relevant digital solutions.",
+      "button": "Schedule Consultation"
+    }
+  },
+  "articles": {
+    "banner": {
+      "title": "Articles",
+      "description": "Insights, learnings, and updates from the Esperion team"
+    },
+    "filters": {
+      "allCategories": "All Categories",
+      "marketing": "Marketing",
+      "design": "Design",
+      "development": "Development",
+      "ecommerce": "E-Commerce",
+      "business": "Business",
+      "reset": "Reset"
+    },
+    "search": {
+      "placeholder": "Search articles..."
+    },
+    "results": {
+      "count": "Showing of articles"
+    },
+    "emptyState": {
+      "title": "Articles not found",
+      "description": "Try changing keywords or selected filters",
+      "resetButton": "Reset All Filters"
+    },
+    "loadMore": {
+      "button": "Load More Articles"
+    },
+    "newsletter": {
+      "title": "Follow Updates from Esperion",
+      "description": "Get the latest articles and updates delivered directly to your email",
+      "placeholder": "Enter your email",
+      "subscribeButton": "Subscribe",
+      "successMessage": "Thank you, you're now registered to receive updates from Esperion."
+    },
+    "seo": {
+      "title": "Articles - Digital Insights from Esperion",
+      "description": "Read articles, insights, and learnings about web development, design, and digital marketing.",
+      "ogTitle": "Esperion Articles",
+      "ogDescription": "Insights and updates from the Esperion team."
+    }
   },
   "footer": {
-    "company": "About Company",
-    "services": "Services",
-    "contact": "Contact",
+    "companyDescription": "Esperion helps businesses grow through strategy, design, and targeted digital development.",
+    "quickLinks": "Quick Navigation",
+    "ourServices": "Our Services",
+    "contactUs": "Contact Us",
     "followUs": "Follow Us",
-    "address": "Address",
-    "email": "Email",
+    "contact": {
+      "city": "Jakarta, Indonesia",
+      "addressPending": "Full address awaiting publication confirmation",
+      "businessHours": "Monday-Friday: 09:00-17:00 WIB"
+    },
+    "services": {
+      "webDevelopment": "Web Development",
+      "mobileAppDevelopment": "Mobile App Development",
+      "uiUxDesign": "UI/UX Design",
+      "digitalMarketing": "Digital Marketing",
+      "ecommerceSolutions": "E-Commerce Solutions",
+      "digitalConsulting": "Digital Consulting"
+    },
+    "copyright": "© {{year}} Esperion. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  },
+  "social": {
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "linkedin": "LinkedIn",
+    "tiktok": "TikTok",
+    "twitter": "Twitter"
+  },
+  "aria": {
+    "location": "Location",
     "phone": "Phone",
-    "copyright": "© 2026 Esperion Digital Agency. All Rights Reserved."
-  },
-  "forms": {
-    "fullName": "Full Name",
-    "companyName": "Company Name",
     "email": "Email",
-    "phone": "Phone Number",
-    "message": "Message",
-    "submit": "Submit",
-    "required": "Required",
-    "invalid": "Invalid",
-    "success": "Form successfully submitted",
-    "error": "An error occurred while submitting"
+    "businessHours": "Business hours",
+    "switchToLightMode": "Switch to light mode",
+    "switchToDarkMode": "Switch to dark mode",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
   },
-  "validation": {
-    "required": "This field is required",
-    "email": "Please enter a valid email",
-    "minLength": "Minimum {length} characters",
-    "maxLength": "Maximum {length} characters",
-    "passwordMatch": "Passwords do not match"
+  "breadcrumb": {
+    "home": "Home",
+    "services": "Our Services",
+    "works": "Portfolio",
+    "articles": "Articles"
   },
-  "auth": {
-    "login": "Login",
-    "register": "Register",
-    "email": "Email",
-    "password": "Password",
-    "rememberMe": "Remember Me",
-    "forgotPassword": "Forgot Password?",
-    "noAccount": "Don't have an account?",
-    "haveAccount": "Already have an account?",
-    "signUp": "Sign Up Now",
-    "signIn": "Sign In Now"
-  },
-  "errors": {
-    "notFound": "Page not found",
-    "serverError": "Server error occurred",
-    "unauthorized": "Unauthorized",
-    "backToHome": "Back to Home"
+  "seo": {
+    "home": {
+      "title": "Best Digital Marketing Services in Jakarta - Esperion",
+      "description": "Discover the most comprehensive digital services from Esperion Agency.",
+      "ogTitle": "Digital Agency Jakarta - Esperion",
+      "ogDescription": "Professional digital marketing, web development and mobile app services in Jakarta."
+    },
+    "services": {
+      "title": "Best Digital Marketing Services - Esperion Agency",
+      "description": "Professional digital marketing, web development, SEO, and UI/UX design services.",
+      "ogTitle": "Digital Agency Services Jakarta - Esperion",
+      "ogDescription": "Professional digital marketing, web development and mobile app services."
+    },
+    "articles": {
+      "title": "Articles - Digital Insights from Esperion",
+      "description": "Read articles, insights, and learnings about web development, design, and digital marketing.",
+      "ogTitle": "Esperion Articles",
+      "ogDescription": "Insights and updates from the Esperion team."
+    }
   }
 }

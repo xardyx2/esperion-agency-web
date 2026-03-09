@@ -1,7 +1,11 @@
 <template>
   <div class="min-h-screen bg-es-bg-primary dark:bg-es-bg-primary-dark">
     <!-- Section 1: Dynamic Banner Slider -->
-    <section class="relative h-[500px] md:h-[600px] overflow-hidden">
+    <section 
+      class="relative h-[500px] md:h-[600px] overflow-hidden"
+      @mouseenter="pauseAutoPlay"
+      @mouseleave="resumeAutoPlay"
+    >
       <div 
         v-for="(slide, index) in bannerSlides" 
         :key="slide.id"
@@ -18,9 +22,12 @@
         <div class="absolute inset-0 z-20 flex items-center">
           <div class="container mx-auto px-4">
             <div class="max-w-2xl">
-              <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
+              <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
                 {{ slide.title }}
               </h1>
+              <p v-if="slide.subtitle" class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-4 font-medium">
+                {{ slide.subtitle }}
+              </p>
               <p class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-8">
                 {{ slide.description }}
               </p>
@@ -46,6 +53,26 @@
           :aria-label="`Go to slide ${index + 1}`"
         />
       </div>
+
+      <!-- Arrow Navigation -->
+      <button
+        @click="prevSlide"
+        class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-es-bg-inverse/80 dark:bg-es-bg-inverse-dark/80 rounded-full flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all shadow-lg hidden md:flex"
+        aria-label="Previous slide"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button
+        @click="nextSlide"
+        class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-es-bg-inverse/80 dark:bg-es-bg-inverse-dark/80 rounded-full flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all shadow-lg hidden md:flex"
+        aria-label="Next slide"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </section>
 
     <!-- Section 2: Who Are We -->
@@ -81,12 +108,12 @@
       </div>
     </section>
 
-    <!-- Section 3: Layanan Kami -->
+    <!-- Section 3: Our Services -->
     <section class="py-16 md:py-24 bg-es-bg-secondary dark:bg-es-bg-secondary-dark">
       <div class="container mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-              Layanan Kami
+              Our Services
           </h2>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark max-w-2xl mx-auto">
               Solusi digital yang dirancang untuk target bisnis Anda
@@ -115,7 +142,7 @@
             :to="localePath('/our-services')"
             class="inline-flex items-center px-6 py-3 border-2 border-es-accent-primary dark:border-es-accent-primary-dark text-es-accent-primary dark:text-es-accent-primary-dark rounded-lg font-semibold hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors"
           >
-            Lihat Semua Layanan
+            View All Services
           </NuxtLink>
         </div>
       </div>
@@ -172,7 +199,7 @@
         <div class="flex justify-between items-center mb-12">
           <div>
             <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-              Portofolio Pilihan
+              Featured Works
             </h2>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
               Sorotan proyek yang mewakili pendekatan kerja Esperion
@@ -182,7 +209,7 @@
             :to="localePath('/our-works')"
             class="hidden md:inline-flex items-center text-es-accent-primary dark:text-es-accent-primary-dark font-semibold hover:underline"
           >
-            Lihat Semua Portofolio →
+            View All Portfolio →
           </NuxtLink>
         </div>
 
@@ -244,7 +271,7 @@
             :to="localePath('/our-works')"
             class="inline-flex items-center text-es-accent-primary dark:text-es-accent-primary-dark font-semibold hover:underline"
           >
-            Lihat Semua Portofolio →
+            View All Portfolio →
           </NuxtLink>
         </div>
       </div>
@@ -256,7 +283,7 @@
         <div class="flex justify-between items-center mb-12">
           <div>
             <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-              Artikel Terbaru
+              Latest Articles
             </h2>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
               Insight singkat, pembelajaran, dan pembaruan dari tim Esperion
@@ -266,7 +293,7 @@
             :to="localePath('/articles')"
             class="hidden md:inline-flex items-center text-es-accent-primary dark:text-es-accent-primary-dark font-semibold hover:underline"
           >
-            Lihat Semua Artikel →
+            View All Articles →
           </NuxtLink>
         </div>
 
@@ -300,7 +327,7 @@
             :to="localePath('/articles')"
             class="inline-flex items-center text-es-accent-primary dark:text-es-accent-primary-dark font-semibold hover:underline"
           >
-            Lihat Semua Artikel →
+            View All Articles →
           </NuxtLink>
         </div>
       </div>
@@ -319,7 +346,7 @@
           :to="localePath('/contact-us')"
           class="inline-flex items-center px-8 py-4 bg-es-bg-inverse dark:bg-es-bg-inverse-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark transition-colors"
         >
-          Mulai Diskusi Hari Ini
+          Start Discussion Today
         </NuxtLink>
       </div>
     </section>
@@ -329,13 +356,22 @@
 <script setup lang="ts">
 import { getFeaturedWorks, publicArticles, publicServices } from '../data/public-content';
 
+// Window type extension for keyboard handler
+declare global {
+  interface Window {
+    _bannerKeydownHandler?: (e: KeyboardEvent) => void;
+  }
+}
+
 // SEO Meta
 const runtimeConfig = useRuntimeConfig();
 const localePath = useLocalePath();
+const { t } = useI18n();
+const { locale } = useI18n();
 
 useSeoMeta({
-  title: 'Esperion Digital Agency Jakarta | Jasa Digital Marketing Terbaik',
-  description: 'Esperion adalah digital agency terbaik di Jakarta. Spesialis digital marketing, SEO, social media. Konsultasi GRATIS!',
+  title: t('seo.home.title'),
+  description: t('seo.home.description'),
   ogTitle: 'Esperion Digital Agency Jakarta | Jasa Digital Marketing Terbaik',
   ogDescription: 'Esperion adalah digital agency terbaik di Jakarta. Spesialis digital marketing, SEO, social media. Konsultasi GRATIS!',
   ogImage: '/images/esperion-agency-hero.jpg',
@@ -445,13 +481,13 @@ useSchemaOrg([
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Beranda',
+        name: 'Home',
         item: 'https://esperion.id/id'
       },
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Tentang Kami',
+        name: 'About Us',
         item: 'https://esperion.id/id/about'
       }
     ]
@@ -464,38 +500,60 @@ const currentLogoSlide = ref(0);
 const currentWorkSlide = ref(0);
 const worksVisible = ref(3);
 const logosVisible = ref(6);
+const isPaused = ref(false);
 
 // Banner Slides Data
-const bannerSlides = [
+const bannerSlides = computed(() => [
   {
     id: 1,
-    title: 'Bangun Kehadiran Digital yang Lebih Meyakinkan',
-    description: 'Kami merancang website dan produk digital yang membantu bisnis tampil jelas, cepat, dan siap berkembang.',
+    title: t('home.hero.slide1Title'),
+    subtitle: t('home.hero.slide1Sub'),
+    description: t('home.hero.slide1Desc'),
     image: '/images/banner-1.jpg',
-    ctaText: 'Mulai Konsultasi',
+    ctaText: t('home.hero.slide1Cta'),
     ctaLink: '/contact-us',
   },
   {
     id: 2,
-    title: 'Solusi Digital untuk Fase Tumbuh Berikutnya',
+    title: 'Ready for Next Growth Phase?',
+    subtitle: 'Digital Solutions for Your Next Growth Phase',
     description: 'Dari perencanaan sampai peluncuran, Esperion membantu tim Anda merilis pengalaman digital yang relevan dan terukur.',
     image: '/images/banner-2.jpg',
-    ctaText: 'Lihat Portofolio',
+    ctaText: 'View Portfolio',
     ctaLink: '/our-works',
   },
   {
     id: 3,
-    title: 'Tim Kecil yang Fokus pada Hasil Nyata',
+    title: 'Small Team, Real Impact',
+    subtitle: 'Small Team, Real Impact',
     description: 'Kami menggabungkan strategi, desain, dan pengembangan untuk menghadirkan pengalaman digital yang konsisten dengan brand Anda.',
     image: '/images/banner-3.jpg',
-    ctaText: 'Pelajari Lebih Lanjut',
+    ctaText: 'Learn More',
     ctaLink: '/about',
+  },
+  {
+    id: 4,
+    title: 'Comprehensive Digital Services',
+    subtitle: 'Comprehensive Digital Services',
+    description: 'Dari web development hingga digital marketing, kami menyediakan solusi end-to-end untuk transformasi digital.',
+    image: '/images/banner-4.jpg',
+    ctaText: 'Explore Services',
+    ctaLink: '/our-services',
+  },
+  {
+    id: 5,
+    title: 'Trusted by Growing Businesses',
+    subtitle: 'Trusted by Growing Businesses',
+    description: 'Bergabung dengan bisnis yang telah tumbuh bersama Esperion melalui solusi digital yang terukur dan berdampak.',
+    image: '/images/banner-5.jpg',
+    ctaText: 'View Testimonials',
+    ctaLink: '/our-works',
   },
 ];
 
 // Who Are We Data
 const whoAreWe = {
-  title: 'Tentang Esperion',
+  title: 'About Esperion',
   description: 'Esperion adalah mitra digital untuk bisnis yang membutuhkan arah, eksekusi, dan pengalaman brand yang konsisten. Kami menggabungkan strategi, desain, dan pengembangan agar setiap peluncuran terasa lebih siap dan lebih relevan.',
   image: '/images/team.jpg',
   values: [
@@ -511,10 +569,10 @@ const services = ref(publicServices);
 
 // Client Stats Data
 const clientStats = [
-  { value: '150+', label: 'Proyek Terselesaikan' },
-  { value: '80+', label: 'Kolaborasi Klien' },
-  { value: '10+', label: 'Tahun Pengalaman' },
-  { value: '25+', label: 'Talenta Inti' },
+  { value: '150+', label: 'Projects Completed' },
+  { value: '80+', label: 'Client Collaborations' },
+  { value: '10+', label: 'Years of Experience' },
+  { value: '25+', label: 'Core Talent' },
 ];
 
 // Client Logos Data
@@ -537,17 +595,64 @@ const articles = ref(publicArticles.slice(0, 3));
 
 // CTA Data
 const cta = {
-  title: 'Siap Menyusun Langkah Digital Berikutnya?',
+  title: 'Ready for Your Next Digital Step?',
   description: 'Ceritakan konteks bisnis Anda, lalu kami bantu memetakan solusi yang paling relevan untuk tahap pertumbuhan berikutnya.',
 };
 
 // Auto-rotate banner
 let bannerInterval: NodeJS.Timeout;
 let worksInterval: NodeJS.Timeout;
-onMounted(() => {
+
+const startAutoPlay = () => {
+  console.log('[Banner] Starting autoplay, currentSlide:', currentSlide.value, 'isPaused:', isPaused.value);
   bannerInterval = setInterval(() => {
-    currentSlide.value = (currentSlide.value + 1) % bannerSlides.length;
+    console.log('[Banner] Interval tick, isPaused:', isPaused.value, 'currentSlide:', currentSlide.value);
+    if (!isPaused.value) {
+      currentSlide.value = (currentSlide.value + 1) % bannerSlides.length;
+      console.log('[Banner] Advanced to slide:', currentSlide.value);
+    }
   }, 5000);
+};
+
+const resetInterval = () => {
+  clearInterval(bannerInterval);
+  startAutoPlay();
+};
+
+const pauseAutoPlay = () => {
+  isPaused.value = true;
+  clearInterval(bannerInterval);
+};
+
+const resumeAutoPlay = () => {
+  isPaused.value = false;
+  startAutoPlay();
+};
+
+const prevSlide = () => {
+  currentSlide.value = currentSlide.value === 0 ? bannerSlides.length - 1 : currentSlide.value - 1;
+  resetInterval();
+};
+
+const nextSlide = () => {
+  currentSlide.value = (currentSlide.value + 1) % bannerSlides.length;
+  resetInterval();
+};
+
+onMounted(() => {
+  console.log('[Banner] onMounted called, bannerSlides length:', bannerSlides.length);
+  startAutoPlay();
+
+  // Keyboard navigation
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') {
+      prevSlide();
+    } else if (e.key === 'ArrowRight') {
+      nextSlide();
+    }
+  };
+  window.addEventListener('keydown', handleKeydown);
+  window._bannerKeydownHandler = handleKeydown;
 
   // Auto-rotate logos
   setInterval(() => {
@@ -584,6 +689,9 @@ onMounted(() => {
 onBeforeUnmount(() => {
   clearInterval(bannerInterval);
   clearInterval(worksInterval);
+  if (window._bannerKeydownHandler) {
+    window.removeEventListener('keydown', window._bannerKeydownHandler);
+  }
 });
 
 // Work slider navigation

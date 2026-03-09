@@ -2,11 +2,11 @@
   <header class="sticky top-0 z-50 bg-es-bg-secondary dark:bg-es-bg-secondary-dark border-b border-es-border dark:border-es-border-dark">
     <nav class="container mx-auto px-4">
       <div class="flex items-center justify-between h-16">
-        <!-- Logo -->
+         <!-- Logo -->
         <NuxtLink 
           :to="localePath('/')" 
           class="flex items-center space-x-2 group"
-          aria-label="Esperion Home"
+          :aria-label="t('nav.aria.home')"
         >
           <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-es-accent-primary to-es-accent-secondary dark:from-es-accent-primary-dark dark:to-es-accent-secondary-dark flex items-center justify-center transform group-hover:scale-105 transition-transform">
             <span class="text-white font-bold text-lg">E</span>
@@ -33,37 +33,23 @@
 
         <!-- Right side buttons -->
         <div class="flex items-center space-x-3">
-          <!-- Language Switcher -->
-          <LanguageSwitcher />
-
-          <!-- Theme Toggle -->
-          <button
-            @click="toggleTheme"
-            class="p-2 rounded-lg hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark transition-colors"
-            :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
-            title="Toggle theme"
-          >
-            <span v-if="isDark" class="text-xl" role="img" aria-label="Light mode">☀️</span>
-            <span v-else class="text-xl" role="img" aria-label="Dark mode">🌙</span>
-          </button>
-
-          <!-- Contact CTA -->
+           <!-- Contact CTA -->
           <NuxtLink
             :to="localePath('/contact-us')"
             class="hidden sm:inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-es-accent-primary to-es-accent-primary-hover dark:from-es-accent-primary-dark dark:to-es-accent-primary-hover-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:shadow-lg hover:shadow-es-accent-primary/25 dark:hover:shadow-es-accent-primary-dark/25 transform hover:-translate-y-0.5 transition-all"
           >
-            Hubungi Kami
+            {{ t('nav.contact') }}
           </NuxtLink>
 
           <!-- Mobile menu button -->
           <button
             @click="mobileMenuOpen = !mobileMenuOpen"
             class="md:hidden p-2 rounded-lg hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark transition-colors"
-            :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
+            :aria-label="mobileMenuOpen ? t('nav.aria.closeMenu') : t('nav.aria.openMenu')"
             :aria-expanded="mobileMenuOpen"
           >
-            <span v-if="mobileMenuOpen" class="text-2xl block" role="img" aria-label="Close">✕</span>
-            <span v-else class="text-2xl block" role="img" aria-label="Menu">☰</span>
+            <span v-if="mobileMenuOpen" class="text-2xl block" role="img" :aria-label="t('common.aria.close')">✕</span>
+            <span v-else class="text-2xl block" role="img" :aria-label="t('common.aria.menu')">☰</span>
           </button>
         </div>
       </div>
@@ -96,7 +82,7 @@
               class="mx-4 mt-2 inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-es-accent-primary to-es-accent-primary-hover dark:from-es-accent-primary-dark dark:to-es-accent-primary-hover-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:shadow-lg transition-all"
               @click="mobileMenuOpen = false"
             >
-              Hubungi Kami
+              {{ t('nav.contact') }}
             </NuxtLink>
           </div>
         </div>
@@ -106,38 +92,22 @@
 </template>
 
 <script setup lang="ts">
-const mobileMenuOpen = ref(false);
-const colorMode = useColorMode();
 const route = useRoute();
 const localePath = useLocalePath();
-
-const isDark = computed(() => colorMode.value === 'dark');
-
-const toggleTheme = () => {
-  // Add theme-transitioning class to trigger gradient sweep animation
-  document.documentElement.classList.add('theme-transitioning');
-  
-  // Toggle theme
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
-  
-  // Remove class after animation completes (500ms)
-  setTimeout(() => {
-    document.documentElement.classList.remove('theme-transitioning');
-  }, 500);
-};
+const { t } = useI18n();
 
 const isActive = (href: string) => {
   const localizedHref = localePath(href);
   return route.path === localizedHref || (href !== '/' && route.path.startsWith(localizedHref));
 };
 
-const navItems = [
-  { href: '/', label: 'Beranda' },
-  { href: '/our-works', label: 'Portofolio' },
-  { href: '/our-services', label: 'Layanan' },
-  { href: '/articles', label: 'Artikel' },
-  { href: '/about', label: 'Tentang' },
-];
+const navItems = computed(() => [
+  { href: '/', label: t('nav.home') },
+  { href: '/our-works', label: t('nav.works') },
+  { href: '/our-services', label: t('nav.services') },
+  { href: '/articles', label: t('nav.articles') },
+  { href: '/about', label: t('nav.about') },
+]);
 </script>
 
 <style scoped>

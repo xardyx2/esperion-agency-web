@@ -21,53 +21,53 @@
               target="_blank" 
               rel="noopener noreferrer" 
               class="w-10 h-10 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-es-text-secondary dark:text-es-text-secondary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all transform hover:scale-110"
-              aria-label="Instagram"
+              :aria-label="t('social.instagram')"
             >
-              <span class="text-lg" role="img" aria-label="Instagram">📷</span>
+              <span class="text-lg" role="img" :aria-label="t('social.instagram')">📷</span>
             </a>
             <a 
               href="https://facebook.com/esperiondigital" 
               target="_blank" 
               rel="noopener noreferrer" 
               class="w-10 h-10 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-es-text-secondary dark:text-es-text-secondary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all transform hover:scale-110"
-              aria-label="Facebook"
+              :aria-label="t('social.facebook')"
             >
-              <span class="text-lg" role="img" aria-label="Facebook">👍</span>
+              <span class="text-lg" role="img" :aria-label="t('social.facebook')">👍</span>
             </a>
             <a 
               href="https://linkedin.com/company/esperiondigital" 
               target="_blank" 
               rel="noopener noreferrer" 
               class="w-10 h-10 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-es-text-secondary dark:text-es-text-secondary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all transform hover:scale-110"
-              aria-label="LinkedIn"
+              :aria-label="t('social.linkedin')"
             >
-              <span class="text-lg" role="img" aria-label="LinkedIn">💼</span>
+              <span class="text-lg" role="img" :aria-label="t('social.linkedin')">💼</span>
             </a>
             <a 
               href="https://tiktok.com/@esperion_id" 
               target="_blank" 
               rel="noopener noreferrer" 
               class="w-10 h-10 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-es-text-secondary dark:text-es-text-secondary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all transform hover:scale-110"
-              aria-label="TikTok"
+              :aria-label="t('social.tiktok')"
             >
-              <span class="text-lg" role="img" aria-label="TikTok">🎵</span>
+              <span class="text-lg" role="img" :aria-label="t('social.tiktok')">🎵</span>
             </a>
             <a 
               href="https://twitter.com/esperion_id" 
               target="_blank" 
               rel="noopener noreferrer" 
               class="w-10 h-10 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-es-text-secondary dark:text-es-text-secondary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all transform hover:scale-110"
-              aria-label="Twitter"
+              :aria-label="t('social.twitter')"
             >
-              <span class="text-lg" role="img" aria-label="Twitter">𝕏</span>
+              <span class="text-lg" role="img" :aria-label="t('social.twitter')">𝕏</span>
             </a>
           </div>
         </div>
 
         <!-- Quick Links -->
         <div>
-          <h4 class="text-sm font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4 uppercase tracking-wider">
-            Navigasi Cepat
+           <h4 class="text-sm font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4 uppercase tracking-wider">
+            {{ t('footer.quickLinks') }}
           </h4>
           <ul class="space-y-2">
             <li v-for="link in quickLinks" :key="link.href">
@@ -84,8 +84,8 @@
 
         <!-- Services -->
         <div>
-          <h4 class="text-sm font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4 uppercase tracking-wider">
-            Layanan Kami
+           <h4 class="text-sm font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4 uppercase tracking-wider">
+            {{ t('footer.ourServices') }}
           </h4>
           <ul class="space-y-2">
             <li v-for="service in services" :key="service.href">
@@ -102,25 +102,25 @@
 
         <!-- Contact Info -->
         <div>
-          <h4 class="text-sm font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4 uppercase tracking-wider">
-            Hubungi Kami
+           <h4 class="text-sm font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4 uppercase tracking-wider">
+            {{ t('footer.contactUs') }}
           </h4>
           <ul class="space-y-3 text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
             <li class="flex items-start space-x-3">
-              <span class="text-lg flex-shrink-0" role="img" aria-label="Location">📍</span>
-              <span>Jakarta, Indonesia<br/><span class="text-es-text-tertiary dark:text-es-text-tertiary-dark text-xs">Alamat lengkap menunggu konfirmasi publikasi</span></span>
+              <span class="text-lg flex-shrink-0" role="img" :aria-label="t('aria.location')">📍</span>
+              <span>{{ t('footer.contact.city') }}<br/><span class="text-es-text-tertiary dark:text-es-text-tertiary-dark text-xs">{{ t('footer.contact.addressPending') }}</span></span>
             </li>
             <li class="flex items-center space-x-3">
-              <span class="text-lg flex-shrink-0" role="img" aria-label="Phone">📱</span>
+              <span class="text-lg flex-shrink-0" role="img" :aria-label="t('aria.phone')">📱</span>
               <a href="tel:+6281234567890" class="hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors">+62 812 3456 7890</a>
             </li>
             <li class="flex items-center space-x-3">
-              <span class="text-lg flex-shrink-0" role="img" aria-label="Email">✉️</span>
+              <span class="text-lg flex-shrink-0" role="img" :aria-label="t('aria.email')">✉️</span>
               <a href="mailto:hello@esperion.id" class="hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors">hello@esperion.id</a>
             </li>
             <li class="flex items-center space-x-3">
-              <span class="text-lg flex-shrink-0" role="img" aria-label="Business hours">🕐</span>
-              <span>Senin-Jumat: 09.00-17.00 WIB</span>
+              <span class="text-lg flex-shrink-0" role="img" :aria-label="t('aria.businessHours')">🕐</span>
+              <span>{{ t('footer.contact.businessHours') }}</span>
             </li>
           </ul>
         </div>
@@ -129,21 +129,37 @@
       <!-- Bottom Bar -->
       <div class="mt-8 pt-8 border-t border-es-border dark:border-es-border-dark">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
-            © {{ new Date().getFullYear() }} Esperion. Seluruh hak cipta dilindungi.
+           <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
+            {{ t('footer.copyright', { year: new Date().getFullYear() }) }}
           </p>
+          
+          <!-- Language & Theme Toggles -->
+          <div class="flex items-center space-x-4">
+            <LanguageSwitcher variant="buttons" size="sm" :showFlags="true" />
+            
+            <!-- Theme Toggle -->
+            <button
+              @click="toggleTheme"
+              class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg transition-colors bg-es-bg-secondary dark:bg-es-bg-secondary-dark border border-es-border dark:border-es-border-dark hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark"
+              :aria-label="isDark ? t('aria.switchToLightMode') : t('aria.switchToDarkMode')"
+            >
+              <span v-if="isDark" class="text-lg" role="img" :aria-label="t('aria.lightMode')">☀️</span>
+              <span v-else class="text-lg" role="img" :aria-label="t('aria.darkMode')">🌙</span>
+            </button>
+          </div>
+          
           <div class="flex space-x-6">
             <NuxtLink 
               :to="localePath('/privacy-policy')" 
               class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors text-sm"
             >
-              Kebijakan Privasi
+              {{ t('footer.privacyPolicy') }}
             </NuxtLink>
             <NuxtLink 
               :to="localePath('/terms-of-service')" 
               class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors text-sm"
             >
-              Syarat Layanan
+              {{ t('footer.termsOfService') }}
             </NuxtLink>
           </div>
         </div>
@@ -153,25 +169,34 @@
 </template>
 
 <script setup lang="ts">
+import { useColorMode } from '#imports'
+
 const localePath = useLocalePath();
+const { t } = useI18n();
+const colorMode = useColorMode();
+const isDark = computed(() => colorMode.value === 'dark');
 
-const quickLinks = [
-  { href: '/', label: 'Beranda' },
-  { href: '/our-works', label: 'Portofolio' },
-  { href: '/our-services', label: 'Layanan' },
-  { href: '/articles', label: 'Artikel' },
-  { href: '/about', label: 'Tentang' },
-  { href: '/contact-us', label: 'Kontak' },
-];
+const toggleTheme = () => {
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
+};
 
-const services = [
-  { href: '/our-services/web-development', label: 'Pengembangan Web' },
-  { href: '/our-services/mobile-app-development', label: 'Pengembangan Aplikasi Mobile' },
-  { href: '/our-services/ui-ux-design', label: 'UI/UX Design' },
-  { href: '/our-services/digital-marketing', label: 'Digital Marketing' },
-  { href: '/our-services/ecommerce-solutions', label: 'Solusi E-Commerce' },
-  { href: '/our-services/consulting', label: 'Konsultasi Digital' },
-];
+const quickLinks = computed(() => [
+  { href: '/', label: t('nav.home') },
+  { href: '/our-works', label: t('nav.works') },
+  { href: '/our-services', label: t('nav.services') },
+  { href: '/articles', label: t('nav.articles') },
+  { href: '/about', label: t('nav.about') },
+  { href: '/contact-us', label: t('nav.contact') },
+]);
+
+const services = computed(() => [
+  { href: '/our-services/web-development', label: t('footer.services.webDevelopment') },
+  { href: '/our-services/mobile-app-development', label: t('footer.services.mobileAppDevelopment') },
+  { href: '/our-services/ui-ux-design', label: t('footer.services.uiUxDesign') },
+  { href: '/our-services/digital-marketing', label: t('footer.services.digitalMarketing') },
+  { href: '/our-services/ecommerce-solutions', label: t('footer.services.ecommerceSolutions') },
+  { href: '/our-services/consulting', label: t('footer.services.digitalConsulting') },
+]);
 </script>
 
 <style scoped>

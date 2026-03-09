@@ -6,10 +6,10 @@
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="container mx-auto px-4 text-center">
           <h1 class="text-4xl md:text-5xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Artikel
+            t("articles.banner.title")
           </h1>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-lg max-w-2xl mx-auto">
-            Insight, pembelajaran, dan pembaruan dari tim Esperion
+            t("articles.banner.description"), dan pembaruan dari tim Esperion
           </p>
         </div>
       </div>
@@ -40,7 +40,7 @@
               <input
                 v-model="searchQuery"
                 type="text"
-                placeholder="Cari artikel..."
+                placeholder="t("articles.search.placeholder")"
                 class="w-64 px-4 py-2 pl-10 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark border border-es-border dark:border-es-border-dark rounded-lg text-es-text-secondary dark:text-es-text-secondary-dark focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:focus:ring-es-accent-primary-dark"
               />
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-es-text-secondary dark:text-es-text-secondary-dark">🔍</span>
@@ -51,7 +51,7 @@
               @click="clearFilters"
               class="px-4 py-2 text-es-accent-primary dark:text-es-accent-primary-dark hover:underline text-sm font-medium"
             >
-              Reset
+              t("common.reset")
             </button>
           </div>
         </div>
@@ -64,7 +64,7 @@
         <!-- Results Count -->
         <div class="mb-8">
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-            Menampilkan {{ filteredArticles.length }} dari {{ articles.length }} artikel
+            Showing {{ filteredArticles.length }} dari {{ articles.length }} artikel
           </p>
         </div>
 
@@ -72,16 +72,16 @@
         <div v-if="filteredArticles.length === 0" class="text-center py-16">
           <div class="text-6xl mb-4">📝</div>
           <h3 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-            Artikel tidak ditemukan
+            t("articles.emptyState.title")
           </h3>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark mb-4">
-            Coba ubah kata kunci atau filter yang dipilih
+            t("articles.emptyState.description") atau filter yang dipilih
           </p>
           <button
             @click="clearFilters"
             class="px-6 py-2 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-medium hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
           >
-            Reset Semua Filter
+            t("common.reset") Semua Filter
           </button>
         </div>
 
@@ -90,7 +90,7 @@
           <NuxtLink
             v-for="article in filteredArticles"
             :key="article.id"
-            :to="localePath(`/articles/${article.slug_id}`)"
+            :to="articlePath(article)"
             class="group bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow"
           >
             <div class="relative overflow-hidden">
@@ -111,7 +111,7 @@
                 {{ article.excerpt_id }}
               </p>
               <div class="flex items-center text-es-accent-primary dark:text-es-accent-primary-dark text-sm font-medium">
-                Baca Selengkapnya <span class="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                t("common.readMore") <span class="ml-1 group-hover:translate-x-1 transition-transform">→</span>
               </div>
             </div>
           </NuxtLink>
@@ -123,7 +123,7 @@
             @click="loadMore"
             class="px-8 py-3 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-medium hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors"
           >
-            Muat Artikel Lainnya
+            t("articles.loadMore.button")
           </button>
         </div>
       </div>
@@ -134,16 +134,16 @@
       <div class="container mx-auto px-4">
         <div class="max-w-2xl mx-auto text-center">
           <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Ikuti Pembaruan dari Esperion
+            t("articles.newsletter.title") dari Esperion
           </h2>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark mb-8">
-            Dapatkan artikel dan pembaruan terbaru langsung ke email Anda
+            t("articles.newsletter.description") dan pembaruan terbaru langsung ke email Anda
           </p>
           <form @submit.prevent="subscribe" class="flex flex-col sm:flex-row gap-4">
             <input
               v-model="email"
               type="email"
-              placeholder="Masukkan email Anda"
+              placeholder="t("articles.newsletter.placeholder") Anda"
               required
               class="flex-1 px-6 py-4 bg-es-bg-primary dark:bg-es-bg-primary-dark border border-es-border dark:border-es-border-dark rounded-lg text-es-text-primary dark:text-es-text-primary-dark focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:focus:ring-es-accent-primary-dark"
             />
@@ -151,7 +151,7 @@
               type="submit"
               class="px-8 py-4 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
             >
-              Berlangganan
+              t("articles.newsletter.subscribeButton")
             </button>
           </form>
         </div>
@@ -165,13 +165,15 @@ import { publicArticles } from '../data/public-content';
 
 // SEO Meta
 useSeoMeta({
-  title: 'Artikel - Insight Digital dari Esperion',
+  title: 't("articles.banner.title") - Insight Digital dari Esperion',
   description: 'Baca artikel, insight, dan pembelajaran seputar pengembangan web, desain, dan pemasaran digital dari tim Esperion.',
-  ogTitle: 'Artikel Esperion',
+  ogTitle: 't("articles.banner.title") Esperion',
   ogDescription: 'Insight dan pembaruan dari tim Esperion.',
 });
 
 const localePath = useLocalePath();
+const { t } = useI18n();
+const { locale } = useI18n();
 
 // State
 const selectedCategory = ref('');
@@ -181,16 +183,21 @@ const email = ref('');
 
 // All Categories for filter
 const allCategories = [
-  { value: '', label: 'Semua Kategori' },
-  { value: 'Marketing', label: 'Pemasaran' },
-  { value: 'Design', label: 'Desain' },
-  { value: 'Development', label: 'Pengembangan' },
-  { value: 'E-Commerce', label: 'E-Commerce' },
-  { value: 'Business', label: 'Bisnis' },
+  { value: '', label: 't("articles.filters.allCategories")' },
+  { value: 'Marketing', label: 't("articles.filters.marketing")' },
+  { value: 'Design', label: 't("articles.filters.design")' },
+  { value: 'Development', label: 't("articles.filters.development")' },
+  { value: 't("articles.filters.ecommerce")', label: 't("articles.filters.ecommerce")' },
+  { value: 'Business', label: 't("articles.filters.business")' },
 ];
 
 // Articles data
 const articles = ref(publicArticles);
+
+const articlePath = (article: (typeof publicArticles)[number]) => {
+  const slug = locale.value === 'en' ? (article.slug_en || article.slug_id) : article.slug_id;
+  return localePath(`/articles/${slug}`);
+};
 
 // Computed
 const filteredArticles = computed(() => {
@@ -223,7 +230,7 @@ const formatDate = (dateString: string) => {
 };
 
 const subscribe = () => {
-  alert('Terima kasih, Anda sudah terdaftar untuk menerima pembaruan dari Esperion.');
+  alert('t("articles.newsletter.successMessage"), Anda sudah terdaftar untuk menerima pembaruan dari Esperion.');
   email.value = '';
 };
 </script>
