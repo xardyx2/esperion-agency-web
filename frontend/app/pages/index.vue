@@ -549,7 +549,7 @@ const bannerSlides = computed(() => [
     ctaText: 'View Testimonials',
     ctaLink: '/our-works',
   },
-];
+]);
 
 // Who Are We Data
 const whoAreWe = {
