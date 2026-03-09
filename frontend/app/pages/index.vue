@@ -608,7 +608,7 @@ const startAutoPlay = () => {
   bannerInterval = setInterval(() => {
     console.log('[Banner] Interval tick, isPaused:', isPaused.value, 'currentSlide:', currentSlide.value);
     if (!isPaused.value) {
-      currentSlide.value = (currentSlide.value + 1) % bannerSlides.length;
+      currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length;
       console.log('[Banner] Advanced to slide:', currentSlide.value);
     }
   }, 5000);
@@ -630,17 +630,17 @@ const resumeAutoPlay = () => {
 };
 
 const prevSlide = () => {
-  currentSlide.value = currentSlide.value === 0 ? bannerSlides.length - 1 : currentSlide.value - 1;
+  currentSlide.value = currentSlide.value === 0 ? bannerSlides.value.length - 1 : currentSlide.value - 1;
   resetInterval();
 };
 
 const nextSlide = () => {
-  currentSlide.value = (currentSlide.value + 1) % bannerSlides.length;
+  currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length;
   resetInterval();
 };
 
 onMounted(() => {
-  console.log('[Banner] onMounted called, bannerSlides length:', bannerSlides.length);
+  console.log('[Banner] onMounted called, bannerSlides length:', bannerSlides.value.length);
   startAutoPlay();
 
   // Keyboard navigation
