@@ -222,8 +222,8 @@ useSchemaOrg([
     thumbnailUrl: () => imageUrl.value,
     wordCount: 1200,
     articleBody: () => `${article.value.excerpt_id}. Content about ${article.value.title} discussed in detail with practical examples and implementation guides.`,
-    articleSection: () => [article.value.category],
-    keywords: () => [articleKeywords.value],
+    articleSection: [article.value.category],
+    keywords: [articleKeywords.value],
     url: () => pageUrl.value,
     mainEntityOfPage: {
       '@type': 'WebPage',

@@ -100,15 +100,21 @@
 <script setup lang="ts">
 import { useAuthStore } from '../stores/auth'
 
+const router = useRouter();
+const { t } = useI18n();
+const authStore = useAuthStore();
+
 // SEO Meta
 useSeoMeta({
   title: t('auth.login.seo.title'),
   description: t('auth.login.seo.description'),
 });
 
-const router = useRouter();
-const { t } = useI18n();
-const authStore = useAuthStore();
+// SEO Meta
+useSeoMeta({
+  title: t('auth.login.seo.title'),
+  description: t('auth.login.seo.description'),
+});
 
 // Form state
 const form = ref({
