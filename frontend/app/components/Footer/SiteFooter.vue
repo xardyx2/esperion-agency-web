@@ -123,6 +123,60 @@
               <span>{{ t('footer.contact.businessHours') }}</span>
             </li>
           </ul>
+
+          <!-- Appearance Settings (Language + Theme) -->
+          <div class="mt-6 pt-6 border-t border-es-border dark:border-es-border-dark">
+            <!-- Language Switcher -->
+            <p class="text-xs font-semibold text-es-text-tertiary dark:text-es-text-tertiary-dark mb-3 uppercase tracking-wider">
+              {{ t('footer.appearance') }}
+            </p>
+            <div class="flex gap-3 mb-4">
+              <button
+                @click="switchLocale('id')"
+                :class="[
+                  'text-sm transition-colors',
+                  locale === 'id'
+                    ? 'text-es-accent-primary dark:text-es-accent-primary-dark font-semibold'
+                    : 'text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark'
+                ]"
+                :aria-pressed="locale === 'id'"
+              >
+                Bahasa Indonesia
+              </button>
+              <span class="text-es-text-tertiary dark:text-es-text-tertiary-dark">|</span>
+              <button
+                @click="switchLocale('en')"
+                :class="[
+                  'text-sm transition-colors',
+                  locale === 'en'
+                    ? 'text-es-accent-primary dark:text-es-accent-primary-dark font-semibold'
+                    : 'text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark'
+                ]"
+                :aria-pressed="locale === 'en'"
+              >
+                English
+              </button>
+            </div>
+
+            <!-- Theme Toggle -->
+            <div class="flex gap-2">
+              <button
+                v-for="option in themeOptions"
+                :key="option.value"
+                @click="setTheme(option.value)"
+                :class="[
+                  'p-2 rounded-lg border-2 transition-all duration-100',
+                  currentTheme === option.value
+                    ? 'border-es-accent-primary dark:border-es-accent-primary-dark -translate-y-0.5 bg-es-accent-primary/5 dark:bg-es-accent-primary-dark/5'
+                    : 'border-es-border dark:border-es-border-dark hover:-translate-y-0.5 hover:border-es-text-tertiary dark:hover:border-es-text-tertiary-dark'
+                ]"
+                :aria-label="option.label"
+                :aria-pressed="currentTheme === option.value"
+              >
+                <span class="text-base">{{ option.icon }}</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -155,12 +209,30 @@
 </template>
 
 <script setup lang="ts">
-import { useColorMode } from '#imports'
-
 const localePath = useLocalePath();
-const { t } = useI18n();
+const { t, locale, setLocale } = useI18n();
 const colorMode = useColorMode();
-const isDark = computed(() => colorMode.value === 'dark');
+
+// Theme options for toggle
+const themeOptions = [
+  { value: 'system', icon: '💻', label: 'System' },
+  { value: 'light', icon: '☀️', label: 'Light' },
+  { value: 'dark', icon: '🌙', label: 'Dark' },
+] as const;
+
+// Get current theme preference
+const currentTheme = computed(() => colorMode.preference as 'system' | 'light' | 'dark');
+
+// Set theme preference
+const setTheme = (theme: 'system' | 'light' | 'dark') => {
+  colorMode.preference = theme;
+};
+
+// Set locale
+const switchLocale = async (code: 'id' | 'en') => {
+  if (code === locale.value) return;
+  await setLocale(code);
+};
 
 const quickLinks = computed(() => [
   { href: '/', label: t('nav.home') },
