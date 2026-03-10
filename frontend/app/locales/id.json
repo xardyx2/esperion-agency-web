@@ -196,6 +196,59 @@
       "ogDescription": "Insight dan pembaruan dari tim Esperion."
     }
   },
+  "contact": {
+    "banner": {
+      "title": "Hubungi Kami",
+      "description": "Ceritakan kebutuhan Anda, lalu kami bantu petakan langkah digital yang paling relevan"
+    },
+    "form": {
+      "title": "Kirim Brief Anda",
+      "fullNameLabel": "Nama Lengkap",
+      "companyNameLabel": "Nama Perusahaan",
+      "emailLabel": "Email",
+      "phoneLabel": "Nomor Telepon",
+      "serviceLabel": "Layanan yang Dibutuhkan",
+      "descriptionLabel": "Ringkasan Proyek",
+      "servicePlaceholder": "Pilih layanan",
+      "serviceOptions": {
+        "webDevelopment": "Pengembangan Web",
+        "mobileApp": "Aplikasi Mobile",
+        "uiUxDesign": "UI/UX Design",
+        "digitalMarketing": "Digital Marketing",
+        "ecommerce": "Solusi E-Commerce",
+        "consulting": "Konsultasi Digital",
+        "other": "Lainnya"
+      },
+      "fullNamePlaceholder": "Nama Anda",
+      "companyNamePlaceholder": "Nama perusahaan atau brand",
+      "emailPlaceholder": "john@example.com",
+      "phonePlaceholder": "+62 812 3456 7890",
+      "descriptionPlaceholder": "Ceritakan tujuan, konteks, dan target waktu proyek Anda...",
+      "submitButton": "Kirim Pesan",
+      "submittingButton": "Mengirim...",
+      "successMessage": "Terima kasih. Brief Anda sudah terkirim dan tim Esperion akan segera menghubungi Anda.",
+      "errorMessage": "Terjadi kendala saat mengirim pesan. Silakan coba beberapa saat lagi."
+    },
+    "info": {
+      "title": "Informasi Kontak",
+      "location": "Lokasi",
+      "locationText": "Jakarta, Indonesia",
+      "phone": "Telepon / WhatsApp",
+      "phoneText": "+62 812 3456 7890",
+      "email": "Email",
+      "emailText": "hello@esperion.id",
+      "businessHours": "Jam Operasional",
+      "businessHoursText": "Senin - Jumat: 09.00 - 18.00 WIB"
+    },
+    "social": {
+      "title": "Ikuti Esperion"
+    },
+    "map": {
+      "title": "Lokasi Kami",
+      "description": "Informasi alamat detail akan ditampilkan setelah materi publik final dikonfirmasi",
+      "placeholder": "Placeholder peta - menunggu detail lokasi publik resmi"
+    }
+  },
   "footer": {
     "companyDescription": "Esperion membantu bisnis bertumbuh lewat strategi, desain, dan pengembangan digital yang terarah.",
     "quickLinks": "Navigasi Cepat",
@@ -218,7 +271,7 @@
     "copyright": "© {{year}} Esperion. Seluruh hak cipta dilindungi.",
     "privacyPolicy": "Kebijakan Privasi",
     "termsOfService": "Syarat Layanan"
-  },
+},
   "social": {
     "instagram": "Instagram",
     "facebook": "Facebook",
@@ -235,6 +288,267 @@
     "switchToDarkMode": "Ubah ke mode gelap",
     "lightMode": "Mode terang",
     "darkMode": "Mode gelap"
+  },
+  "offline": {
+    "title": "Anda Sedang Offline",
+    "message": "Sepertinya koneksi internet Anda terputus. Jangan khawatir, Anda masih dapat melihat beberapa konten yang tersimpan.",
+    "tryAgain": "Coba Lagi",
+    "goToHomepage": "Ke Halaman Utama",
+    "availablePages": "Halaman-halaman berikut tersedia offline:",
+    "cachedPages": {
+      "home": "Halaman Utama",
+      "works": "Portofolio",
+      "services": "Layanan",
+      "articles": "Artikel"
+    },
+    "stillOffline": "Masih offline. Silakan periksa koneksi internet Anda.",
+    "seo": {
+      "title": "Offline - Esperion",
+      "description": "Anda saat ini sedang offline."
+    }
+  },
+  "breadcrumb": {
+    "home": "Beranda",
+    "services": "Layanan Kami",
+    "works": "Portofolio",
+    "articles": "Artikel",
+    "contact": "Kontak Kami",
+    "about": "Tentang Kami"
+  },
+  "about": {
+    "banner": {
+      "title": "Tentang Kami",
+      "description": "Mengenal cara Esperion membangun kerja sama, kualitas, dan arah digital yang konsisten"
+    },
+    "aboutSection": {
+      "title": "Tentang Esperion",
+      "paragraph1": "Esperion adalah mitra digital yang membantu bisnis menyiapkan pengalaman online yang lebih jelas, lebih cepat, dan lebih siap tumbuh. Kami bekerja dengan pendekatan strategis agar setiap keputusan desain dan pengembangan tetap terhubung dengan tujuan bisnis.",
+      "paragraph2": "Tim kami menggabungkan riset, desain, pengembangan, dan validasi agar solusi yang dirilis tidak hanya terlihat baik, tetapi juga terasa relevan bagi pengguna dan mudah dikembangkan oleh bisnis Anda.",
+      "paragraph3": "Fokus kami bukan sekadar meluncurkan halaman baru, tetapi membantu bisnis membangun fondasi digital yang bisa dipakai untuk tahap pertumbuhan berikutnya."
+    },
+    "visionMission": {
+      "title": "Visi dan Misi",
+      "visionTitle": "Visi",
+      "visionDescription": "Menjadi mitra digital yang membantu bisnis mengambil keputusan lebih percaya diri melalui pengalaman brand dan produk yang rapi, relevan, dan berkelanjutan.",
+      "missionTitle": "Misi",
+      "missionItems": [
+        "Menyusun solusi digital yang selaras dengan tujuan bisnis dan kebutuhan pengguna",
+        "Membangun kerja sama jangka panjang lewat komunikasi yang terbuka dan hasil yang terukur",
+        "Menjaga kualitas eksekusi sambil terus menyesuaikan diri dengan perubahan pasar",
+        "Mendorong budaya belajar, dokumentasi, dan perbaikan berkelanjutan di setiap proyek"
+      ]
+    },
+    "stats": {
+      "projectsCompleted": "Proyek Terselesaikan",
+      "clientCollaborations": "Kolaborasi Klien",
+      "yearsExperience": "Tahun Pengalaman",
+      "coreTalent": "Talenta Inti"
+    },
+    "founders": {
+      "title": "Profil Kepemimpinan Sedang Diperbarui",
+      "description": "Informasi founder dan materi kepemimpinan publik belum dipublikasikan di repositori ini. Kami menahan identitas resmi sampai profil, foto, dan tautan yang benar-benar disetujui siap ditampilkan."
+    },
+    "values": {
+      "title": "Nilai Kerja Kami",
+      "description": "Prinsip yang menjaga cara kerja Esperion tetap konsisten di setiap kolaborasi",
+      "items": [
+        {
+          "icon": "🎯",
+          "title": "Kualitas yang disengaja",
+          "description": "Kami menjaga detail, dokumentasi, dan konsistensi agar hasil akhir terasa rapi sejak hari pertama diluncurkan."
+        },
+        {
+          "icon": "🤝",
+          "title": "Kepercayaan yang jujur",
+          "description": "Kami lebih memilih komunikasi yang jelas dan realistis dibanding janji yang terdengar besar tetapi tidak bisa diverifikasi."
+        },
+        {
+          "icon": "💡",
+          "title": "Eksplorasi yang terarah",
+          "description": "Teknologi baru kami pakai ketika benar-benar membantu bisnis bergerak lebih cepat dan lebih efisien."
+        },
+        {
+          "icon": "👥",
+          "title": "Kolaborasi terbuka",
+          "description": "Kami bekerja sebagai partner diskusi, bukan sekadar vendor, agar keputusan penting tetap punya konteks yang tepat."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Siap Bekerja Bersama Esperion?",
+      "description": "Mari diskusikan prioritas bisnis Anda dan tentukan langkah digital yang paling relevan.",
+      "button": "Hubungi Kami"
+    },
+    "seo": {
+      "title": "Tentang Esperion Digital Agency Jakarta - Solusi Digital Terbaik",
+      "description": "Kenali Esperion Digital Agency di Jakarta. Tim ahli dalam pengembangan web, aplikasi mobile, digital marketing, dan layanan digital terlengkap untuk bisnis Anda di Indonesia.",
+      "ogTitle": "Tentang Esperion - Digital Agency Jakarta",
+      "ogDescription": "Esperion adalah agensi digital paling inovatif di Jakarta, memberikan solusi untuk pertumbuhan bisnis Anda.",
+      "schemaName": "Tentang Esperion Digital Agency",
+      "schemaDescription": "Beranda profil perusahaan dan tim yang membangun layanan digital di Jakarta"
+    }
+  },
+  "services": {
+    "detail": {
+      "serviceScope": "Ruang Lingkup Layanan",
+      "workflow": "Alur Kerja",
+      "estimateStartingFrom": "Estimasi Mulai Dari",
+      "estimateNote": "Estimasi akhir disesuaikan berdasarkan ruang lingkup, kompleksitas, dan kebutuhan integrasi.",
+      "requestEstimate": "Minta Estimasi",
+      "faq": "Pertanyaan yang Sering Diajukan",
+      "relatedServices": "Layanan Terkait",
+      "ctaTitle": "Siap Melangkah ke Tahap Berikutnya?",
+      "ctaDescription": "Kategorikan konteks bisnis Anda, lalu kami bantu menyusun pendekatan yang paling relevan.",
+      "ctaButton": "Hubungi Tim Esperion"
+    }
+  },
+  "works": {
+    "detail": {
+      "featuredProject": "Proyek Sorotan",
+      "client": "Klien",
+      "projectSummary": "Ringkasan Proyek",
+      "projectDescription": "Halaman ini menampilkan gambaran singkat hasil kerja, ruang lingkup utama, dan indikator hasil yang paling relevan untuk memahami konteks proyek tanpa mengklaim detail rahasia yang belum dipublikasikan.",
+      "keyFeatures": "Ruang Lingkup Utama",
+      "projectGallery": "Galeri Proyek",
+      "startProjectDiscussion": "Mulai Diskusi Proyek",
+      "viewAllPortfolio": "Lihat Semua Portofolio",
+      "relatedWorks": "Proyek Terkait",
+      "seo": {
+        "title": "{title} - Esperion Digital Agency",
+        "description": "{description}"
+      }
+    }
+  },
+  "articles": {
+    "detail": {
+      "readTime": "menit baca",
+      "mainSummary": "Ringkasan Utama",
+      "summaryParagraph1": "Artikel ini merangkum pokok bahasan yang paling relevan untuk pengambilan keputusan digital, lalu menyoroti langkah awal yang bisa diprioritaskan oleh tim internal.",
+      "keyPoints": "Poin Penting",
+      "keyPointIntro": "Fokus utamanya adalah membantu tim melihat prioritas dengan lebih jelas sebelum masuk ke tahap implementasi yang lebih detail.",
+      "keyPoint1": "Prioritaskan kejelasan tujuan bisnis sebelum memilih kanal atau teknologi.",
+      "keyPoint2": "Pastikan pengalaman pengguna tetap konsisten dengan pesan brand di setiap touchpoint.",
+      "keyPoint3": "Gunakan pengukuran yang sederhana dan relevan agar perbaikan berikutnya lebih terarah.",
+      "closing": "Penutup",
+      "closingParagraph": "Jika Anda ingin menurunkan pembahasan ini menjadi rencana kerja yang lebih konkret, tim Esperion dapat membantu menyusun prioritas yang sesuai dengan kondisi bisnis saat ini.",
+      "shareArticle": "Bagikan artikel ini",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "copyLink": "Salin Tautan",
+      "authorBio": "Ditulis oleh tim editorial Esperion untuk merangkum insight praktis yang relevan bagi kebutuhan digital bisnis.",
+      "relatedArticles": "Artikel Terkait",
+      "newsletterTitle": "Ingin membaca insight lainnya?",
+      "newsletterDescription": "Jelajahi artikel lain dari tim Esperion untuk memahami prioritas digital dengan lebih terarah.",
+      "viewAllArticles": "Lihat Semua Artikel"
+    }
+  },
+  "aria": {
+    "location": "Lokasi",
+    "phone": "Telepon",
+    "email": "Email",
+    "businessHours": "Jam operasional",
+    "switchToLightMode": "Ubah ke mode terang",
+    "switchToDarkMode": "Ubah ke mode gelap",
+    "lightMode": "Mode terang",
+    "darkMode": "Mode gelap"
+  },
+  "auth": {
+    "login": {
+      "title": "Masuk",
+      "emailLabel": "Email",
+      "emailPlaceholder": "anda@contoh.com",
+      "passwordLabel": "Kata Sandi",
+      "rememberMe": "Ingat saya",
+      "forgotPassword": "Lupa kata sandi?",
+      "submitButton": "Masuk",
+      "submittingButton": "Memproses...",
+      "noAccount": "Belum punya akun?",
+      "createAccount": "Buat Akun",
+      "errors": {
+        "emailRequired": "Email wajib diisi.",
+        "emailInvalid": "Masukkan alamat email yang valid.",
+        "passwordRequired": "Kata sandi wajib diisi.",
+        "fixFields": "Perbaiki kolom yang ditandai.",
+        "invalidCredentials": "Email atau kata sandi salah. Silakan coba lagi."
+      },
+      "seo": {
+        "title": "Masuk - Dashboard Esperion",
+        "description": "Masuk ke akun dashboard Esperion Anda."
+      }
+    },
+    "register": {
+      "title": "Buat Akun",
+      "fullNameLabel": "Nama Lengkap",
+      "fullNamePlaceholder": "John Doe",
+      "usernameLabel": "Nama Pengguna",
+      "usernamePlaceholder": "johndoe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "anda@contoh.com",
+      "phoneLabel": "Nomor Telepon (Opsional)",
+      "phonePlaceholder": "+62 812 3456 7890",
+      "passwordLabel": "Kata Sandi",
+      "acceptTerms": "Saya menyetujui {terms} dan {privacy}",
+      "termsOfService": "Syarat Layanan",
+      "privacyPolicy": "Kebijakan Privasi",
+      "submitButton": "Buat Akun",
+      "submittingButton": "Membuat akun...",
+      "hasAccount": "Sudah punya akun?",
+      "signIn": "Masuk",
+      "errors": {
+        "fullNameRequired": "Nama lengkap wajib diisi.",
+        "usernameRequired": "Nama pengguna wajib diisi.",
+        "emailRequired": "Email wajib diisi.",
+        "emailInvalid": "Masukkan alamat email yang valid.",
+        "passwordRequired": "Kata sandi wajib diisi.",
+        "passwordMinLength": "Kata sandi minimal 8 karakter.",
+        "acceptTermsRequired": "Anda harus menyetujui syarat untuk melanjutkan.",
+        "fixFields": "Perbaiki kolom yang ditandai.",
+        "registrationFailed": "Pendaftaran gagal. Silakan coba lagi."
+      },
+      "seo": {
+        "title": "Buat Akun - Dashboard Esperion",
+        "description": "Buat akun dashboard Esperion Anda."
+      }
+    }
+  },
+  "works": {
+    "banner": {
+      "title": "Portofolio Kami",
+      "description": "Lihat contoh pendekatan kerja Esperion di berbagai kebutuhan digital"
+    },
+    "services": {
+      "all": "Semua Layanan",
+      "webDevelopment": "Web Development",
+      "mobileApp": "Mobile App Development",
+      "uiUxDesign": "UI/UX Design",
+      "digitalMarketing": "Digital Marketing",
+      "ecommerce": "E-Commerce Solutions",
+      "consulting": "Consulting"
+    },
+    "platforms": {
+      "all": "Semua Platform",
+      "shopify": "Shopify",
+      "reactNative": "React Native",
+      "nextjs": "Next.js",
+      "nuxt": "Nuxt",
+      "flutter": "Flutter",
+      "wordpress": "WordPress",
+      "laravel": "Laravel",
+      "vuejs": "Vue.js"
+    },
+    "results": {
+      "count": "Menampilkan {visible} dari {total} proyek"
+    },
+    "emptyState": {
+      "title": "Proyek tidak ditemukan",
+      "description": "Coba ubah filter untuk melihat hasil lain",
+      "resetButton": "Reset Semua Filter"
+    },
+    "featuredBadge": "Sorotan",
+    "loadMore": {
+      "button": "Lihat Proyek Lainnya"
+    }
   },
   "breadcrumb": {
     "home": "Beranda",
@@ -255,11 +569,726 @@
       "ogTitle": "Layanan Digital Agency Jakarta - Esperion",
       "ogDescription": "Layanan digital marketing, pengembangan web dan aplikasi mobile profesional di Jakarta."
     },
+    "works": {
+      "title": "Portofolio - Proyek Pilihan Esperion",
+      "description": "Jelajahi portofolio proyek digital Esperion, mulai dari website, aplikasi mobile, hingga pengalaman produk yang lebih terarah.",
+      "ogTitle": "Portofolio Esperion",
+      "ogDescription": "Lihat beberapa proyek digital pilihan dari Esperion."
+    },
     "articles": {
       "title": "Artikel - Insight Digital dari Esperion",
       "description": "Baca artikel, insight, dan pembelajaran seputar pengembangan web, desain, dan pemasaran digital dari tim Esperion.",
       "ogTitle": "Artikel Esperion",
       "ogDescription": "Insight dan pembaruan dari tim Esperion."
+    },
+    "contact": {
+      "title": "Hubungi Kami - Esperion Digital Agency Jakarta",
+      "description": "Kontak Esperion Digital Agency di Jakarta. Kami siap membantu transormasi digital bisnis Anda. Konsultasi GRATIS!",
+      "ogTitle": "Kontak Esperion - Digital Agency Jakarta",
+      "ogDescription": "Hubungi kami untuk konsultasi GRATIS tentang proyek digital Anda.",
+      "twitterTitle": "Kontak Esperion - Digital Agency Jakarta",
+      "schemaName": "Hubungi Kami - Esperion Digital Agency",
+      "schemaDescription": "Halaman kontak untuk Esperion Digital Agency di Jakarta"
+    }
+  },
+  "dashboard": {
+    "index": {
+      "title": "Ringkasan Dashboard",
+      "description": "Fokus pada operasi agency yang retained sementara backlog platform wider terbagi menjadi change terpisah.",
+      "cards": {
+        "articles": {
+          "title": "Artikel",
+          "description": "Terjemahan, review editorial, dan publikasi tetap menjadi penghalang archive aktif.",
+          "cta": "Buka artikel"
+        },
+        "works": {
+          "title": "Karya",
+          "description": "Entri portofolio harus dimuat dari API backend retained bukan placeholder cards.",
+          "cta": "Buka karya"
+        },
+        "clients": {
+          "title": "Klien",
+          "description": "Administrasi showcase klien tetap ada dalam change ini dan membutuhkan manajemen data nyata.",
+          "cta": "Buka klien"
+        },
+        "contact": {
+          "title": "Hubungi",
+          "description": "Penanganan pertanyaan dan review admin retained harus mencerminkan API submit yang sebenarnya.",
+          "cta": "Buka kontak"
+        }
+      },
+      "focus": {
+        "authTitle": "Keaslian autentikasi",
+        "authDetail": "Login, registrasi, logout, dan proteksi route harus mencerminkan store autentikasi dan API contract yang sebenarnya.",
+        "translationTitle": "Alur kerja terjemahan",
+        "translationDetail": "Terjemahan artikel tetap menjadi fitur retained paling lintas karena menyentuh API, editor, dan perilaku locale.",
+        "archiveTitle": "Kesiapan archive",
+        "archiveDetail": "Ringkasan ini sengaja menghindari grafik bertipe analytics agar dashboard tidak lagi membuat klaim kemampuan split-out."
+      },
+      "shortcuts": {
+        "articles": "Artikel",
+        "works": "Karya",
+        "services": "Layanan",
+        "clients": "Klien",
+        "contact": "Hubungi",
+        "sessions": "Sesi"
+      },
+      "status": {
+        "needsWiring": "Perlu dihubungkan",
+        "stubCleanup": "Pembersihan stub",
+        "needsVerification": "Perlu verifikasi"
+      }
+    },
+    "articles": {
+      "title": "Artikel",
+      "description": "Kelola konten editorial retained dan kesiapan terjemahan.",
+      "newButton": "Artikel Baru",
+      "search": {
+        "placeholder": "Cari berdasarkan judul atau slug..."
+      },
+      "filters": {
+        "allCategories": "Semua Kategori",
+        "allTranslationStatus": "Semua Status Terjemahan"
+      },
+      "columns": {
+        "title": "Judul",
+        "category": "Kategori",
+        "translation": "Terjemahan",
+        "publish": "Publikasi",
+        "actions": "Aksi"
+      },
+      "placeholders": {
+        "loading": "Memuat artikel...",
+        "error": "Gagal memuat artikel",
+        "noResults": "Tidak ada artikel yang cocok dengan filter saat ini."
+      },
+      "status": {
+        "draft": "Draft",
+        "id_only": "ID saja",
+        "en_only": "EN saja",
+        "complete": "Lengkap"
+      },
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Hapus",
+        "deleteConfirm": "Hapus artikel ini?"
+      },
+      "seo": {
+        "title": "Artikel - Dashboard",
+        "description": "Kelola alur kerja artikel retained."
+      }
+    },
+    "articles_edit": {
+      "title": "Edit Artikel",
+      "description": "Kelola konten artikel, draft terjemahan, dan status.",
+      "back": "Kembali",
+      "saveButton": "Simpan Artikel",
+      "saveInProgress": "Menyimpan...",
+      "loading": "Memuat artikel...",
+      "content": {
+        "indonesian": "Konten Indonesia",
+        "indonesianPrimary": "Sumber utama",
+        "english": "Terjemahan Inggris",
+        "englishDescription": "Gunakan terjemahan Alibaba untuk generasi draft, lalu review secara manual.",
+        "translateButton": "Terjemahkan ke Inggris",
+        "translating": "Menerjemahkan...",
+        "reviewButton": "Setujui Draft Terjemahan",
+        "reviewing": "Menyelidiki..."
+      },
+      "publishing": {
+        "title": "Publikasi",
+        "category": "Kategori",
+        "published": "Dipublikasikan"
+      },
+      "translationStatus": {
+        "title": "Status Terjemahan",
+        "current": "Status saat ini:",
+        "available": "Bahasa yang tersedia:",
+        "save": "Simpan Status Terjemahan",
+        "saveInProgress": "Menyimpan..."
+      },
+      "seo": {
+        "title": "Edit Artikel - Dashboard",
+        "description": "Edit konten artikel retained dan alur kerja terjemahan."
+      }
+    },
+    "articles_new": {
+      "title": "Artikel Baru",
+      "description": "Buat artikel sumber Indonesia terlebih dahulu, lalu lanjutkan review terjemahan dari halaman edit.",
+      "cancel": "Batal",
+      "createButton": "Buat Artikel",
+      "saveInProgress": "Menyimpan...",
+      "content": {
+        "indonesian": "Konten Indonesia",
+        "placeholder": "Tulis konten sumber Indonesia di sini..."
+      },
+      "excerpt": {
+        "title": "Kutipan",
+        "placeholder": "Ringkasan pendek dalam bahasa Indonesia untuk artikel"
+      },
+      "publishing": {
+        "title": "Publikasi",
+        "category": "Kategori",
+        "publishImmediately": "Publikasi segera"
+      },
+      "translationWorkflow": {
+        "title": "Alur Kerja Terjemahan",
+        "description": "Setelah membuat artikel Indonesia, lanjutkan di halaman edit untuk membuat dan mereview draft bahasa Inggris."
+      },
+      "seo": {
+        "title": "Artikel Baru - Dashboard",
+        "description": "Buat artikel retained."
+      }
+    },
+    "works": {
+      "title": "Karya",
+      "description": "Kelola proyek portofolio Anda",
+      "newButton": "Karya Baru",
+      "loading": "Memuat karya...",
+      "noResults": "Tidak ada karya yang ditemukan.",
+      "featuredBadge": "Sorotan",
+      "image": {
+        "label": "Gambar",
+        "noImage": "Tidak Ada Gambar"
+      },
+      "buttons": {
+        "delete": "Hapus",
+        "deleteConfirm": "Hapus karya ini?"
+      },
+      "seo": {
+        "title": "Karya - Dashboard",
+        "description": "Kelola portofolio Anda."
+      }
+    },
+    "works_new": {
+      "title": "Karya Baru",
+      "description": "Tambahkan proyek portofolio baru",
+      "cancel": "Batal",
+      "publishButton": "Publikasikan Karya",
+      "saveInProgress": "Menyimpan...",
+      "metrics": {
+        "title": "Metrik",
+        "add": "+ Tambah Metrik",
+        "labelPlaceholder": "Label (mis: Konversi)",
+        "valuePlaceholder": "Nilai (mis: 45)",
+        "suffixPlaceholder": "Suffix (mis: %)"
+      },
+      "details": {
+        "title": "Detail Karya",
+        "client": {
+          "label": "Klien",
+          "placeholder": "Nama klien"
+        },
+        "service": {
+          "label": "Layanan",
+          "options": {
+            "webDevelopment": "Pengembangan Web",
+            "mobileAppDevelopment": "Pengembangan Aplikasi Mobile",
+            "uiUxDesign": "Desain UI/UX",
+            "digitalMarketing": "Digital Marketing",
+            "ecommerceSolutions": "Solusi E-Commerce",
+            "consulting": "Konsultasi"
+          }
+        },
+        "platform": {
+          "label": "Platform",
+          "placeholder": "mis: Shopify, React Native"
+        },
+        "slug": {
+          "label": "Slug",
+          "placeholder": "auto-generated-jika-kosong"
+        },
+        "featured": "Proyek Sorotan"
+      },
+      "image": {
+        "title": "Gambar Karya",
+        "label": "URL Gambar",
+        "placeholder": "/images/portfolio/project.jpg"
+      },
+      "seo": {
+        "title": "Karya Baru - Dashboard",
+        "description": "Tambahkan proyek portofolio baru."
+      }
+    },
+    "media": {
+      "title": "Perpustakaan Media",
+      "description": "Kelola gambar, video, dan file Anda",
+      "uploadButton": "Unggah Media",
+      "search": {
+        "placeholder": "Cari media..."
+      },
+      "filters": {
+        "allTypes": "Semua Tipe",
+        "image": "Gambar",
+        "video": "Video",
+        "document": "Dokumen"
+      },
+      "buttons": {
+        "view": "Lihat",
+        "edit": "Edit",
+        "delete": "Hapus"
+      },
+      "seo": {
+        "title": "Perpustakaan Media - Dashboard",
+        "description": "Kelola file media Anda."
+      }
+    },
+    "services": {
+      "title": "Layanan",
+      "description": "Kelola tawaran layanan Anda",
+      "newButton": "Layanan Baru",
+      "create": {
+        "title": "Buat Layanan",
+        "update": "Perbarui Layanan",
+        "cancel": "Batal",
+        "submitTitle": "Judul",
+        "slugTitle": "Slug",
+        "orderTitle": "Urutan Tampilan",
+        "descTitle": "Deskripsi",
+        "iconTitle": "Ikon",
+        "featured": "Layanan sorotan",
+        "saveButton": "Simpan Perubahan",
+        "createButton": "Buat Layanan",
+        "saveInProgress": "Menyimpan...",
+        "loading": "Memuat layanan..."
+      },
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Hapus",
+        "featured": "Sorotan",
+        "noIcon": "Tidak ada ikon"
+      },
+      "noResults": "Tidak ada layanan yang ditemukan.",
+      "seo": {
+        "title": "Layanan - Dashboard",
+        "description": "Kelola layanan."
+      }
+    },
+    "clients": {
+      "title": "Klien",
+      "description": "Kelola hubungan klien Anda",
+      "newButton": "Klien Baru",
+      "create": {
+        "title": "Buat Klien",
+        "update": "Perbarui Klien",
+        "cancel": "Batal",
+        "nameTitle": "Nama",
+        "logoTitle": "URL Logo",
+        "logoPlaceholder": "/images/client-logo.svg",
+        "categoryTitle": "Kategori",
+        "categoryPlaceholder": "Teknologi",
+        "statusTitle": "Status",
+        "statusOptions": {
+          "active": "Aktif",
+          "prospect": "Prospek",
+          "inactive": "Tidak Aktif"
+        },
+        "testimonialTitle": "Testimoni",
+        "internalNotesTitle": "Catatan Internal",
+        "featured": "Klien sorotan",
+        "saveButton": "Simpan Perubahan",
+        "createButton": "Buat Klien",
+        "saveInProgress": "Menyimpan...",
+        "loading": "Memuat klien..."
+      },
+      "table": {
+        "client": "Klien",
+        "category": "Kategori",
+        "status": "Status",
+        "testimonial": "Testimoni",
+        "actions": "Aksi",
+        "noResults": "Tidak ada klien yang ditemukan."
+      },
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Hapus"
+      },
+      "status": {
+        "active": "Aktif",
+        "prospect": "Prospek",
+        "inactive": "Tidak Aktif",
+        "logo": "Logo",
+        "n_a": "N/A"
+      },
+      "testimonialStatus": {
+        "available": "Tersedia",
+        "none": "-"
+      },
+      "seo": {
+        "title": "Klien - Dashboard",
+        "description": "Kelola klien."
+      }
+    },
+    "contact": {
+      "title": "Submissions Kontak",
+      "description": "Kelola pertanyaan dari website Anda",
+      "export": {
+        "button": "📥 Ekspor CSV"
+      },
+      "stats": {
+        "total": "Total",
+        "new": "Baru",
+        "qualified": "Qualified"
+      },
+      "filters": {
+        "service": "Filter berdasarkan layanan",
+        "status": "Filter berdasarkan status",
+        "allStatuses": "Semua Status",
+        "statusOptions": {
+          "new": "Baru",
+          "contacted": "Dihubungi",
+          "qualified": "Qualified",
+          "converted": "Converted",
+          "lost": "Lost"
+        },
+        "refresh": "Refresh"
+      },
+      "table": {
+        "name": "Nama",
+        "email": "Email",
+        "service": "Layanan",
+        "date": "Tanggal",
+        "status": "Status",
+        "actions": "Aksi",
+        "noResults": "Tidak ada submission kontak yang ditemukan."
+      },
+      "loading": "Memuat submission kontak...",
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Hapus"
+      },
+      "status": {
+        "new": "Baru",
+        "contacted": "Dihubungi",
+        "qualified": "Qualified",
+        "converted": "Converted",
+        "lost": "Lost"
+      },
+      "seo": {
+        "title": "Kontak - Dashboard",
+        "description": "Kelola submission kontak."
+      }
+    },
+    "users": {
+      "title": "Pengguna",
+      "description": "Kelola pengguna dashboard dan penugasan role tetap.",
+      "newButton": "Pengguna Baru",
+      "create": {
+        "title": "Buat Pengguna",
+        "update": "Perbarui Pengguna",
+        "cancel": "Batal",
+        "fullNameTitle": "Nama Lengkap",
+        "usernameTitle": "Username",
+        "emailTitle": "Email",
+        "phoneTitle": "Telepon",
+        "roleTitle": "Role",
+        "roleOptions": {
+          "admin": "Admin",
+          "editor": "Editor",
+          "viewer": "Viewer"
+        },
+        "passwordTitle": "Password Awal",
+        "saveButton": "Simpan Perubahan",
+        "createButton": "Buat Pengguna",
+        "saveInProgress": "Menyimpan...",
+        "loading": "Memuat pengguna...",
+        "denied": "Hanya administrator yang dapat mengakses manajemen pengguna."
+      },
+      "table": {
+        "user": "Pengguna",
+        "role": "Role",
+        "phone": "Telepon",
+        "joined": "Bergabung",
+        "actions": "Aksi",
+        "noResults": "Tidak ada pengguna yang ditemukan."
+      },
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Hapus",
+        "deleteConfirm": "Hapus {name}? Ini menggunakan hard delete."
+      },
+      "status": {
+        "active": "Aktif",
+        "prospect": "Prospek",
+        "inactive": "Tidak Aktif"
+      },
+      "notifications": {
+        "userUpdated": {
+          "title": "Pengguna diperbarui",
+          "message": "Detail pengguna berhasil diperbarui."
+        },
+        "userCreated": {
+          "title": "Pengguna dibuat",
+          "message": "Pengguna dashboard baru berhasil dibuat."
+        },
+        "userDeleted": {
+          "title": "Pengguna dihapus",
+          "message": "{name} berhasil dihapus."
+        },
+        "error": {
+          "title": "Manajemen pengguna error",
+          "message": "Gagal menyimpan pengguna"
+        },
+        "deleteFailed": {
+          "title": "Penghapusan gagal",
+          "message": "Gagal menghapus pengguna"
+        }
+      },
+      "seo": {
+        "title": "Pengguna - Dashboard",
+        "description": "Kelola pengguna dashboard."
+      }
+    },
+    "sessions": {
+      "title": "Sesi",
+      "description": "Review sesi aktif dan cabut perangkat yang tidak lagi Anda percayai.",
+      "refresh": {
+        "button": "Refresh sesi",
+        "inProgress": "Menyegarkan...",
+        "loading": "Memuat sesi..."
+      },
+      "noResults": "Tidak ada sesi aktif yang dikembalikan oleh API.",
+      "columns": {
+        "device": "Perangkat",
+        "deviceId": "ID Perangkat",
+        "status": "Status",
+        "ipAddress": "Alamat IP",
+        "created": "Dibuat",
+        "expires": "Kedaluwarsa",
+        "currentSession": "Sesi saat ini tidak dapat dicabut di sini",
+        "forceLogout": "Paksa logout sesi"
+      },
+      "status": {
+        "current": "Saat Ini",
+        "active": "Aktif",
+        "activeSession": "Sesi Aktif"
+      },
+      "notifications": {
+        "sessionRevoked": {
+          "title": "Sesi dicabut",
+          "message": "Sesi berhasil dicabut."
+        },
+        "error": {
+          "title": "Gagal mencabut",
+          "message": "Gagal mencabut sesi"
+        }
+      },
+      "seo": {
+        "title": "Sesi - Dashboard",
+        "description": "Review dan cabut sesi akun aktif."
+      }
+    },
+    "settings": {
+      "title": "Pengaturan",
+      "analytics": {
+        "title": "Analytics & Pixels",
+        "openAnalytics": "Buka dashboard analytics",
+        "ga4Id": "ID GA4 Measurement",
+        "ga4Placeholder": "G-XXXXXXXXXX",
+        "gtmId": "ID GTM Container",
+        "gtmPlaceholder": "GTM-XXXXXXX",
+        "clarityId": "ID Proyek Clarity",
+        "clarityPlaceholder": "clarity-project-id",
+        "metaPixelId": "ID Meta Pixel",
+        "metaPixelPlaceholder": "1234567890",
+        "tiktokPixelId": "ID TikTok Pixel",
+        "tiktokPlaceholder": "tiktok-pixel-id",
+        "linkedinPartnerId": "ID Rekan LinkedIn",
+        "linkedinPlaceholder": "linkedin-partner-id",
+        "enableTracking": "Aktifkan pelacakan frontend"
+      },
+      "funnels": {
+        "title": "Funnels",
+        "add": "+ Tambah Funnel",
+        "idPlaceholder": "id-funnel",
+        "namePlaceholder": "Nama funnel",
+        "active": "Aktif",
+        "descriptionPlaceholder": "Deskripsi opsional",
+        "steps": {
+          "title": "Langkah",
+          "add": "+ Tambah Langkah",
+          "remove": "Hapus",
+          "namePlaceholder": "Nama langkah",
+          "eventNamePlaceholder": "Nama event",
+          "pathPlaceholder": "Filter path opsional",
+          "orderLabel": "Urutan"
+        },
+        "removeFunnel": "Hapus Funnel"
+      },
+      "analyticsSaveButton": "Simpan Pengaturan Analytics",
+      "backup": {
+        "title": "Backup & Restore",
+        "refreshButton": "Refresh Riwayat Backup",
+        "schedule": {
+          "enabled": "Aktifkan jadwal",
+          "cronTitle": "Jadwal (cron)",
+          "retentionTitle": "Jumlah retensi",
+          "filesDirTitle": "Direktori file"
+        },
+        "encryption": {
+          "enabled": "Aktifkan enkripsi"
+        },
+        "savePolicyButton": "Simpan Kebijakan Backup",
+        "runNowButton": "Jalankan Backup Sekarang",
+        "history": {
+          "title": "Riwayat Backup",
+          "scopesLabel": "Scopes:",
+          "createdLabel": "dibuat",
+          "restoreScope": {
+            "label": "Scope",
+            "options": {
+              "database": "database",
+              "files": "files",
+              "all": "all"
+            }
+          },
+          "restoreButton": "Restore",
+          "restoreInProgress": "Mengrestore...",
+          "noHistory": "Belum ada riwayat backup."
+        }
+      },
+      "monitoring": {
+        "title": "Monitoring & Alerting",
+        "refreshButton": "Refresh Status",
+        "integrations": {
+          "title": "Integrasi",
+          "uptime": {
+            "providerLabel": "Provider",
+            "enabled": "Aktif"
+          },
+          "errors": {
+            "providerLabel": "Provider",
+            "enabled": "Aktif"
+          },
+          "performance": {
+            "providerLabel": "Provider",
+            "enabled": "Aktif"
+          }
+        },
+        "services": {
+          "title": "Layanan yang Dimonitor",
+          "add": "+ Tambah Layanan",
+          "idPlaceholder": "id-layanan",
+          "namePlaceholder": "Nama tampilan",
+          "urlPlaceholder": "https://layanan/health",
+          "enabled": "Aktif",
+          "remove": "Hapus"
+        },
+        "thresholds": {
+          "title": "Ambang Batas",
+          "add": "+ Tambah Ambang Batas",
+          "idPlaceholder": "id-ambang-batas",
+          "servicePlaceholder": "id-layanan",
+          "signalType": {
+            "label": "Tipe Sinyal",
+            "options": {
+              "uptime": "uptime",
+              "error_rate": "error_rate",
+              "latency_ms": "latency_ms"
+            }
+          },
+          "operator": {
+            "label": "Operator",
+            "options": {
+              "gt": "gt",
+              "gte": "gte",
+              "lt": "lt",
+              "lte": "lte",
+              "eq": "eq",
+              "ne": "ne"
+            }
+          },
+          "valueLabel": "Nilai ambang batas",
+          "severityLabel": "Severity",
+          "severityOptions": {
+            "info": "info",
+            "warning": "warning",
+            "critical": "critical"
+          },
+          "cooldownLabel": "Cooldown (menit)",
+          "enabled": "on",
+          "remove": "Hapus"
+        },
+        "destinations": {
+          "title": "Tujuan Alert",
+          "add": "+ Tambah Tujuan",
+          "idPlaceholder": "id-tujuan",
+          "namePlaceholder": "Nama",
+          "channel": {
+            "label": "Channel",
+            "options": {
+              "email": "email",
+              "webhook": "webhook"
+            }
+          },
+          "targetPlaceholderEmail": "ops@example.com",
+          "targetPlaceholderWebhook": "https://hooks.example.com",
+          "enabled": "on",
+          "remove": "Hapus"
+        },
+        "currentStatus": {
+          "title": "Status Saat Ini",
+          "overall": "Secara keseluruhan:"
+        },
+        "servicesTable": {
+          "name": "Nama",
+          "url": "URL",
+          "status": "Status:",
+          "latency": "latency"
+        },
+        "alerts": {
+          "title": "Alert Baru Ini",
+          "refreshButton": "Refresh Alert",
+          "serviceLabel": "layanan",
+          "signalLabel": "sinyal",
+          "severityLabel": "severity",
+          "firedAtLabel": "dipicu",
+          "noAlerts": "Belum ada alert."
+        },
+        "test": {
+          "title": "Test Alert",
+          "messagePlaceholder": "Pesan test alert opsional",
+          "sendButton": "Kirim Test Alert",
+          "sending": "Mengirim..."
+        },
+        "saveButton": "Simpan Perubahan Monitoring",
+        "SavingInProgress": "Menyimpan...",
+        "refreshingStatus": "Menyegarkan status...",
+        "refreshingAlerts": "Menyegarkan alert...",
+        "testSent": "Test alert dikirim. Terkirim: {delivered}, Gagal: {failed}",
+        "failedToSendTest": "Gagal mengirim test alert"
+      },
+      "analyticsSaveSuccess": "Pengaturan analytics disimpan",
+      "backupSaveSuccess": "Kebijakan backup disimpan",
+      "backupRunning": "Membuat backup...",
+      "backupCompleted": "Backup selesai: {id}",
+      "backupFailed": "Gagal membuat backup",
+      "restoringBackup": "Mengrestore backup...",
+      "backupRestored": "Backup berhasil direstore",
+      "backupRestoreFailed": "Gagal merestore backup",
+      "monitoringSaved": "Pengaturan monitoring disimpan",
+      "monitoringSaveFailed": "Gagal menyimpan pengaturan monitoring"
+    },
+    "analytics": {
+      "title": "Dashboard Analytics",
+      "description": "Laporan event dan funnel real dari backend analytics endpoints.",
+      "refresh": {
+        "button": "Refresh Laporan",
+        "inProgress": "Menyegarkan..."
+      },
+      "overview": {
+        "totalEvents": "Total events",
+        "totalSessions": "Total sesi",
+        "pageViews": "Page views",
+        "conversionEvents": "Conversion events"
+      },
+      "funnels": {
+        "title": "Funnels",
+        "noActive": "Belum ada funnel aktif. Konfigurasi funnel di pengaturan dashboard.",
+        "step": "langkah",
+        "eventLabel": "event"
+      },
+      "empty": "Tidak ada data analytics."
     }
   }
 }

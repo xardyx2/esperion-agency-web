@@ -1,107 +1,126 @@
 <template>
-  <div>
-    <!-- Page Header -->
-    <div class="mb-8">
+  <div class="space-y-8">
+    <div>
       <h1 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-        Dashboard Overview
+        {{ t('dashboard.index.title') }}
       </h1>
       <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-        Welcome back! Here's what's happening with your agency today.
+        {{ t('dashboard.index.description') }}
       </p>
     </div>
 
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div v-for="stat in stats" :key="stat.label" class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-6">
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-3xl">{{ stat.icon }}</span>
-          <span :class="stat.trend > 0 ? 'text-green-500' : 'text-red-500'" class="text-sm font-medium">
-            {{ stat.trend > 0 ? '+' : '' }}{{ stat.trend }}%
+    <section class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <article v-for="card in retainedScopeCards" :key="card.title" class="rounded-xl border border-es-border bg-es-bg-secondary p-6 shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark">
+        <div class="mb-3 flex items-center justify-between">
+          <span class="text-3xl">{{ card.icon }}</span>
+          <span class="rounded-full bg-es-bg-tertiary px-3 py-1 text-xs font-semibold text-es-text-secondary dark:bg-es-bg-tertiary-dark dark:text-es-text-secondary-dark">
+            {{ t(`dashboard.index.status.${card.status}`) }}
           </span>
         </div>
-        <div class="text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-1">
-          {{ stat.value }}
-        </div>
-        <div class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
-          {{ stat.label }}
-        </div>
-      </div>
-    </div>
-
-    <!-- Charts Row -->
-    <div class="grid lg:grid-cols-2 gap-6 mb-8">
-      <!-- Traffic Overview -->
-      <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-6">
-        <h2 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-          Traffic Overview
-        </h2>
-        <div class="h-64 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark rounded-lg flex items-center justify-center">
-          <p class="text-es-text-secondary dark:text-es-text-secondary-dark">📈 Chart placeholder - Integrate with Chart.js</p>
-        </div>
-      </div>
-
-      <!-- Recent Activity -->
-      <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-6">
-        <h2 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-          Recent Activity
-        </h2>
-        <div class="space-y-4">
-          <div v-for="activity in recentActivity" :key="activity.id" class="flex items-start gap-3">
-            <span class="text-xl">{{ activity.icon }}</span>
-            <div>
-              <p class="text-es-text-primary dark:text-es-text-primary-dark text-sm">{{ activity.message }}</p>
-              <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-xs">{{ activity.time }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-6">
-      <h2 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-        Quick Actions
-      </h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <NuxtLink
-          v-for="action in quickActions"
-          :key="action.label"
-          :to="action.href"
-          class="flex flex-col items-center justify-center p-4 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark rounded-lg hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors"
-        >
-          <span class="text-2xl mb-2">{{ action.icon }}</span>
-          <span class="text-sm font-medium">{{ action.label }}</span>
+        <h2 class="mb-2 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">{{ card.title }}</h2>
+        <p class="mb-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">{{ card.description }}</p>
+        <NuxtLink :to="card.href" class="text-sm font-semibold text-es-accent-primary hover:underline dark:text-es-accent-primary-dark">
+          {{ t('dashboard.index.cards', { key: card.title.toLowerCase(), fallback: `dashboard.index.cards.${card.title.toLowerCase()}` }) }}
         </NuxtLink>
-      </div>
-    </div>
+      </article>
+    </section>
+
+    <section class="grid gap-6 lg:grid-cols-2">
+      <article class="rounded-xl border border-es-border bg-es-bg-secondary p-6 shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark">
+        <h2 class="mb-4 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.index.focus.authTitle') }}</h2>
+        <ul class="space-y-3 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+          <li v-for="item in focusChecklist" :key="item.title" class="flex gap-3">
+            <span class="mt-0.5 text-es-accent-primary dark:text-es-accent-primary-dark">•</span>
+            <div>
+              <p class="font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t(item.title) }}</p>
+              <p>{{ t(item.detail) }}</p>
+            </div>
+          </li>
+        </ul>
+      </article>
+
+      <article class="rounded-xl border border-es-border bg-es-bg-secondary p-6 shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark">
+        <h2 class="mb-4 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.index.shortcuts') }}</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <NuxtLink
+            v-for="shortcut in shortcuts"
+            :key="shortcut.href"
+            :to="shortcut.href"
+            class="rounded-lg border border-es-border bg-es-bg-primary p-4 text-sm font-medium text-es-text-primary transition-colors hover:bg-es-bg-tertiary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark dark:hover:bg-es-bg-tertiary-dark"
+          >
+            <div class="mb-2 text-2xl">{{ shortcut.icon }}</div>
+            <div>{{ t(`dashboard.index.shortcuts.${shortcut.label.toLowerCase()}`) }}</div>
+          </NuxtLink>
+        </div>
+      </article>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-// SEO Meta
+const { t } = useI18n()
+
 useSeoMeta({
-  title: 'Dashboard - Esperion Agency',
-  description: 'Manage your Esperion agency dashboard.',
-});
+  title: t('dashboard.index.title'),
+  description: t('dashboard.index.description'),
+})
 
-const stats = [
-  { icon: '📝', value: '24', label: 'Total Articles', trend: 12 },
-  { icon: '💼', value: '48', label: 'Total Works', trend: 8 },
-  { icon: '👥', value: '156', label: 'Total Clients', trend: 15 },
-  { icon: '✉️', value: '12', label: 'New Inquiries', trend: -5 },
-];
+const retainedScopeCards = [
+  {
+    title: 'Articles',
+    description: t('dashboard.index.cards.articles.description'),
+    status: 'needsWiring',
+    href: '/dashboard/articles',
+    cta: 'articles',
+    icon: '📝',
+  },
+  {
+    title: 'Works',
+    description: t('dashboard.index.cards.works.description'),
+    status: 'stubCleanup',
+    href: '/dashboard/works',
+    cta: 'works',
+    icon: '💼',
+  },
+  {
+    title: 'Clients',
+    description: t('dashboard.index.cards.clients.description'),
+    status: 'stubCleanup',
+    href: '/dashboard/clients',
+    cta: 'clients',
+    icon: '👥',
+  },
+  {
+    title: 'Contact',
+    description: t('dashboard.index.cards.contact.description'),
+    status: 'needsVerification',
+    href: '/dashboard/contact',
+    cta: 'submissions',
+    icon: '✉️',
+  },
+]
 
-const recentActivity = [
-  { id: 1, icon: '📝', message: 'New article published: "SEO Tips"', time: '2 hours ago' },
-  { id: 2, icon: '💼', message: 'New work added: "E-commerce Site"', time: '4 hours ago' },
-  { id: 3, icon: '✉️', message: 'New contact form submission', time: '6 hours ago' },
-  { id: 4, icon: '👥', message: 'New client added: "Tech Corp"', time: '1 day ago' },
-];
+const focusChecklist = [
+  {
+    title: 'focus.authTitle',
+    detail: 'focus.authDetail',
+  },
+  {
+    title: 'focus.translationTitle',
+    detail: 'focus.translationDetail',
+  },
+  {
+    title: 'focus.archiveTitle',
+    detail: 'focus.archiveDetail',
+  },
+]
 
-const quickActions = [
-  { href: '/dashboard/articles/new', label: 'New Article', icon: '✍️' },
-  { href: '/dashboard/works/new', label: 'New Work', icon: '➕' },
-  { href: '/dashboard/media', label: 'Media Library', icon: '🖼️' },
-  { href: '/dashboard/contact', label: 'View Inquiries', icon: '📬' },
-];
+const shortcuts = [
+  { href: '/dashboard/articles', label: 'Articles', icon: '📝' },
+  { href: '/dashboard/works', label: 'Works', icon: '💼' },
+  { href: '/dashboard/services', label: 'Services', icon: '🛠️' },
+  { href: '/dashboard/clients', label: 'Clients', icon: '👥' },
+  { href: '/dashboard/contact', label: 'Contact', icon: '✉️' },
+  { href: '/dashboard/sessions', label: 'Sessions', icon: '🔐' },
+]
 </script>

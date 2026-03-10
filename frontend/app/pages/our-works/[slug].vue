@@ -19,7 +19,7 @@
               {{ work.platform }}
             </span>
             <span v-if="work.featured" class="px-4 py-1 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-full text-sm font-semibold">
-               Proyek Sorotan
+              {{ t('works.detail.featuredProject') }}
             </span>
           </div>
 
@@ -30,7 +30,7 @@
           <div class="flex flex-wrap items-center gap-6 text-es-text-secondary dark:text-es-text-secondary-dark mb-8">
             <div class="flex items-center gap-2">
               <span>👤</span>
-               <span>Klien: <strong class="text-es-text-primary dark:text-es-text-primary-dark">{{ work.client_name }}</strong></span>
+              <span>{{ t('works.detail.client') }}: <strong class="text-es-text-primary dark:text-es-text-primary-dark">{{ work.client_name }}</strong></span>
             </div>
           </div>
 
@@ -48,18 +48,18 @@
 
           <!-- Description -->
           <div class="prose prose-lg dark:prose-invert max-w-none mb-12">
-            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">Ringkasan Proyek</h2>
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">{{ t('works.detail.projectSummary') }}</h2>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
               {{ work.description }}
             </p>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
-              Halaman ini menampilkan gambaran singkat hasil kerja, ruang lingkup utama, dan indikator hasil yang paling relevan untuk memahami konteks proyek tanpa mengklaim detail rahasia yang belum dipublikasikan.
+              {{ t('works.detail.projectDescription') }}
             </p>
           </div>
 
           <!-- Key Features -->
           <div class="mb-12">
-            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">Ruang Lingkup Utama</h2>
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">{{ t('works.detail.keyFeatures') }}</h2>
             <div class="grid md:grid-cols-2 gap-4">
               <div v-for="feature in features" :key="feature" class="flex items-start gap-3">
                 <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
@@ -70,7 +70,7 @@
 
           <!-- Gallery -->
           <div class="mb-12">
-            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">Galeri Proyek</h2>
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">{{ t('works.detail.projectGallery') }}</h2>
             <div class="grid md:grid-cols-2 gap-4">
               <img v-for="img in gallery" :key="img" :src="img" :alt="work.title" class="rounded-lg hover:shadow-lg transition-shadow" />
             </div>
@@ -82,13 +82,13 @@
               :to="localePath('/contact-us')"
               class="inline-flex justify-center items-center px-8 py-4 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
             >
-              Mulai Diskusi Proyek
+              {{ t('works.detail.startProjectDiscussion') }}
             </NuxtLink>
             <NuxtLink
               :to="localePath('/our-works')"
               class="inline-flex justify-center items-center px-8 py-4 border-2 border-es-border dark:border-es-border-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:border-es-accent-primary dark:hover:border-es-accent-primary-dark transition-colors"
             >
-              Lihat Semua Portofolio
+              {{ t('works.detail.viewAllPortfolio') }}
             </NuxtLink>
           </div>
         </div>
@@ -99,7 +99,7 @@
     <section class="py-12 md:py-16 bg-es-bg-secondary dark:bg-es-bg-secondary-dark">
       <div class="container mx-auto px-4">
         <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-8">
-          Proyek Terkait
+          {{ t('works.detail.relatedWorks') }}
         </h2>
         <div class="grid md:grid-cols-3 gap-6">
           <NuxtLink
@@ -129,6 +129,7 @@ import { findPublicWorkBySlug, getRelatedWorks } from '../../data/public-content
 
 const route = useRoute();
 const localePath = useLocalePath();
+const { t, locale } = useI18n();
 
 const slugParam = computed(() => {
   const raw = route.params.slug;
@@ -154,12 +155,54 @@ const features = computed(() => work.value.features);
 const gallery = computed(() => work.value.gallery);
 const relatedWorks = computed(() => getRelatedWorks(work.value.slug, 3));
 
+const localePrefix = computed(() => (locale.value === 'en' ? 'en' : 'id'));
+const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/our-works/${work.value.slug}`);
+
 useSeoMeta({
-  title: () => `${work.value.title} - Esperion Digital Agency`,
-  description: () => work.value.description,
-  ogTitle: () => `${work.value.title} - Esperion Digital Agency`,
+  title: () => t('works.detail.seo.title', { title: work.value.title }),
+  description: () => t('works.detail.seo.description', { description: work.value.description }),
+  ogTitle: () => `${work.value.title} - Esperion`,
   ogDescription: () => work.value.description,
   ogImage: () => work.value.image,
-  ogType: 'article'
+  ogUrl: () => pageUrl.value,
+  ogType: 'article',
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => `${work.value.title} - Esperion`,
+  twitterDescription: () => work.value.description,
+  twitterImage: () => work.value.image,
+  ogLocale: () => (locale.value === 'en' ? 'en_US' : 'id_ID')
 });
+
+useSchemaOrg([
+  defineWebPage({
+    '@type': 'ItemPage',
+    name: () => work.value.title,
+    description: () => work.value.description,
+    url: pageUrl.value,
+    image: () => work.value.image,
+    dateModified: new Date().toISOString()
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: t('breadcrumb.home'),
+        item: `https://esperion.id/${localePrefix.value}`
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: t('breadcrumb.works'),
+        item: `https://esperion.id/${localePrefix.value}/our-works`
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: () => work.value.title,
+        item: pageUrl.value
+      }
+    ]
+  })
+]);
 </script>

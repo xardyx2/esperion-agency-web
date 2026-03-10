@@ -25,7 +25,7 @@
         </div>
         <div class="flex items-center gap-2">
           <span class="text-xl">⏱️</span>
-          <span>{{ article.read_time }} menit baca</span>
+          <span>{{ article.read_time }} {{ t('articles.detail.readTime') }}</span>
         </div>
       </div>
 
@@ -39,45 +39,45 @@
         <p class="text-xl text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed mb-8">
           {{ article.excerpt_id }}
         </p>
-        
-        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">Ringkasan Utama</h2>
+
+        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">{{ t('articles.detail.mainSummary') }}</h2>
         <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed mb-6">
-          Artikel ini merangkum pokok bahasan yang paling relevan untuk pengambilan keputusan digital, lalu menyoroti langkah awal yang bisa diprioritaskan oleh tim internal.
+          {{ t('articles.detail.summaryParagraph1') }}
         </p>
 
-        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">Poin Penting</h2>
+        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">{{ t('articles.detail.keyPoints') }}</h2>
         <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed mb-6">
-          Fokus utamanya adalah membantu tim melihat prioritas dengan lebih jelas sebelum masuk ke tahap implementasi yang lebih detail.
+          {{ t('articles.detail.keyPointIntro') }}
         </p>
         <ul class="space-y-2 mb-6">
           <li class="flex items-start gap-2 text-es-text-secondary dark:text-es-text-secondary-dark">
             <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-            <span>Prioritaskan kejelasan tujuan bisnis sebelum memilih kanal atau teknologi.</span>
+            <span>{{ t('articles.detail.keyPoint1') }}</span>
           </li>
           <li class="flex items-start gap-2 text-es-text-secondary dark:text-es-text-secondary-dark">
             <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-            <span>Pastikan pengalaman pengguna tetap konsisten dengan pesan brand di setiap touchpoint.</span>
+            <span>{{ t('articles.detail.keyPoint2') }}</span>
           </li>
           <li class="flex items-start gap-2 text-es-text-secondary dark:text-es-text-secondary-dark">
             <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-            <span>Gunakan pengukuran yang sederhana dan relevan agar perbaikan berikutnya lebih terarah.</span>
+            <span>{{ t('articles.detail.keyPoint3') }}</span>
           </li>
         </ul>
 
-        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">Penutup</h2>
+        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">{{ t('articles.detail.closing') }}</h2>
         <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
-          Jika Anda ingin menurunkan pembahasan ini menjadi rencana kerja yang lebih konkret, tim Esperion dapat membantu menyusun prioritas yang sesuai dengan kondisi bisnis saat ini.
+          {{ t('articles.detail.closingParagraph') }}
         </p>
       </div>
 
       <!-- Share Section -->
       <div class="mb-12 p-6 bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl">
-        <h3 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4">Bagikan artikel ini</h3>
+        <h3 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4">{{ t('articles.detail.shareArticle') }}</h3>
         <div class="flex gap-4">
-          <button class="px-4 py-2 bg-[#1877F2] text-white rounded-lg hover:opacity-90 transition-opacity">Facebook</button>
-          <button class="px-4 py-2 bg-[#1DA1F2] text-white rounded-lg hover:opacity-90 transition-opacity">Twitter</button>
-          <button class="px-4 py-2 bg-[#0A66C2] text-white rounded-lg hover:opacity-90 transition-opacity">LinkedIn</button>
-          <button class="px-4 py-2 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">Salin Tautan</button>
+          <button class="px-4 py-2 bg-[#1877F2] text-white rounded-lg hover:opacity-90 transition-opacity">{{ t('articles.detail.facebook') }}</button>
+          <button class="px-4 py-2 bg-[#1DA1F2] text-white rounded-lg hover:opacity-90 transition-opacity">{{ t('articles.detail.twitter') }}</button>
+          <button class="px-4 py-2 bg-[#0A66C2] text-white rounded-lg hover:opacity-90 transition-opacity">{{ t('articles.detail.linkedin') }}</button>
+          <button class="px-4 py-2 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">{{ t('articles.detail.copyLink') }}</button>
         </div>
       </div>
 
@@ -87,7 +87,7 @@
           <div class="w-16 h-16 rounded-full bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 flex items-center justify-center text-2xl">👤</div>
           <div>
             <h3 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">{{ article.author }}</h3>
-            <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">Ditulis oleh tim editorial Esperion untuk merangkum insight praktis yang relevan bagi kebutuhan digital bisnis.</p>
+            <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">{{ t('articles.detail.authorBio') }}</p>
           </div>
         </div>
       </div>
@@ -96,9 +96,9 @@
     <!-- Related Articles -->
     <section class="py-12 md:py-16 bg-es-bg-secondary dark:bg-es-bg-secondary-dark">
       <div class="container mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-8">Artikel Terkait</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-8">{{ t('articles.detail.relatedArticles') }}</h2>
         <div class="grid md:grid-cols-3 gap-6">
-          <NuxtLink v-for="related in relatedArticles" :key="related.id" :to="localePath(`/articles/${related.slug_id}`)" class="group bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+          <NuxtLink v-for="related in relatedArticles" :key="related.id" :to="relatedArticlePath(related)" class="group bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
             <img :src="related.image" :alt="related.title" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
             <div class="p-6">
               <span class="px-3 py-1 bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 text-es-accent-primary dark:text-es-accent-primary-dark text-xs rounded-full">{{ related.category }}</span>
@@ -113,9 +113,9 @@
     <!-- Newsletter CTA -->
     <section class="py-16 md:py-24 bg-es-accent-primary dark:bg-es-accent-primary-dark">
       <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold text-es-text-inverse dark:text-es-text-inverse-dark mb-4">Ingin membaca insight lainnya?</h2>
-        <p class="text-es-text-inverse/90 dark:text-es-text-inverse-dark/90 text-lg mb-8 max-w-2xl mx-auto">Jelajahi artikel lain dari tim Esperion untuk memahami prioritas digital dengan lebih terarah.</p>
-        <NuxtLink :to="localePath('/articles')" class="inline-flex items-center px-8 py-4 bg-es-bg-inverse dark:bg-es-bg-inverse-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark transition-colors">Lihat Semua Artikel</NuxtLink>
+        <h2 class="text-3xl md:text-4xl font-bold text-es-text-inverse dark:text-es-text-inverse-dark mb-4">{{ t('articles.detail.newsletterTitle') }}</h2>
+        <p class="text-es-text-inverse/90 dark:text-es-text-inverse-dark/90 text-lg mb-8 max-w-2xl mx-auto">{{ t('articles.detail.newsletterDescription') }}</p>
+        <NuxtLink :to="localePath('/articles')" class="inline-flex items-center px-8 py-4 bg-es-bg-inverse dark:bg-es-bg-inverse-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark transition-colors">{{ t('articles.detail.viewAllArticles') }}</NuxtLink>
       </div>
     </section>
   </div>
@@ -126,7 +126,7 @@ import { findPublicArticleBySlug, getRelatedArticles } from '../../data/public-c
 
 const route = useRoute();
 const localePath = useLocalePath();
-const { locale } = useI18n();
+const { t, locale } = useI18n();
 
 const slugParam = computed(() => {
   const raw = route.params.slug;
@@ -150,7 +150,14 @@ const article = computed(() => {
 
 const relatedArticles = computed(() => getRelatedArticles(article.value.slug_id, 3));
 
-const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const localizedArticleSlug = computed(() => locale.value === 'en' ? (article.value.slug_en || article.value.slug_id) : article.value.slug_id);
+
+const relatedArticlePath = (related: (typeof relatedArticles.value)[number]) => {
+  const slug = locale.value === 'en' ? (related.slug_en || related.slug_id) : related.slug_id;
+  return localePath(`/articles/${slug}`);
+};
+
+const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString(locale.value === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 
 const articleKeywords = computed(() => {
   return article.value.title
@@ -163,13 +170,13 @@ const articleKeywords = computed(() => {
 });
 
 const localePrefix = computed(() => (locale.value === 'en' ? 'en' : 'id'));
-const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/articles/${article.value.slug_id}`);
+const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/articles/${localizedArticleSlug.value}`);
 const imageUrl = computed(() => `https://esperion.id${article.value.image}`);
 
 useSeoMeta({
-  title: () => `${article.value.title} | Esperion Digital Agency`,
+  title: () => `${article.value.title} | ${t('seo.articles.title')}`,
   description: () => article.value.excerpt_id,
-  ogTitle: () => `${article.value.title} | Esperion Digital Agency`,
+  ogTitle: () => `${article.value.title} | ${t('seo.articles.ogTitle')}`,
   ogDescription: () => article.value.excerpt_id,
   ogImage: () => imageUrl.value,
   ogUrl: () => pageUrl.value,
@@ -180,7 +187,7 @@ useSeoMeta({
   articleSection: () => article.value.category,
   articleTag: () => [articleKeywords.value],
   twitterCard: 'summary_large_image',
-  twitterTitle: () => `${article.value.title} | Esperion Digital Agency`,
+  twitterTitle: () => `${article.value.title} | ${t('seo.articles.twitterTitle')}`,
   twitterDescription: () => article.value.excerpt_id,
   twitterImage: () => imageUrl.value,
   ogLocale: () => (locale.value === 'en' ? 'en_US' : 'id_ID')
@@ -189,19 +196,19 @@ useSeoMeta({
 useSchemaOrg([
   defineArticle({
     '@type': ['Article', 'BlogPosting'],
-    headline: article.value.title,
-    alternativeHeadline: article.value.excerpt_id,
-    description: article.value.excerpt_id,
+    headline: () => article.value.title,
+    alternativeHeadline: () => article.value.excerpt_id,
+    description: () => article.value.excerpt_id,
     author: {
       '@type': 'Person',
-      name: article.value.author,
-      url: `https://esperion.id/${localePrefix.value}/experts/${article.value.author.toLowerCase().replace(/\s+/g, '-')}`
+      name: () => article.value.author,
+      url: () => `https://esperion.id/${localePrefix.value}/experts/${article.value.author.toLowerCase().replace(/\s+/g, '-')}`
     },
     publisher: {
       '@type': 'Organization',
       name: 'Esperion Digital Agency',
       legalName: 'PT Esperion Teknologi Digital',
-      url: `https://esperion.id/${localePrefix.value}`,
+      url: () => `https://esperion.id/${localePrefix.value}`,
       logo: {
         '@type': 'ImageObject',
         url: '/placeholders/first-party/brand-mark-required.svg',
@@ -210,45 +217,45 @@ useSchemaOrg([
       }
     },
     dateModified: new Date().toISOString(),
-    datePublished: article.value.published_at,
-    image: imageUrl.value,
-    thumbnailUrl: imageUrl.value,
+    datePublished: () => article.value.published_at,
+    image: () => imageUrl.value,
+    thumbnailUrl: () => imageUrl.value,
     wordCount: 1200,
-    articleBody: `${article.value.excerpt_id}. Content about ${article.value.title} discussed in detail with practical examples and implementation guides.`,
-    articleSection: [article.value.category],
-    keywords: [articleKeywords.value],
-    url: pageUrl.value,
+    articleBody: () => `${article.value.excerpt_id}. Content about ${article.value.title} discussed in detail with practical examples and implementation guides.`,
+    articleSection: () => [article.value.category],
+    keywords: () => [articleKeywords.value],
+    url: () => pageUrl.value,
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': pageUrl.value
+      '@id': () => pageUrl.value
     }
   }),
   defineWebPage({
-    name: article.value.title,
-    description: article.value.excerpt_id,
-    url: pageUrl.value,
+    name: () => article.value.title,
+    description: () => article.value.excerpt_id,
+    url: () => pageUrl.value,
     dateModified: new Date().toISOString(),
-    datePublished: article.value.published_at
+    datePublished: () => article.value.published_at
   }),
   defineBreadcrumb({
     itemListElement: [
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Home',
-        item: `https://esperion.id/${localePrefix.value}`
+        name: t('breadcrumb.home'),
+        item: () => `https://esperion.id/${localePrefix.value}`
       },
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Artikel',
-        item: `https://esperion.id/${localePrefix.value}/articles`
+        name: t('breadcrumb.articles'),
+        item: () => `https://esperion.id/${localePrefix.value}/articles`
       },
       {
         '@type': 'ListItem',
         position: 3,
-        name: article.value.title,
-        item: pageUrl.value
+        name: () => article.value.title,
+        item: () => pageUrl.value
       }
     ]
   })

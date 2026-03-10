@@ -6,10 +6,10 @@
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="container mx-auto px-4 text-center">
           <h1 class="text-4xl md:text-5xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Portofolio Kami
+            {{ t('works.banner.title') }}
           </h1>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-lg max-w-2xl mx-auto">
-            Lihat contoh pendekatan kerja Esperion di berbagai kebutuhan digital
+            {{ t('works.banner.description') }}
           </p>
         </div>
       </div>
@@ -40,7 +40,7 @@
               v-model="selectedPlatform"
               class="px-4 py-2 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark border border-es-border dark:border-es-border-dark rounded-lg text-es-text-secondary dark:text-es-text-secondary-dark focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:focus:ring-es-accent-primary-dark"
             >
-              <option value="">Semua Platform</option>
+              <option value="">{{ t('works.platforms.all') }}</option>
               <option v-for="platform in platforms" :key="platform" :value="platform">
                 {{ platform }}
               </option>
@@ -51,7 +51,7 @@
               @click="clearFilters"
               class="px-4 py-2 text-es-accent-primary dark:text-es-accent-primary-dark hover:underline text-sm font-medium"
             >
-              Reset Filter
+              {{ t('works.filters.reset') }}
             </button>
           </div>
         </div>
@@ -64,7 +64,7 @@
         <!-- Results Count -->
         <div class="mb-8">
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-            Menampilkan {{ filteredWorks.length }} dari {{ works.length }} proyek
+            {{ t('works.results.count', { visible: filteredWorks.length, total: works.length }) }}
           </p>
         </div>
 
@@ -72,16 +72,16 @@
         <div v-if="filteredWorks.length === 0" class="text-center py-16">
           <div class="text-6xl mb-4">🔍</div>
           <h3 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-            Proyek tidak ditemukan
+            {{ t('works.emptyState.title') }}
           </h3>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark mb-4">
-            Coba ubah filter untuk melihat hasil lain
+            {{ t('works.emptyState.description') }}
           </p>
           <button
             @click="clearFilters"
             class="px-6 py-2 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-medium hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
           >
-            Reset Semua Filter
+            {{ t('works.emptyState.resetButton') }}
           </button>
         </div>
 
@@ -100,7 +100,7 @@
                 class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
               />
               <div v-if="work.featured" class="absolute top-4 right-4 px-3 py-1 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark text-xs font-semibold rounded-full">
-                 Sorotan
+                {{ t('works.featuredBadge') }}
               </div>
             </div>
             <div class="p-6">
@@ -134,7 +134,7 @@
             @click="loadMore"
             class="px-8 py-3 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-medium hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors"
           >
-            Lihat Proyek Lainnya
+            {{ t('works.loadMore.button') }}
           </button>
         </div>
       </div>
@@ -145,31 +145,32 @@
 <script setup lang="ts">
 import { publicWorks } from '../data/public-content';
 
+const localePath = useLocalePath();
+const { t } = useI18n();
+
 // SEO Meta
 useSeoMeta({
-  title: 'Portofolio - Proyek Pilihan Esperion',
-  description: 'Jelajahi portofolio proyek digital Esperion, mulai dari website, aplikasi mobile, hingga pengalaman produk yang lebih terarah.',
-  ogTitle: 'Portofolio Esperion',
-  ogDescription: 'Lihat beberapa proyek digital pilihan dari Esperion.',
+  title: t('seo.works.title'),
+  description: t('seo.works.description'),
+  ogTitle: t('seo.works.ogTitle'),
+  ogDescription: t('seo.works.ogDescription'),
 });
-
-const localePath = useLocalePath();
 
 // State
 const selectedService = ref('');
 const selectedPlatform = ref('');
 const visibleCount = ref(6);
 
-// All Services for filter
-const allServices = [
-  { value: '', label: 'Semua Layanan' },
-  { value: 'Web Development', label: 'Pengembangan Web' },
-  { value: 'Mobile App Development', label: 'Aplikasi Mobile' },
-  { value: 'UI/UX Design', label: 'UI/UX Design' },
-  { value: 'Digital Marketing', label: 'Digital Marketing' },
-  { value: 'E-Commerce Solutions', label: 'E-Commerce' },
-  { value: 'Consulting', label: 'Konsultasi' },
-];
+// All Services for filter (using computed to avoid initialization issues)
+const allServices = computed(() => [
+  { value: '', label: t('works.services.all') },
+  { value: 'Web Development', label: t('works.services.webDevelopment') },
+  { value: 'Mobile App Development', label: t('works.services.mobileApp') },
+  { value: 'UI/UX Design', label: t('works.services.uiUxDesign') },
+  { value: 'Digital Marketing', label: t('works.services.digitalMarketing') },
+  { value: 'E-Commerce Solutions', label: t('works.services.ecommerce') },
+  { value: 'Consulting', label: t('works.services.consulting') },
+]);
 
 // Available platforms
 const platforms = ['Shopify', 'React Native', 'Next.js', 'Nuxt', 'Flutter', 'WordPress', 'Laravel', 'Vue.js'];

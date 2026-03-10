@@ -25,7 +25,7 @@
             <!-- What We Offer -->
             <div class="mb-12">
               <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-                Cakupan Layanan
+                {{ t('services.detail.serviceScope') }}
               </h2>
               <div class="grid md:grid-cols-2 gap-6">
                 <div v-for="feature in features" :key="feature.title" class="flex gap-4">
@@ -47,7 +47,7 @@
             <!-- Process -->
             <div class="mb-12">
               <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-                Alur Kerja
+                {{ t('services.detail.workflow') }}
               </h2>
               <div class="space-y-6">
                 <div v-for="(step, index) in process" :key="step.title" class="flex gap-4">
@@ -72,26 +72,26 @@
             <!-- Pricing -->
             <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-6 mb-8">
               <h3 class="text-xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-                 Estimasi Mulai Dari
+                {{ t('services.detail.estimateStartingFrom') }}
               </h3>
               <div class="text-4xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
                 {{ service.pricing }}
               </div>
               <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm mb-4">
-                 Estimasi akhir menyesuaikan ruang lingkup, kompleksitas, dan kebutuhan integrasi.
+                {{ t('services.detail.estimateNote') }}
               </p>
               <NuxtLink
                 :to="localePath('/contact-us')"
                 class="w-full inline-flex justify-center items-center px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
               >
-                 Minta Estimasi
+                {{ t('services.detail.requestEstimate') }}
               </NuxtLink>
             </div>
 
             <!-- FAQ -->
             <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-6">
               <h3 class="text-xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-                 Pertanyaan yang Sering Muncul
+                {{ t('services.detail.faq') }}
               </h3>
               <div class="space-y-4">
                 <div v-for="faq in faqs" :key="faq.question" class="border-b border-es-border dark:border-es-border-dark pb-4 last:border-0 last:pb-0">
@@ -113,7 +113,7 @@
     <section class="py-12 md:py-16 bg-es-bg-secondary dark:bg-es-bg-secondary-dark">
       <div class="container mx-auto px-4">
         <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-8">
-          Layanan Terkait
+          {{ t('services.detail.relatedServices') }}
         </h2>
         <div class="grid md:grid-cols-3 gap-6">
           <NuxtLink
@@ -138,16 +138,16 @@
     <section class="py-16 md:py-24 bg-es-accent-primary dark:bg-es-accent-primary-dark">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-es-text-inverse dark:text-es-text-inverse-dark mb-4">
-          Siap Melangkah ke Tahap Berikutnya?
+          {{ t('services.detail.ctaTitle') }}
         </h2>
         <p class="text-es-text-inverse/90 dark:text-es-text-inverse-dark/90 text-lg mb-8 max-w-2xl mx-auto">
-          Ceritakan konteks bisnis Anda, lalu kami bantu menyusun pendekatan yang paling relevan.
+          {{ t('services.detail.ctaDescription') }}
         </p>
         <NuxtLink
           :to="localePath('/contact-us')"
           class="inline-flex items-center px-8 py-4 bg-es-bg-inverse dark:bg-es-bg-inverse-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark transition-colors"
         >
-          Hubungi Tim Esperion
+          {{ t('services.detail.ctaButton') }}
         </NuxtLink>
       </div>
     </section>
@@ -159,7 +159,7 @@ import { findPublicServiceBySlug, getRelatedServices } from '../../data/public-c
 
 const route = useRoute();
 const localePath = useLocalePath();
-const { locale } = useI18n();
+const { t, locale } = useI18n();
 
 const slugParam = computed(() => {
   const raw = route.params.slug;
@@ -194,16 +194,16 @@ const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/our-se
 const imageUrl = computed(() => `/images/service-${serviceSlug.value.replace(/-/g, '')}.jpg`);
 
 useSeoMeta({
-  title: () => `${serviceName.value} Jakarta | Jasa ${serviceName.value} Terbaik`,
-  description: () => `Kami menawarkan layanan ${service.value.description.toLowerCase()}. Solusi terbaik untuk memajukan bisnis Anda.`,
-  ogTitle: () => `${serviceName.value} Jakarta | Jasa ${serviceName.value} Terbaik`,
-  ogDescription: () => `Kami menawarkan layanan ${service.value.description.toLowerCase()}. Solusi terbaik untuk memajukan bisnis Anda.`,
+  title: () => `${serviceName.value} Jakarta | ${t('seo.services.title')}`,
+  description: () => `${t('services.detail.serviceScope')}: ${service.value.description}`,
+  ogTitle: () => `${serviceName.value} - Esperion`,
+  ogDescription: () => service.value.description,
   ogImage: () => imageUrl.value || '/images/hero-service-development.jpg',
   ogUrl: () => pageUrl.value,
   ogType: 'website',
   twitterCard: 'summary_large_image',
-  twitterTitle: () => `${serviceName.value} Jakarta | Jasa ${serviceName.value} Terbaik`,
-  twitterDescription: () => `Kami menawarkan layanan ${service.value.description.toLowerCase()}. Solusi terbaik untuk memajukan bisnis Anda.`,
+  twitterTitle: () => `${serviceName.value} - Esperion`,
+  twitterDescription: () => service.value.description,
   twitterImage: () => imageUrl.value || '/images/hero-service-development.jpg',
   ogLocale: () => (locale.value === 'en' ? 'en_US' : 'id_ID')
 });
@@ -211,8 +211,8 @@ useSeoMeta({
 useSchemaOrg([
   defineWebPage({
     '@type': 'CollectionPage',
-    name: service.value.title,
-    description: service.value.description,
+    name: () => service.value.title,
+    description: () => service.value.description,
     url: pageUrl.value,
     image: imageUrl.value || '/images/hero-service-development.jpg',
     dateModified: new Date().toISOString()
@@ -222,38 +222,22 @@ useSchemaOrg([
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Beranda',
+        name: t('breadcrumb.home'),
         item: `https://esperion.id/${localePrefix.value}`
       },
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Layanan',
+        name: t('breadcrumb.services'),
         item: `https://esperion.id/${localePrefix.value}/our-services`
       },
       {
         '@type': 'ListItem',
         position: 3,
-        name: service.value.title,
+        name: () => service.value.title,
         item: pageUrl.value
       }
     ]
-  }),
-  defineQuestion({
-    name: 'Berapa lama waktu yang dibutuhkan untuk menyelesaikan proyek?',
-    acceptedAnswer: 'Durasi rata-rata untuk sebuah proyek adalah 4-12 minggu tergantung pada kompleksitas dan lingkup pekerjaan.'
-  }),
-  defineQuestion({
-    name: 'Apa saja teknologi yang digunakan?',
-    acceptedAnswer: 'Kami menggunakan teknologi modern seperti React, Vue, Node.js, dan lainnya sesuai kebutuhan proyek Anda.'
-  }),
-  defineQuestion({
-    name: 'Apakah Anda menyediakan dukungan purna jual?',
-    acceptedAnswer: 'Ya, kami menawarkan paket pemeliharaan dan dukungan untuk semua proyek yang kami kerjakan.'
-  }),
-  defineQuestion({
-    name: 'Dapatkah Anda bekerja dengan desain yang sudah ada?',
-    acceptedAnswer: 'Tentu! Kami bisa bekerja dengan desain yang sudah Anda miliki atau membuat yang baru dari awal.'
   })
 ]);
 </script>

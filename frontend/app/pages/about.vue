@@ -6,10 +6,10 @@
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="container mx-auto px-4 text-center">
           <h1 class="text-4xl md:text-5xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Tentang Kami
+            {{ t('about.banner.title') }}
           </h1>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-lg max-w-2xl mx-auto">
-            Mengenal cara Esperion membangun kerja sama, kualitas, dan arah digital yang konsisten
+            {{ t('about.banner.description') }}
           </p>
         </div>
       </div>
@@ -22,55 +22,43 @@
           <!-- Tentang Esperion -->
           <div>
             <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-              Tentang Esperion
+              {{ t('about.aboutSection.title') }}
             </h2>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed mb-6">
-              Esperion adalah mitra digital yang membantu bisnis menyiapkan pengalaman online yang lebih jelas, lebih cepat, dan lebih siap tumbuh. Kami bekerja dengan pendekatan strategis agar setiap keputusan desain dan pengembangan tetap terhubung dengan tujuan bisnis.
+              {{ t('about.aboutSection.paragraph1') }}
             </p>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed mb-6">
-              Tim kami menggabungkan riset, desain, pengembangan, dan validasi agar solusi yang dirilis tidak hanya terlihat baik, tetapi juga terasa relevan bagi pengguna dan mudah dikembangkan oleh bisnis Anda.
+              {{ t('about.aboutSection.paragraph2') }}
             </p>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
-              Fokus kami bukan sekadar meluncurkan halaman baru, tetapi membantu bisnis membangun fondasi digital yang bisa dipakai untuk tahap pertumbuhan berikutnya.
+              {{ t('about.aboutSection.paragraph3') }}
             </p>
           </div>
 
           <!-- Vision & Mission -->
           <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-8">
             <h3 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
-              Visi dan Misi
+              {{ t('about.visionMission.title') }}
             </h3>
             <div class="space-y-6">
               <div>
                 <div class="flex items-center gap-3 mb-3">
                   <span class="text-3xl">🎯</span>
-                  <h4 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">Visi</h4>
+                  <h4 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">{{ t('about.visionMission.visionTitle') }}</h4>
                 </div>
                 <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-                  Menjadi mitra digital yang membantu bisnis mengambil keputusan lebih percaya diri melalui pengalaman brand dan produk yang rapi, relevan, dan berkelanjutan.
+                  {{ t('about.visionMission.visionDescription') }}
                 </p>
               </div>
               <div>
                 <div class="flex items-center gap-3 mb-3">
                   <span class="text-3xl">🚀</span>
-                  <h4 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">Misi</h4>
+                  <h4 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">{{ t('about.visionMission.missionTitle') }}</h4>
                 </div>
                 <ul class="space-y-2 text-es-text-secondary dark:text-es-text-secondary-dark">
-                  <li class="flex items-start gap-2">
+                  <li v-for="(item, index) in missionItems" :key="index" class="flex items-start gap-2">
                     <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-                    <span>Menyusun solusi digital yang selaras dengan tujuan bisnis dan kebutuhan pengguna</span>
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-                    <span>Membangun kerja sama jangka panjang lewat komunikasi yang terbuka dan hasil yang terukur</span>
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-                    <span>Menjaga kualitas eksekusi sambil terus menyesuaikan diri dengan perubahan pasar</span>
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
-                    <span>Mendorong budaya belajar, dokumentasi, dan perbaikan berkelanjutan di setiap proyek</span>
+                    <span>{{ item }}</span>
                   </li>
                 </ul>
               </div>
@@ -88,25 +76,25 @@
             <div class="text-4xl md:text-5xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
               150+
             </div>
-            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Proyek Terselesaikan</div>
+            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('about.stats.projectsCompleted') }}</div>
           </div>
           <div class="text-center">
             <div class="text-4xl md:text-5xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
               80+
             </div>
-            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Kolaborasi Klien</div>
+            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('about.stats.clientCollaborations') }}</div>
           </div>
           <div class="text-center">
             <div class="text-4xl md:text-5xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
               10+
             </div>
-            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Tahun Pengalaman</div>
+            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('about.stats.yearsExperience') }}</div>
           </div>
           <div class="text-center">
             <div class="text-4xl md:text-5xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
               25+
             </div>
-            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">Talenta Inti</div>
+            <div class="text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('about.stats.coreTalent') }}</div>
           </div>
         </div>
       </div>
@@ -117,13 +105,13 @@
       <div class="container mx-auto px-4">
         <div class="max-w-3xl mx-auto text-center bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-2xl p-8 md:p-10">
           <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-es-bg-primary dark:bg-es-bg-primary-dark overflow-hidden flex items-center justify-center">
-            <img src="/placeholders/first-party/founder-identity-required.svg" alt="Profil founder menunggu materi resmi" class="w-full h-full object-cover" />
+            <img src="/placeholders/first-party/founder-identity-required.svg" :alt="t('about.founders.title')" class="w-full h-full object-cover" />
           </div>
           <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Profil Kepemimpinan Sedang Diperbarui
+            {{ t('about.founders.title') }}
           </h2>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
-            Informasi founder dan materi kepemimpinan publik belum dipublikasikan di repositori ini. Kami menahan identitas resmi sampai profil, foto, dan tautan yang benar-benar disetujui siap ditampilkan.
+            {{ t('about.founders.description') }}
           </p>
         </div>
       </div>
@@ -134,10 +122,10 @@
       <div class="container mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-            Nilai Kerja Kami
+            {{ t('about.values.title') }}
           </h2>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark max-w-2xl mx-auto">
-            Prinsip yang menjaga cara kerja Esperion tetap konsisten di setiap kolaborasi
+            {{ t('about.values.description') }}
           </p>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -158,16 +146,16 @@
     <section class="py-16 md:py-24 bg-es-accent-primary dark:bg-es-accent-primary-dark">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-es-text-inverse dark:text-es-text-inverse-dark mb-4">
-          Siap Bekerja Bersama Esperion?
+          {{ t('about.cta.title') }}
         </h2>
         <p class="text-es-text-inverse/90 dark:text-es-text-inverse-dark/90 text-lg mb-8 max-w-2xl mx-auto">
-          Mari diskusikan prioritas bisnis Anda dan tentukan langkah digital yang paling relevan.
+          {{ t('about.cta.description') }}
         </p>
         <NuxtLink
-          to="/contact-us"
+          :to="localePath('/contact-us')"
           class="inline-flex items-center px-8 py-4 bg-es-bg-inverse dark:bg-es-bg-inverse-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark transition-colors"
         >
-          Hubungi Kami
+          {{ t('about.cta.button') }}
         </NuxtLink>
       </div>
     </section>
@@ -175,31 +163,36 @@
 </template>
 
 <script setup lang="ts">
-// SEO Meta
-const pageUrl = 'https://esperion.id/id/about';
+const { t } = useI18n();
+const localePath = useLocalePath();
 
+// SEO Meta
 useSeoMeta({
-  title: 'Tentang Esperion Digital Agency Jakarta - Solusi Digital Terbaik',
-  description: 'Kenali Esperion Digital Agency di Jakarta. Tim ahli dalam pengembangan web, aplikasi mobile, digital marketing, dan layanan digital terlengkap untuk bisnis Anda di Indonesia.',
-  ogTitle: 'Tentang Esperion - Digital Agency Jakarta',
-  ogDescription: 'Esperion adalah agensi digital paling inovatif di Jakarta, memberikan solusi untuk pertumbuhan bisnis Anda.',
+  title: t('about.seo.title'),
+  description: t('about.seo.description'),
+  ogTitle: t('about.seo.ogTitle'),
+  ogDescription: t('about.seo.ogDescription'),
   ogImage: '/images/about-esperion-agency.jpg',
-  ogUrl: pageUrl,
+  ogUrl: () => `https://esperion.id/${localePath('/about').split('/')[1] || 'id'}/about`,
   ogType: 'website',
   twitterCard: 'summary_large_image',
-  twitterTitle: 'Tentang Esperion - Digital Agency Jakarta',
-  twitterDescription: 'Kenali lebih dalam tentang tim dan visi Esperion dalam membantu pertumbuhan bisnis digital di Indonesia.',
+  twitterTitle: t('about.seo.ogTitle'),
+  twitterDescription: t('about.seo.ogDescription'),
   twitterImage: '/images/about-esperion-agency.jpg',
-  ogLocale: 'id_ID',
 });
 
 // Define schema for the about page
+const pageUrl = computed(() => {
+  const locale = localePath('/about').split('/')[1] || 'id';
+  return `https://esperion.id/${locale}/about`;
+});
+
 useSchemaOrg([
   defineWebPage({
     '@type': 'AboutPage',
-    name: 'Tentang Esperion Digital Agency',
-    description: 'Beranda profil perusahaan dan tim yang membangun layanan digital di Jakarta',
-    url: pageUrl,
+    name: t('about.seo.schemaName'),
+    description: t('about.seo.schemaDescription'),
+    url: pageUrl.value,
     dateModified: new Date().toISOString()
   }),
   defineBreadcrumb({
@@ -207,39 +200,49 @@ useSchemaOrg([
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Beranda',
-        item: 'https://esperion.id/id'
+        name: t('breadcrumb.home'),
+        item: () => {
+          const locale = localePath('/about').split('/')[1] || 'id';
+          return `https://esperion.id/${locale}`;
+        }
       },
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Tentang Kami',
-        item: pageUrl
+        name: t('breadcrumb.about'),
+        item: pageUrl.value
       }
     ]
   })
 ]);
 
-const values = [
+const missionItems = computed(() => [
+  t('about.visionMission.missionItems.0'),
+  t('about.visionMission.missionItems.1'),
+  t('about.visionMission.missionItems.2'),
+  t('about.visionMission.missionItems.3'),
+]);
+
+const values = computed(() => [
   {
-    icon: '🎯',
-    title: 'Kualitas yang disengaja',
-    description: 'Kami menjaga detail, dokumentasi, dan konsistensi agar hasil akhir terasa rapi sejak hari pertama diluncurkan.',
+    icon: t('about.values.items.0.icon'),
+    title: t('about.values.items.0.title'),
+    description: t('about.values.items.0.description'),
   },
   {
-    icon: '🤝',
-    title: 'Kepercayaan yang jujur',
-    description: 'Kami lebih memilih komunikasi yang jelas dan realistis dibanding janji yang terdengar besar tetapi tidak bisa diverifikasi.',
+    icon: t('about.values.items.1.icon'),
+    title: t('about.values.items.1.title'),
+    description: t('about.values.items.1.description'),
   },
   {
-    icon: '💡',
-    title: 'Eksplorasi yang terarah',
-    description: 'Teknologi baru kami pakai ketika benar-benar membantu bisnis bergerak lebih cepat dan lebih efisien.',
+    icon: t('about.values.items.2.icon'),
+    title: t('about.values.items.2.title'),
+    description: t('about.values.items.2.description'),
   },
   {
-    icon: '👥',
-    title: 'Kolaborasi terbuka',
-    description: 'Kami bekerja sebagai partner diskusi, bukan sekadar vendor, agar keputusan penting tetap punya konteks yang tepat.',
+    icon: t('about.values.items.3.icon'),
+    title: t('about.values.items.3.title'),
+    description: t('about.values.items.3.description'),
   },
-];
+]);
 </script>

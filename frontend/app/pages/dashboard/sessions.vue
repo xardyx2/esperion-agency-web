@@ -2,9 +2,9 @@
   <div class="space-y-6">
     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark">Sessions</h1>
+        <h1 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.sessions.title') }}</h1>
         <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-          Review active sessions and revoke devices you no longer trust.
+          {{ t('dashboard.sessions.description') }}
         </p>
       </div>
       <button
@@ -13,7 +13,7 @@
         :disabled="pending"
         @click="loadSessions"
       >
-        {{ pending ? 'Refreshing...' : 'Refresh sessions' }}
+        {{ pending ? t('dashboard.sessions.refresh.inProgress') : t('dashboard.sessions.refresh.button') }}
       </button>
     </div>
 
@@ -42,21 +42,21 @@
               ? 'bg-green-100 text-green-700'
               : 'bg-es-bg-tertiary text-es-text-secondary dark:bg-es-bg-tertiary-dark dark:text-es-text-secondary-dark'"
           >
-            {{ session.is_current ? 'Current' : 'Active' }}
+            {{ session.is_current ? t('dashboard.sessions.status.current') : t('dashboard.sessions.status.active') }}
           </span>
         </div>
 
         <dl class="space-y-3 text-sm">
           <div>
-            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">IP address</dt>
+            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.sessions.columns.ipAddress') }}</dt>
             <dd class="text-es-text-primary dark:text-es-text-primary-dark">{{ session.ip_address || 'Unknown' }}</dd>
           </div>
           <div>
-            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">Created</dt>
+            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.sessions.columns.created') }}</dt>
             <dd class="text-es-text-primary dark:text-es-text-primary-dark">{{ formatDate(session.created_at) }}</dd>
           </div>
           <div>
-            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">Expires</dt>
+            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.sessions.columns.expires') }}</dt>
             <dd class="text-es-text-primary dark:text-es-text-primary-dark">{{ formatDate(session.expires_at) }}</dd>
           </div>
         </dl>
@@ -67,7 +67,7 @@
           :disabled="pending || session.is_current"
           @click="revokeSession(session.id)"
         >
-          {{ session.is_current ? 'Current session cannot be revoked here' : 'Force logout session' }}
+          {{ session.is_current ? t('dashboard.sessions.columns.currentSession') : t('dashboard.sessions.columns.forceLogout') }}
         </button>
       </article>
     </div>
@@ -76,7 +76,7 @@
       v-if="!pending && !sessions.length"
       class="rounded-xl border border-dashed border-es-border px-6 py-10 text-center text-sm text-es-text-secondary dark:border-es-border-dark dark:text-es-text-secondary-dark"
     >
-      No active sessions were returned by the API.
+      {{ t('dashboard.sessions.noResults') }}
     </div>
   </div>
 </template>
@@ -85,13 +85,15 @@
 import { useAuthApi } from '../../composables/useApi'
 import type { Session } from '~/types/api'
 
+const { t } = useI18n()
+
 definePageMeta({
   layout: 'dashboard',
 })
 
 useSeoMeta({
-  title: 'Sessions - Dashboard',
-  description: 'Review and revoke active account sessions.',
+  title: t('dashboard.sessions.seo.title'),
+  description: t('dashboard.sessions.seo.description'),
 })
 
 const authApi = useAuthApi()
@@ -133,7 +135,7 @@ const loadSessions = async () => {
     sessions.value = response.sessions
   }
   catch (err) {
-    error.value = err instanceof Error ? err.message : 'Failed to load sessions'
+    error.value = err instanceof Error ? err.message : t('dashboard.sessions.loading')
   }
   finally {
     pending.value = false
@@ -149,7 +151,7 @@ const revokeSession = async (sessionId: string) => {
     sessions.value = sessions.value.filter(session => session.id !== sessionId)
   }
   catch (err) {
-    error.value = err instanceof Error ? err.message : 'Failed to revoke session'
+    error.value = err instanceof Error ? err.message : t('dashboard.sessions.error.title')
   }
   finally {
     pending.value = false

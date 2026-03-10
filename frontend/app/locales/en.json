@@ -196,6 +196,100 @@
       "ogDescription": "Insights and updates from the Esperion team."
     }
   },
+  "works": {
+    "banner": {
+      "title": "Our Portfolio",
+      "description": "See examples of Esperion's approach to various digital needs"
+    },
+    "services": {
+      "all": "All Services",
+      "webDevelopment": "Web Development",
+      "mobileApp": "Mobile App",
+      "uiUxDesign": "UI/UX Design",
+      "digitalMarketing": "Digital Marketing",
+      "ecommerce": "E-Commerce",
+      "consulting": "Consulting"
+    },
+    "platforms": {
+      "all": "All Platforms",
+      "shopify": "Shopify",
+      "reactNative": "React Native",
+      "nextjs": "Next.js",
+      "nuxt": "Nuxt",
+      "flutter": "Flutter",
+      "wordpress": "WordPress",
+      "laravel": "Laravel",
+      "vuejs": "Vue.js"
+    },
+    "filters": {
+      "reset": "Reset Filter"
+    },
+    "results": {
+      "count": "Showing {visible} of {total} projects"
+    },
+    "emptyState": {
+      "title": "No projects found",
+      "description": "Try changing filters to see other results",
+      "resetButton": "Reset All Filters"
+    },
+    "featuredBadge": "Featured",
+    "loadMore": {
+      "button": "View More Projects"
+    }
+  },
+  "contact": {
+    "banner": {
+      "title": "Contact Us",
+      "description": "Tell us your needs, and we'll help map out the most relevant digital path forward"
+    },
+    "form": {
+      "title": "Send Your Brief",
+      "fullNameLabel": "Full Name",
+      "companyNameLabel": "Company Name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone Number",
+      "serviceLabel": "Required Services",
+      "descriptionLabel": "Project Summary",
+      "servicePlaceholder": "Select a service",
+      "serviceOptions": {
+        "webDevelopment": "Web Development",
+        "mobileApp": "Mobile App",
+        "uiUxDesign": "UI/UX Design",
+        "digitalMarketing": "Digital Marketing",
+        "ecommerce": "E-Commerce Solutions",
+        "consulting": "Digital Consulting",
+        "other": "Other"
+      },
+      "fullNamePlaceholder": "Your Name",
+      "companyNamePlaceholder": "Company or brand name",
+      "emailPlaceholder": "john@example.com",
+      "phonePlaceholder": "+62 812 3456 7890",
+      "descriptionPlaceholder": "Tell us about your project goals, context, and timeline...",
+      "submitButton": "Send Message",
+      "submittingButton": "Sending...",
+      "successMessage": "Thank you. Your brief has been submitted and the Esperion team will contact you shortly.",
+      "errorMessage": "There was a problem sending your message. Please try again later."
+    },
+    "info": {
+      "title": "Contact Information",
+      "location": "Location",
+      "locationText": "Jakarta, Indonesia",
+      "phone": "Phone / WhatsApp",
+      "phoneText": "+62 812 3456 7890",
+      "email": "Email",
+      "emailText": "hello@esperion.id",
+      "businessHours": "Business Hours",
+      "businessHoursText": "Monday - Friday: 09.00 - 18.00 WIB"
+    },
+    "social": {
+      "title": "Follow Esperion"
+    },
+    "map": {
+      "title": "Our Location",
+      "description": "Detailed address information will be displayed after final publication materials are confirmed",
+      "placeholder": "Map placeholder - waiting for official publication location details"
+    }
+  },
   "footer": {
     "companyDescription": "Esperion helps businesses grow through strategy, design, and targeted digital development.",
     "quickLinks": "Quick Navigation",
@@ -226,21 +320,281 @@
     "tiktok": "TikTok",
     "twitter": "Twitter"
   },
-  "aria": {
-    "location": "Location",
-    "phone": "Phone",
-    "email": "Email",
-    "businessHours": "Business hours",
-    "switchToLightMode": "Switch to light mode",
-    "switchToDarkMode": "Switch to dark mode",
-    "lightMode": "Light mode",
-    "darkMode": "Dark mode"
+   "aria": {
+     "location": "Location",
+     "phone": "Phone",
+     "email": "Email",
+     "businessHours": "Business hours",
+     "switchToLightMode": "Switch to light mode",
+     "switchToDarkMode": "Switch to dark mode",
+     "lightMode": "Light mode",
+     "darkMode": "Dark mode"
+   },
+   "offline": {
+     "title": "You're Offline",
+     "message": "It looks like you've lost your internet connection. Don't worry, you can still view some cached content.",
+     "tryAgain": "Try Again",
+     "goToHomepage": "Go to Homepage",
+     "availablePages": "The following pages are available offline:",
+     "cachedPages": {
+       "home": "Homepage",
+       "works": "Portfolio",
+       "services": "Services",
+       "articles": "Articles"
+     },
+     "stillOffline": "Still offline. Please check your internet connection.",
+     "seo": {
+       "title": "Offline - Esperion",
+       "description": "You are currently offline."
+     }
+   },
+   "auth": {
+    "login": {
+      "title": "Sign In",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "submitButton": "Sign In",
+      "submittingButton": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create Account",
+      "errors": {
+        "emailRequired": "Email is required.",
+        "emailInvalid": "Please enter a valid email address.",
+        "passwordRequired": "Password is required.",
+        "fixFields": "Please fix the highlighted fields.",
+        "invalidCredentials": "Invalid email or password. Please try again."
+      },
+      "seo": {
+        "title": "Sign In - Esperion Dashboard",
+        "description": "Sign in to your Esperion dashboard account."
+      }
+    },
+    "register": {
+      "title": "Create Account",
+      "fullNameLabel": "Full Name",
+      "fullNamePlaceholder": "John Doe",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "johndoe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "phoneLabel": "Phone (Optional)",
+      "phonePlaceholder": "+62 812 3456 7890",
+      "passwordLabel": "Password",
+      "acceptTerms": "I agree to the {terms} and {privacy}",
+      "termsOfService": "Terms of Service",
+      "privacyPolicy": "Privacy Policy",
+      "submitButton": "Create Account",
+      "submittingButton": "Creating account...",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign In",
+      "errors": {
+        "fullNameRequired": "Full Name is required.",
+        "usernameRequired": "Username is required.",
+        "emailRequired": "Email is required.",
+        "emailInvalid": "Please enter a valid email address.",
+        "passwordRequired": "Password is required.",
+        "passwordMinLength": "Password must be at least 8 characters.",
+        "acceptTermsRequired": "You must accept the terms to continue.",
+        "fixFields": "Please fix the highlighted fields.",
+        "registrationFailed": "Registration failed. Please try again."
+      },
+      "seo": {
+        "title": "Create Account - Esperion Dashboard",
+        "description": "Create your Esperion dashboard account."
+      }
+    }
   },
   "breadcrumb": {
     "home": "Home",
     "services": "Our Services",
     "works": "Portfolio",
-    "articles": "Articles"
+    "articles": "Articles",
+    "contact": "Contact Us",
+    "about": "About Us"
+  },
+  "about": {
+    "banner": {
+      "title": "About Us",
+      "description": "Learn how Esperion builds collaboration, quality, and consistent digital direction"
+    },
+    "aboutSection": {
+      "title": "About Esperion",
+      "paragraph1": "Esperion is a digital partner that helps businesses prepare clearer, faster, and more growth-ready online experiences. We work with a strategic approach so that every design and development decision remains connected to business goals.",
+      "paragraph2": "Our team combines research, design, development, and validation so that released solutions not only look good, but also feel relevant to users and are easy for your business to develop.",
+      "paragraph3": "Our focus is not just launching new pages, but helping businesses build a digital foundation that can be used for the next growth phase."
+    },
+    "visionMission": {
+      "title": "Vision and Mission",
+      "visionTitle": "Vision",
+      "visionDescription": "To become a digital partner that helps businesses make more confident decisions through neat, relevant, and sustainable brand and product experiences.",
+      "missionTitle": "Mission",
+      "missionItems": [
+        "Develop digital solutions that align with business goals and user needs",
+        "Build long-term partnerships through open communication and measurable results",
+        "Maintain execution quality while continuously adapting to market changes",
+        "Promote a culture of learning, documentation, and continuous improvement in every project"
+      ]
+    },
+    "stats": {
+      "projectsCompleted": "Projects Completed",
+      "clientCollaborations": "Client Collaborations",
+      "yearsExperience": "Years of Experience",
+      "coreTalent": "Core Talent"
+    },
+    "founders": {
+      "title": "Leadership Profile Being Updated",
+      "description": "Founder information and public leadership materials have not been published in this repository. We are withholding official identity until profiles, photos, and approved links are ready for display."
+    },
+    "values": {
+      "title": "Our Work Values",
+      "description": "Principles that keep Esperion's way of working consistent in every collaboration",
+      "items": [
+        {
+          "icon": "🎯",
+          "title": "Intentional Quality",
+          "description": "We maintain details, documentation, and consistency so that the final result feels neat from the first day of launch."
+        },
+        {
+          "icon": "🤝",
+          "title": "Honest Trust",
+          "description": "We prefer clear and realistic communication over promises that sound big but cannot be verified."
+        },
+        {
+          "icon": "💡",
+          "title": "Directed Exploration",
+          "description": "We use new technology when it truly helps businesses move faster and more efficiently."
+        },
+        {
+          "icon": "👥",
+          "title": "Open Collaboration",
+          "description": "We work as discussion partners, not just vendors, so important decisions have the right context."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Ready to Work with Esperion?",
+      "description": "Let's discuss your business priorities and determine the most relevant digital steps.",
+      "button": "Contact Us"
+    },
+    "seo": {
+      "title": "About Esperion Digital Agency Jakarta - Best Digital Solutions",
+      "description": "Get to know Esperion Digital Agency in Jakarta. Expert team in web development, mobile applications, digital marketing, and comprehensive digital services for your business in Indonesia.",
+      "ogTitle": "About Esperion - Digital Agency Jakarta",
+      "ogDescription": "Esperion is the most innovative digital agency in Jakarta, providing solutions for your business growth.",
+      "schemaName": "About Esperion Digital Agency",
+      "schemaDescription": "Company profile and team page building digital services in Jakarta"
+    }
+  },
+  "services": {
+    "detail": {
+      "serviceScope": "Service Scope",
+      "workflow": "Workflow",
+      "estimateStartingFrom": "Estimate Starting From",
+      "estimateNote": "Final estimate adjusted based on scope, complexity, and integration needs.",
+      "requestEstimate": "Request Estimate",
+      "faq": "Frequently Asked Questions",
+      "relatedServices": "Related Services",
+      "ctaTitle": "Ready to Move to the Next Step?",
+      "ctaDescription": "Categorize your business context, then we'll help arrange the most relevant approach.",
+      "ctaButton": "Contact Esperion Team"
+    }
+  },
+  "works": {
+    "detail": {
+      "featuredProject": "Featured Project",
+      "client": "Client",
+      "projectSummary": "Project Summary",
+      "projectDescription": "This page displays a brief overview of work results, main scope, and the most relevant outcome indicators to understand project context without claiming unpublished confidential details.",
+      "keyFeatures": "Key Features",
+      "projectGallery": "Project Gallery",
+      "startProjectDiscussion": "Start Project Discussion",
+      "viewAllPortfolio": "View All Portfolio",
+      "relatedWorks": "Related Works",
+      "seo": {
+        "title": "{title} - Esperion Digital Agency",
+        "description": "{description}"
+      }
+    }
+  },
+  "articles": {
+    "detail": {
+      "readTime": "min read",
+      "mainSummary": "Main Summary",
+      "summaryParagraph1": "This article summarizes the most relevant points for digital decision-making, then highlights initial steps that can be prioritized by internal teams.",
+      "keyPoints": "Key Points",
+      "keyPointIntro": "The main focus is to help teams see priorities more clearly before moving to more detailed implementation phases.",
+      "keyPoint1": "Prioritize clarity of business goals before choosing channels or technology.",
+      "keyPoint2": "Ensure user experience remains consistent with brand message at every touchpoint.",
+      "keyPoint3": "Use simple and relevant measurements so subsequent improvements are more focused.",
+      "closing": "Closing",
+      "closingParagraph": "If you want to turn this discussion into a more concrete work plan, the Esperion team can help arrange priorities that suit your current business conditions.",
+      "shareArticle": "Share this article",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "copyLink": "Copy Link",
+      "authorBio": "Written by the Esperion editorial team to summarize practical insights relevant to business digital needs.",
+      "relatedArticles": "Related Articles",
+      "newsletterTitle": "Want to read other insights?",
+      "newsletterDescription": "Explore other articles from the Esperion team to understand digital priorities more clearly.",
+      "viewAllArticles": "View All Articles"
+    }
+  },
+  "contact": {
+    "banner": {
+      "title": "Contact Us",
+      "description": "Tell us your needs, and we'll help map out the most relevant digital path forward"
+    },
+    "form": {
+      "title": "Send Your Brief",
+      "fullNameLabel": "Full Name",
+      "companyNameLabel": "Company Name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone Number",
+      "serviceLabel": "Required Services",
+      "descriptionLabel": "Project Summary",
+      "servicePlaceholder": "Select a service",
+      "serviceOptions": {
+        "webDevelopment": "Web Development",
+        "mobileApp": "Mobile App",
+        "uiUxDesign": "UI/UX Design",
+        "digitalMarketing": "Digital Marketing",
+        "ecommerce": "E-Commerce Solutions",
+        "consulting": "Digital Consulting",
+        "other": "Other"
+      },
+      "fullNamePlaceholder": "Your Name",
+      "companyNamePlaceholder": "Company or brand name",
+      "emailPlaceholder": "john@example.com",
+      "phonePlaceholder": "+62 812 3456 7890",
+      "descriptionPlaceholder": "Tell us about your project goals, context, and timeline...",
+      "submitButton": "Send Message",
+      "submittingButton": "Sending...",
+      "successMessage": "Thank you. Your brief has been submitted and the Esperion team will contact you shortly.",
+      "errorMessage": "There was a problem sending your message. Please try again later."
+    },
+    "info": {
+      "title": "Contact Information",
+      "location": "Location",
+      "locationText": "Jakarta, Indonesia",
+      "phone": "Phone / WhatsApp",
+      "phoneText": "+62 812 3456 7890",
+      "email": "Email",
+      "emailText": "hello@esperion.id",
+      "businessHours": "Business Hours",
+      "businessHoursText": "Monday - Friday: 09.00 - 18.00 WIB"
+    },
+    "social": {
+      "title": "Follow Esperion"
+    },
+    "map": {
+      "title": "Our Location",
+      "description": "Detailed address information will be displayed after final publication materials are confirmed",
+      "placeholder": "Map placeholder - waiting for official publication location details"
+    }
   },
   "seo": {
     "home": {
@@ -255,11 +609,726 @@
       "ogTitle": "Digital Agency Services Jakarta - Esperion",
       "ogDescription": "Professional digital marketing, web development and mobile app services."
     },
+    "works": {
+      "title": "Portfolio - Selected Projects from Esperion",
+      "description": "Explore Esperion's digital project portfolio, from websites and mobile apps to more focused product experiences.",
+      "ogTitle": "Esperion Portfolio",
+      "ogDescription": "View selected digital projects from Esperion."
+    },
     "articles": {
       "title": "Articles - Digital Insights from Esperion",
       "description": "Read articles, insights, and learnings about web development, design, and digital marketing.",
       "ogTitle": "Esperion Articles",
       "ogDescription": "Insights and updates from the Esperion team."
+    },
+    "contact": {
+      "title": "Contact Us - Esperion Digital Agency Jakarta",
+      "description": "Contact Esperion Digital Agency in Jakarta. We're ready to help with your business digital transformation. FREE consultation!",
+      "ogTitle": "Contact Esperion - Digital Agency Jakarta",
+      "ogDescription": "Contact us for FREE consultation about your digital project.",
+      "twitterTitle": "Contact Esperion - Digital Agency Jakarta",
+      "schemaName": "Contact Us - Esperion Digital Agency",
+      "schemaDescription": "Contact page for Esperion Digital Agency in Jakarta"
+    }
+  },
+  "dashboard": {
+    "index": {
+      "title": "Dashboard Overview",
+      "description": "Focus on retained agency operations while the wider platform backlog stays split into dedicated changes.",
+      "cards": {
+        "articles": {
+          "title": "Articles",
+          "description": "Translation, editorial review, and publishing remain active archive blockers.",
+          "cta": "Open articles"
+        },
+        "works": {
+          "title": "Works",
+          "description": "Portfolio entries should load from the retained backend API rather than placeholder cards.",
+          "cta": "Open works"
+        },
+        "clients": {
+          "title": "Clients",
+          "description": "Client showcase administration stays inside this change and needs real data-backed management.",
+          "cta": "Open clients"
+        },
+        "contact": {
+          "title": "Contact",
+          "description": "Inquiry handling and retained admin review should reflect the real submissions API.",
+          "cta": "Open contact"
+        }
+      },
+      "focus": {
+        "authTitle": "Auth truthfulness",
+        "authDetail": "Login, registration, logout, and route protection should reflect the real auth store and API contract.",
+        "translationTitle": "Translation workflow",
+        "translationDetail": "Article translation remains the most cross-cutting retained feature because it touches API, editor, and locale behavior.",
+        "archiveTitle": "Archive readiness",
+        "archiveDetail": "This overview intentionally avoids analytics-style charts so the dashboard no longer overclaims split-out capabilities."
+      },
+      "shortcuts": {
+        "articles": "Articles",
+        "works": "Works",
+        "services": "Services",
+        "clients": "Clients",
+        "contact": "Contact",
+        "sessions": "Sessions"
+      },
+      "status": {
+        "needsWiring": "Needs wiring",
+        "stubCleanup": "Stub cleanup",
+        "needsVerification": "Needs verification"
+      }
+    },
+    "articles": {
+      "title": "Articles",
+      "description": "Manage retained editorial content and translation readiness.",
+      "newButton": "New Article",
+      "search": {
+        "placeholder": "Search by title or slug..."
+      },
+      "filters": {
+        "allCategories": "All Categories",
+        "allTranslationStatus": "All Translation Status"
+      },
+      "columns": {
+        "title": "Title",
+        "category": "Category",
+        "translation": "Translation",
+        "publish": "Publish",
+        "actions": "Actions"
+      },
+      "placeholders": {
+        "loading": "Loading articles...",
+        "error": "Failed to load articles",
+        "noResults": "No articles match the current filters."
+      },
+      "status": {
+        "draft": "Draft",
+        "id_only": "ID only",
+        "en_only": "EN only",
+        "complete": "Complete"
+      },
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteConfirm": "Delete this article?"
+      },
+      "seo": {
+        "title": "Articles - Dashboard",
+        "description": "Manage retained article workflows."
+      }
+    },
+    "articles_edit": {
+      "title": "Edit Article",
+      "description": "Manage article content, translation draft, and status.",
+      "back": "Back",
+      "saveButton": "Save Article",
+      "saveInProgress": "Saving...",
+      "loading": "Loading article...",
+      "content": {
+        "indonesian": "Indonesian Content",
+        "indonesianPrimary": "Primary source",
+        "english": "English Translation",
+        "englishDescription": "Use Alibaba translation for draft generation, then review manually.",
+        "translateButton": "Translate to English",
+        "translating": "Translating...",
+        "reviewButton": "Approve Translation Draft",
+        "reviewing": "Reviewing..."
+      },
+      "publishing": {
+        "title": "Publishing",
+        "category": "Category",
+        "published": "Published"
+      },
+      "translationStatus": {
+        "title": "Translation Status",
+        "current": "Current status:",
+        "available": "Available languages:",
+        "save": "Save Translation Status",
+        "saveInProgress": "Saving..."
+      },
+      "seo": {
+        "title": "Edit Article - Dashboard",
+        "description": "Edit retained article content and translation workflow."
+      }
+    },
+    "articles_new": {
+      "title": "New Article",
+      "description": "Create the Indonesian source article first, then continue translation review from the edit page.",
+      "cancel": "Cancel",
+      "createButton": "Create Article",
+      "saveInProgress": "Saving...",
+      "content": {
+        "indonesian": "Indonesian Content",
+        "placeholder": "Write the Indonesian source content here..."
+      },
+      "excerpt": {
+        "title": "Excerpt",
+        "placeholder": "Short Indonesian summary for the article"
+      },
+      "publishing": {
+        "title": "Publishing",
+        "category": "Category",
+        "publishImmediately": "Publish immediately"
+      },
+      "translationWorkflow": {
+        "title": "Translation Workflow",
+        "description": "After creating the Indonesian article, continue in the edit page to generate and review the English draft."
+      },
+      "seo": {
+        "title": "New Article - Dashboard",
+        "description": "Create a retained article."
+      }
+    },
+    "works": {
+      "title": "Works",
+      "description": "Manage your portfolio projects",
+      "newButton": "New Work",
+      "loading": "Loading works...",
+      "noResults": "No works found.",
+      "featuredBadge": "Featured",
+      "image": {
+        "label": "Image",
+        "noImage": "No Image"
+      },
+      "buttons": {
+        "delete": "Delete",
+        "deleteConfirm": "Delete this work?"
+      },
+      "seo": {
+        "title": "Works - Dashboard",
+        "description": "Manage your portfolio."
+      }
+    },
+    "works_new": {
+      "title": "New Work",
+      "description": "Add a new portfolio project",
+      "cancel": "Cancel",
+      "publishButton": "Publish Work",
+      "saveInProgress": "Saving...",
+      "metrics": {
+        "title": "Metrics",
+        "add": "+ Add Metric",
+        "labelPlaceholder": "Label (e.g., Conversion)",
+        "valuePlaceholder": "Value (e.g., 45)",
+        "suffixPlaceholder": "Suffix (e.g., %)"
+      },
+      "details": {
+        "title": "Project Details",
+        "client": {
+          "label": "Client",
+          "placeholder": "Client name"
+        },
+        "service": {
+          "label": "Service",
+          "options": {
+            "webDevelopment": "Web Development",
+            "mobileAppDevelopment": "Mobile App Development",
+            "uiUxDesign": "UI/UX Design",
+            "digitalMarketing": "Digital Marketing",
+            "ecommerceSolutions": "E-Commerce Solutions",
+            "consulting": "Consulting"
+          }
+        },
+        "platform": {
+          "label": "Platform",
+          "placeholder": "e.g., Shopify, React Native"
+        },
+        "slug": {
+          "label": "Slug",
+          "placeholder": "auto-generated-if-empty"
+        },
+        "featured": "Featured Project"
+      },
+      "image": {
+        "title": "Project Image",
+        "label": "Image URL",
+        "placeholder": "/images/portfolio/project.jpg"
+      },
+      "seo": {
+        "title": "New Work - Dashboard",
+        "description": "Add a new portfolio project."
+      }
+    },
+    "media": {
+      "title": "Media Library",
+      "description": "Manage your images, videos, and files",
+      "uploadButton": "Upload Media",
+      "search": {
+        "placeholder": "Search media..."
+      },
+      "filters": {
+        "allTypes": "All Types",
+        "image": "Images",
+        "video": "Videos",
+        "document": "Documents"
+      },
+      "buttons": {
+        "view": "View",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "seo": {
+        "title": "Media Library - Dashboard",
+        "description": "Manage your media files."
+      }
+    },
+    "services": {
+      "title": "Services",
+      "description": "Manage your service offerings",
+      "newButton": "New Service",
+      "create": {
+        "title": "Create Service",
+        "update": "Update Service",
+        "cancel": "Cancel",
+        "submitTitle": "Title",
+        "slugTitle": "Slug",
+        "orderTitle": "Display Order",
+        "descTitle": "Description",
+        "iconTitle": "Icon",
+        "featured": "Featured service",
+        "saveButton": "Save Changes",
+        "createButton": "Create Service",
+        "saveInProgress": "Saving...",
+        "loading": "Loading services..."
+      },
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "featured": "Featured",
+        "noIcon": "No icon"
+      },
+      "noResults": "No services found.",
+      "seo": {
+        "title": "Services - Dashboard",
+        "description": "Manage services."
+      }
+    },
+    "clients": {
+      "title": "Clients",
+      "description": "Manage your client relationships",
+      "newButton": "New Client",
+      "create": {
+        "title": "Create Client",
+        "update": "Update Client",
+        "cancel": "Cancel",
+        "nameTitle": "Name",
+        "logoTitle": "Logo URL",
+        "logoPlaceholder": "/images/client-logo.svg",
+        "categoryTitle": "Category",
+        "categoryPlaceholder": "Technology",
+        "statusTitle": "Status",
+        "statusOptions": {
+          "active": "Active",
+          "prospect": "Prospect",
+          "inactive": "Inactive"
+        },
+        "testimonialTitle": "Testimonial",
+        "internalNotesTitle": "Internal Notes",
+        "featured": "Featured client",
+        "saveButton": "Save Changes",
+        "createButton": "Create Client",
+        "saveInProgress": "Saving...",
+        "loading": "Loading clients..."
+      },
+      "table": {
+        "client": "Client",
+        "category": "Category",
+        "status": "Status",
+        "testimonial": "Testimonial",
+        "actions": "Actions",
+        "noResults": "No clients found."
+      },
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "status": {
+        "active": "Active",
+        "prospect": "Prospect",
+        "inactive": "Inactive",
+        "logo": "Logo",
+        "n_a": "N/A"
+      },
+      "testimonialStatus": {
+        "available": "Available",
+        "none": "-"
+      },
+      "seo": {
+        "title": "Clients - Dashboard",
+        "description": "Manage clients."
+      }
+    },
+    "contact": {
+      "title": "Contact Submissions",
+      "description": "Manage inquiries from your website",
+      "export": {
+        "button": "📥 Export CSV"
+      },
+      "stats": {
+        "total": "Total",
+        "new": "New",
+        "qualified": "Qualified"
+      },
+      "filters": {
+        "service": "Filter by service",
+        "status": "Filter by status",
+        "allStatuses": "All Statuses",
+        "statusOptions": {
+          "new": "New",
+          "contacted": "Contacted",
+          "qualified": "Qualified",
+          "converted": "Converted",
+          "lost": "Lost"
+        },
+        "refresh": "Refresh"
+      },
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "service": "Service",
+        "date": "Date",
+        "status": "Status",
+        "actions": "Actions",
+        "noResults": "No contact submissions found."
+      },
+      "loading": "Loading contact submissions...",
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "status": {
+        "new": "New",
+        "contacted": "Contacted",
+        "qualified": "Qualified",
+        "converted": "Converted",
+        "lost": "Lost"
+      },
+      "seo": {
+        "title": "Contact - Dashboard",
+        "description": "Manage contact submissions."
+      }
+    },
+    "users": {
+      "title": "Users",
+      "description": "Manage dashboard users and fixed role assignments.",
+      "newButton": "New User",
+      "create": {
+        "title": "Create User",
+        "update": "Update User",
+        "cancel": "Cancel",
+        "fullNameTitle": "Full Name",
+        "usernameTitle": "Username",
+        "emailTitle": "Email",
+        "phoneTitle": "Phone",
+        "roleTitle": "Role",
+        "roleOptions": {
+          "admin": "Admin",
+          "editor": "Editor",
+          "viewer": "Viewer"
+        },
+        "passwordTitle": "Initial Password",
+        "saveButton": "Save Changes",
+        "createButton": "Create User",
+        "saveInProgress": "Saving...",
+        "loading": "Loading users...",
+        "denied": "Only administrators can access user management."
+      },
+      "table": {
+        "user": "User",
+        "role": "Role",
+        "phone": "Phone",
+        "joined": "Joined",
+        "actions": "Actions",
+        "noResults": "No users found."
+      },
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteConfirm": "Delete {name}? This uses hard delete."
+      },
+      "status": {
+        "active": "Active",
+        "prospect": "Prospect",
+        "inactive": "Inactive"
+      },
+      "notifications": {
+        "userUpdated": {
+          "title": "User updated",
+          "message": "User details were updated successfully."
+        },
+        "userCreated": {
+          "title": "User created",
+          "message": "The new dashboard user was created successfully."
+        },
+        "userDeleted": {
+          "title": "User deleted",
+          "message": "{name} was deleted successfully."
+        },
+        "error": {
+          "title": "User management error",
+          "message": "Failed to save user"
+        },
+        "deleteFailed": {
+          "title": "Delete failed",
+          "message": "Failed to delete user"
+        }
+      },
+      "seo": {
+        "title": "Users - Dashboard",
+        "description": "Manage dashboard users."
+      }
+    },
+    "sessions": {
+      "title": "Sessions",
+      "description": "Review active sessions and revoke devices you no longer trust.",
+      "refresh": {
+        "button": "Refresh sessions",
+        "inProgress": "Refreshing...",
+        "loading": "Loading sessions..."
+      },
+      "noResults": "No active sessions were returned by the API.",
+      "columns": {
+        "device": "Device",
+        "deviceId": "Device ID",
+        "status": "Status",
+        "ipAddress": "IP Address",
+        "created": "Created",
+        "expires": "Expires",
+        "currentSession": "Current session cannot be revoked here",
+        "forceLogout": "Force logout session"
+      },
+      "status": {
+        "current": "Current",
+        "active": "Active",
+        "activeSession": "Active Session"
+      },
+      "notifications": {
+        "sessionRevoked": {
+          "title": "Session revoked",
+          "message": "Session was revoked successfully."
+        },
+        "error": {
+          "title": "Failed to revoke",
+          "message": "Failed to revoke session"
+        }
+      },
+      "seo": {
+        "title": "Sessions - Dashboard",
+        "description": "Review and revoke active account sessions."
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "analytics": {
+        "title": "Analytics & Pixels",
+        "openAnalytics": "Open analytics dashboard",
+        "ga4Id": "GA4 Measurement ID",
+        "ga4Placeholder": "G-XXXXXXXXXX",
+        "gtmId": "GTM Container ID",
+        "gtmPlaceholder": "GTM-XXXXXXX",
+        "clarityId": "Clarity Project ID",
+        "clarityPlaceholder": "clarity-project-id",
+        "metaPixelId": "Meta Pixel ID",
+        "metaPixelPlaceholder": "1234567890",
+        "tiktokPixelId": "TikTok Pixel ID",
+        "tiktokPlaceholder": "tiktok-pixel-id",
+        "linkedinPartnerId": "LinkedIn Partner ID",
+        "linkedinPlaceholder": "linkedin-partner-id",
+        "enableTracking": "Enable frontend tracking"
+      },
+      "funnels": {
+        "title": "Funnels",
+        "add": "+ Add Funnel",
+        "idPlaceholder": "funnel-id",
+        "namePlaceholder": "Funnel name",
+        "active": "Active",
+        "descriptionPlaceholder": "Optional description",
+        "steps": {
+          "title": "Steps",
+          "add": "+ Add Step",
+          "remove": "Remove",
+          "namePlaceholder": "Step name",
+          "eventNamePlaceholder": "Event name",
+          "pathPlaceholder": "Optional path filter",
+          "orderLabel": "Order"
+        },
+        "removeFunnel": "Remove Funnel"
+      },
+      "analyticsSaveButton": "Save Analytics Settings",
+      "backup": {
+        "title": "Backup & Restore",
+        "refreshButton": "Refresh Backup History",
+        "schedule": {
+          "enabled": "Enable schedule",
+          "cronTitle": "Schedule (cron)",
+          "retentionTitle": "Retention count",
+          "filesDirTitle": "Files directory"
+        },
+        "encryption": {
+          "enabled": "Enable encryption"
+        },
+        "savePolicyButton": "Save Backup Policy",
+        "runNowButton": "Run Backup Now",
+        "history": {
+          "title": "Backup History",
+          "scopesLabel": "scopes:",
+          "createdLabel": "created",
+          "restoreScope": {
+            "label": "Scope",
+            "options": {
+              "database": "database",
+              "files": "files",
+              "all": "all"
+            }
+          },
+          "restoreButton": "Restore",
+          "restoreInProgress": "Restoring...",
+          "noHistory": "No backup history yet."
+        }
+      },
+      "monitoring": {
+        "title": "Monitoring & Alerting",
+        "refreshButton": "Refresh Status",
+        "integrations": {
+          "title": "Integrations",
+          "uptime": {
+            "providerLabel": "Provider",
+            "enabled": "Enabled"
+          },
+          "errors": {
+            "providerLabel": "Provider",
+            "enabled": "Enabled"
+          },
+          "performance": {
+            "providerLabel": "Provider",
+            "enabled": "Enabled"
+          }
+        },
+        "services": {
+          "title": "Monitored Services",
+          "add": "+ Add Service",
+          "idPlaceholder": "service-id",
+          "namePlaceholder": "Display name",
+          "urlPlaceholder": "https://service/health",
+          "enabled": "Enabled",
+          "remove": "Remove"
+        },
+        "thresholds": {
+          "title": "Thresholds",
+          "add": "+ Add Threshold",
+          "idPlaceholder": "threshold-id",
+          "servicePlaceholder": "service-id",
+          "signalType": {
+            "label": "Signal Type",
+            "options": {
+              "uptime": "uptime",
+              "error_rate": "error_rate",
+              "latency_ms": "latency_ms"
+            }
+          },
+          "operator": {
+            "label": "Operator",
+            "options": {
+              "gt": "gt",
+              "gte": "gte",
+              "lt": "lt",
+              "lte": "lte",
+              "eq": "eq",
+              "ne": "ne"
+            }
+          },
+          "valueLabel": "Threshold value",
+          "severityLabel": "Severity",
+          "severityOptions": {
+            "info": "info",
+            "warning": "warning",
+            "critical": "critical"
+          },
+          "cooldownLabel": "Cooldown (minutes)",
+          "enabled": "on",
+          "remove": "Remove"
+        },
+        "destinations": {
+          "title": "Alert Destinations",
+          "add": "+ Add Destination",
+          "idPlaceholder": "destination-id",
+          "namePlaceholder": "Name",
+          "channel": {
+            "label": "Channel",
+            "options": {
+              "email": "email",
+              "webhook": "webhook"
+            }
+          },
+          "targetPlaceholderEmail": "ops@example.com",
+          "targetPlaceholderWebhook": "https://hooks.example.com",
+          "enabled": "on",
+          "remove": "Remove"
+        },
+        "currentStatus": {
+          "title": "Current Status",
+          "overall": "Overall:"
+        },
+        "servicesTable": {
+          "name": "Name",
+          "url": "URL",
+          "status": "status:",
+          "latency": "latency"
+        },
+        "alerts": {
+          "title": "Recent Alerts",
+          "refreshButton": "Refresh Alerts",
+          "serviceLabel": "service",
+          "signalLabel": "signal",
+          "severityLabel": "severity",
+          "firedAtLabel": "fired",
+          "noAlerts": "No alerts yet."
+        },
+        "test": {
+          "title": "Test Alert",
+          "messagePlaceholder": "Optional test alert message",
+          "sendButton": "Send Test Alert",
+          "sending": "Sending..."
+        },
+        "saveButton": "Save Monitoring Changes",
+        "SavingInProgress": "Saving...",
+        "refreshingStatus": "Refreshing status...",
+        "refreshingAlerts": "Refreshing alerts...",
+        "testSent": "Test alert sent. Delivered: {delivered}, Failed: {failed}",
+        "failedToSendTest": "Failed to send test alert"
+      },
+      "analyticsSaveSuccess": "Analytics settings saved",
+      "backupSaveSuccess": "Backup policy saved",
+      "backupRunning": "Running backup...",
+      "backupCompleted": "Backup completed: {id}",
+      "backupFailed": "Failed to run backup",
+      "restoringBackup": "Restoring backup...",
+      "backupRestored": "Backup restored successfully",
+      "backupRestoreFailed": "Failed to restore backup",
+      "monitoringSaved": "Monitoring settings saved",
+      "monitoringSaveFailed": "Failed to save monitoring settings"
+    },
+    "analytics": {
+      "title": "Analytics Dashboard",
+      "description": "Real event and funnel reporting from backend analytics endpoints.",
+      "refresh": {
+        "button": "Refresh Report",
+        "inProgress": "Refreshing..."
+      },
+      "overview": {
+        "totalEvents": "Total events",
+        "totalSessions": "Total sessions",
+        "pageViews": "Page views",
+        "conversionEvents": "Conversion events"
+      },
+      "funnels": {
+        "title": "Funnels",
+        "noActive": "No active funnels. Configure funnels in dashboard settings.",
+        "step": "step",
+        "eventLabel": "event"
+      },
+      "empty": "No analytics data."
     }
   }
 }

@@ -95,11 +95,17 @@
 const route = useRoute();
 const localePath = useLocalePath();
 const { t } = useI18n();
-const { theme, isDark, toggleTheme } = useTheme();
+const colorMode = useColorMode();
 const { locale, setLocale } = useI18n();
 
 const appearanceOpen = ref(false);
 const mobileMenuOpen = ref(false);
+
+const isDark = computed(() => colorMode.value === 'dark');
+
+const toggleTheme = () => {
+  colorMode.preference = isDark.value ? 'light' : 'dark';
+};
 
 const isActive = (href: string) => {
   const localizedHref = localePath(href);
