@@ -88,6 +88,16 @@
       "policy": "stock-eligible"
     },
     {
+      "path": "/images/banner-4.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banner-5.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
       "path": "/images/banners/hero-services.jpg",
       "status": "stock-final",
       "policy": "stock-eligible"

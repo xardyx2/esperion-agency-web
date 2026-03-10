@@ -2,9 +2,49 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* 
+ * Animatable CSS Custom Properties
+ * Using @property to enable smooth color transitions
+ */
+@property --es-bg-primary {
+  syntax: '<color>';
+  initial-value: #FAFCFF;
+  inherits: true;
+}
+
+@property --es-bg-secondary {
+  syntax: '<color>';
+  initial-value: #FFFFFF;
+  inherits: true;
+}
+
+@property --es-bg-tertiary {
+  syntax: '<color>';
+  initial-value: #F1F5F9;
+  inherits: true;
+}
+
+@property --es-text-primary {
+  syntax: '<color>';
+  initial-value: #102B4E;
+  inherits: true;
+}
+
+@property --es-text-secondary {
+  syntax: '<color>';
+  initial-value: #475569;
+  inherits: true;
+}
+
+@property --es-border {
+  syntax: '<color>';
+  initial-value: #E2E8F0;
+  inherits: true;
+}
+
 /* Custom CSS Variables for Esperion Design System */
 :root {
-  /* Light Mode Colors */
+  /* Light Mode Colors (default) */
   --es-bg-primary: #FAFCFF;
   --es-bg-secondary: #FFFFFF;
   --es-bg-tertiary: #F1F5F9;
@@ -22,7 +62,7 @@
   --es-error: #EF4444;
   --es-info: #3B82F6;
 
-  /* Dark Mode Colors */
+  /* Dark Mode Colors (applied via .dark class below) */
   --es-bg-primary-dark: #0B1120;
   --es-bg-secondary-dark: #151E32;
   --es-bg-tertiary-dark: #1E293B;
@@ -39,6 +79,16 @@
   --es-warning-dark: #FBBF24;
   --es-error-dark: #F87171;
   --es-info-dark: #60A5FA;
+}
+
+/* Dark Mode - Override CSS variables for smooth transition */
+.dark {
+  --es-bg-primary: #0B1120;
+  --es-bg-secondary: #151E32;
+  --es-bg-tertiary: #1E293B;
+  --es-text-primary: #F8FAFC;
+  --es-text-secondary: #94A3B8;
+  --es-border: #1E293B;
 }
 
 @theme inline {
@@ -95,35 +145,14 @@ body {
 
 /* Dark mode */
 .dark {
-  background-color: var(--es-bg-primary-dark);
-  color: var(--es-text-primary-dark);
+  background-color: var(--es-bg-primary);
+  color: var(--es-text-primary);
   color-scheme: dark;
 }
 
 .dark body {
-  background-color: var(--es-bg-primary-dark);
-  color: var(--es-text-primary-dark);
-}
-
-/* Theme transitions - Vue.js style smooth 0.3s flowing animation */
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  body {
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  /* Interactive elements: fast response */
-  button, a, input, select, textarea {
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-  }
-  
-  /* Exclude media elements for performance */
-  img, video, canvas, svg, iframe {
-    transition: none;
-  }
+  background-color: var(--es-bg-primary);
+  color: var(--es-text-primary);
 }
 
 /* Custom Scrollbar */

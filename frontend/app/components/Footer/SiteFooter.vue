@@ -15,53 +15,7 @@
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm mb-4 leading-relaxed">
             Esperion membantu bisnis bertumbuh lewat strategi, desain, dan pengembangan digital yang terarah.
           </p>
-          <div class="flex space-x-3">
-            <a 
-              href="https://instagram.com/esperion_id" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="w-10 h-10 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-es-text-secondary dark:text-es-text-secondary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all transform hover:scale-110"
-              :aria-label="t('social.instagram')"
-            >
-              <span class="text-lg" role="img" :aria-label="t('social.instagram')">📷</span>
-            </a>
-            <a 
-              href="https://facebook.com/esperiondigital" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="w-10 h-10 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-es-text-secondary dark:text-es-text-secondary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all transform hover:scale-110"
-              :aria-label="t('social.facebook')"
-            >
-              <span class="text-lg" role="img" :aria-label="t('social.facebook')">👍</span>
-            </a>
-            <a 
-              href="https://linkedin.com/company/esperiondigital" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="w-10 h-10 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-es-text-secondary dark:text-es-text-secondary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all transform hover:scale-110"
-              :aria-label="t('social.linkedin')"
-            >
-              <span class="text-lg" role="img" :aria-label="t('social.linkedin')">💼</span>
-            </a>
-            <a 
-              href="https://tiktok.com/@esperion_id" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="w-10 h-10 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-es-text-secondary dark:text-es-text-secondary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all transform hover:scale-110"
-              :aria-label="t('social.tiktok')"
-            >
-              <span class="text-lg" role="img" :aria-label="t('social.tiktok')">🎵</span>
-            </a>
-            <a 
-              href="https://twitter.com/esperion_id" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="w-10 h-10 rounded-lg bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center text-es-text-secondary dark:text-es-text-secondary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all transform hover:scale-110"
-              :aria-label="t('social.twitter')"
-            >
-              <span class="text-lg" role="img" :aria-label="t('social.twitter')">𝕏</span>
-            </a>
-          </div>
+          <SocialIcons />
         </div>
 
         <!-- Quick Links -->
@@ -132,11 +86,11 @@
             
             <!-- Language Dropdown -->
             <div class="mb-4">
-              <UiLanguageDropdown />
+              <LanguageDropdown />
             </div>
 
             <!-- Theme Toggle (Vue.js style pill switch) -->
-            <UiThemeToggle />
+            <ThemeToggle />
           </div>
         </div>
       </div>

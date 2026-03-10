@@ -5,19 +5,22 @@
       class="relative h-[500px] md:h-[600px] overflow-hidden"
       @mouseenter="pauseAutoPlay"
       @mouseleave="resumeAutoPlay"
+      @touchstart="handleTouchStart"
+      @touchend="handleTouchEnd"
     >
       <div 
         v-for="(slide, index) in bannerSlides" 
         :key="slide.id"
-        v-show="currentSlide === index"
-        class="absolute inset-0 transition-opacity duration-1000"
-        :class="{ 'opacity-100': currentSlide === index, 'opacity-0': currentSlide !== index }"
+        class="absolute inset-0 transition-opacity"
+        :class="currentSlide === index ? 'active-slide' : 'inactive-slide'"
       >
         <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10"></div>
         <img 
           :src="slide.image" 
           :alt="slide.title"
           class="w-full h-full object-cover"
+          :loading="index < 2 ? 'eager' : 'lazy'"
+          :fetchpriority="index === 0 ? 'high' : 'low'"
         />
         <div class="absolute inset-0 z-20 flex items-center">
           <div class="container mx-auto px-4">
@@ -102,6 +105,7 @@
               :src="whoAreWe.image" 
               :alt="whoAreWe.title"
               class="rounded-lg shadow-xl w-full h-[400px] object-cover"
+              loading="lazy"
             />
           </div>
         </div>
@@ -167,28 +171,49 @@
           </div>
         </div>
 
-        <!-- Logo Carousel -->
-        <div class="overflow-hidden">
+        <!-- Logo Marquee -->
+        <div class="relative">
           <h3 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark text-center mb-8">
             Materi logo klien ditampilkan setelah persetujuan publikasi
           </h3>
-          <div class="relative">
-            <div 
-              class="flex transition-transform duration-500 ease-in-out"
-              :style="{ transform: `translateX(-${currentLogoSlide * (100 / logosVisible)}%)` }"
-            >
+          <div 
+            class="marquee-container"
+            @mouseenter="pauseMarquee"
+            @mouseleave="resumeMarquee"
+            ref="marqueeRef"
+          >
+            <div class="marquee-track">
               <div 
-                v-for="client in [...clients, ...clients]" 
+                v-for="client in [...clients, ...clients, ...clients]" 
                 :key="client.id"
-                class="flex-shrink-0 px-8"
-                :style="{ width: `${100 / logosVisible}%` }"
+                class="marquee-item"
               >
                 <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-lg p-6 h-24 flex items-center justify-center hover:shadow-lg transition-shadow">
-                  <img :src="client.logo" :alt="client.name" class="max-h-16 w-auto object-contain" />
+                  <img :src="client.logo" :alt="client.name" class="max-h-16 w-auto object-contain" loading="lazy" />
                 </div>
               </div>
             </div>
           </div>
+          
+          <!-- Arrow Navigation -->
+          <button
+            @click="scrollLogos(-1)"
+            class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-10 h-10 bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-full shadow-lg flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all z-10 focus:outline-none focus:ring-2 focus:ring-es-accent-primary"
+            aria-label="Scroll logos left"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            @click="scrollLogos(1)"
+            class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-10 h-10 bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-full shadow-lg flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all z-10 focus:outline-none focus:ring-2 focus:ring-es-accent-primary"
+            aria-label="Scroll logos right"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
     </section>
@@ -216,18 +241,20 @@
         <div class="relative" @mouseenter="pauseCarousel" @mouseleave="resumeCarousel">
           <div class="overflow-hidden">
             <div 
-              class="flex transition-transform duration-500 ease-in-out"
+              class="flex transition-transform"
               :style="{ transform: `translateX(-${currentWorkSlide * (100 / worksVisible)}%)` }"
             >
               <NuxtLink
                 v-for="work in featuredWorks"
                 :key="work.id"
                 :to="localePath(`/our-works/${work.slug}`)"
-                class="flex-shrink-0 px-4"
+                class="flex-shrink-0 px-4 work-card"
                 :style="{ width: `${100 / worksVisible}%` }"
               >
-                <div class="bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-                  <img :src="work.image" :alt="work.title" class="w-full h-48 object-cover" />
+                <div class="bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all work-card-inner">
+                  <div class="overflow-hidden work-image-container">
+                    <img :src="work.image" :alt="work.title" class="w-full h-48 object-cover work-image" loading="lazy" />
+                  </div>
                   <div class="p-6">
                     <h3 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-2">
                       {{ work.title }}
@@ -252,17 +279,23 @@
           <!-- Navigation Arrows -->
           <button
             @click="prevWork"
-            class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-10 h-10 bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-full shadow-lg flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors"
+            class="work-nav-arrow work-nav-left focus:outline-none focus:ring-2 focus:ring-es-accent-primary"
             :disabled="currentWorkSlide === 0"
+            aria-label="Previous work"
           >
-            ←
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
           </button>
           <button
             @click="nextWork"
-            class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-10 h-10 bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-full shadow-lg flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors"
+            class="work-nav-arrow work-nav-right focus:outline-none focus:ring-2 focus:ring-es-accent-primary"
             :disabled="currentWorkSlide >= featuredWorks.length - worksVisible"
+            aria-label="Next work"
           >
-            →
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
 
@@ -304,7 +337,7 @@
             :to="localePath(`/articles/${article.slug_id}`)"
             class="group bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow"
           >
-            <img :src="article.image" :alt="article.title" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+            <img :src="article.image" :alt="article.title" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
             <div class="p-6">
               <span class="px-3 py-1 bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 text-es-accent-primary dark:text-es-accent-primary-dark text-xs rounded-full">
                 {{ article.category }}
@@ -501,6 +534,12 @@ const currentWorkSlide = ref(0);
 const worksVisible = ref(3);
 const logosVisible = ref(6);
 const isPaused = ref(false);
+const marqueeRef = ref<HTMLDivElement>();
+const touchStartX = ref(0);
+const touchStartY = ref(0);
+const touchEndX = ref(0);
+const touchEndY = ref(0);
+const isMarqueePaused = ref(false);
 
 // Banner Slides Data
 const bannerSlides = computed(() => [
@@ -639,11 +678,72 @@ const nextSlide = () => {
   resetInterval();
 };
 
+// Touch gesture handlers
+const handleTouchStart = (e: TouchEvent) => {
+  touchStartX.value = e.touches[0].clientX;
+  touchStartY.value = e.touches[0].clientY;
+};
+
+const handleTouchEnd = (e: TouchEvent) => {
+  touchEndX.value = e.changedTouches[0].clientX;
+  touchEndY.value = e.changedTouches[0].clientY;
+  handleSwipe();
+};
+
+const handleSwipe = () => {
+  const diffX = touchStartX.value - touchEndX.value;
+  const diffY = touchStartY.value - touchEndY.value;
+  
+  // Only handle horizontal swipes (horizontal movement > vertical movement)
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    // Horizontal swipe threshold: 50px
+    if (Math.abs(diffX) > 50) {
+      if (diffX > 0) {
+        // Swipe left - next slide
+        nextSlide();
+      } else {
+        // Swipe right - previous slide
+        prevSlide();
+      }
+    }
+  }
+};
+
+// Marquee controls
+const pauseMarquee = () => {
+  isMarqueePaused.value = true;
+  if (marqueeRef.value) {
+    marqueeRef.value.style.setProperty('--marquee-play-state', 'paused');
+  }
+};
+
+const resumeMarquee = () => {
+  isMarqueePaused.value = false;
+  if (marqueeRef.value) {
+    marqueeRef.value.style.setProperty('--marquee-play-state', 'running');
+  }
+};
+
+const scrollLogos = (direction: number) => {
+  // Pause marquee on manual navigation
+  pauseMarquee();
+  
+  if (marqueeRef.value) {
+    const scrollAmount = direction * 200;
+    marqueeRef.value.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  }
+  
+  // Resume marquee after 3 seconds
+  setTimeout(() => {
+    resumeMarquee();
+  }, 3000);
+};
+
 onMounted(() => {
   console.log('[Banner] onMounted called, bannerSlides length:', bannerSlides.value.length);
   startAutoPlay();
 
-  // Keyboard navigation
+  // Keyboard navigation for banner
   const handleKeydown = (e: KeyboardEvent) => {
     if (e.key === 'ArrowLeft') {
       prevSlide();
@@ -654,10 +754,8 @@ onMounted(() => {
   window.addEventListener('keydown', handleKeydown);
   window._bannerKeydownHandler = handleKeydown;
 
-  // Auto-rotate logos
-  setInterval(() => {
-    currentLogoSlide.value = (currentLogoSlide.value + 1) % clients.value.length;
-  }, 3000);
+  // Auto-rotate logos - replaced with CSS marquee
+  // Manual arrow navigation available via buttons
 
   // Auto-rotate works carousel
   worksInterval = setInterval(() => {
@@ -743,3 +841,198 @@ const resumeCarousel = () => {
   }, 5000);
 };
 </script>
+
+<style scoped>
+/* CSS Variables for Animation Timings */
+:root {
+  --es-transition-duration: 500ms;
+  --es-marquee-duration: 30s;
+  --es-easing-material: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Banner Slider Styles */
+.active-slide,
+.inactive-slide {
+  transition: opacity var(--es-transition-duration) ease-in-out;
+}
+
+.active-slide {
+  opacity: 1;
+  z-index: 2;
+}
+
+.inactive-slide {
+  opacity: 0;
+  z-index: 1;
+}
+
+/* Client Logos Marquee */
+.marquee-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  --marquee-play-state: running;
+}
+
+.marquee-container::before,
+.marquee-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marquee-container::before {
+  left: 0;
+  background: linear-gradient(to right, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(255, 255, 255, 0) 100%);
+}
+
+.marquee-container::after {
+  right: 0;
+  background: linear-gradient(to left, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(255, 255, 255, 0) 100%);
+}
+
+.dark .marquee-container::before {
+  background: linear-gradient(to right, 
+    rgba(15, 23, 42, 1) 0%, 
+    rgba(15, 23, 42, 0) 100%);
+}
+
+.dark .marquee-container::after {
+  background: linear-gradient(to left, 
+    rgba(15, 23, 42, 1) 0%, 
+    rgba(15, 23, 42, 0) 100%);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 2rem;
+  animation: marquee var(--es-marquee-duration) linear infinite;
+  animation-play-state: var(--marquee-play-state);
+  padding: 1rem 0;
+}
+
+.marquee-container:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-item {
+  flex-shrink: 0;
+  min-width: 200px;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Featured Works Card Hover Effects */
+.work-card {
+  transition: transform var(--es-transition-duration) var(--es-easing-material);
+}
+
+.work-card-inner {
+  transition: all var(--es-transition-duration) var(--es-easing-material);
+}
+
+.work-card:hover .work-card-inner {
+  transform: translateY(-8px);
+}
+
+.work-image-container {
+  overflow: hidden;
+}
+
+.work-image {
+  transition: transform var(--es-transition-duration) var(--es-easing-material);
+}
+
+.work-card:hover .work-image {
+  transform: scale(1.05);
+}
+
+/* Work Navigation Arrows */
+.work-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background-color: rgb(255 255 255);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(15, 23, 42);
+  transition: all var(--es-transition-duration) var(--es-easing-material);
+  z-index: 10;
+}
+
+.dark .work-nav-arrow {
+  background-color: rgb(15, 23, 42);
+  color: rgb(255, 255, 255);
+}
+
+.work-nav-arrow:hover:not(:disabled) {
+  background-color: rgb(59, 130, 246);
+  color: rgb(255, 255, 255);
+}
+
+.dark .work-nav-arrow:hover:not(:disabled) {
+  background-color: rgb(59, 130, 246);
+  color: rgb(255, 255, 255);
+}
+
+.work-nav-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.work-nav-left {
+  left: 0;
+  margin-left: -1rem;
+}
+
+.work-nav-right {
+  right: 0;
+  margin-right: -1rem;
+}
+
+/* Mobile: Hide arrows on small screens */
+@media (max-width: 767px) {
+  .work-nav-arrow {
+    display: none;
+  }
+}
+
+/* Responsive logo display */
+@media (max-width: 767px) {
+  .marquee-item {
+    min-width: calc(50% - 1rem); /* 2 logos */
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .marquee-item {
+    min-width: calc(25% - 1rem); /* 4 logos */
+  }
+}
+
+@media (min-width: 1024px) {
+  .marquee-item {
+    min-width: calc(16.666% - 1rem); /* 6 logos */
+  }
+}
+</style>
