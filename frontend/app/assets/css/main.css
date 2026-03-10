@@ -105,16 +105,19 @@ body {
   color: var(--es-text-primary-dark);
 }
 
-/* Theme transitions - Industry standard 100ms fade */
+/* Theme transitions - Vue.js style smooth 0.3s flowing animation */
 @media (prefers-reduced-motion: no-preference) {
   html {
-    transition: background-color 100ms ease, color 100ms ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
   
-  body, body * {
-    transition-property: background-color, border-color, color, fill, stroke;
-    transition-duration: 100ms;
-    transition-timing-function: ease;
+  body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Interactive elements: fast response */
+  button, a, input, select, textarea {
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
   }
   
   /* Exclude media elements for performance */
@@ -398,26 +401,5 @@ body {
 
 .dark .prose p {
   color: var(--es-text-secondary-dark);
-}
-
-/* Smooth Theme Transitions (Nuxt Color Mode Pattern - 0.3s) */
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    color-scheme: light dark;
-  }
-  
-  body {
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  /* Exclude media elements from transitions */
-  img, video, canvas, svg, iframe {
-    transition: none;
-  }
-  
-  /* Smooth transitions for interactive elements */
-  button, a, input, select, textarea {
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-  }
 }
 

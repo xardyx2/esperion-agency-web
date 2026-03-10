@@ -37,6 +37,8 @@ export default ({
   // Color mode configuration
   colorMode: {
     classSuffix: '',
+    preference: 'light',
+    fallback: 'light',
   },
 
   // Route rules for ISR (public pages) and CSR (dashboard)
@@ -69,7 +71,7 @@ export default ({
     '/en/terms-of-service': { isr: 86400 },
     
     // Dashboard pages - CSR (Client-Side Rendering)
-    '/agency/**': { ssr: false },
+    '/dashboard/**': { ssr: false },
     '/capital/**': { ssr: false },
     
     // API routes - SSR default with CORS
@@ -103,7 +105,7 @@ export default ({
       lastmod: new Date().toISOString(),
     },
     exclude: [
-      '/agency/**',      // Block dashboard
+      '/dashboard/**',   // Block dashboard
       '/capital/**',     // Block trading dashboard
       '/api/**',         // Block API endpoints
       '/admin/**',       // Block admin routes
@@ -117,7 +119,7 @@ export default ({
         userAgent: '*',
         allow: '/',
         disallow: [
-          '/agency/',      // Block dashboard from indexing
+          '/dashboard/',   // Block dashboard from indexing
           '/capital/',     // Block trading dashboard
           '/api/',         // Block API endpoints
           '/admin/',       // Block admin routes
@@ -173,7 +175,7 @@ export default ({
     },
   },
 
-  // App configuration
+// App configuration
   app: {
     head: {
       title: 'Esperion - Digital Agency',
@@ -181,6 +183,9 @@ export default ({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Esperion Digital Agency - Data-Driven Digital Strategies' },
+        { name: 'color-scheme', content: 'light dark' },
+        { name: 'theme-color', media: '(prefers-color-scheme: light)', content: '#FAFCFF' },
+        { name: 'theme-color', media: '(prefers-color-scheme: dark)', content: '#0B1120' },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -207,7 +212,8 @@ export default ({
       useCookie: true,
       cookieKey: 'i18n_redirected',
       redirectOn: 'root',
-      fallbackLocale: 'id'
+      fallbackLocale: 'id',
+      alwaysRedirect: true
     }
   },
 
