@@ -2,10 +2,12 @@
   <div class="min-h-screen bg-es-bg-primary dark:bg-es-bg-primary-dark">
     <!-- Hero Section -->
     <section class="relative h-[300px] md:h-[400px] bg-es-bg-secondary dark:bg-es-bg-secondary-dark">
-      <div class="absolute inset-0 bg-gradient-to-r from-es-accent-primary/20 to-es-accent-primary/10 dark:from-es-accent-primary-dark/20 dark:to-es-accent-primary-dark/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-es-accent-primary/20 to-es-accent-primary/10 dark:from-es-accent-primary-dark/20 dark:to-es-accent-primary-dark/10" />
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="container mx-auto px-4 text-center">
-          <div class="text-6xl mb-6">{{ service.icon }}</div>
+          <div class="text-6xl mb-6">
+            {{ service.icon }}
+          </div>
           <h1 class="text-4xl md:text-5xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
             {{ service.title }}
           </h1>
@@ -28,7 +30,11 @@
                 {{ t('services.detail.serviceScope') }}
               </h2>
               <div class="grid md:grid-cols-2 gap-6">
-                <div v-for="feature in features" :key="feature.title" class="flex gap-4">
+                <div
+                  v-for="feature in features"
+                  :key="feature.title"
+                  class="flex gap-4"
+                >
                   <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 flex items-center justify-center">
                     <span class="text-xl">{{ feature.icon }}</span>
                   </div>
@@ -50,7 +56,11 @@
                 {{ t('services.detail.workflow') }}
               </h2>
               <div class="space-y-6">
-                <div v-for="(step, index) in process" :key="step.title" class="flex gap-4">
+                <div
+                  v-for="(step, index) in process"
+                  :key="step.title"
+                  class="flex gap-4"
+                >
                   <div class="flex-shrink-0 w-10 h-10 rounded-full bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark flex items-center justify-center font-bold">
                     {{ index + 1 }}
                   </div>
@@ -94,7 +104,11 @@
                 {{ t('services.detail.faq') }}
               </h3>
               <div class="space-y-4">
-                <div v-for="faq in faqs" :key="faq.question" class="border-b border-es-border dark:border-es-border-dark pb-4 last:border-0 last:pb-0">
+                <div
+                  v-for="faq in faqs"
+                  :key="faq.question"
+                  class="border-b border-es-border dark:border-es-border-dark pb-4 last:border-0 last:pb-0"
+                >
                   <h4 class="font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-2">
                     {{ faq.question }}
                   </h4>
@@ -155,43 +169,44 @@
 </template>
 
 <script setup lang="ts">
-import { findPublicServiceBySlug, getRelatedServices } from '../../data/public-content';
+import { findPublicServiceBySlug, getRelatedServices } from '../../data/public-content'
 
-const route = useRoute();
-const localePath = useLocalePath();
-const { t, locale } = useI18n();
+const route = useRoute()
+const localePath = useLocalePath()
+const { t, locale } = useI18n()
 
+// Slug parsing with edge case handling (Task 2.2.3)
 const slugParam = computed(() => {
-  const raw = route.params.slug;
+  const raw = route.params.slug
 
   if (Array.isArray(raw)) {
-    return raw[0] ?? '';
+    return raw[0] ?? ''
   }
 
-  return typeof raw === 'string' ? raw : '';
-});
+  return typeof raw === 'string' ? raw : ''
+})
 
 const service = computed(() => {
-  const record = findPublicServiceBySlug(slugParam.value);
+  const record = findPublicServiceBySlug(slugParam.value)
 
   if (!record) {
-    throw createError({ statusCode: 404, statusMessage: 'Service not found' });
+    throw createError({ statusCode: 404, statusMessage: 'Service not found' })
   }
 
-  return record;
-});
+  return record
+})
 
-const features = computed(() => service.value.features);
-const process = computed(() => service.value.process);
-const faqs = computed(() => service.value.faqs);
-const relatedServices = computed(() => getRelatedServices(service.value.slug, 3));
+const features = computed(() => service.value.features)
+const process = computed(() => service.value.process)
+const faqs = computed(() => service.value.faqs)
+const relatedServices = computed(() => getRelatedServices(service.value.slug, 3))
 
-const serviceName = computed(() => service.value.title);
-const serviceSlug = computed(() => service.value.slug);
-const localePrefix = computed(() => (locale.value === 'en' ? 'en' : 'id'));
+const serviceName = computed(() => service.value.title)
+const serviceSlug = computed(() => service.value.slug)
+const localePrefix = computed(() => (locale.value === 'en' ? 'en' : 'id'))
 
-const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/our-services/${serviceSlug.value}`);
-const imageUrl = computed(() => `/images/service-${serviceSlug.value.replace(/-/g, '')}.jpg`);
+const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/our-services/${serviceSlug.value}`)
+const imageUrl = computed(() => `/images/service-${serviceSlug.value.replace(/-/g, '')}.jpg`)
 
 useSeoMeta({
   title: () => `${serviceName.value} Jakarta | ${t('seo.services.title')}`,
@@ -206,38 +221,38 @@ useSeoMeta({
   twitterDescription: () => service.value.description,
   twitterImage: () => imageUrl.value || '/images/hero-service-development.jpg',
   ogLocale: () => (locale.value === 'en' ? 'en_US' : 'id_ID')
-});
+})
 
 useSchemaOrg([
   defineWebPage({
     '@type': 'CollectionPage',
-    name: () => service.value.title,
-    description: () => service.value.description,
-    url: pageUrl.value,
-    image: imageUrl.value || '/images/hero-service-development.jpg',
-    dateModified: new Date().toISOString()
+    'name': () => service.value.title,
+    'description': () => service.value.description,
+    'url': pageUrl.value,
+    'image': imageUrl.value || '/images/hero-service-development.jpg',
+    'dateModified': new Date().toISOString()
   }),
   defineBreadcrumb({
     itemListElement: [
       {
         '@type': 'ListItem',
-        position: 1,
-        name: t('breadcrumb.home'),
-        item: `https://esperion.id/${localePrefix.value}`
+        'position': 1,
+        'name': t('breadcrumb.home'),
+        'item': `https://esperion.id/${localePrefix.value}`
       },
       {
         '@type': 'ListItem',
-        position: 2,
-        name: t('breadcrumb.services'),
-        item: `https://esperion.id/${localePrefix.value}/our-services`
+        'position': 2,
+        'name': t('breadcrumb.services'),
+        'item': `https://esperion.id/${localePrefix.value}/our-services`
       },
       {
         '@type': 'ListItem',
-        position: 3,
-        name: () => service.value.title,
-        item: pageUrl.value
+        'position': 3,
+        'name': () => service.value.title,
+        'item': pageUrl.value
       }
     ]
   })
-]);
+])
 </script>

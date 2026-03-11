@@ -31,7 +31,11 @@
 
       <!-- Hero Image -->
       <div class="mb-12">
-        <img :src="article.image" :alt="article.title" class="w-full rounded-xl shadow-lg" />
+        <img
+          :src="article.image"
+          :alt="article.title"
+          class="w-full rounded-xl shadow-lg"
+        >
       </div>
 
       <!-- Article Content -->
@@ -40,12 +44,16 @@
           {{ article.excerpt_id }}
         </p>
 
-        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">{{ t('articles.detail.mainSummary') }}</h2>
+        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
+          {{ t('articles.detail.mainSummary') }}
+        </h2>
         <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed mb-6">
           {{ t('articles.detail.summaryParagraph1') }}
         </p>
 
-        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">{{ t('articles.detail.keyPoints') }}</h2>
+        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
+          {{ t('articles.detail.keyPoints') }}
+        </h2>
         <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed mb-6">
           {{ t('articles.detail.keyPointIntro') }}
         </p>
@@ -64,7 +72,9 @@
           </li>
         </ul>
 
-        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">{{ t('articles.detail.closing') }}</h2>
+        <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
+          {{ t('articles.detail.closing') }}
+        </h2>
         <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
           {{ t('articles.detail.closingParagraph') }}
         </p>
@@ -72,22 +82,38 @@
 
       <!-- Share Section -->
       <div class="mb-12 p-6 bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl">
-        <h3 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4">{{ t('articles.detail.shareArticle') }}</h3>
+        <h3 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4">
+          {{ t('articles.detail.shareArticle') }}
+        </h3>
         <div class="flex gap-4">
-          <button class="px-4 py-2 bg-[#1877F2] text-white rounded-lg hover:opacity-90 transition-opacity">{{ t('articles.detail.facebook') }}</button>
-          <button class="px-4 py-2 bg-[#1DA1F2] text-white rounded-lg hover:opacity-90 transition-opacity">{{ t('articles.detail.twitter') }}</button>
-          <button class="px-4 py-2 bg-[#0A66C2] text-white rounded-lg hover:opacity-90 transition-opacity">{{ t('articles.detail.linkedin') }}</button>
-          <button class="px-4 py-2 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">{{ t('articles.detail.copyLink') }}</button>
+          <button class="px-4 py-2 bg-[#1877F2] text-white rounded-lg hover:opacity-90 transition-opacity">
+            {{ t('articles.detail.facebook') }}
+          </button>
+          <button class="px-4 py-2 bg-[#1DA1F2] text-white rounded-lg hover:opacity-90 transition-opacity">
+            {{ t('articles.detail.twitter') }}
+          </button>
+          <button class="px-4 py-2 bg-[#0A66C2] text-white rounded-lg hover:opacity-90 transition-opacity">
+            {{ t('articles.detail.linkedin') }}
+          </button>
+          <button class="px-4 py-2 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors">
+            {{ t('articles.detail.copyLink') }}
+          </button>
         </div>
       </div>
 
       <!-- Author Bio -->
       <div class="mb-12 p-6 bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl">
         <div class="flex items-start gap-4">
-          <div class="w-16 h-16 rounded-full bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 flex items-center justify-center text-2xl">👤</div>
+          <div class="w-16 h-16 rounded-full bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 flex items-center justify-center text-2xl">
+            👤
+          </div>
           <div>
-            <h3 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">{{ article.author }}</h3>
-            <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">{{ t('articles.detail.authorBio') }}</p>
+            <h3 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-1">
+              {{ article.author }}
+            </h3>
+            <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
+              {{ t('articles.detail.authorBio') }}
+            </p>
           </div>
         </div>
       </div>
@@ -96,10 +122,21 @@
     <!-- Related Articles -->
     <section class="py-12 md:py-16 bg-es-bg-secondary dark:bg-es-bg-secondary-dark">
       <div class="container mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-8">{{ t('articles.detail.relatedArticles') }}</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-8">
+          {{ t('articles.detail.relatedArticles') }}
+        </h2>
         <div class="grid md:grid-cols-3 gap-6">
-          <NuxtLink v-for="related in relatedArticles" :key="related.id" :to="relatedArticlePath(related)" class="group bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-            <img :src="related.image" :alt="related.title" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+          <NuxtLink
+            v-for="related in relatedArticles"
+            :key="related.id"
+            :to="relatedArticlePath(related)"
+            class="group bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow"
+          >
+            <img
+              :src="related.image"
+              :alt="related.title"
+              class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            >
             <div class="p-6">
               <span class="px-3 py-1 bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 text-es-accent-primary dark:text-es-accent-primary-dark text-xs rounded-full">{{ related.category }}</span>
               <h3 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mt-3 mb-2 line-clamp-2 group-hover:text-es-accent-primary dark:group-hover:text-es-accent-primary-dark transition-colors">{{ related.title }}</h3>
@@ -113,51 +150,59 @@
     <!-- Newsletter CTA -->
     <section class="py-16 md:py-24 bg-es-accent-primary dark:bg-es-accent-primary-dark">
       <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold text-es-text-inverse dark:text-es-text-inverse-dark mb-4">{{ t('articles.detail.newsletterTitle') }}</h2>
-        <p class="text-es-text-inverse/90 dark:text-es-text-inverse-dark/90 text-lg mb-8 max-w-2xl mx-auto">{{ t('articles.detail.newsletterDescription') }}</p>
-        <NuxtLink :to="localePath('/articles')" class="inline-flex items-center px-8 py-4 bg-es-bg-inverse dark:bg-es-bg-inverse-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark transition-colors">{{ t('articles.detail.viewAllArticles') }}</NuxtLink>
+        <h2 class="text-3xl md:text-4xl font-bold text-es-text-inverse dark:text-es-text-inverse-dark mb-4">
+          {{ t('articles.detail.newsletterTitle') }}
+        </h2>
+        <p class="text-es-text-inverse/90 dark:text-es-text-inverse-dark/90 text-lg mb-8 max-w-2xl mx-auto">
+          {{ t('articles.detail.newsletterDescription') }}
+        </p>
+        <NuxtLink
+          :to="localePath('/articles')"
+          class="inline-flex items-center px-8 py-4 bg-es-bg-inverse dark:bg-es-bg-inverse-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark transition-colors"
+        >{{ t('articles.detail.viewAllArticles') }}</NuxtLink>
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { findPublicArticleBySlug, getRelatedArticles } from '../../data/public-content';
+import { findPublicArticleBySlug, getRelatedArticles } from '../../data/public-content'
 
-const route = useRoute();
-const localePath = useLocalePath();
-const { t, locale } = useI18n();
+const route = useRoute()
+const localePath = useLocalePath()
+const { t, locale } = useI18n()
 
+// Slug parsing with edge case handling (Task 2.1.3)
 const slugParam = computed(() => {
-  const raw = route.params.slug;
+  const raw = route.params.slug
 
   if (Array.isArray(raw)) {
-    return raw[0] ?? '';
+    return raw[0] ?? ''
   }
 
-  return typeof raw === 'string' ? raw : '';
-});
+  return typeof raw === 'string' ? raw : ''
+})
 
 const article = computed(() => {
-  const record = findPublicArticleBySlug(slugParam.value);
+  const record = findPublicArticleBySlug(slugParam.value)
 
   if (!record) {
-    throw createError({ statusCode: 404, statusMessage: 'Article not found' });
+    throw createError({ statusCode: 404, statusMessage: 'Article not found' })
   }
 
-  return record;
-});
+  return record
+})
 
-const relatedArticles = computed(() => getRelatedArticles(article.value.slug_id, 3));
+const relatedArticles = computed(() => getRelatedArticles(article.value.slug_id, 3))
 
-const localizedArticleSlug = computed(() => locale.value === 'en' ? (article.value.slug_en || article.value.slug_id) : article.value.slug_id);
+const localizedArticleSlug = computed(() => locale.value === 'en' ? (article.value.slug_en || article.value.slug_id) : article.value.slug_id)
 
 const relatedArticlePath = (related: (typeof relatedArticles.value)[number]) => {
-  const slug = locale.value === 'en' ? (related.slug_en || related.slug_id) : related.slug_id;
-  return localePath(`/articles/${slug}`);
-};
+  const slug = locale.value === 'en' ? (related.slug_en || related.slug_id) : related.slug_id
+  return localePath(`/articles/${slug}`)
+}
 
-const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString(locale.value === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString(locale.value === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
 
 const articleKeywords = computed(() => {
   return article.value.title
@@ -166,12 +211,12 @@ const articleKeywords = computed(() => {
     .replace(/\s+/g, ' ')
     .split(' ')
     .slice(0, 5)
-    .join(',');
-});
+    .join(',')
+})
 
-const localePrefix = computed(() => (locale.value === 'en' ? 'en' : 'id'));
-const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/articles/${localizedArticleSlug.value}`);
-const imageUrl = computed(() => `https://esperion.id${article.value.image}`);
+const localePrefix = computed(() => (locale.value === 'en' ? 'en' : 'id'))
+const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/articles/${localizedArticleSlug.value}`)
+const imageUrl = computed(() => `https://esperion.id${article.value.image}`)
 
 useSeoMeta({
   title: () => `${article.value.title} | ${t('seo.articles.title')}`,
@@ -191,41 +236,41 @@ useSeoMeta({
   twitterDescription: () => article.value.excerpt_id,
   twitterImage: () => imageUrl.value,
   ogLocale: () => (locale.value === 'en' ? 'en_US' : 'id_ID')
-});
+})
 
 useSchemaOrg([
   defineArticle({
     '@type': ['Article', 'BlogPosting'],
-    headline: () => article.value.title,
-    alternativeHeadline: () => article.value.excerpt_id,
-    description: () => article.value.excerpt_id,
-    author: {
+    'headline': () => article.value.title,
+    'alternativeHeadline': () => article.value.excerpt_id,
+    'description': () => article.value.excerpt_id,
+    'author': {
       '@type': 'Person',
-      name: () => article.value.author,
-      url: () => `https://esperion.id/${localePrefix.value}/experts/${article.value.author.toLowerCase().replace(/\s+/g, '-')}`
+      'name': () => article.value.author,
+      'url': () => `https://esperion.id/${localePrefix.value}/experts/${article.value.author.toLowerCase().replace(/\s+/g, '-')}`
     },
-    publisher: {
+    'publisher': {
       '@type': 'Organization',
-      name: 'Esperion Digital Agency',
-      legalName: 'PT Esperion Teknologi Digital',
-      url: () => `https://esperion.id/${localePrefix.value}`,
-      logo: {
+      'name': 'Esperion Digital Agency',
+      'legalName': 'PT Esperion Teknologi Digital',
+      'url': () => `https://esperion.id/${localePrefix.value}`,
+      'logo': {
         '@type': 'ImageObject',
-        url: '/placeholders/first-party/brand-mark-required.svg',
-        width: 300,
-        height: 150
+        'url': '/placeholders/first-party/brand-mark-required.svg',
+        'width': 300,
+        'height': 150
       }
     },
-    dateModified: new Date().toISOString(),
-    datePublished: () => article.value.published_at,
-    image: () => imageUrl.value,
-    thumbnailUrl: () => imageUrl.value,
-    wordCount: 1200,
-    articleBody: () => `${article.value.excerpt_id}. Content about ${article.value.title} discussed in detail with practical examples and implementation guides.`,
-    articleSection: [article.value.category],
-    keywords: [articleKeywords.value],
-    url: () => pageUrl.value,
-    mainEntityOfPage: {
+    'dateModified': new Date().toISOString(),
+    'datePublished': () => article.value.published_at,
+    'image': () => imageUrl.value,
+    'thumbnailUrl': () => imageUrl.value,
+    'wordCount': 1200,
+    'articleBody': () => `${article.value.excerpt_id}. Content about ${article.value.title} discussed in detail with practical examples and implementation guides.`,
+    'articleSection': [article.value.category],
+    'keywords': [articleKeywords.value],
+    'url': () => pageUrl.value,
+    'mainEntityOfPage': {
       '@type': 'WebPage',
       '@id': () => pageUrl.value
     }
@@ -241,23 +286,23 @@ useSchemaOrg([
     itemListElement: [
       {
         '@type': 'ListItem',
-        position: 1,
-        name: t('breadcrumb.home'),
-        item: () => `https://esperion.id/${localePrefix.value}`
+        'position': 1,
+        'name': t('breadcrumb.home'),
+        'item': () => `https://esperion.id/${localePrefix.value}`
       },
       {
         '@type': 'ListItem',
-        position: 2,
-        name: t('breadcrumb.articles'),
-        item: () => `https://esperion.id/${localePrefix.value}/articles`
+        'position': 2,
+        'name': t('breadcrumb.articles'),
+        'item': () => `https://esperion.id/${localePrefix.value}/articles`
       },
       {
         '@type': 'ListItem',
-        position: 3,
-        name: () => article.value.title,
-        item: () => pageUrl.value
+        'position': 3,
+        'name': () => article.value.title,
+        'item': () => pageUrl.value
       }
     ]
   })
-]);
+])
 </script>
