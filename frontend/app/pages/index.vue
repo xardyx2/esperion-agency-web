@@ -1,34 +1,38 @@
 <template>
   <div class="min-h-screen bg-es-bg-primary dark:bg-es-bg-primary-dark">
     <!-- Section 1: Dynamic Banner Slider -->
-    <section 
+    <section
       class="relative h-[500px] md:h-[600px] overflow-hidden"
       @mouseenter="pauseAutoPlay"
       @mouseleave="resumeAutoPlay"
       @touchstart="handleTouchStart"
       @touchend="handleTouchEnd"
     >
-      <div 
-        v-for="(slide, index) in bannerSlides" 
-        :key="slide.id"
-        class="absolute inset-0 transition-opacity"
-        :class="currentSlide === index ? 'active-slide' : 'inactive-slide'"
-      >
-        <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10"></div>
-        <img 
-          :src="slide.image" 
+      <TransitionGroup name="banner" mode="out-in">
+        <div
+          v-for="(slide, index) in bannerSlides"
+          :key="slide.id"
+          v-show="currentSlide === index"
+          class="banner-slide absolute inset-0"
+        >
+        <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10" />
+        <img
+          :src="slide.image"
           :alt="slide.title"
           class="w-full h-full object-cover"
           :loading="index < 2 ? 'eager' : 'lazy'"
           :fetchpriority="index === 0 ? 'high' : 'low'"
-        />
+        >
         <div class="absolute inset-0 z-20 flex items-center">
           <div class="container mx-auto px-4">
             <div class="max-w-2xl">
               <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
                 {{ slide.title }}
               </h1>
-              <p v-if="slide.subtitle" class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-4 font-medium">
+              <p
+                v-if="slide.subtitle"
+                class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-4 font-medium"
+              >
                 {{ slide.subtitle }}
               </p>
               <p class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-8">
@@ -44,36 +48,59 @@
           </div>
         </div>
       </div>
+      </TransitionGroup>
 
       <!-- Slide Navigation -->
       <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-2">
         <button
           v-for="(slide, index) in bannerSlides"
           :key="slide.id"
-          @click="currentSlide = index"
           class="w-3 h-3 rounded-full transition-colors"
           :class="currentSlide === index ? 'bg-es-accent-primary dark:bg-es-accent-primary-dark' : 'bg-es-text-secondary/50 dark:bg-es-text-secondary-dark/50 hover:bg-es-text-secondary dark:hover:bg-es-text-secondary-dark'"
           :aria-label="`Go to slide ${index + 1}`"
+          @click="currentSlide = index"
         />
       </div>
 
       <!-- Arrow Navigation -->
       <button
-        @click="prevSlide"
         class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-es-bg-inverse/80 dark:bg-es-bg-inverse-dark/80 rounded-full flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all shadow-lg hidden md:flex"
         aria-label="Previous slide"
+        @click="prevSlide"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 19l-7-7 7-7"
+          />
         </svg>
       </button>
       <button
-        @click="nextSlide"
         class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-es-bg-inverse/80 dark:bg-es-bg-inverse-dark/80 rounded-full flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all shadow-lg hidden md:flex"
         aria-label="Next slide"
+        @click="nextSlide"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 5l7 7-7 7"
+          />
         </svg>
       </button>
     </section>
@@ -90,8 +117,8 @@
               {{ whoAreWe.description }}
             </p>
             <div class="flex flex-wrap gap-4">
-              <div 
-                v-for="value in whoAreWe.values" 
+              <div
+                v-for="value in whoAreWe.values"
                 :key="value.label"
                 class="flex items-center space-x-2"
               >
@@ -101,12 +128,12 @@
             </div>
           </div>
           <div class="relative">
-            <img 
-              :src="whoAreWe.image" 
+            <img
+              :src="whoAreWe.image"
               :alt="whoAreWe.title"
               class="rounded-lg shadow-xl w-full h-[400px] object-cover"
               loading="lazy"
-            />
+            >
           </div>
         </div>
       </div>
@@ -117,10 +144,10 @@
       <div class="container mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
-              Our Services
+            Our Services
           </h2>
           <p class="text-es-text-secondary dark:text-es-text-secondary-dark max-w-2xl mx-auto">
-              Solusi digital yang dirancang untuk target bisnis Anda
+            Solusi digital yang dirancang untuk target bisnis Anda
           </p>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -157,8 +184,8 @@
       <div class="container mx-auto px-4">
         <!-- Stats -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-          <div 
-            v-for="stat in clientStats" 
+          <div
+            v-for="stat in clientStats"
             :key="stat.label"
             class="text-center"
           >
@@ -176,42 +203,69 @@
           <h3 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark text-center mb-8">
             Materi logo klien ditampilkan setelah persetujuan publikasi
           </h3>
-          <div 
+          <div
+            ref="marqueeRef"
             class="marquee-container"
             @mouseenter="pauseMarquee"
             @mouseleave="resumeMarquee"
-            ref="marqueeRef"
           >
             <div class="marquee-track">
-              <div 
-                v-for="client in [...clients, ...clients, ...clients]" 
+              <div
+                v-for="client in [...clients, ...clients, ...clients]"
                 :key="client.id"
                 class="marquee-item"
               >
                 <div class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-lg p-6 h-24 flex items-center justify-center hover:shadow-lg transition-shadow">
-                  <img :src="client.logo" :alt="client.name" class="max-h-16 w-auto object-contain" loading="lazy" />
+                  <img
+                    :src="client.logo"
+                    :alt="client.name"
+                    class="max-h-16 w-auto object-contain"
+                    loading="lazy"
+                  >
                 </div>
               </div>
             </div>
           </div>
-          
+
           <!-- Arrow Navigation -->
           <button
-            @click="scrollLogos(-1)"
             class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-10 h-10 bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-full shadow-lg flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all z-10 focus:outline-none focus:ring-2 focus:ring-es-accent-primary"
             aria-label="Scroll logos left"
+            @click="scrollLogos(-1)"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
           <button
-            @click="scrollLogos(1)"
             class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-10 h-10 bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-full shadow-lg flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all z-10 focus:outline-none focus:ring-2 focus:ring-es-accent-primary"
             aria-label="Scroll logos right"
+            @click="scrollLogos(1)"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
         </div>
@@ -238,9 +292,13 @@
           </NuxtLink>
         </div>
 
-        <div class="relative" @mouseenter="pauseCarousel" @mouseleave="resumeCarousel">
+        <div
+          class="relative"
+          @mouseenter="pauseCarousel"
+          @mouseleave="resumeCarousel"
+        >
           <div class="overflow-hidden">
-            <div 
+            <div
               class="flex transition-transform"
               :style="{ transform: `translateX(-${currentWorkSlide * (100 / worksVisible)}%)` }"
             >
@@ -253,7 +311,12 @@
               >
                 <div class="bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all work-card-inner">
                   <div class="overflow-hidden work-image-container">
-                    <img :src="work.image" :alt="work.title" class="w-full h-48 object-cover work-image" loading="lazy" />
+                    <img
+                      :src="work.image"
+                      :alt="work.title"
+                      class="w-full h-48 object-cover work-image"
+                      loading="lazy"
+                    >
                   </div>
                   <div class="p-6">
                     <h3 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-2">
@@ -278,23 +341,45 @@
 
           <!-- Navigation Arrows -->
           <button
-            @click="prevWork"
             class="work-nav-arrow work-nav-left focus:outline-none focus:ring-2 focus:ring-es-accent-primary"
             :disabled="currentWorkSlide === 0"
             aria-label="Previous work"
+            @click="prevWork"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
           <button
-            @click="nextWork"
             class="work-nav-arrow work-nav-right focus:outline-none focus:ring-2 focus:ring-es-accent-primary"
             :disabled="currentWorkSlide >= featuredWorks.length - worksVisible"
             aria-label="Next work"
+            @click="nextWork"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
         </div>
@@ -337,7 +422,12 @@
             :to="localePath(`/articles/${article.slug_id}`)"
             class="group bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow"
           >
-            <img :src="article.image" :alt="article.title" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+            <img
+              :src="article.image"
+              :alt="article.title"
+              class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+            >
             <div class="p-6">
               <span class="px-3 py-1 bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 text-es-accent-primary dark:text-es-accent-primary-dark text-xs rounded-full">
                 {{ article.category }}
@@ -387,20 +477,20 @@
 </template>
 
 <script setup lang="ts">
-import { getFeaturedWorks, publicArticles, publicServices } from '../data/public-content';
+import { getFeaturedWorks, publicArticles, publicServices } from '../data/public-content'
 
 // Window type extension for keyboard handler
 declare global {
   interface Window {
-    _bannerKeydownHandler?: (e: KeyboardEvent) => void;
+    _bannerKeydownHandler?: (e: KeyboardEvent) => void
   }
 }
 
 // SEO Meta
-const runtimeConfig = useRuntimeConfig();
-const localePath = useLocalePath();
-const { t } = useI18n();
-const { locale } = useI18n();
+const runtimeConfig = useRuntimeConfig()
+const localePath = useLocalePath()
+const { t } = useI18n()
+const { locale } = useI18n()
 
 useSeoMeta({
   title: t('seo.home.title'),
@@ -414,82 +504,82 @@ useSeoMeta({
   twitterTitle: 'Esperion Digital Agency Jakarta | Jasa Digital Marketing Terbaik',
   twitterDescription: 'Esperion adalah digital agency terbaik di Jakarta. Spesialis digital marketing, SEO, social media. Konsultasi GRATIS!',
   twitterImage: '/images/esperion-agency-hero.jpg',
-  ogLocale: 'id_ID',
-});
+  ogLocale: 'id_ID'
+})
 
 // Set up Schema.org Organization
 useSchemaOrg([
   defineLocalBusiness({
     '@type': 'ProfessionalService',
-    name: 'Esperion Digital Agency',
-    legalName: 'PT Esperion Teknologi Digital',
-    description: 'Digital agency terbaik di Jakarta, Indonesia. Spesialis dalam pengembangan web, aplikasi mobile, desain UI/UX, dan digital marketing.',
-    email: 'info@esperion.id',
-    telephone: '+62-21-1234-5678',
-    url: 'https://esperion.id/id',
-    address: {
+    'name': 'Esperion Digital Agency',
+    'legalName': 'PT Esperion Teknologi Digital',
+    'description': 'Digital agency terbaik di Jakarta, Indonesia. Spesialis dalam pengembangan web, aplikasi mobile, desain UI/UX, dan digital marketing.',
+    'email': 'info@esperion.id',
+    'telephone': '+62-21-1234-5678',
+    'url': 'https://esperion.id/id',
+    'address': {
       '@type': 'PostalAddress',
-      streetAddress: 'Jl. Sudirman Kav. 52-53',
-      addressLocality: 'Jakarta Selatan',
-      addressRegion: 'DKI Jakarta',
-      postalCode: '12190',
-      addressCountry: 'ID'
+      'streetAddress': 'Jl. Sudirman Kav. 52-53',
+      'addressLocality': 'Jakarta Selatan',
+      'addressRegion': 'DKI Jakarta',
+      'postalCode': '12190',
+      'addressCountry': 'ID'
     },
-    geo: {
+    'geo': {
       '@type': 'GeoCoordinates',
-      latitude: -6.2146,
-      longitude: 106.8451
+      'latitude': -6.2146,
+      'longitude': 106.8451
     },
-    openingHours: ['Mo-Fr 09:00-17:00', 'Sa 09:00-13:00'],
-    priceRange: '$$',
-    areaServed: ['Jakarta', 'Tangerang', 'Bekasi', 'Depok', 'Bogor'],
-    serviceArea: [
+    'openingHours': ['Mo-Fr 09:00-17:00', 'Sa 09:00-13:00'],
+    'priceRange': '$$',
+    'areaServed': ['Jakarta', 'Tangerang', 'Bekasi', 'Depok', 'Bogor'],
+    'serviceArea': [
       {
         '@type': 'City',
-        name: 'Jakarta'
+        'name': 'Jakarta'
       },
       {
         '@type': 'City',
-        name: 'Tangerang'
+        'name': 'Tangerang'
       },
       {
         '@type': 'City',
-        name: 'Bekasi'
+        'name': 'Bekasi'
       }
     ],
-    slogan: 'Transformasi Digital untuk Bisnis Anda',
-    foundingDate: '2020',
-    numberOfEmployees: 25,
-    knowsAbout: ['digital marketing', 'SEO', 'web development', 'mobile app development', 'ui ux design', 'e-commerce'],
-    hasOfferCatalog: {
+    'slogan': 'Transformasi Digital untuk Bisnis Anda',
+    'foundingDate': '2020',
+    'numberOfEmployees': 25,
+    'knowsAbout': ['digital marketing', 'SEO', 'web development', 'mobile app development', 'ui ux design', 'e-commerce'],
+    'hasOfferCatalog': {
       '@type': 'OfferCatalog',
-      name: 'Digital Marketing Services',
-      itemListElement: []
+      'name': 'Digital Marketing Services',
+      'itemListElement': []
     },
-    sameAs: [
+    'sameAs': [
       'https://www.facebook.com/esperiondigital',
       'https://www.instagram.com/esperion_id',
       'https://www.linkedin.com/company/esperiondigital',
       'https://twitter.com/esperion_id',
       'https://youtube.com/@esperiondigital'
     ],
-    logo: {
+    'logo': {
       '@type': 'ImageObject',
-      url: '/placeholders/first-party/brand-mark-required.svg',
-      width: 300,
-      height: 150
+      'url': '/placeholders/first-party/brand-mark-required.svg',
+      'width': 300,
+      'height': 150
     },
-    image: [
+    'image': [
       '/images/banner-1.jpg',
       '/images/team.jpg'
     ],
-    contactPoint: [
+    'contactPoint': [
       {
         '@type': 'ContactPoint',
-        telephone: '+62-21-1234-5678',
-        contactType: 'customer service',
-        areaServed: 'ID',
-        availableLanguage: 'Indonesian'
+        'telephone': '+62-21-1234-5678',
+        'contactType': 'customer service',
+        'areaServed': 'ID',
+        'availableLanguage': 'Indonesian'
       }
     ]
   }),
@@ -499,47 +589,47 @@ useSchemaOrg([
     description: 'Esperion membantu bisnis bertumbuh lewat strategi digital, pengembangan produk, dan desain yang terarah.',
     publisher: {
       '@type': 'Organization',
-      name: 'Esperion Digital Agency',
-    },
+      'name': 'Esperion Digital Agency'
+    }
   }),
   defineWebPage({
     '@type': 'AboutPage',
-    name: 'Esperion Digital Agency Jakarta',
-    description: 'Esperion adalah agensi digital terkemuka di Jakarta, Indonesia yang berfokus pada solusi teknologi digital.',
-    datePublished: '2020-01-01',
-    dateModified: new Date().toISOString()
+    'name': 'Esperion Digital Agency Jakarta',
+    'description': 'Esperion adalah agensi digital terkemuka di Jakarta, Indonesia yang berfokus pada solusi teknologi digital.',
+    'datePublished': '2020-01-01',
+    'dateModified': new Date().toISOString()
   }),
   defineBreadcrumb({
     itemListElement: [
       {
         '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: 'https://esperion.id/id'
+        'position': 1,
+        'name': 'Home',
+        'item': 'https://esperion.id/id'
       },
       {
         '@type': 'ListItem',
-        position: 2,
-        name: 'About Us',
-        item: 'https://esperion.id/id/about'
+        'position': 2,
+        'name': 'About Us',
+        'item': 'https://esperion.id/id/about'
       }
     ]
   })
-]);
+])
 
 // State
-const currentSlide = ref(0);
-const currentLogoSlide = ref(0);
-const currentWorkSlide = ref(0);
-const worksVisible = ref(3);
-const logosVisible = ref(6);
-const isPaused = ref(false);
-const marqueeRef = ref<HTMLDivElement>();
-const touchStartX = ref(0);
-const touchStartY = ref(0);
-const touchEndX = ref(0);
-const touchEndY = ref(0);
-const isMarqueePaused = ref(false);
+const currentSlide = ref(0)
+const currentLogoSlide = ref(0)
+const currentWorkSlide = ref(0)
+const worksVisible = ref(3)
+const logosVisible = ref(6)
+const isPaused = ref(false)
+const marqueeRef = ref<HTMLDivElement>()
+const touchStartX = ref(0)
+const touchStartY = ref(0)
+const touchEndX = ref(0)
+const touchEndY = ref(0)
+const isMarqueePaused = ref(false)
 
 // Banner Slides Data
 const bannerSlides = computed(() => [
@@ -550,7 +640,7 @@ const bannerSlides = computed(() => [
     description: t('home.hero.slide1Desc'),
     image: '/images/banner-1.jpg',
     ctaText: t('home.hero.slide1Cta'),
-    ctaLink: '/contact-us',
+    ctaLink: '/contact-us'
   },
   {
     id: 2,
@@ -559,7 +649,7 @@ const bannerSlides = computed(() => [
     description: 'Dari perencanaan sampai peluncuran, Esperion membantu tim Anda merilis pengalaman digital yang relevan dan terukur.',
     image: '/images/banner-2.jpg',
     ctaText: 'View Portfolio',
-    ctaLink: '/our-works',
+    ctaLink: '/our-works'
   },
   {
     id: 3,
@@ -568,7 +658,7 @@ const bannerSlides = computed(() => [
     description: 'Kami menggabungkan strategi, desain, dan pengembangan untuk menghadirkan pengalaman digital yang konsisten dengan brand Anda.',
     image: '/images/banner-3.jpg',
     ctaText: 'Learn More',
-    ctaLink: '/about',
+    ctaLink: '/about'
   },
   {
     id: 4,
@@ -577,7 +667,7 @@ const bannerSlides = computed(() => [
     description: 'Dari web development hingga digital marketing, kami menyediakan solusi end-to-end untuk transformasi digital.',
     image: '/images/banner-4.jpg',
     ctaText: 'Explore Services',
-    ctaLink: '/our-services',
+    ctaLink: '/our-services'
   },
   {
     id: 5,
@@ -586,9 +676,9 @@ const bannerSlides = computed(() => [
     description: 'Bergabung dengan bisnis yang telah tumbuh bersama Esperion melalui solusi digital yang terukur dan berdampak.',
     image: '/images/banner-5.jpg',
     ctaText: 'View Testimonials',
-    ctaLink: '/our-works',
-  },
-]);
+    ctaLink: '/our-works'
+  }
+])
 
 // Who Are We Data
 const whoAreWe = {
@@ -599,20 +689,20 @@ const whoAreWe = {
     { label: 'Strategi yang jelas' },
     { label: 'Eksekusi yang rapi' },
     { label: 'Kolaborasi terbuka' },
-    { label: 'Fokus pada hasil' },
-  ],
-};
+    { label: 'Fokus pada hasil' }
+  ]
+}
 
 // Services Data
-const services = ref(publicServices);
+const services = ref(publicServices)
 
 // Client Stats Data
 const clientStats = [
   { value: '150+', label: 'Projects Completed' },
   { value: '80+', label: 'Client Collaborations' },
   { value: '10+', label: 'Years of Experience' },
-  { value: '25+', label: 'Core Talent' },
-];
+  { value: '25+', label: 'Core Talent' }
+]
 
 // Client Logos Data
 const clients = ref([
@@ -623,247 +713,257 @@ const clients = ref([
   { id: 5, name: 'Logo klien menunggu persetujuan publikasi', logo: '/placeholders/first-party/client-logo-required.svg' },
   { id: 6, name: 'Logo klien menunggu persetujuan publikasi', logo: '/placeholders/first-party/client-logo-required.svg' },
   { id: 7, name: 'Logo klien menunggu persetujuan publikasi', logo: '/placeholders/first-party/client-logo-required.svg' },
-  { id: 8, name: 'Logo klien menunggu persetujuan publikasi', logo: '/placeholders/first-party/client-logo-required.svg' },
-]);
+  { id: 8, name: 'Logo klien menunggu persetujuan publikasi', logo: '/placeholders/first-party/client-logo-required.svg' }
+])
 
 // Featured Works Data
-const featuredWorks = ref(getFeaturedWorks(5));
+const featuredWorks = ref(getFeaturedWorks(5))
 
 // Articles Data
-const articles = ref(publicArticles.slice(0, 3));
+const articles = ref(publicArticles.slice(0, 3))
 
 // CTA Data
 const cta = {
   title: 'Ready for Your Next Digital Step?',
-  description: 'Ceritakan konteks bisnis Anda, lalu kami bantu memetakan solusi yang paling relevan untuk tahap pertumbuhan berikutnya.',
-};
+  description: 'Ceritakan konteks bisnis Anda, lalu kami bantu memetakan solusi yang paling relevan untuk tahap pertumbuhan berikutnya.'
+}
 
 // Auto-rotate banner
-let bannerInterval: NodeJS.Timeout;
-let worksInterval: NodeJS.Timeout;
+let bannerInterval: NodeJS.Timeout
+let worksInterval: NodeJS.Timeout
 
 const startAutoPlay = () => {
-  console.log('[Banner] Starting autoplay, currentSlide:', currentSlide.value, 'isPaused:', isPaused.value);
+  console.log('[Banner] Starting autoplay, currentSlide:', currentSlide.value, 'isPaused:', isPaused.value)
   bannerInterval = setInterval(() => {
-    console.log('[Banner] Interval tick, isPaused:', isPaused.value, 'currentSlide:', currentSlide.value);
+    console.log('[Banner] Interval tick, isPaused:', isPaused.value, 'currentSlide:', currentSlide.value)
     if (!isPaused.value) {
-      currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length;
-      console.log('[Banner] Advanced to slide:', currentSlide.value);
+      currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
+      console.log('[Banner] Advanced to slide:', currentSlide.value)
     }
-  }, 5000);
-};
+  }, 5000)
+}
 
 const resetInterval = () => {
-  clearInterval(bannerInterval);
-  startAutoPlay();
-};
+  clearInterval(bannerInterval)
+  startAutoPlay()
+}
 
 const pauseAutoPlay = () => {
-  isPaused.value = true;
-  clearInterval(bannerInterval);
-};
+  isPaused.value = true
+  clearInterval(bannerInterval)
+}
 
 const resumeAutoPlay = () => {
-  isPaused.value = false;
-  startAutoPlay();
-};
+  isPaused.value = false
+  startAutoPlay()
+}
 
 const prevSlide = () => {
-  currentSlide.value = currentSlide.value === 0 ? bannerSlides.value.length - 1 : currentSlide.value - 1;
-  resetInterval();
-};
+  currentSlide.value = currentSlide.value === 0 ? bannerSlides.value.length - 1 : currentSlide.value - 1
+  resetInterval()
+}
 
 const nextSlide = () => {
-  currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length;
-  resetInterval();
-};
+  currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
+  resetInterval()
+}
 
 // Touch gesture handlers
 const handleTouchStart = (e: TouchEvent) => {
-  touchStartX.value = e.touches[0].clientX;
-  touchStartY.value = e.touches[0].clientY;
-};
+  touchStartX.value = e.touches[0].clientX
+  touchStartY.value = e.touches[0].clientY
+}
 
 const handleTouchEnd = (e: TouchEvent) => {
-  touchEndX.value = e.changedTouches[0].clientX;
-  touchEndY.value = e.changedTouches[0].clientY;
-  handleSwipe();
-};
+  touchEndX.value = e.changedTouches[0].clientX
+  touchEndY.value = e.changedTouches[0].clientY
+  handleSwipe()
+}
 
 const handleSwipe = () => {
-  const diffX = touchStartX.value - touchEndX.value;
-  const diffY = touchStartY.value - touchEndY.value;
-  
+  const diffX = touchStartX.value - touchEndX.value
+  const diffY = touchStartY.value - touchEndY.value
+
   // Only handle horizontal swipes (horizontal movement > vertical movement)
   if (Math.abs(diffX) > Math.abs(diffY)) {
     // Horizontal swipe threshold: 50px
     if (Math.abs(diffX) > 50) {
       if (diffX > 0) {
         // Swipe left - next slide
-        nextSlide();
+        nextSlide()
       } else {
         // Swipe right - previous slide
-        prevSlide();
+        prevSlide()
       }
     }
   }
-};
+}
 
 // Marquee controls
 const pauseMarquee = () => {
-  isMarqueePaused.value = true;
+  isMarqueePaused.value = true
   if (marqueeRef.value) {
-    marqueeRef.value.style.setProperty('--marquee-play-state', 'paused');
+    marqueeRef.value.style.setProperty('--marquee-play-state', 'paused')
   }
-};
+}
 
 const resumeMarquee = () => {
-  isMarqueePaused.value = false;
+  isMarqueePaused.value = false
   if (marqueeRef.value) {
-    marqueeRef.value.style.setProperty('--marquee-play-state', 'running');
+    marqueeRef.value.style.setProperty('--marquee-play-state', 'running')
   }
-};
+}
 
 const scrollLogos = (direction: number) => {
   // Pause marquee on manual navigation
-  pauseMarquee();
-  
+  pauseMarquee()
+
   if (marqueeRef.value) {
-    const scrollAmount = direction * 200;
-    marqueeRef.value.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    const scrollAmount = direction * 200
+    marqueeRef.value.scrollBy({ left: scrollAmount, behavior: 'smooth' })
   }
-  
+
   // Resume marquee after 3 seconds
   setTimeout(() => {
-    resumeMarquee();
-  }, 3000);
-};
+    resumeMarquee()
+  }, 3000)
+}
 
 onMounted(() => {
-  console.log('[Banner] onMounted called, bannerSlides length:', bannerSlides.value.length);
-  startAutoPlay();
+  console.log('[Banner] onMounted called, bannerSlides length:', bannerSlides.value.length)
+  startAutoPlay()
 
   // Keyboard navigation for banner
   const handleKeydown = (e: KeyboardEvent) => {
     if (e.key === 'ArrowLeft') {
-      prevSlide();
+      prevSlide()
     } else if (e.key === 'ArrowRight') {
-      nextSlide();
+      nextSlide()
     }
-  };
-  window.addEventListener('keydown', handleKeydown);
-  window._bannerKeydownHandler = handleKeydown;
+  }
+  window.addEventListener('keydown', handleKeydown)
+  window._bannerKeydownHandler = handleKeydown
 
   // Auto-rotate logos - replaced with CSS marquee
   // Manual arrow navigation available via buttons
 
   // Auto-rotate works carousel
   worksInterval = setInterval(() => {
-    const maxSlide = featuredWorks.value.length - worksVisible.value;
+    const maxSlide = featuredWorks.value.length - worksVisible.value
     if (currentWorkSlide.value >= maxSlide) {
-      currentWorkSlide.value = 0; // Loop back to start
+      currentWorkSlide.value = 0 // Loop back to start
     } else {
-      currentWorkSlide.value++;
+      currentWorkSlide.value++
     }
-  }, 5000);
+  }, 5000)
 
   // Responsive adjustments
   const updateResponsive = () => {
     if (window.innerWidth < 768) {
-      worksVisible.value = 1;
-      logosVisible.value = 2;
+      worksVisible.value = 1
+      logosVisible.value = 2
     } else if (window.innerWidth < 1024) {
-      worksVisible.value = 2;
-      logosVisible.value = 4;
+      worksVisible.value = 2
+      logosVisible.value = 4
     } else {
-      worksVisible.value = 3;
-      logosVisible.value = 6;
+      worksVisible.value = 3
+      logosVisible.value = 6
     }
-  };
-  updateResponsive();
-  window.addEventListener('resize', updateResponsive);
-});
+  }
+  updateResponsive()
+  window.addEventListener('resize', updateResponsive)
+})
 
 onBeforeUnmount(() => {
-  clearInterval(bannerInterval);
-  clearInterval(worksInterval);
+  clearInterval(bannerInterval)
+  clearInterval(worksInterval)
   if (window._bannerKeydownHandler) {
-    window.removeEventListener('keydown', window._bannerKeydownHandler);
+    window.removeEventListener('keydown', window._bannerKeydownHandler)
   }
-});
+})
 
 // Work slider navigation
 const nextWork = () => {
   if (currentWorkSlide.value < featuredWorks.value.length - worksVisible.value) {
-    currentWorkSlide.value++;
+    currentWorkSlide.value++
   }
   // Reset interval on manual navigation
-  clearInterval(worksInterval);
+  clearInterval(worksInterval)
   worksInterval = setInterval(() => {
-    const maxSlide = featuredWorks.value.length - worksVisible.value;
+    const maxSlide = featuredWorks.value.length - worksVisible.value
     if (currentWorkSlide.value >= maxSlide) {
-      currentWorkSlide.value = 0;
+      currentWorkSlide.value = 0
     } else {
-      currentWorkSlide.value++;
+      currentWorkSlide.value++
     }
-  }, 5000);
-};
+  }, 5000)
+}
 
 const prevWork = () => {
   if (currentWorkSlide.value > 0) {
-    currentWorkSlide.value--;
+    currentWorkSlide.value--
   }
   // Reset interval on manual navigation
-  clearInterval(worksInterval);
+  clearInterval(worksInterval)
   worksInterval = setInterval(() => {
-    const maxSlide = featuredWorks.value.length - worksVisible.value;
+    const maxSlide = featuredWorks.value.length - worksVisible.value
     if (currentWorkSlide.value >= maxSlide) {
-      currentWorkSlide.value = 0;
+      currentWorkSlide.value = 0
     } else {
-      currentWorkSlide.value++;
+      currentWorkSlide.value++
     }
-  }, 5000);
-};
+  }, 5000)
+}
 
 const pauseCarousel = () => {
-  clearInterval(worksInterval);
-};
+  clearInterval(worksInterval)
+}
 
 const resumeCarousel = () => {
-  clearInterval(worksInterval);
+  clearInterval(worksInterval)
   worksInterval = setInterval(() => {
-    const maxSlide = featuredWorks.value.length - worksVisible.value;
+    const maxSlide = featuredWorks.value.length - worksVisible.value
     if (currentWorkSlide.value >= maxSlide) {
-      currentWorkSlide.value = 0;
+      currentWorkSlide.value = 0
     } else {
-      currentWorkSlide.value++;
+      currentWorkSlide.value++
     }
-  }, 5000);
-};
+  }, 5000)
+}
 </script>
 
 <style scoped>
-/* CSS Variables for Animation Timings */
-:root {
-  --es-transition-duration: 500ms;
+/* Define CSS variables locally for this component */
+.marquee-container {
   --es-marquee-duration: 30s;
+  --es-transition-duration: 500ms;
   --es-easing-material: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Banner Slider Styles */
-.active-slide,
-.inactive-slide {
-  transition: opacity var(--es-transition-duration) ease-in-out;
+/* Banner Slider Styles - using hardcoded values since CSS variables in :root don't work with scoped styles */
+.banner-enter-active,
+.banner-leave-active {
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
-.active-slide {
-  opacity: 1;
-  z-index: 2;
+.banner-enter-from {
+  transform: translateX(100%);
+}
+.banner-enter-to {
+  transform: translateX(0);
 }
 
-.inactive-slide {
-  opacity: 0;
-  z-index: 1;
+.banner-leave-from {
+  transform: translateX(0);
+}
+.banner-leave-to {
+  transform: translateX(-100%);
+}
+
+.banner-slide {
+  position: absolute;
+  inset: 0;
 }
 
 /* Client Logos Marquee */
@@ -887,27 +987,27 @@ const resumeCarousel = () => {
 
 .marquee-container::before {
   left: 0;
-  background: linear-gradient(to right, 
-    rgba(255, 255, 255, 1) 0%, 
+  background: linear-gradient(to right,
+    rgba(255, 255, 255, 1) 0%,
     rgba(255, 255, 255, 0) 100%);
 }
 
 .marquee-container::after {
   right: 0;
-  background: linear-gradient(to left, 
-    rgba(255, 255, 255, 1) 0%, 
+  background: linear-gradient(to left,
+    rgba(255, 255, 255, 1) 0%,
     rgba(255, 255, 255, 0) 100%);
 }
 
 .dark .marquee-container::before {
-  background: linear-gradient(to right, 
-    rgba(15, 23, 42, 1) 0%, 
+  background: linear-gradient(to right,
+    rgba(15, 23, 42, 1) 0%,
     rgba(15, 23, 42, 0) 100%);
 }
 
 .dark .marquee-container::after {
-  background: linear-gradient(to left, 
-    rgba(15, 23, 42, 1) 0%, 
+  background: linear-gradient(to left,
+    rgba(15, 23, 42, 1) 0%,
     rgba(15, 23, 42, 0) 100%);
 }
 
@@ -939,11 +1039,11 @@ const resumeCarousel = () => {
 
 /* Featured Works Card Hover Effects */
 .work-card {
-  transition: transform var(--es-transition-duration) var(--es-easing-material);
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .work-card-inner {
-  transition: all var(--es-transition-duration) var(--es-easing-material);
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .work-card:hover .work-card-inner {
@@ -955,7 +1055,7 @@ const resumeCarousel = () => {
 }
 
 .work-image {
-  transition: transform var(--es-transition-duration) var(--es-easing-material);
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .work-card:hover .work-image {
@@ -976,7 +1076,7 @@ const resumeCarousel = () => {
   align-items: center;
   justify-content: center;
   color: rgb(15, 23, 42);
-  transition: all var(--es-transition-duration) var(--es-easing-material);
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
 }
 
