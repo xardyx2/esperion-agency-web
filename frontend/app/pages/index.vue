@@ -48,6 +48,7 @@
           </div>
         </div>
       </div>
+      </div>
 
       <!-- Slide Navigation -->
       <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-2">
