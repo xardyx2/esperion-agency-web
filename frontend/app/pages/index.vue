@@ -12,8 +12,11 @@
         <div
           v-for="(slide, index) in bannerSlides"
           :key="slide.id"
-          class="banner-slide absolute inset-0"
-          :class="getSlideClasses(index)"
+          class="banner-slide will-change-transform"
+          :class="[
+            getSlideClasses(index),
+            'transition-transform duration-500 ease-out'
+          ]"
         >
           <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10" />
           <img
@@ -965,8 +968,13 @@ const resumeCarousel = () => {
 .banner-slide {
   position: absolute;
   inset: 0;
-  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
+  transition-property: transform, opacity;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+  /* Ensure hardware acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Client Logos Marquee */
