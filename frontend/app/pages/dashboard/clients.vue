@@ -2,48 +2,93 @@
   <div class="space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
       <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">{{ t('dashboard.clients.title') }}</h1>
-        <p class="text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.clients.description') }}</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
+          {{ t('dashboard.clients.title') }}
+        </h1>
+        <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
+          {{ t('dashboard.clients.description') }}
+        </p>
       </div>
-      <button type="button" class="inline-flex items-center justify-center px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors" @click="openCreate">
+      <button
+        type="button"
+        class="inline-flex items-center justify-center px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
+        @click="openCreate"
+      >
         <span class="text-xl mr-2">+</span> {{ t('dashboard.clients.newButton') }}
       </button>
     </div>
 
-    <div v-if="error" class="rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
+    <div
+      v-if="error"
+      class="rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700"
+    >
       {{ error }}
     </div>
 
-    <section v-if="showForm" class="rounded-xl border border-es-border bg-es-bg-secondary p-5 shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark">
+    <section
+      v-if="showForm"
+      class="rounded-xl border border-es-border bg-es-bg-secondary p-5 shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark"
+    >
       <div class="mb-4 flex items-center justify-between gap-4">
         <div>
-          <h2 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">{{ editingClientId ? t('dashboard.clients.create.update') : t('dashboard.clients.create.title') }}</h2>
-          <p class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">{{ editingClientId ? 'Update retained client showcase details.' : t('dashboard.clients.create.title') }}</p>
+          <h2 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
+            {{ editingClientId ? t('dashboard.clients.create.update') : t('dashboard.clients.create.title') }}
+          </h2>
+          <p class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+            {{ editingClientId ? 'Update retained client showcase details.' : t('dashboard.clients.create.title') }}
+          </p>
         </div>
-        <button type="button" class="rounded-lg border border-es-border px-3 py-2 text-sm text-es-text-primary hover:bg-es-bg-tertiary dark:border-es-border-dark dark:text-es-text-primary-dark dark:hover:bg-es-bg-tertiary-dark" :disabled="submitting" @click="closeForm">
+        <button
+          type="button"
+          class="rounded-lg border border-es-border px-3 py-2 text-sm text-es-text-primary hover:bg-es-bg-tertiary dark:border-es-border-dark dark:text-es-text-primary-dark dark:hover:bg-es-bg-tertiary-dark"
+          :disabled="submitting"
+          @click="closeForm"
+        >
           {{ t('dashboard.clients.create.cancel') }}
         </button>
       </div>
 
-      <form class="grid gap-4 md:grid-cols-2" @submit.prevent="submitForm">
+      <form
+        class="grid gap-4 md:grid-cols-2"
+        @submit.prevent="submitForm"
+      >
         <label class="space-y-2 text-sm">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.clients.create.nameTitle') }}</span>
-          <input v-model="form.name" type="text" required class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
+          <input
+            v-model="form.name"
+            type="text"
+            required
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+          >
         </label>
 
         <label class="space-y-2 text-sm">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.clients.create.logoTitle') }}</span>
-          <input v-model="form.logo" type="text" required :placeholder="t('dashboard.clients.create.logoPlaceholder')" class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
+          <input
+            v-model="form.logo"
+            type="text"
+            required
+            :placeholder="t('dashboard.clients.create.logoPlaceholder')"
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+          >
         </label>
 
         <label class="space-y-2 text-sm">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.clients.create.categoryTitle') }}</span>
-          <input v-model="form.category" type="text" :placeholder="t('dashboard.clients.create.categoryPlaceholder')" class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
+          <input
+            v-model="form.category"
+            type="text"
+            :placeholder="t('dashboard.clients.create.categoryPlaceholder')"
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+          >
         </label>
 
         <label class="space-y-2 text-sm">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.clients.create.statusTitle') }}</span>
-          <select v-model="form.status" class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark">
+          <select
+            v-model="form.status"
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+          >
             <option value="active">{{ t('dashboard.clients.status.active') }}</option>
             <option value="prospect">{{ t('dashboard.clients.status.prospect') }}</option>
             <option value="inactive">{{ t('dashboard.clients.status.inactive') }}</option>
@@ -52,28 +97,47 @@
 
         <label class="space-y-2 text-sm md:col-span-2">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.clients.create.testimonialTitle') }}</span>
-          <textarea v-model="form.testimonial" rows="3" class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
+          <textarea
+            v-model="form.testimonial"
+            rows="3"
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+          ></textarea>
         </label>
 
         <label class="space-y-2 text-sm md:col-span-2">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.clients.create.internalNotesTitle') }}</span>
-          <textarea v-model="form.internal_notes" rows="3" class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
+          <textarea
+            v-model="form.internal_notes"
+            rows="3"
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+          ></textarea>
         </label>
 
         <label class="flex items-center gap-3 text-sm text-es-text-primary dark:text-es-text-primary-dark md:col-span-2">
-          <input v-model="form.featured" type="checkbox" class="h-4 w-4 rounded border-es-border text-es-accent-primary focus:ring-es-accent-primary" />
+          <input
+            v-model="form.featured"
+            type="checkbox"
+            class="h-4 w-4 rounded border-es-border text-es-accent-primary focus:ring-es-accent-primary"
+          >
           {{ t('dashboard.clients.create.featured') }}
         </label>
 
         <div class="md:col-span-2 flex justify-end">
-          <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-es-accent-primary px-5 py-3 font-semibold text-es-text-inverse transition-colors hover:bg-es-accent-primary-hover disabled:opacity-60 dark:bg-es-accent-primary-dark dark:text-es-text-inverse-dark dark:hover:bg-es-accent-primary-hover-dark" :disabled="submitting">
+          <button
+            type="submit"
+            class="inline-flex items-center justify-center rounded-lg bg-es-accent-primary px-5 py-3 font-semibold text-es-text-inverse transition-colors hover:bg-es-accent-primary-hover disabled:opacity-60 dark:bg-es-accent-primary-dark dark:text-es-text-inverse-dark dark:hover:bg-es-accent-primary-hover-dark"
+            :disabled="submitting"
+          >
             {{ submitting ? t('dashboard.clients.create.saveInProgress') : editingClientId ? t('dashboard.clients.create.saveButton') : t('dashboard.clients.create.createButton') }}
           </button>
         </div>
       </form>
     </section>
 
-    <div v-if="pending" class="rounded-xl border border-es-border bg-es-bg-secondary px-4 py-6 text-sm text-es-text-secondary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-secondary-dark">
+    <div
+      v-if="pending"
+      class="rounded-xl border border-es-border bg-es-bg-secondary px-4 py-6 text-sm text-es-text-secondary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-secondary-dark"
+    >
       {{ t('dashboard.clients.create.loading') }}
     </div>
 
@@ -81,20 +145,38 @@
       <table class="w-full">
         <thead class="bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.clients.table.client') }}</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.clients.table.category') }}</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.clients.table.status') }}</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.clients.table.testimonial') }}</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.clients.table.actions') }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              {{ t('dashboard.clients.table.client') }}
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              {{ t('dashboard.clients.table.category') }}
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              {{ t('dashboard.clients.table.status') }}
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              {{ t('dashboard.clients.table.testimonial') }}
+            </th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              {{ t('dashboard.clients.table.actions') }}
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-es-border dark:divide-es-border-dark">
-          <tr v-for="client in clients" :key="client.id" class="hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark">
+          <tr
+            v-for="client in clients"
+            :key="client.id"
+            class="hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark"
+          >
             <td class="px-6 py-4">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center">{{ client.logo ? 'Logo' : t('dashboard.clients.status.n_a') }}</div>
+                <div class="w-10 h-10 rounded-full bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark flex items-center justify-center">
+                  {{ client.logo ? 'Logo' : t('dashboard.clients.status.n_a') }}
+                </div>
                 <div>
-                  <div class="font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ client.name }}</div>
+                  <div class="font-medium text-es-text-primary dark:text-es-text-primary-dark">
+                    {{ client.name }}
+                  </div>
                 </div>
               </div>
             </td>
@@ -102,20 +184,40 @@
               <span class="px-3 py-1 bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 text-es-accent-primary dark:text-es-accent-primary-dark text-xs rounded-full">{{ client.category || '-' }}</span>
             </td>
             <td class="px-6 py-4">
-              <span :class="statusClass(client.status)" class="px-3 py-1 text-xs rounded-full capitalize">{{ client.status }}</span>
+              <span
+                :class="statusClass(client.status)"
+                class="px-3 py-1 text-xs rounded-full capitalize"
+              >{{ client.status }}</span>
             </td>
-            <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">{{ client.testimonial ? t('dashboard.clients.testimonialStatus.available') : t('dashboard.clients.testimonialStatus.none') }}</td>
+            <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ client.testimonial ? t('dashboard.clients.testimonialStatus.available') : t('dashboard.clients.testimonialStatus.none') }}
+            </td>
             <td class="px-6 py-4 text-right">
               <div class="flex items-center justify-end gap-2">
-                <button type="button" class="p-2 hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark rounded-lg" @click="openEdit(client)">{{ t('dashboard.clients.buttons.edit') }}</button>
-                <button type="button" class="p-2 hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark rounded-lg" @click="removeClient(client)">{{ t('dashboard.clients.buttons.delete') }}</button>
+                <button
+                  type="button"
+                  class="p-2 hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark rounded-lg"
+                  @click="openEdit(client)"
+                >
+                  {{ t('dashboard.clients.buttons.edit') }}
+                </button>
+                <button
+                  type="button"
+                  class="p-2 hover:bg-es-bg-primary dark:hover:bg-es-bg-primary-dark rounded-lg"
+                  @click="removeClient(client)"
+                >
+                  {{ t('dashboard.clients.buttons.delete') }}
+                </button>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <div v-if="!pending && !clients.length" class="px-6 py-10 text-center text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+      <div
+        v-if="!pending && !clients.length"
+        class="px-6 py-10 text-center text-sm text-es-text-secondary dark:text-es-text-secondary-dark"
+      >
         {{ t('dashboard.clients.table.noResults') }}
       </div>
     </div>
@@ -146,7 +248,7 @@ const form = reactive({
   status: 'active',
   testimonial: '',
   internal_notes: '',
-  featured: false,
+  featured: false
 })
 
 const statusClass = (status: string) => {
@@ -194,11 +296,9 @@ const loadClients = async () => {
   try {
     const response = await clientsApi.list({ limit: 100 })
     clients.value = response.data
-  }
-  catch (err) {
+  } catch (err) {
     error.value = err instanceof Error ? err.message : t('dashboard.clients.create.loading')
-  }
-  finally {
+  } finally {
     pending.value = false
   }
 }
@@ -215,10 +315,9 @@ const submitForm = async () => {
         status: form.status,
         testimonial: form.testimonial || undefined,
         internal_notes: form.internal_notes || undefined,
-        featured: form.featured,
+        featured: form.featured
       })
-    }
-    else {
+    } else {
       await clientsApi.create({
         name: form.name,
         logo: form.logo,
@@ -226,17 +325,15 @@ const submitForm = async () => {
         status: form.status,
         testimonial: form.testimonial || undefined,
         internal_notes: form.internal_notes || undefined,
-        featured: form.featured,
+        featured: form.featured
       })
     }
 
     await loadClients()
     closeForm()
-  }
-  catch (err) {
+  } catch (err) {
     error.value = err instanceof Error ? err.message : t('dashboard.clients.create.saveInProgress')
-  }
-  finally {
+  } finally {
     submitting.value = false
   }
 }
@@ -250,11 +347,9 @@ const removeClient = async (client: Client) => {
   try {
     await clientsApi.delete(client.id)
     await loadClients()
-  }
-  catch (err) {
+  } catch (err) {
     error.value = err instanceof Error ? err.message : t('dashboard.clients.create.loading')
-  }
-  finally {
+  } finally {
     pending.value = false
   }
 }
