@@ -522,6 +522,9 @@
       "laravel": "Laravel",
       "vuejs": "Vue.js"
     },
+    "filters": {
+      "reset": "Reset Filter"
+    },
     "results": {
       "count": "Menampilkan {visible} dari {total} proyek"
     },
