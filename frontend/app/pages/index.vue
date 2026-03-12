@@ -8,12 +8,12 @@
       @touchstart="handleTouchStart"
       @touchend="handleTouchEnd"
     >
-      <TransitionGroup name="banner" mode="out-in">
+      <div class="relative w-full h-full">
         <div
           v-for="(slide, index) in bannerSlides"
           :key="slide.id"
-          v-show="currentSlide === index"
-          class="banner-slide absolute inset-0"
+          class="banner-slide absolute inset-0 transition-transform duration-500 ease-out"
+          :class="getSlideClasses(index)"
         >
         <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10" />
         <img
@@ -48,7 +48,6 @@
           </div>
         </div>
       </div>
-      </TransitionGroup>
 
       <!-- Slide Navigation -->
       <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-2">
@@ -768,6 +767,27 @@ const nextSlide = () => {
   resetInterval()
 }
 
+// Helper function to determine slide position classes
+const getSlideClasses = (index: number): string => {
+  const diff = index - currentSlide.value
+  const totalSlides = bannerSlides.value.length
+  
+  // Handle wrap-around for infinite loop effect
+  let normalizedDiff = diff
+  if (diff > totalSlides / 2) normalizedDiff = diff - totalSlides
+  if (diff < -totalSlides / 2) normalizedDiff = diff + totalSlides
+  
+  if (normalizedDiff === 0) {
+    return 'translate-x-0 z-20'
+  } else if (normalizedDiff === 1 || (normalizedDiff === -(totalSlides - 1))) {
+    return 'translate-x-full z-10'
+  } else if (normalizedDiff === -1 || (normalizedDiff === (totalSlides - 1))) {
+    return '-translate-x-full z-10'
+  } else {
+    return 'translate-x-full z-0 opacity-0'
+  }
+}
+
 // Touch gesture handlers
 const handleTouchStart = (e: TouchEvent) => {
   touchStartX.value = e.touches[0].clientX
@@ -1134,5 +1154,10 @@ const resumeCarousel = () => {
   .marquee-item {
     min-width: calc(16.666% - 1rem); /* 6 logos */
   }
+}
+
+/* Banner Slider Styles */
+.banner-slide {
+  will-change: transform;
 }
 </style>
