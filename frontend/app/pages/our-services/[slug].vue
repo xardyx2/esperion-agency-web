@@ -1,5 +1,22 @@
 <template>
   <div class="min-h-screen bg-es-bg-primary dark:bg-es-bg-primary-dark">
+    <!-- Loading State -->
+    <div v-if="pending" class="flex items-center justify-center min-h-screen">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-es-accent-primary"></div>
+    </div>
+    
+    <!-- Error State -->
+    <div v-else-if="error" class="flex items-center justify-center min-h-screen">
+      <div class="text-center">
+        <h1 class="text-2xl font-bold text-es-text-primary mb-4">{{ t('services.detail.notFound') }}</h1>
+        <NuxtLink :to="localePath('/our-services')" class="text-es-accent-primary hover:underline">
+          {{ t('services.detail.backToServices') }}
+        </NuxtLink>
+      </div>
+    </div>
+    
+    <!-- Service Content -->
+    <template v-else-if="service">
     <!-- Hero Section -->
     <section class="relative h-[300px] md:h-[400px] bg-es-bg-secondary dark:bg-es-bg-secondary-dark">
       <div class="absolute inset-0 bg-gradient-to-r from-es-accent-primary/20 to-es-accent-primary/10 dark:from-es-accent-primary-dark/20 dark:to-es-accent-primary-dark/10" />
@@ -84,8 +101,14 @@
               <h3 class="text-xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
                 {{ t('services.detail.estimateStartingFrom') }}
               </h3>
-              <div class="text-4xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-2">
-                {{ service.pricing }}
+              <div class="text-4xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-1">
+                {{ formatIDR(service.pricingUSD) }}
+              </div>
+              <div class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark mb-2">
+                ≈ {{ formatUSD(service.pricingUSD) }} USD
+              </div>
+              <div class="text-xs text-es-text-secondary dark:text-es-text-secondary-dark mb-2">
+                {{ t('services.detail.priceNote') || 'Harga dapat disesuaikan berdasarkan scope proyek' }}
               </div>
               <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm mb-4">
                 {{ t('services.detail.estimateNote') }}
@@ -165,17 +188,38 @@
         </NuxtLink>
       </div>
     </section>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { findPublicServiceBySlug, getRelatedServices } from '../../data/public-content'
 
+// Dual Currency Display - IDR primary, USD reference
+const EXCHANGE_RATE = 15500 // 1 USD = 15,500 IDR
+
+const formatIDR = (priceUSD: number): string => {
+  const priceIDR = Math.round(priceUSD * EXCHANGE_RATE)
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(priceIDR)
+}
+
+const formatUSD = (priceUSD: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0
+  }).format(priceUSD)
+}
+
 const route = useRoute()
 const localePath = useLocalePath()
 const { t, locale } = useI18n()
 
-// Slug parsing with edge case handling (Task 2.2.3)
+// Slug parsing with edge case handling
 const slugParam = computed(() => {
   const raw = route.params.slug
 
@@ -186,73 +230,143 @@ const slugParam = computed(() => {
   return typeof raw === 'string' ? raw : ''
 })
 
-const service = computed(() => {
-  const record = findPublicServiceBySlug(slugParam.value)
+// FIX: Use useAsyncData dengan watch untuk reactive route changes
+const { data: service, pending, error } = await useAsyncData(
+  `service-${route.params.slug}`,
+  () => {
+    const record = findPublicServiceBySlug(slugParam.value)
+    
+    if (!record) {
+      throw createError({ statusCode: 404, statusMessage: 'Service not found' })
+    }
+    
+    return record
+  },
+  {
+    watch: [slugParam],
+    server: true,
+    default: () => null
+  }
+)
 
-  if (!record) {
+// Handle error after fetch completes
+watchEffect(() => {
+  if (!pending.value && error.value) {
     throw createError({ statusCode: 404, statusMessage: 'Service not found' })
   }
-
-  return record
 })
 
-const features = computed(() => service.value.features)
-const process = computed(() => service.value.process)
-const faqs = computed(() => service.value.faqs)
-const relatedServices = computed(() => getRelatedServices(service.value.slug, 3))
+const features = computed(() => service.value?.features || [])
+const process = computed(() => service.value?.process || [])
+const faqs = computed(() => service.value?.faqs || [])
+const relatedServices = computed(() => service.value ? getRelatedServices(service.value.slug, 3) : [])
 
-const serviceName = computed(() => service.value.title)
-const serviceSlug = computed(() => service.value.slug)
+const serviceName = computed(() => service.value?.title || '')
+const serviceSlug = computed(() => service.value?.slug || '')
 const localePrefix = computed(() => (locale.value === 'en' ? 'en' : 'id'))
 
-const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/our-services/${serviceSlug.value}`)
-const imageUrl = computed(() => `/images/service-${serviceSlug.value.replace(/-/g, '')}.jpg`)
+const pageUrl = computed(() => service.value ? `https://esperion.one/${localePrefix.value}/our-services/${serviceSlug.value}` : '')
+const imageUrl = computed(() => service.value ? `/images/service-${serviceSlug.value.replace(/-/g, '')}.jpg` : '')
 
-useSeoMeta({
-  title: () => `${serviceName.value} Jakarta | ${t('seo.services.title')}`,
-  description: () => `${t('services.detail.serviceScope')}: ${service.value.description}`,
-  ogTitle: () => `${serviceName.value} - Esperion`,
-  ogDescription: () => service.value.description,
-  ogImage: () => imageUrl.value || '/images/hero-service-development.jpg',
-  ogUrl: () => pageUrl.value,
-  ogType: 'website',
-  twitterCard: 'summary_large_image',
-  twitterTitle: () => `${serviceName.value} - Esperion`,
-  twitterDescription: () => service.value.description,
-  twitterImage: () => imageUrl.value || '/images/hero-service-development.jpg',
-  ogLocale: () => (locale.value === 'en' ? 'en_US' : 'id_ID')
+// Only set SEO meta when service is loaded
+watchEffect(() => {
+  if (!service.value) return
+  
+  useSeoMeta({
+    title: `${serviceName.value} Jakarta | ${t('seo.services.title')}`,
+    description: `${t('services.detail.serviceScope')}: ${service.value.description}`,
+    ogTitle: `${serviceName.value} - Esperion`,
+    ogDescription: service.value.description,
+    ogImage: imageUrl.value || '/images/hero-service-development.jpg',
+    ogUrl: pageUrl.value,
+    ogType: 'website',
+    twitterCard: 'summary_large_image',
+    twitterTitle: `${serviceName.value} - Esperion`,
+    twitterDescription: service.value.description,
+    twitterImage: imageUrl.value || '/images/hero-service-development.jpg',
+    ogLocale: locale.value === 'en' ? 'en_US' : 'id_ID'
+  })
 })
 
-useSchemaOrg([
-  defineWebPage({
-    '@type': 'CollectionPage',
-    'name': () => service.value.title,
-    'description': () => service.value.description,
-    'url': pageUrl.value,
-    'image': imageUrl.value || '/images/hero-service-development.jpg',
-    'dateModified': new Date().toISOString()
-  }),
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        'position': 1,
-        'name': t('breadcrumb.home'),
-        'item': `https://esperion.id/${localePrefix.value}`
+// Only set Schema.org when service is loaded
+watchEffect(() => {
+  if (!service.value) return
+  
+  const priceUSD = service.value.pricingUSD
+  const priceIDR = Math.round(priceUSD * EXCHANGE_RATE)
+  
+  useSchemaOrg([
+    // AI-Friendly Service Schema with Dual Currency
+    {
+      '@type': 'Service',
+      name: service.value.title,
+      description: service.value.description,
+      provider: {
+        '@type': 'Organization',
+        name: 'Esperion Digital Agency',
+        url: 'https://esperion.one'
       },
-      {
-        '@type': 'ListItem',
-        'position': 2,
-        'name': t('breadcrumb.services'),
-        'item': `https://esperion.id/${localePrefix.value}/our-services`
+      areaServed: {
+        '@type': 'Country',
+        name: 'Indonesia'
       },
-      {
-        '@type': 'ListItem',
-        'position': 3,
-        'name': () => service.value.title,
-        'item': pageUrl.value
-      }
-    ]
-  })
-])
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: service.value.title,
+        itemListElement: {
+          '@type': 'Offer',
+          price: priceUSD.toString(),
+          priceCurrency: 'USD',
+          priceValidUntil: '2026-12-31',
+          availability: 'https://schema.org/InStock',
+          description: `Starting from Rp ${priceIDR.toLocaleString('id-ID')} IDR ($${priceUSD.toLocaleString('en-US')} USD)`,
+          // AI-friendly dual currency
+          priceSpecification: {
+            '@type': 'PriceSpecification',
+            minPrice: priceUSD.toString(),
+            maxPrice: (priceUSD * 3).toString(), // Estimate max 3x starting
+            priceCurrency: 'USD',
+            valueAddedTaxIncluded: false,
+            description: `IDR: Rp ${priceIDR.toLocaleString('id-ID')} | USD: $${priceUSD.toLocaleString('en-US')}`
+          }
+        }
+      },
+      // Service details
+      serviceType: 'Digital Agency Services',
+      termsOfService: 'Project-based with milestone payments'
+    },
+    // WebPage schema
+    defineWebPage({
+      '@type': 'CollectionPage',
+      name: service.value.title,
+      description: service.value.description,
+      url: pageUrl.value,
+      image: imageUrl.value || '/images/hero-service-development.jpg',
+      dateModified: new Date().toISOString()
+    }),
+    // Breadcrumb
+    defineBreadcrumb({
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: t('breadcrumb.home'),
+          item: `https://esperion.one/${localePrefix.value}`
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: t('breadcrumb.services'),
+          item: `https://esperion.one/${localePrefix.value}/our-services`
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: service.value.title,
+          item: pageUrl.value
+        }
+      ]
+    })
+  ])
+})
 </script>

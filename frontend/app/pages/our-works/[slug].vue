@@ -1,9 +1,30 @@
 <template>
   <div class="min-h-screen bg-es-bg-primary dark:bg-es-bg-primary-dark">
+    <!-- Loading State -->
+    <div v-if="pending" class="flex items-center justify-center min-h-screen">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-es-accent-primary"></div>
+    </div>
+    
+    <!-- Error State -->
+    <div v-else-if="error" class="flex items-center justify-center min-h-screen">
+      <div class="text-center">
+        <h1 class="text-2xl font-bold text-es-text-primary mb-4">{{ t('works.detail.notFound') }}</h1>
+        <NuxtLink :to="localePath('/our-works')" class="text-es-accent-primary hover:underline">
+          {{ t('works.detail.backToWorks') }}
+        </NuxtLink>
+      </div>
+    </div>
+    
+    <!-- Work Content -->
+    <template v-else-if="work">
     <!-- Hero Image -->
     <section class="relative h-[400px] md:h-[500px]">
-      <img :src="work.image" :alt="work.title" class="w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-t from-es-bg-primary dark:from-es-bg-primary-dark to-transparent"></div>
+      <img
+        :src="work.image"
+        :alt="work.title"
+        class="w-full h-full object-cover"
+      >
+      <div class="absolute inset-0 bg-gradient-to-t from-es-bg-primary dark:from-es-bg-primary-dark to-transparent" />
     </section>
 
     <!-- Content -->
@@ -18,7 +39,10 @@
             <span class="px-4 py-1 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark text-es-text-secondary dark:text-es-text-secondary-dark rounded-full text-sm">
               {{ work.platform }}
             </span>
-            <span v-if="work.featured" class="px-4 py-1 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-full text-sm font-semibold">
+            <span
+              v-if="work.featured"
+              class="px-4 py-1 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-full text-sm font-semibold"
+            >
               {{ t('works.detail.featuredProject') }}
             </span>
           </div>
@@ -36,7 +60,11 @@
 
           <!-- Metrics -->
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12 p-6 bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-xl">
-            <div v-for="metric in work.metrics" :key="metric.label" class="text-center">
+            <div
+              v-for="metric in work.metrics"
+              :key="metric.label"
+              class="text-center"
+            >
               <div class="text-2xl md:text-3xl font-bold text-es-accent-primary dark:text-es-accent-primary-dark mb-1">
                 {{ metric.value }}{{ metric.suffix }}
               </div>
@@ -48,7 +76,9 @@
 
           <!-- Description -->
           <div class="prose prose-lg dark:prose-invert max-w-none mb-12">
-            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">{{ t('works.detail.projectSummary') }}</h2>
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
+              {{ t('works.detail.projectSummary') }}
+            </h2>
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark leading-relaxed">
               {{ work.description }}
             </p>
@@ -59,9 +89,15 @@
 
           <!-- Key Features -->
           <div class="mb-12">
-            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">{{ t('works.detail.keyFeatures') }}</h2>
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
+              {{ t('works.detail.keyFeatures') }}
+            </h2>
             <div class="grid md:grid-cols-2 gap-4">
-              <div v-for="feature in features" :key="feature" class="flex items-start gap-3">
+              <div
+                v-for="feature in features"
+                :key="feature"
+                class="flex items-start gap-3"
+              >
                 <span class="text-es-accent-primary dark:text-es-accent-primary-dark mt-1">✓</span>
                 <span class="text-es-text-secondary dark:text-es-text-secondary-dark">{{ feature }}</span>
               </div>
@@ -70,9 +106,17 @@
 
           <!-- Gallery -->
           <div class="mb-12">
-            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">{{ t('works.detail.projectGallery') }}</h2>
+            <h2 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-6">
+              {{ t('works.detail.projectGallery') }}
+            </h2>
             <div class="grid md:grid-cols-2 gap-4">
-              <img v-for="img in gallery" :key="img" :src="img" :alt="work.title" class="rounded-lg hover:shadow-lg transition-shadow" />
+              <img
+                v-for="img in gallery"
+                :key="img"
+                :src="img"
+                :alt="work.title"
+                class="rounded-lg hover:shadow-lg transition-shadow"
+              >
             </div>
           </div>
 
@@ -108,7 +152,11 @@
             :to="localePath(`/our-works/${related.slug}`)"
             class="group bg-es-bg-primary dark:bg-es-bg-primary-dark rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow"
           >
-            <img :src="related.image" :alt="related.title" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+            <img
+              :src="related.image"
+              :alt="related.title"
+              class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            >
             <div class="p-6">
               <h3 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-2 group-hover:text-es-accent-primary dark:group-hover:text-es-accent-primary-dark transition-colors">
                 {{ related.title }}
@@ -121,88 +169,115 @@
         </div>
       </div>
     </section>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { findPublicWorkBySlug, getRelatedWorks } from '../../data/public-content';
+import { findPublicWorkBySlug, getRelatedWorks } from '../../data/public-content'
 
-const route = useRoute();
-const localePath = useLocalePath();
-const { t, locale } = useI18n();
+const route = useRoute()
+const localePath = useLocalePath()
+const { t, locale } = useI18n()
 
 const slugParam = computed(() => {
-  const raw = route.params.slug;
+  const raw = route.params.slug
 
   if (Array.isArray(raw)) {
-    return raw[0] ?? '';
+    return raw[0] ?? ''
   }
 
-  return typeof raw === 'string' ? raw : '';
-});
+  return typeof raw === 'string' ? raw : ''
+})
 
-const work = computed(() => {
-  const record = findPublicWorkBySlug(slugParam.value);
-
-  if (!record) {
-    throw createError({ statusCode: 404, statusMessage: 'Work not found' });
+// FIX: Use useAsyncData with watch untuk reactive route changes
+const { data: work, pending, error } = await useAsyncData(
+  `work-${route.params.slug}`,
+  () => {
+    const record = findPublicWorkBySlug(slugParam.value)
+    
+    if (!record) {
+      throw createError({ statusCode: 404, statusMessage: 'Work not found' })
+    }
+    
+    return record
+  },
+  {
+    watch: [slugParam],
+    server: true,
+    default: () => null
   }
+)
 
-  return record;
-});
+// Handle error after fetch completes
+watchEffect(() => {
+  if (!pending.value && error.value) {
+    throw createError({ statusCode: 404, statusMessage: 'Work not found' })
+  }
+})
 
-const features = computed(() => work.value.features);
-const gallery = computed(() => work.value.gallery);
-const relatedWorks = computed(() => getRelatedWorks(work.value.slug, 3));
+const features = computed(() => work.value?.features || [])
+const gallery = computed(() => work.value?.gallery || [])
+const relatedWorks = computed(() => work.value ? getRelatedWorks(work.value.slug, 3) : [])
 
-const localePrefix = computed(() => (locale.value === 'en' ? 'en' : 'id'));
-const pageUrl = computed(() => `https://esperion.id/${localePrefix.value}/our-works/${work.value.slug}`);
+const localePrefix = computed(() => (locale.value === 'en' ? 'en' : 'id'))
+const pageUrl = computed(() => work.value ? `https://esperion.one/${localePrefix.value}/our-works/${work.value.slug}` : '')
 
-useSeoMeta({
-  title: () => t('works.detail.seo.title', { title: work.value.title }),
-  description: () => t('works.detail.seo.description', { description: work.value.description }),
-  ogTitle: () => `${work.value.title} - Esperion`,
-  ogDescription: () => work.value.description,
-  ogImage: () => work.value.image,
-  ogUrl: () => pageUrl.value,
-  ogType: 'article',
-  twitterCard: 'summary_large_image',
-  twitterTitle: () => `${work.value.title} - Esperion`,
-  twitterDescription: () => work.value.description,
-  twitterImage: () => work.value.image,
-  ogLocale: () => (locale.value === 'en' ? 'en_US' : 'id_ID')
-});
-
-useSchemaOrg([
-  defineWebPage({
-    '@type': 'ItemPage',
-    name: () => work.value.title,
-    description: () => work.value.description,
-    url: pageUrl.value,
-    image: () => work.value.image,
-    dateModified: new Date().toISOString()
-  }),
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: t('breadcrumb.home'),
-        item: `https://esperion.id/${localePrefix.value}`
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: t('breadcrumb.works'),
-        item: `https://esperion.id/${localePrefix.value}/our-works`
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: () => work.value.title,
-        item: pageUrl.value
-      }
-    ]
+// Only set SEO meta when work is loaded
+watchEffect(() => {
+  if (!work.value) return
+  
+  useSeoMeta({
+    title: t('works.detail.seo.title', { title: work.value.title }),
+    description: t('works.detail.seo.description', { description: work.value.description }),
+    ogTitle: `${work.value.title} - Esperion`,
+    ogDescription: work.value.description,
+    ogImage: work.value.image,
+    ogUrl: pageUrl.value,
+    ogType: 'article',
+    twitterCard: 'summary_large_image',
+    twitterTitle: `${work.value.title} - Esperion`,
+    twitterDescription: work.value.description,
+    twitterImage: work.value.image,
+    ogLocale: locale.value === 'en' ? 'en_US' : 'id_ID'
   })
-]);
+})
+
+// Only set Schema.org when work is loaded
+watchEffect(() => {
+  if (!work.value) return
+  
+  useSchemaOrg([
+    defineWebPage({
+      '@type': 'ItemPage',
+      name: work.value.title,
+      description: work.value.description,
+      url: pageUrl.value,
+      image: work.value.image,
+      dateModified: new Date().toISOString()
+    }),
+    defineBreadcrumb({
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: t('breadcrumb.home'),
+          item: `https://esperion.one/${localePrefix.value}`
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: t('breadcrumb.works'),
+          item: `https://esperion.one/${localePrefix.value}/our-works`
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: work.value.title,
+          item: pageUrl.value
+        }
+      ]
+    })
+  ])
+})
 </script>

@@ -1,57 +1,59 @@
-import type { WorkMetric } from '../types/api';
+import type { WorkMetric } from '../types/api'
 
 export interface PublicArticle {
-  id: number;
-  slug_id: string;
-  title: string;
-  excerpt_id: string;
-  category: string;
-  image: string;
-  author: string;
-  published_at: string;
-  read_time: number;
+  id: number
+  slug_id: string
+  slug_en?: string
+  title: string
+  excerpt_id: string
+  category: string
+  image: string
+  author: string
+  published_at: string
+  read_time: number
 }
 
 export interface PublicServiceFeature {
-  icon: string;
-  title: string;
-  description: string;
+  icon: string
+  title: string
+  description: string
 }
 
 export interface PublicServiceProcessStep {
-  title: string;
-  description: string;
+  title: string
+  description: string
 }
 
 export interface PublicServiceFaq {
-  question: string;
-  answer: string;
+  question: string
+  answer: string
 }
 
 export interface PublicService {
-  slug: string;
-  title: string;
-  description: string;
-  icon: string;
-  pricing: string;
-  features: PublicServiceFeature[];
-  process: PublicServiceProcessStep[];
-  faqs: PublicServiceFaq[];
+  slug: string
+  title: string
+  description: string
+  icon: string
+  pricing: string // Display string (legacy)
+  pricingUSD: number // Price in USD for conversion
+  features: PublicServiceFeature[]
+  process: PublicServiceProcessStep[]
+  faqs: PublicServiceFaq[]
 }
 
 export interface PublicWork {
-  id: number;
-  slug: string;
-  title: string;
-  description: string;
-  image: string;
-  service: string;
-  platform: string;
-  featured: boolean;
-  client_name: string;
-  metrics: WorkMetric[];
-  features: string[];
-  gallery: string[];
+  id: number
+  slug: string
+  title: string
+  description: string
+  image: string
+  service: string
+  platform: string
+  featured: boolean
+  client_name: string
+  metrics: WorkMetric[]
+  features: string[]
+  gallery: string[]
 }
 
 const defaultServiceFeatures: PublicServiceFeature[] = [
@@ -61,7 +63,7 @@ const defaultServiceFeatures: PublicServiceFeature[] = [
   { icon: '🔒', title: 'Pondasi Aman', description: 'Mengikuti praktik implementasi yang lebih aman untuk kebutuhan produksi.' },
   { icon: '🔍', title: 'Siap Ditemukan', description: 'Struktur konten dan teknis mendukung visibilitas organik yang lebih baik.' },
   { icon: '🛠️', title: 'Mudah Dirawat', description: 'Fondasi dibuat agar mudah diperbarui oleh tim internal setelah peluncuran.' }
-];
+]
 
 const defaultServiceProcess: PublicServiceProcessStep[] = [
   { title: 'Discovery', description: 'Kami memahami konteks bisnis, sasaran utama, dan kebutuhan prioritas Anda.' },
@@ -70,19 +72,20 @@ const defaultServiceProcess: PublicServiceProcessStep[] = [
   { title: 'Development', description: 'Implementasi dilakukan bertahap agar perubahan bisa diuji dan ditinjau lebih jelas.' },
   { title: 'Testing', description: 'Setiap rilisan melewati validasi kualitas sebelum dipublikasikan.' },
   { title: 'Launch', description: 'Proyek dirilis dengan monitoring awal untuk memastikan performa dan pengalaman tetap terjaga.' }
-];
+]
 
 const defaultServiceFaqs: PublicServiceFaq[] = [
   { question: 'Berapa lama durasi proyek biasanya?', answer: 'Durasi proyek umumnya 4-12 minggu, tergantung kompleksitas, integrasi, dan kebutuhan validasi.' },
   { question: 'Teknologi apa yang biasa digunakan?', answer: 'Stack dipilih berdasarkan kebutuhan proyek, performa, dan kesiapan tim untuk mengelola hasil akhirnya.' },
   { question: 'Apakah ada dukungan setelah peluncuran?', answer: 'Ya. Kami dapat menyiapkan fase maintenance atau pendampingan lanjutan sesuai kebutuhan tim Anda.' },
   { question: 'Apakah bisa bekerja dari desain yang sudah ada?', answer: 'Bisa. Kami dapat melanjutkan dari materi yang sudah tersedia atau membantu menyempurnakannya lebih dulu.' }
-];
+]
 
 export const publicArticles: PublicArticle[] = [
   {
     id: 1,
     slug_id: 'digital-marketing-trends-2024',
+    slug_en: 'digital-marketing-trends-2024',
     title: 'Digital Marketing Trends to Watch in 2024',
     excerpt_id: 'Discover the latest trends shaping the future of digital marketing and how to leverage them for your business.',
     category: 'Marketing',
@@ -94,6 +97,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 2,
     slug_id: 'ui-ux-best-practices',
+    slug_en: 'ui-ux-best-practices',
     title: 'UI/UX Best Practices for Modern Websites',
     excerpt_id: 'Learn the essential principles of user interface and experience design that drive engagement.',
     category: 'Design',
@@ -105,6 +109,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 3,
     slug_id: 'ecommerce-optimization-guide',
+    slug_en: 'ecommerce-optimization-guide',
     title: 'Complete Guide to E-Commerce Optimization',
     excerpt_id: 'Proven strategies to increase conversions and boost your online store performance.',
     category: 'E-Commerce',
@@ -116,6 +121,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 4,
     slug_id: 'react-vs-vue-2024',
+    slug_en: 'react-vs-vue-2024',
     title: 'React vs Vue: Which Framework to Choose in 2024?',
     excerpt_id: 'A comprehensive comparison of React and Vue for your next web project.',
     category: 'Development',
@@ -127,6 +133,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 5,
     slug_id: 'seo-basics-2024',
+    slug_en: 'seo-basics-2024',
     title: 'SEO Basics Every Business Should Know',
     excerpt_id: 'Essential SEO strategies to improve your online visibility and drive organic traffic.',
     category: 'Marketing',
@@ -138,6 +145,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 6,
     slug_id: 'mobile-first-design',
+    slug_en: 'mobile-first-design',
     title: 'Why Mobile-First Design Matters',
     excerpt_id: 'Understanding the importance of mobile-first design in todays digital landscape.',
     category: 'Design',
@@ -149,6 +157,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 7,
     slug_id: 'business-growth-strategies',
+    slug_en: 'business-growth-strategies',
     title: '10 Strategies for Business Growth',
     excerpt_id: 'Practical strategies to scale your business and increase revenue.',
     category: 'Business',
@@ -160,6 +169,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 8,
     slug_id: 'web-performance-optimization',
+    slug_en: 'web-performance-optimization',
     title: 'Web Performance Optimization Tips',
     excerpt_id: 'Learn how to make your website faster and improve user experience.',
     category: 'Development',
@@ -171,6 +181,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 9,
     slug_id: 'social-media-marketing',
+    slug_en: 'social-media-marketing',
     title: 'Social Media Marketing Best Practices',
     excerpt_id: 'Maximize your social media presence with these proven strategies.',
     category: 'Marketing',
@@ -182,6 +193,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 10,
     slug_id: 'branding-guide',
+    slug_en: 'branding-guide',
     title: 'Complete Branding Guide for Startups',
     excerpt_id: 'Build a strong brand identity from scratch with this comprehensive guide.',
     category: 'Business',
@@ -193,6 +205,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 11,
     slug_id: 'accessibility-web',
+    slug_en: 'accessibility-web',
     title: 'Web Accessibility: Why It Matters',
     excerpt_id: 'Making your website accessible to everyone is not just good practice, its essential.',
     category: 'Development',
@@ -204,6 +217,7 @@ export const publicArticles: PublicArticle[] = [
   {
     id: 12,
     slug_id: 'color-theory-design',
+    slug_en: 'color-theory-design',
     title: 'Color Theory for Web Designers',
     excerpt_id: 'Understanding color psychology and how to use it effectively in your designs.',
     category: 'Design',
@@ -212,7 +226,7 @@ export const publicArticles: PublicArticle[] = [
     published_at: '2023-11-28',
     read_time: 7
   }
-];
+]
 
 export const publicServices: PublicService[] = [
   {
@@ -221,6 +235,7 @@ export const publicServices: PublicService[] = [
     description: 'Website dan aplikasi web yang dirancang untuk kebutuhan bisnis, mulai dari landing page hingga sistem dengan alur yang lebih kompleks.',
     icon: '💻',
     pricing: '$5,000',
+    pricingUSD: 5000,
     features: defaultServiceFeatures,
     process: defaultServiceProcess,
     faqs: defaultServiceFaqs
@@ -231,6 +246,7 @@ export const publicServices: PublicService[] = [
     description: 'Aplikasi mobile untuk iOS dan Android dengan pendekatan native maupun cross-platform sesuai kebutuhan produk dan tim Anda.',
     icon: '📱',
     pricing: '$7,500',
+    pricingUSD: 7500,
     features: defaultServiceFeatures,
     process: defaultServiceProcess,
     faqs: defaultServiceFaqs
@@ -241,6 +257,7 @@ export const publicServices: PublicService[] = [
     description: 'Desain pengalaman dan antarmuka yang membantu produk terasa jelas, mudah dipakai, dan konsisten dengan karakter brand.',
     icon: '🎨',
     pricing: '$3,000',
+    pricingUSD: 3000,
     features: defaultServiceFeatures,
     process: defaultServiceProcess,
     faqs: defaultServiceFaqs
@@ -251,6 +268,7 @@ export const publicServices: PublicService[] = [
     description: 'Strategi SEO, kampanye digital, dan arah konten untuk membantu brand tampil lebih jelas dan mendorong konversi yang lebih sehat.',
     icon: '📈',
     pricing: '$2,500',
+    pricingUSD: 2500,
     features: defaultServiceFeatures,
     process: defaultServiceProcess,
     faqs: defaultServiceFaqs
@@ -261,6 +279,7 @@ export const publicServices: PublicService[] = [
     description: 'Pengembangan dan optimalisasi toko online dengan alur belanja, pembayaran, dan pengelolaan katalog yang lebih rapi.',
     icon: '🛒',
     pricing: '$6,000',
+    pricingUSD: 6000,
     features: defaultServiceFeatures,
     process: defaultServiceProcess,
     faqs: defaultServiceFaqs
@@ -271,11 +290,12 @@ export const publicServices: PublicService[] = [
     description: 'Konsultasi strategi digital untuk membantu bisnis menentukan prioritas produk, proses, dan eksekusi yang paling relevan.',
     icon: '💡',
     pricing: '$2,000',
+    pricingUSD: 2000,
     features: defaultServiceFeatures,
     process: defaultServiceProcess,
     faqs: defaultServiceFaqs
   }
-];
+]
 
 export const publicWorks: PublicWork[] = [
   {
@@ -548,58 +568,58 @@ export const publicWorks: PublicWork[] = [
     ],
     gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
   }
-];
+]
 
 export function findPublicArticleBySlug(slug: string): PublicArticle | undefined {
-  return publicArticles.find((article) => article.slug_id === slug);
+  return publicArticles.find(article => article.slug_id === slug || article.slug_en === slug)
 }
 
 export function findPublicServiceBySlug(slug: string): PublicService | undefined {
-  return publicServices.find((service) => service.slug === slug);
+  return publicServices.find(service => service.slug === slug)
 }
 
 export function findPublicWorkBySlug(slug: string): PublicWork | undefined {
-  return publicWorks.find((work) => work.slug === slug);
+  return publicWorks.find(work => work.slug === slug)
 }
 
 export function getFeaturedWorks(limit = 5): PublicWork[] {
-  return publicWorks.filter((work) => work.featured).slice(0, limit);
+  return publicWorks.filter(work => work.featured).slice(0, limit)
 }
 
 export function getRelatedArticles(slug: string, limit = 3): PublicArticle[] {
-  const current = findPublicArticleBySlug(slug);
+  const current = findPublicArticleBySlug(slug)
   const sameCategory = publicArticles.filter(
-    (article) => article.slug_id !== slug && article.category === current?.category
-  );
+    article => article.slug_id !== slug && article.category === current?.category
+  )
 
   if (sameCategory.length >= limit) {
-    return sameCategory.slice(0, limit);
+    return sameCategory.slice(0, limit)
   }
 
   const fallback = publicArticles.filter(
-    (article) => article.slug_id !== slug && article.category !== current?.category
-  );
+    article => article.slug_id !== slug && article.category !== current?.category
+  )
 
-  return [...sameCategory, ...fallback].slice(0, limit);
+  return [...sameCategory, ...fallback].slice(0, limit)
 }
 
 export function getRelatedServices(slug: string, limit = 3): PublicService[] {
-  return publicServices.filter((service) => service.slug !== slug).slice(0, limit);
+  return publicServices.filter(service => service.slug !== slug).slice(0, limit)
 }
 
 export function getRelatedWorks(slug: string, limit = 3): PublicWork[] {
-  const current = findPublicWorkBySlug(slug);
+  const current = findPublicWorkBySlug(slug)
   const sameService = publicWorks.filter(
-    (work) => work.slug !== slug && work.service === current?.service
-  );
+    work => work.slug !== slug && work.service === current?.service
+  )
 
   if (sameService.length >= limit) {
-    return sameService.slice(0, limit);
+    return sameService.slice(0, limit)
   }
 
   const fallback = publicWorks.filter(
-    (work) => work.slug !== slug && work.service !== current?.service
-  );
+    work => work.slug !== slug && work.service !== current?.service
+  )
 
-  return [...sameService, ...fallback].slice(0, limit);
+  return [...sameService, ...fallback].slice(0, limit)
 }
