@@ -731,29 +731,36 @@ const cta = {
   description: 'Ceritakan konteks bisnis Anda, lalu kami bantu memetakan solusi yang paling relevan untuk tahap pertumbuhan berikutnya.'
 }
 
-// Auto-rotate banner
-let bannerInterval: NodeJS.Timeout
+// Auto-rotate banner - menggunakan setTimeout untuk kontrol lebih baik
+let bannerTimeout: NodeJS.Timeout
 let worksInterval: NodeJS.Timeout
+let lastAdvanceTime = 0
 
 const startAutoPlay = () => {
-  console.log('[Banner] Starting autoplay, currentSlide:', currentSlide.value, 'isPaused:', isPaused.value)
-  bannerInterval = setInterval(() => {
-    console.log('[Banner] Interval tick, isPaused:', isPaused.value, 'currentSlide:', currentSlide.value)
+  // Clear any existing timeout first
+  clearTimeout(bannerTimeout)
+  
+  // Set new timeout for 5 seconds
+  bannerTimeout = setTimeout(() => {
     if (!isPaused.value) {
+      // Record time before advancing
+      lastAdvanceTime = Date.now()
       currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
-      console.log('[Banner] Advanced to slide:', currentSlide.value)
+      // Recursive call untuk timing konsisten
+      startAutoPlay()
     }
   }, 5000)
 }
 
-const resetInterval = () => {
-  clearInterval(bannerInterval)
+const resetAutoPlay = () => {
+  clearTimeout(bannerTimeout)
+  lastAdvanceTime = Date.now()
   startAutoPlay()
 }
 
 const pauseAutoPlay = () => {
   isPaused.value = true
-  clearInterval(bannerInterval)
+  clearTimeout(bannerTimeout)
 }
 
 const resumeAutoPlay = () => {
@@ -763,12 +770,12 @@ const resumeAutoPlay = () => {
 
 const prevSlide = () => {
   currentSlide.value = currentSlide.value === 0 ? bannerSlides.value.length - 1 : currentSlide.value - 1
-  resetInterval()
+  resetAutoPlay()
 }
 
 const nextSlide = () => {
   currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
-  resetInterval()
+  resetAutoPlay()
 }
 
 // Touch gesture handlers
@@ -955,34 +962,32 @@ const resumeCarousel = () => {
 
 /* Enter animation (new slide coming in from right) */
 .banner-slide-enter-active {
-  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1), opacity 500ms ease;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  inset: 0;
 }
 
 .banner-slide-enter-from {
   transform: translateX(100%);
-  opacity: 0;
 }
 
 .banner-slide-enter-to {
   transform: translateX(0);
-  opacity: 1;
 }
 
 /* Leave animation (old slide going to left) */
 .banner-slide-leave-active {
-  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1), opacity 500ms ease;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
   position: absolute;
   inset: 0;
 }
 
 .banner-slide-leave-from {
   transform: translateX(0);
-  opacity: 1;
 }
 
 .banner-slide-leave-to {
   transform: translateX(-100%);
-  opacity: 0;
 }
 
 /* Remove old slide positioning classes (no longer needed with TransitionGroup) */
