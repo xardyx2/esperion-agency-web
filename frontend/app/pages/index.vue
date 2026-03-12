@@ -9,48 +9,45 @@
       @touchend="handleTouchEnd"
     >
       <div class="relative w-full h-full">
-        <div
-          v-for="(slide, index) in bannerSlides"
-          :key="slide.id"
-          class="banner-slide will-change-transform"
-          :class="[
-            getSlideClasses(index),
-            'transition-transform duration-500 ease-out'
-          ]"
-        >
-          <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10" />
-          <img
-            :src="slide.image"
-            :alt="slide.title"
-            class="w-full h-full object-cover"
-            :loading="index < 2 ? 'eager' : 'lazy'"
-            :fetchpriority="index === 0 ? 'high' : 'low'"
+        <Transition name="banner-slide" mode="out-in">
+          <div
+            :key="currentSlide"
+            class="banner-slide absolute inset-0"
           >
-          <div class="absolute inset-0 z-20 flex items-center">
-            <div class="container mx-auto px-4">
-              <div class="max-w-2xl">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-                  {{ slide.title }}
-                </h1>
-                <p
-                  v-if="slide.subtitle"
-                  class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-4 font-medium"
-                >
-                  {{ slide.subtitle }}
-                </p>
-                <p class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-8">
-                  {{ slide.description }}
-                </p>
-                <NuxtLink
-                  :to="localePath(slide.ctaLink)"
-                  class="inline-flex items-center px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
-                >
-                  {{ slide.ctaText }}
-                </NuxtLink>
+            <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10" />
+            <img
+              :src="activeSlide.image"
+              :alt="activeSlide.title"
+              class="w-full h-full object-cover"
+              loading="eager"
+              fetchpriority="high"
+            >
+            <div class="absolute inset-0 z-20 flex items-center">
+              <div class="container mx-auto px-4">
+                <div class="max-w-2xl">
+                  <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
+                    {{ activeSlide.title }}
+                  </h1>
+                  <p
+                    v-if="activeSlide.subtitle"
+                    class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-4 font-medium"
+                  >
+                    {{ activeSlide.subtitle }}
+                  </p>
+                  <p class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-8">
+                    {{ activeSlide.description }}
+                  </p>
+                  <NuxtLink
+                    :to="localePath(activeSlide.ctaLink)"
+                    class="inline-flex items-center px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
+                  >
+                    {{ activeSlide.ctaText }}
+                  </NuxtLink>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </Transition>
       </div>
 
       <!-- Slide Navigation -->
@@ -683,6 +680,9 @@ const bannerSlides = computed(() => [
   }
 ])
 
+// Active slide computed property
+const activeSlide = computed(() => bannerSlides.value[currentSlide.value])
+
 // Who Are We Data
 const whoAreWe = {
   title: 'About Esperion',
@@ -769,27 +769,6 @@ const prevSlide = () => {
 const nextSlide = () => {
   currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
   resetInterval()
-}
-
-// Helper function to determine slide position classes
-const getSlideClasses = (index: number): string => {
-  const diff = index - currentSlide.value
-  const totalSlides = bannerSlides.value.length
-
-  // Handle wrap-around for infinite loop effect
-  let normalizedDiff = diff
-  if (diff > totalSlides / 2) normalizedDiff = diff - totalSlides
-  if (diff < -totalSlides / 2) normalizedDiff = diff + totalSlides
-
-  if (normalizedDiff === 0) {
-    return 'translate-x-0 z-20'
-  } else if (normalizedDiff === 1 || (normalizedDiff === -(totalSlides - 1))) {
-    return 'translate-x-full z-10'
-  } else if (normalizedDiff === -1 || (normalizedDiff === (totalSlides - 1))) {
-    return '-translate-x-full z-10'
-  } else {
-    return 'translate-x-full z-0 opacity-0'
-  }
 }
 
 // Touch gesture handlers
@@ -964,18 +943,49 @@ const resumeCarousel = () => {
   --es-easing-material: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Banner Slider Styles - Transform-based slide animation */
+/* Banner Slider Styles - Vue TransitionGroup animation */
 .banner-slide {
   position: absolute;
   inset: 0;
-  transition-property: transform, opacity;
-  transition-duration: 500ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, opacity;
   /* Ensure hardware acceleration */
   transform: translateZ(0);
   backface-visibility: hidden;
 }
+
+/* Enter animation (new slide coming in from right) */
+.banner-slide-enter-active {
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1), opacity 500ms ease;
+}
+
+.banner-slide-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.banner-slide-enter-to {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Leave animation (old slide going to left) */
+.banner-slide-leave-active {
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1), opacity 500ms ease;
+  position: absolute;
+  inset: 0;
+}
+
+.banner-slide-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.banner-slide-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+/* Remove old slide positioning classes (no longer needed with TransitionGroup) */
 
 /* Client Logos Marquee */
 .marquee-container {
