@@ -12,42 +12,42 @@
         <div
           v-for="(slide, index) in bannerSlides"
           :key="slide.id"
-          class="banner-slide absolute inset-0 transition-transform duration-500 ease-out"
+          class="banner-slide absolute inset-0"
           :class="getSlideClasses(index)"
         >
-        <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10" />
-        <img
-          :src="slide.image"
-          :alt="slide.title"
-          class="w-full h-full object-cover"
-          :loading="index < 2 ? 'eager' : 'lazy'"
-          :fetchpriority="index === 0 ? 'high' : 'low'"
-        >
-        <div class="absolute inset-0 z-20 flex items-center">
-          <div class="container mx-auto px-4">
-            <div class="max-w-2xl">
-              <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-                {{ slide.title }}
-              </h1>
-              <p
-                v-if="slide.subtitle"
-                class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-4 font-medium"
-              >
-                {{ slide.subtitle }}
-              </p>
-              <p class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-8">
-                {{ slide.description }}
-              </p>
-              <NuxtLink
-                :to="localePath(slide.ctaLink)"
-                class="inline-flex items-center px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
-              >
-                {{ slide.ctaText }}
-              </NuxtLink>
+          <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10" />
+          <img
+            :src="slide.image"
+            :alt="slide.title"
+            class="w-full h-full object-cover"
+            :loading="index < 2 ? 'eager' : 'lazy'"
+            :fetchpriority="index === 0 ? 'high' : 'low'"
+          >
+          <div class="absolute inset-0 z-20 flex items-center">
+            <div class="container mx-auto px-4">
+              <div class="max-w-2xl">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
+                  {{ slide.title }}
+                </h1>
+                <p
+                  v-if="slide.subtitle"
+                  class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-4 font-medium"
+                >
+                  {{ slide.subtitle }}
+                </p>
+                <p class="text-lg md:text-xl text-es-text-secondary dark:text-es-text-secondary-dark mb-8">
+                  {{ slide.description }}
+                </p>
+                <NuxtLink
+                  :to="localePath(slide.ctaLink)"
+                  class="inline-flex items-center px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
+                >
+                  {{ slide.ctaText }}
+                </NuxtLink>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
 
       <!-- Slide Navigation -->
@@ -772,12 +772,12 @@ const nextSlide = () => {
 const getSlideClasses = (index: number): string => {
   const diff = index - currentSlide.value
   const totalSlides = bannerSlides.value.length
-  
+
   // Handle wrap-around for infinite loop effect
   let normalizedDiff = diff
   if (diff > totalSlides / 2) normalizedDiff = diff - totalSlides
   if (diff < -totalSlides / 2) normalizedDiff = diff + totalSlides
-  
+
   if (normalizedDiff === 0) {
     return 'translate-x-0 z-20'
   } else if (normalizedDiff === 1 || (normalizedDiff === -(totalSlides - 1))) {
@@ -961,30 +961,12 @@ const resumeCarousel = () => {
   --es-easing-material: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Banner Slider Styles - using hardcoded values since CSS variables in :root don't work with scoped styles */
-.banner-enter-active,
-.banner-leave-active {
-  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
-
-.banner-enter-from {
-  transform: translateX(100%);
-}
-.banner-enter-to {
-  transform: translateX(0);
-}
-
-.banner-leave-from {
-  transform: translateX(0);
-}
-.banner-leave-to {
-  transform: translateX(-100%);
-}
-
+/* Banner Slider Styles - Transform-based slide animation */
 .banner-slide {
   position: absolute;
   inset: 0;
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 /* Client Logos Marquee */
@@ -1155,10 +1137,5 @@ const resumeCarousel = () => {
   .marquee-item {
     min-width: calc(16.666% - 1rem); /* 6 logos */
   }
-}
-
-/* Banner Slider Styles */
-.banner-slide {
-  will-change: transform;
 }
 </style>
