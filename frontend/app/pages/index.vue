@@ -12,7 +12,7 @@
         <Transition name="banner-slide">
           <div
             :key="currentSlide"
-            class="banner-slide"
+            class="banner-slide pointer-events-none"
           >
             <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10" />
             <img
@@ -64,7 +64,7 @@
 
       <!-- Arrow Navigation -->
       <button
-        class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-es-bg-inverse/80 dark:bg-es-bg-inverse-dark/80 rounded-full flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all shadow-lg hidden md:flex"
+        class="absolute left-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 bg-es-bg-inverse/80 dark:bg-es-bg-inverse-dark/80 rounded-full flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all shadow-lg md:flex"
         aria-label="Previous slide"
         @click="prevSlide"
       >
@@ -84,7 +84,7 @@
         </svg>
       </button>
       <button
-        class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-es-bg-inverse/80 dark:bg-es-bg-inverse-dark/80 rounded-full flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all shadow-lg hidden md:flex"
+        class="absolute right-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 bg-es-bg-inverse/80 dark:bg-es-bg-inverse-dark/80 rounded-full flex items-center justify-center text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-all shadow-lg md:flex"
         aria-label="Next slide"
         @click="nextSlide"
       >
