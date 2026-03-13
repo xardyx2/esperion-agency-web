@@ -1,0 +1,37 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: esperion-frontend
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    ports:
+      - "3000:3000"
+    # Volume mounts for hot reload with node_modules exclusion
+    volumes:
+      - ./frontend:/app:cached
+      - /app/node_modules
+      - /app/.nuxt
+    environment:
+      - NODE_ENV=development
+      - NUXT_HOST=0.0.0.0
+      - NUXT_PORT=3000
+      - API_URL=http://localhost:8080
+      - CHOKIDAR_USEPOLLING=true
+      - WDS_SOCKET_PORT=3000
+      - NUXT_TELEMETRY_DISABLED=1
+    command: npx nuxt dev --host 0.0.0.0
+    networks:
+      - esperion-network
+    restart: unless-stopped
+
+networks:
+  esperion-network:
+    driver: bridge

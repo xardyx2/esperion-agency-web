@@ -7,11 +7,11 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
           cpus: '1'
           memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
     working_dir: /app
     volumes:
       - ./frontend:/app
@@ -47,11 +47,11 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
           cpus: '1'
           memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
     volumes:
       - ./backend:/app
       - /app/target
@@ -90,11 +90,11 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
           cpus: '1'
           memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
     ports:
       - "8002:8000"
     volumes:

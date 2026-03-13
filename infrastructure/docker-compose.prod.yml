@@ -7,11 +7,11 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
           cpus: '1'
           memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
     ports:
       - "3000:3000"
     environment:
@@ -29,11 +29,11 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
           cpus: '1'
           memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
     ports:
       - "8080:8080"
     environment:
@@ -59,11 +59,11 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
           cpus: '1'
           memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
     volumes:
       - surrealdb-blue-data:/data
     environment:
@@ -80,11 +80,11 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
           cpus: '1'
           memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
     ports:
       - "3001:3000"  # Different port for initial testing
     environment:
@@ -102,11 +102,11 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
           cpus: '1'
           memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
     ports:
       - "8081:8080"  # Different port for initial testing
     environment:
@@ -132,11 +132,11 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
           cpus: '1'
           memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
     volumes:
       - surrealdb-green-data:/data
       - ./backups:/backups  # Local volume for database backups
@@ -154,11 +154,11 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
           cpus: '1'
           memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
     volumes:
       - ./backups:/backups
       - /var/run/docker.sock:/var/run/docker.sock
