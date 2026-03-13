@@ -8,7 +8,7 @@
       @touchstart="handleTouchStart"
       @touchend="handleTouchEnd"
     >
-      <div class="relative w-full h-full">
+      <div class="relative w-full h-full" :style="{ '--slide-direction': slideDirection }">
         <Transition name="banner-slide">
           <div
             :key="currentSlide"
@@ -735,6 +735,7 @@ const cta = {
 let bannerTimeout: NodeJS.Timeout
 let worksInterval: NodeJS.Timeout
 let lastAdvanceTime = 0
+const slideDirection = ref<'next' | 'prev'>('next')
 
 const startAutoPlay = () => {
   // Clear any existing timeout first
@@ -745,6 +746,7 @@ const startAutoPlay = () => {
     if (!isPaused.value) {
       // Record time before advancing
       lastAdvanceTime = Date.now()
+      slideDirection.value = 'next' // Auto-play selalu ke next
       currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
       // Recursive call untuk timing konsisten
       startAutoPlay()
@@ -769,11 +771,13 @@ const resumeAutoPlay = () => {
 }
 
 const prevSlide = () => {
+  slideDirection.value = 'prev'
   currentSlide.value = currentSlide.value === 0 ? bannerSlides.value.length - 1 : currentSlide.value - 1
   resetAutoPlay()
 }
 
 const nextSlide = () => {
+  slideDirection.value = 'next'
   currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
   resetAutoPlay()
 }
@@ -1023,7 +1027,22 @@ const resumeCarousel = () => {
   transform: translateX(100%);
 }
 
-/* Enter animation (new slide coming in from right) */
+/* Container dengan CSS custom property untuk arah slide */
+.relative.w-full.h-full {
+  --enter-from: translateX(100%);
+  --enter-to: translateX(0);
+  --leave-from: translateX(0);
+  --leave-to: translateX(-100%);
+}
+
+.relative.w-full.h-full[style*="prev"] {
+  --enter-from: translateX(-100%);
+  --enter-to: translateX(0);
+  --leave-from: translateX(0);
+  --leave-to: translateX(100%);
+}
+
+/* Enter animation */
 .banner-slide-enter-active {
   transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: absolute;
@@ -1032,14 +1051,14 @@ const resumeCarousel = () => {
 }
 
 .banner-slide-enter-from {
-  transform: translateX(100%);
+  transform: var(--enter-from);
 }
 
 .banner-slide-enter-to {
-  transform: translateX(0);
+  transform: var(--enter-to);
 }
 
-/* Leave animation (old slide going to left) */
+/* Leave animation */
 .banner-slide-leave-active {
   transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: absolute;
@@ -1048,11 +1067,11 @@ const resumeCarousel = () => {
 }
 
 .banner-slide-leave-from {
-  transform: translateX(0);
+  transform: var(--leave-from);
 }
 
 .banner-slide-leave-to {
-  transform: translateX(-100%);
+  transform: var(--leave-to);
 }
 
 /* Client Logos Marquee */
