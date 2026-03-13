@@ -9,7 +9,7 @@
       @touchend="handleTouchEnd"
     >
       <div class="relative w-full h-full">
-        <Transition name="banner-slide">
+        <Transition :name="slideDirection === 'next' ? 'banner-slide-next' : 'banner-slide-prev'">
           <div
             :key="currentSlide"
             class="banner-slide"
@@ -745,6 +745,7 @@ const startAutoPlay = () => {
     if (!isPaused.value) {
       // Record time before advancing
       lastAdvanceTime = Date.now()
+      slideDirection.value = 'next' // Auto-play selalu ke next
       currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
       // Recursive call untuk timing konsisten
       startAutoPlay()
@@ -758,6 +759,8 @@ const resetAutoPlay = () => {
   startAutoPlay()
 }
 
+const slideDirection = ref<'next' | 'prev'>('next')
+
 const pauseAutoPlay = () => {
   isPaused.value = true
   clearTimeout(bannerTimeout)
@@ -769,11 +772,13 @@ const resumeAutoPlay = () => {
 }
 
 const prevSlide = () => {
+  slideDirection.value = 'prev'
   currentSlide.value = currentSlide.value === 0 ? bannerSlides.value.length - 1 : currentSlide.value - 1
   resetAutoPlay()
 }
 
 const nextSlide = () => {
+  slideDirection.value = 'next'
   currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
   resetAutoPlay()
 }
@@ -800,9 +805,11 @@ const handleSwipe = () => {
     if (Math.abs(diffX) > 50) {
       if (diffX > 0) {
         // Swipe left - next slide
+        slideDirection.value = 'next'
         nextSlide()
       } else {
         // Swipe right - previous slide
+        slideDirection.value = 'prev'
         prevSlide()
       }
     }
@@ -950,7 +957,7 @@ const resumeCarousel = () => {
   --es-easing-material: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Banner Slider Styles - Vue TransitionGroup animation */
+/* Banner Slider Styles - Vue Transition animation */
 .banner-slide {
   position: absolute;
   inset: 0;
@@ -961,36 +968,66 @@ const resumeCarousel = () => {
   backface-visibility: hidden;
 }
 
-/* Enter animation (new slide coming in from right) */
-.banner-slide-enter-active {
+/* NEXT: Enter from RIGHT, Leave to LEFT */
+.banner-slide-next-enter-active {
   transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: absolute;
   inset: 0;
   z-index: 20;
 }
 
-.banner-slide-enter-from {
+.banner-slide-next-enter-from {
   transform: translateX(100%);
 }
 
-.banner-slide-enter-to {
+.banner-slide-next-enter-to {
   transform: translateX(0);
 }
 
-/* Leave animation (old slide going to left) - overlap untuk menghindari gap */
-.banner-slide-leave-active {
+.banner-slide-next-leave-active {
   transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: absolute;
   inset: 0;
   z-index: 10;
 }
 
-.banner-slide-leave-from {
+.banner-slide-next-leave-from {
   transform: translateX(0);
 }
 
-.banner-slide-leave-to {
+.banner-slide-next-leave-to {
   transform: translateX(-100%);
+}
+
+/* PREV: Enter from LEFT, Leave to RIGHT */
+.banner-slide-prev-enter-active {
+  transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+
+.banner-slide-prev-enter-from {
+  transform: translateX(-100%);
+}
+
+.banner-slide-prev-enter-to {
+  transform: translateX(0);
+}
+
+.banner-slide-prev-leave-active {
+  transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+.banner-slide-prev-leave-from {
+  transform: translateX(0);
+}
+
+.banner-slide-prev-leave-to {
+  transform: translateX(100%);
 }
 
 /* Remove old slide positioning classes (no longer needed with TransitionGroup) */
