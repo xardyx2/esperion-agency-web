@@ -1,6 +1,16 @@
 # Frontend Dockerfile - Nuxt 4 development with Bun
 FROM oven/bun:1-alpine
 
+# Install dependencies for sharp (libvips)
+RUN apk add --no-cache \
+    build-base \
+    vips-dev \
+    vips-heif \
+    vips-magick \
+    vips-poppler \
+    python3 \
+    pkgconfig
+
 WORKDIR /app
 
 # Install dependencies with Bun
