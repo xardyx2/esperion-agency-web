@@ -9,10 +9,10 @@
       @touchend="handleTouchEnd"
     >
       <div class="relative w-full h-full">
-        <Transition name="banner-slide" mode="out-in">
+        <Transition name="banner-slide">
           <div
             :key="currentSlide"
-            class="banner-slide absolute inset-0"
+            class="banner-slide"
           >
             <div class="absolute inset-0 bg-gradient-to-r from-es-bg-secondary/90 to-es-bg-secondary/50 dark:from-es-bg-secondary-dark/90 dark:to-es-bg-secondary-dark/50 z-10" />
             <img
@@ -954,17 +954,19 @@ const resumeCarousel = () => {
 .banner-slide {
   position: absolute;
   inset: 0;
-  will-change: transform, opacity;
-  /* Ensure hardware acceleration */
+  width: 100%;
+  height: 100%;
+  will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
 }
 
 /* Enter animation (new slide coming in from right) */
 .banner-slide-enter-active {
-  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: absolute;
   inset: 0;
+  z-index: 20;
 }
 
 .banner-slide-enter-from {
@@ -975,11 +977,12 @@ const resumeCarousel = () => {
   transform: translateX(0);
 }
 
-/* Leave animation (old slide going to left) */
+/* Leave animation (old slide going to left) - overlap untuk menghindari gap */
 .banner-slide-leave-active {
-  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: absolute;
   inset: 0;
+  z-index: 10;
 }
 
 .banner-slide-leave-from {
