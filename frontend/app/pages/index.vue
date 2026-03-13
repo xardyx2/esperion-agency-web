@@ -889,7 +889,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  clearInterval(bannerInterval)
+  clearTimeout(bannerTimeout)
   clearInterval(worksInterval)
   if (window._bannerKeydownHandler) {
     window.removeEventListener('keydown', window._bannerKeydownHandler)
@@ -963,68 +963,6 @@ const resumeCarousel = () => {
   will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
-}
-
-/* NEXT: Enter from RIGHT, Leave to LEFT */
-.banner-slide-next-enter-active {
-  transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  position: absolute;
-  inset: 0;
-  z-index: 20;
-}
-
-.banner-slide-next-enter-from {
-  transform: translateX(100%);
-}
-
-.banner-slide-next-enter-to {
-  transform: translateX(0);
-}
-
-.banner-slide-next-leave-active {
-  transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-}
-
-.banner-slide-next-leave-from {
-  transform: translateX(0);
-}
-
-.banner-slide-next-leave-to {
-  transform: translateX(-100%);
-}
-
-/* PREV: Enter from LEFT, Leave to RIGHT */
-.banner-slide-prev-enter-active {
-  transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  position: absolute;
-  inset: 0;
-  z-index: 20;
-}
-
-.banner-slide-prev-enter-from {
-  transform: translateX(-100%);
-}
-
-.banner-slide-prev-enter-to {
-  transform: translateX(0);
-}
-
-.banner-slide-prev-leave-active {
-  transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-}
-
-.banner-slide-prev-leave-from {
-  transform: translateX(0);
-}
-
-.banner-slide-prev-leave-to {
-  transform: translateX(100%);
 }
 
 /* Container dengan CSS custom property untuk arah slide */
