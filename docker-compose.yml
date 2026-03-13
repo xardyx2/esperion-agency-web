@@ -1,9 +1,17 @@
-version: '3.8'
-
 services:
-  # Frontend - Nuxt 4 Application
+  # Frontend - Nuxt 4 development server with Bun
   frontend:
-    image: node:20-alpine
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
     working_dir: /app
     volumes:
       - ./frontend:/app
@@ -11,10 +19,14 @@ services:
       - /app/.nuxt
     ports:
       - "3000:3000"
-    command: npm run dev
     environment:
       - NODE_ENV=development
-      - NUXT_PUBLIC_API_BASE=http://backend:8080
+      - NUXT_HOST=0.0.0.0
+      - NUXT_PORT=3000
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - VITE_API_BASE_URL=http://localhost:8081/api/v1
+      - NUXT_PUBLIC_API_BASE=http://localhost:8081/api/v1
       - NUXT_RECAPTCHA_SITE_KEY=${NUXT_RECAPTCHA_SITE_KEY:-}
       - NUXT_GA4_MEASUREMENT_ID=${NUXT_GA4_MEASUREMENT_ID:-}
       - NUXT_CLARITY_PROJECT_ID=${NUXT_CLARITY_PROJECT_ID:-}
@@ -31,10 +43,29 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: development
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    volumes:
+      - ./backend:/app
+      - /app/target
+      - /usr/local/cargo/registry
+      - /usr/local/cargo/git
     ports:
       - "8081:8080"
     environment:
-      - DATABASE_URL=ws://database:8080
+      - DB_HOST=database
+      - DB_PORT=8000
+      - DB_USER=root
+      - DB_PASS=root
+      - DB_NS=esperion
+      - DB_DB=esperion_db
       - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
       - JWT_EXPIRATION=7d
       - REFRESH_TOKEN_EXPIRATION=30d
@@ -46,16 +77,32 @@ services:
       - SMTP_PASS=${SMTP_PASS:-}
       - RUST_LOG=debug
     depends_on:
-      - database
+      database:
+        condition: service_started
     networks:
       - esperion-network
 
-  # Database - SurrealDB 3.x
+  # Database - SurrealDB 1.5.x for local development
   database:
-    image: surrealdb/surrealdb:latest
-    command: start --log info --user ${SURREAL_USER:-root} --pass ${SURREAL_PASS:-root} memory
+    image: surrealdb/surrealdb:v1.5.6
+    container_name: esperion-surrealdb
+    user: "0:0"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
     ports:
-      - "8000:8000"
+      - "8002:8000"
+    volumes:
+      - surreal-data:/data
+    environment:
+      - SURREAL_USER=root
+      - SURREAL_PASS=root
+    command: start --log debug --user root --pass root --bind 0.0.0.0:8000 file:/data/esperion.db
     networks:
       - esperion-network
 

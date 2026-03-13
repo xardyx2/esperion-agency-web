@@ -1,38 +1,182 @@
 version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+  # BLUE Environment (current production) - Initially active
+  frontend-blue:
+    image: ghcr.io/xardyx2/esperion-agency-web-frontend:blue
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - NUXT_PUBLIC_API_BASE=http://backend:8080
+      - NUXT_PUBLIC_API_BASE=http://backend-blue:8080
+      - NUXT_PUBLIC_SITE_URL=https://es.perion.app
     restart: unless-stopped
+    depends_on:
+      - backend-blue
+    networks:
+      - esperion-network
 
-  backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+  backend-blue:
+    image: ghcr.io/xardyx2/esperion-agency-web-backend:blue
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
     ports:
       - "8080:8080"
     environment:
       - RUST_LOG=info
-      - DATABASE_URL=ws://surrealdb:8000
+      - DATABASE_URL=ws://surrealdb-blue:8000
+      - JWT_SECRET=${{ secrets.PRODUCTION_JWT_SECRET }}
+      - DATABASE_USER=${{ secrets.DB_USER }}
+      - DATABASE_PASS=${{ secrets.DB_ROOT_PASSWORD }}
+      - DB_ROOT_USER=${{ secrets.DB_ROOT_USER }}
+      - SMTP_HOST=${{ secrets.SMTP_HOST }}
+      - SMTP_PORT=${{ secrets.SMTP_PORT }}
+      - SMTP_USER=${{ secrets.SMTP_USER }}
+      - SMTP_PASS=${{ secrets.SMTP_PASS }}
+      - CONTACT_EMAIL=${{ secrets.CONTACT_EMAIL }}
     depends_on:
-      - surrealdb
+      - surrealdb-blue
     restart: unless-stopped
+    networks:
+      - esperion-network
 
-  surrealdb:
+  surrealdb-blue:
     image: surrealdb/surrealdb:latest
-    ports:
-      - "8000:8000"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
     volumes:
-      - surrealdb-data:/data
-    command: start --user root --pass root file:///data
+      - surrealdb-blue-data:/data
+    environment:
+      - SURREAL_USER=${{ secrets.DB_ROOT_USER || 'root' }}
+      - SURREAL_PASS=${{ secrets.DB_ROOT_PASSWORD }}
+    command: start --user root --pass ${SURREAL_PASS} file:///data
     restart: unless-stopped
+    networks:
+      - esperion-network
+
+  # GREEN Environment (deployment target) - Initially inactive
+  frontend-green:
+    image: ghcr.io/xardyx2/esperion-agency-web-frontend:green
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    ports:
+      - "3001:3000"  # Different port for initial testing
+    environment:
+      - NODE_ENV=production
+      - NUXT_PUBLIC_API_BASE=http://backend-green:8080
+      - NUXT_PUBLIC_SITE_URL=https://es.perion.app
+    restart: unless-stopped
+    depends_on:
+      - backend-green
+    networks:
+      - esperion-network
+
+  backend-green:
+    image: ghcr.io/xardyx2/esperion-agency-web-backend:green
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    ports:
+      - "8081:8080"  # Different port for initial testing
+    environment:
+      - RUST_LOG=info
+      - DATABASE_URL=ws://surrealdb-green:8000
+      - JWT_SECRET=${{ secrets.PRODUCTION_JWT_SECRET }}
+      - DATABASE_USER=${{ secrets.DB_USER }}
+      - DATABASE_PASS=${{ secrets.DB_ROOT_PASSWORD }}
+      - DB_ROOT_USER=${{ secrets.DB_ROOT_USER }}
+      - SMTP_HOST=${{ secrets.SMTP_HOST }}
+      - SMTP_PORT=${{ secrets.SMTP_PORT }}
+      - SMTP_USER=${{ secrets.SMTP_USER }}
+      - SMTP_PASS=${{ secrets.SMTP_PASS }}
+      - CONTACT_EMAIL=${{ secrets.CONTACT_EMAIL }}
+    depends_on:
+      - surrealdb-green
+    restart: unless-stopped
+    networks:
+      - esperion-network
+
+  surrealdb-green:
+    image: surrealdb/surrealdb:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    volumes:
+      - surrealdb-green-data:/data
+      - ./backups:/backups  # Local volume for database backups
+    environment:
+      - SURREAL_USER=${{ secrets.DB_ROOT_USER || 'root' }}
+      - SUREAL_PASS=${{ secrets.DB_ROOT_PASSWORD }}
+    command: start --user root --pass ${SURREAL_PASS} file:///data
+    restart: unless-stopped
+    networks:
+      - esperion-network
+
+  # Backup service for DB safety before deployment
+  backup-service:
+    image: alpine:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    volumes:
+      - ./backups:/backups
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: >
+      sh -c "
+        echo 'Backup service initialized' &&
+        tail -f /dev/null
+      "
+    restart: unless-stopped
+    networks:
+      - esperion-network
+    profiles:
+      - backup
+
+networks:
+  esperion-network:
+    driver: bridge
 
 volumes:
-  surrealdb-data:
+  surrealdb-blue-data:
+  surrealdb-green-data:

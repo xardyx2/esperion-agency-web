@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  frontend-staging:
+    image: ghcr.io/xardyx2/esperion-agency-web-frontend:${{ secrets.STAGING_TAG || 'develop' }}
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NUXT_PUBLIC_API_BASE=http://backend-staging:8080
+      - NUXT_PUBLIC_SITE_URL=https://staging.es.perion.app
+    restart: unless-stopped
+    depends_on:
+      - backend-staging
+    networks:
+      - esperion-network
+
+  backend-staging:
+    image: ghcr.io/xardyx2/esperion-agency-web-backend:${{ secrets.STAGING_TAG || 'develop' }}
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    ports:
+      - "8080:8080"
+    environment:
+      - RUST_LOG=info
+      - DATABASE_URL=ws://surrealdb-staging:8000
+      - JWT_SECRET=${{ secrets.JWT_SECRET || 'staging-secret-change-in-production' }}
+      - DATABASE_USER=root
+      - DATABASE_PASS=${{ secrets.DB_ROOT_PASSWORD || 'root' }}
+      - SMTP_HOST=${{ secrets.SMTP_HOST || 'smtp.gmail.com' }}
+      - SMTP_PORT=${{ secrets.SMTP_PORT || '587' }}
+      - SMTP_USER=${{ secrets.SMTP_USER || '' }}
+      - SMTP_PASS=${{ secrets.SMTP_PASS || '' }}
+      - CONTACT_EMAIL=${{ secrets.CONTACT_EMAIL || 'contact@example.com' }}
+    depends_on:
+      - surrealdb-staging
+    restart: unless-stopped
+    networks:
+      - esperion-network
+
+  surrealdb-staging:
+    image: surrealdb/surrealdb:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    ports:
+      - "8000:8000"
+    volumes:
+      - surrealdb-staging-data:/data
+    environment:
+      - SURREAL_USER=${{ secrets.DB_ROOT_USER || 'root' }}
+      - SURREAL_PASS=${{ secrets.DB_ROOT_PASSWORD || 'root' }}
+    command: start --user root --pass root file:///data
+    restart: unless-stopped
+    networks:
+      - esperion-network
+
+  # Optional: Add monitoring for staging
+  staging-monitor:
+    image: cronixx/uptime-kuma:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    ports:
+      - "3001:3001"
+    volumes:
+      - uptime-kuma-staging-data:/app/data
+    restart: unless-stopped
+    networks:
+      - esperion-network
+
+networks:
+  esperion-network:
+    driver: bridge
+
+volumes:
+  surrealdb-staging-data:
+  uptime-kuma-staging-data:
