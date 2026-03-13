@@ -9,7 +9,7 @@
       @touchend="handleTouchEnd"
     >
       <div class="relative w-full h-full">
-        <Transition :name="slideDirection === 'next' ? 'banner-slide-next' : 'banner-slide-prev'">
+        <Transition name="banner-slide">
           <div
             :key="currentSlide"
             class="banner-slide"
@@ -745,7 +745,6 @@ const startAutoPlay = () => {
     if (!isPaused.value) {
       // Record time before advancing
       lastAdvanceTime = Date.now()
-      slideDirection.value = 'next' // Auto-play selalu ke next
       currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
       // Recursive call untuk timing konsisten
       startAutoPlay()
@@ -759,8 +758,6 @@ const resetAutoPlay = () => {
   startAutoPlay()
 }
 
-const slideDirection = ref<'next' | 'prev'>('next')
-
 const pauseAutoPlay = () => {
   isPaused.value = true
   clearTimeout(bannerTimeout)
@@ -772,13 +769,11 @@ const resumeAutoPlay = () => {
 }
 
 const prevSlide = () => {
-  slideDirection.value = 'prev'
   currentSlide.value = currentSlide.value === 0 ? bannerSlides.value.length - 1 : currentSlide.value - 1
   resetAutoPlay()
 }
 
 const nextSlide = () => {
-  slideDirection.value = 'next'
   currentSlide.value = (currentSlide.value + 1) % bannerSlides.value.length
   resetAutoPlay()
 }
@@ -805,11 +800,9 @@ const handleSwipe = () => {
     if (Math.abs(diffX) > 50) {
       if (diffX > 0) {
         // Swipe left - next slide
-        slideDirection.value = 'next'
         nextSlide()
       } else {
         // Swipe right - previous slide
-        slideDirection.value = 'prev'
         prevSlide()
       }
     }
@@ -1030,7 +1023,37 @@ const resumeCarousel = () => {
   transform: translateX(100%);
 }
 
-/* Remove old slide positioning classes (no longer needed with TransitionGroup) */
+/* Enter animation (new slide coming in from right) */
+.banner-slide-enter-active {
+  transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+
+.banner-slide-enter-from {
+  transform: translateX(100%);
+}
+
+.banner-slide-enter-to {
+  transform: translateX(0);
+}
+
+/* Leave animation (old slide going to left) */
+.banner-slide-leave-active {
+  transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+.banner-slide-leave-from {
+  transform: translateX(0);
+}
+
+.banner-slide-leave-to {
+  transform: translateX(-100%);
+}
 
 /* Client Logos Marquee */
 .marquee-container {
