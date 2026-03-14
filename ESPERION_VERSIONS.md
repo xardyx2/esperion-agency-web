@@ -24,19 +24,19 @@ docker-compose config | grep image:
 ### Core Framework
 | Package | Current Version | Latest (npm) | Source |
 |---------|----------------|--------------|---------|
-| nuxt | ^3.20.2 / ^4.4.2 | 4.4.2 | package.json |
+| nuxt | ^4.4.2 | 4.4.2 | package.json |
 | vue | ^3.5.29 | 3.5.30 | package.json |
 | vue-router | ^4.6.4 | 5.0.3 | package.json |
 
 ### Nuxt Modules
 | Package | Current Version | Latest (npm) | Breaking Changes |
 |---------|----------------|--------------|------------------|
-| @nuxt/image | ^1.11.0 | 2.0.0 | xs/xxl removed |
-| @nuxt/ui | ^3.3.7 | 4.5.1 | uiPro→ui key |
-| @nuxt/eslint | ^0.7.6 | 1.15.2 | flat config only |
-| @nuxt/fonts | ^0.11.1 | 0.14.0 | None |
-| @nuxtjs/i18n | ^9.5.6 | 10.2.3 | lazy option removed |
-| @nuxtjs/color-mode | ^3.5.2 | 4.0.0 | hid removed |
+| @nuxt/image | ^2.0.0 | 2.0.0 | ✅ Upgraded |
+| @nuxt/ui | ^4.5.1 | 4.5.1 | ✅ Upgraded |
+| @nuxt/eslint | ^1.15.2 | 1.15.2 | ✅ Upgraded |
+| @nuxt/fonts | ^0.14.0 | 0.14.0 | ✅ Upgraded |
+| @nuxtjs/i18n | ^10.2.3 | 10.2.3 | ✅ Upgraded |
+| @nuxtjs/color-mode | ^4.0.0 | 4.0.0 | ✅ Upgraded |
 | @nuxtjs/robots | ^5.7.1 | 5.7.1 | Current |
 | @nuxtjs/sitemap | ^7.6.0 | 7.6.0 | Current |
 | @pinia/nuxt | ^0.11.3 | 0.11.3 | Current |
@@ -59,9 +59,9 @@ docker-compose config | grep image:
 ### Web Framework
 | Crate | Current Version | Latest (crates.io) | Breaking Changes |
 |-------|----------------|-------------------|------------------|
-| axum | =0.7.9 | 0.8.8 | :id→{id} syntax |
-| tower-http | =0.5.2 | 0.6.8 | None |
-| tokio | =1.42.0 | 1.50.0 | None |
+| axum | =0.8.8 | 0.8.8 | ✅ Upgraded |
+| tower-http | =0.6.8 | 0.6.8 | ✅ Upgraded |
+| tokio | =1.50.0 | 1.50.0 | ✅ Upgraded |
 
 ### Database
 | Crate | Current Version | Latest (crates.io) | Breaking Changes |
@@ -71,7 +71,7 @@ docker-compose config | grep image:
 ### Authentication
 | Crate | Current Version | Latest (crates.io) | Breaking Changes |
 |-------|----------------|-------------------|------------------|
-| jsonwebtoken | 9 | 10.3.0 | crypto backend req |
+| jsonwebtoken | 10 | 10.3.0 | ✅ Upgraded |
 | argon2 | 0.5 | 0.5.3 | None |
 
 ### Other Key Crates
@@ -95,12 +95,96 @@ docker-compose config | grep image:
 | Date | Author | Changes |
 |------|--------|---------|
 | 2026-03-14 | Claude | Initial version tracking setup |
+| 2026-03-14 | Claude | ✓ Upgraded: @nuxt/image 2.0, @nuxt/ui 4.5, @nuxt/eslint 1.15, i18n 10, color-mode 4 |
+| 2026-03-14 | Claude | ✓ Upgraded: Axum 0.8.8, jsonwebtoken 10, tower-http 0.6, tokio 1.50 |
+| 2026-03-14 | Claude | 📋 Documented: SurrealDB 1.5 → 3.0 migration (ready for execution) |
+
+## SurrealDB Migration Status
+
+**Current:** SurrealDB 1.5.6  
+**Target:** SurrealDB 3.0.4  
+**Status:** 📋 Migration documented, ready for staging test
+
+### Migration Artifacts
+- [x] Migration Guide: `openspec/changes/upgrade-backend-database-stack/MIGRATION_GUIDE.md`
+- [x] Task Checklist: `openspec/changes/upgrade-backend-database-stack/tasks.md`
+- [x] Technical Spec: `openspec/changes/upgrade-backend-database-stack/specs/surrealdb-v3/spec.md`
+- [ ] Staging migration tested
+- [ ] Production migration completed
+
+### Breaking Changes Handled
+- Storage: `file://` → `rocksdb://`
+- Connection string updated
+- Migration tool: `surreal fix` → export --v3 → import
+- Backup and rollback procedures documented
 
 ## How to Update This File
 
+### When to Update
+Update this file **IMMEDIATELY** after:
+- Running `bun install` or `npm install` for new packages
+- Running `cargo add` or updating `Cargo.toml`
+- Changing Docker image versions in `docker-compose.yml`
+- Any dependency upgrade (major, minor, or patch)
+
+### Update Steps
 1. After upgrading dependencies, run verification commands above
-2. Update the "Current Version" columns
+2. Update the "Current Version" columns in tables
 3. Check npm/crates.io for latest versions
-4. Update "Last Updated" timestamp
-5. Add entry to "Update History"
+4. Update "Last Updated" timestamp and author
+5. Add entry to "Update History" table
 6. Commit with message: "docs: update ESPERION_VERSIONS.md"
+
+### Example: After @nuxt/ui Upgrade
+```markdown
+| Date | Author | Changes |
+|------|--------|---------|
+| 2026-03-14 | YourName | ✓ Upgraded: @nuxt/ui 4.5.1 → 4.6.0 |
+```
+
+### AI Assistant Workflow
+
+When asking AI about versions or dependencies:
+
+**Step 1:** AI reads this file first
+**Step 2:** AI verifies with actual package files
+**Step 3:** AI provides answer with citations
+
+**Example Query:** "What version of Nuxt do we use?"
+
+**Good AI Response:**
+> "According to `ESPERION_VERSIONS.md` and verified in `frontend/package.json`:
+> - You're using **Nuxt 4.4.2** (^4.4.2)
+> - Latest available: 4.4.2
+> - Status: ✅ Current
+> 
+> To verify: `cd frontend && cat package.json | grep nuxt`"
+
+**Bad AI Response (DON'T DO THIS):**
+> "You use Nuxt version 3.x" *(outdated training data)*
+
+---
+
+## Troubleshooting
+
+### Issue: Script returns error
+**Solution:** Make sure you're in the right directory:
+```bash
+cd frontend && bun run versions:check
+```
+
+### Issue: Versions don't match
+**Solution:** Check which file is source of truth:
+- Frontend: `frontend/package.json`
+- Backend: `backend/Cargo.toml`
+- Docker: `docker-compose.yml`
+
+### Issue: Lock file out of sync
+**Solution:** Reinstall dependencies:
+```bash
+# Frontend
+cd frontend && rm -rf node_modules bun.lockb && bun install
+
+# Backend
+cd backend && rm -rf Cargo.lock && cargo build
+```

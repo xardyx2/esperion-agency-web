@@ -28,7 +28,7 @@
     "version:check": "npm list --depth=0",
     "version:outdated": "npm outdated",
     "version:report": "npm list --depth=0 --long > ../version-report-frontend.txt",
-    "versions:check": "bun pm ls | grep -E '@nuxt|nuxt|vue|pinia'",
+    "versions:check": "cat package.json | grep -E '\"(nuxt|vue|@nuxt|pinia)' | grep -v 'dev\\|build\\|generate\\|preview\\|postinstall\\|type-check\\|environment' | head -20",
     "versions:frontend": "cat package.json | grep -E '^\\s*\"(@nuxt|nuxt|vue)' | head -20",
     "versions:backend": "cd ../backend && cargo tree -p surrealdb -p axum -p tokio -p jsonwebtoken | head -15",
     "versions:verify": "bun run versions:check && echo '---' && bun run versions:backend"
@@ -44,6 +44,8 @@
     "@nuxtjs/sitemap": "^7.6.0",
     "@pinia/nuxt": "^0.11.3",
     "@vueuse/nuxt": "^13.9.0",
+    "autoprefixer": "^10.4.27",
+    "caniuse-lite": "^1.0.30001778",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
     "vue": "^3.5.29",
