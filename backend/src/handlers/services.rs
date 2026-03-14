@@ -16,11 +16,12 @@ use axum::{
     Extension,
     Router,
 };
+use std::sync::Arc;
 use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
 
 use crate::api::ApiResponse;
-use crate::db::DbState;
+use crate::AppState;
 use crate::models::service::{Service, ServiceFilter, CreateServiceRequest, UpdateServiceRequest, DEFAULT_SERVICES};
 use crate::models::user::UserClaims;
 
@@ -60,9 +61,10 @@ pub struct ListServicesResponse {
 )]
 #[axum::debug_handler]
 pub async fn list_services(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Query(filters): Query<ServiceFilter>,
 ) -> ApiResponse<ListServicesResponse> {
+    let db = &app_state.db;
     let where_clause = filters.to_where_clause();
     let limit = filters.limit.unwrap_or(50);
     let offset = filters.offset.unwrap_or(0);
@@ -109,9 +111,10 @@ pub async fn list_services(
 )]
 #[axum::debug_handler]
 pub async fn get_service(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Path(slug): Path<String>,
 ) -> ApiResponse<Service> {
+    let db = &app_state.db;
     let query = "SELECT * FROM services WHERE slug = $slug LIMIT 1";
     let mut result = db.query(query).bind(("slug", slug)).await.map_err(|e| crate::api::internal_error(e))?;
     
@@ -142,10 +145,11 @@ pub async fn get_service(
 )]
 #[axum::debug_handler]
 pub async fn create_service(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Json(request): Json<CreateServiceRequest>,
 ) -> ApiResponse<Service> {
+    let db = &app_state.db;
     let mut service = Service::new(
         request.title,
         request.slug,
@@ -206,11 +210,12 @@ pub async fn create_service(
 )]
 #[axum::debug_handler]
 pub async fn update_service(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
     Json(update): Json<UpdateServiceRequest>,
 ) -> ApiResponse<Service> {
+    let db = &app_state.db;
     // First check if service exists
     let query = "SELECT * FROM services WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
@@ -295,10 +300,11 @@ pub async fn update_service(
 )]
 #[axum::debug_handler]
 pub async fn delete_service(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
 ) -> ApiResponse<serde_json::Value> {
+    let db = &app_state.db;
     // First check if service exists
     let query = "SELECT * FROM services WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
@@ -321,7 +327,7 @@ pub async fn delete_service(
 }
 
 /// Seed default services
-pub async fn seed_default_services(db: DbState) -> Result<(), String> {
+pub async fn seed_default_services(db: Arc<crate::db::Db>) -> Result<(), String> {
     // Check if services already exist
     let query = "SELECT count() as count FROM services";
     let mut result = db.query(query).await.map_err(|e| format!("Failed to query services: {}", e))?;
@@ -358,11 +364,11 @@ pub async fn seed_default_services(db: DbState) -> Result<(), String> {
 }
 
 /// Register services routes
-pub fn register_routes(router: axum::Router<crate::db::DbState>) -> axum::Router<crate::db::DbState> {
+pub fn register_routes(router: Router<crate::AppState>) -> Router<crate::AppState> {
     router
         .route("/api/v1/services", axum::routing::get(list_services))
-        .route("/api/v1/services/:slug", axum::routing::get(get_service))
+        .route("/api/v1/services/{service_ref}", axum::routing::get(get_service))
         .route("/api/v1/services", axum::routing::post(create_service))
-        .route("/api/v1/services/:id", axum::routing::put(update_service))
-        .route("/api/v1/services/:id", axum::routing::delete(delete_service))
+        .route("/api/v1/services/{service_ref}", axum::routing::put(update_service))
+        .route("/api/v1/services/{service_ref}", axum::routing::delete(delete_service))
 }

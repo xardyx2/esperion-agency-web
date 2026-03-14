@@ -3,7 +3,7 @@
 
 -- Users table (authentication & authorization)
 DEFINE TABLE users SCHEMAFULL;
-DEFINE FIELD email ON users TYPE string ASSERT string::is::email($value);
+DEFINE FIELD email ON users TYPE string ASSERT string::is_email($value);
 DEFINE FIELD password_hash ON users TYPE string;
 DEFINE FIELD full_name ON users TYPE string;
 DEFINE FIELD role ON users TYPE string DEFAULT 'editor';
@@ -149,30 +149,30 @@ DEFINE FIELD updated_by ON site_settings TYPE option<record<users>>;
 DEFINE FIELD updated_at ON site_settings TYPE datetime DEFAULT time::now();
 
 -- Indexes for performance
-DEFINE INDEX idx_articles_slug_id ON articles FIELDS (slug_id);
-DEFINE INDEX idx_articles_slug_en ON articles FIELDS (slug_en);
-DEFINE INDEX idx_articles_published ON articles FIELDS (published);
-DEFINE INDEX idx_articles_category ON articles FIELDS (category);
-DEFINE INDEX idx_articles_translation_status ON articles FIELDS (translation_status);
+DEFINE INDEX idx_articles_slug_id ON articles FIELDS slug_id;
+DEFINE INDEX idx_articles_slug_en ON articles FIELDS slug_en;
+DEFINE INDEX idx_articles_published ON articles FIELDS published;
+DEFINE INDEX idx_articles_category ON articles FIELDS category;
+DEFINE INDEX idx_articles_translation_status ON articles FIELDS translation_status;
 
-DEFINE INDEX idx_works_slug ON works FIELDS (slug);
-DEFINE INDEX idx_works_featured ON works FIELDS (featured);
-DEFINE INDEX idx_works_service ON works FIELDS (service);
+DEFINE INDEX idx_works_slug ON works FIELDS slug;
+DEFINE INDEX idx_works_featured ON works FIELDS featured;
+DEFINE INDEX idx_works_service ON works FIELDS service;
 
-DEFINE INDEX idx_services_slug ON services FIELDS (slug);
-DEFINE INDEX idx_services_featured ON services FIELDS (featured);
+DEFINE INDEX idx_services_slug ON services FIELDS slug;
+DEFINE INDEX idx_services_featured ON services FIELDS featured;
 
-DEFINE INDEX idx_clients_featured ON clients FIELDS (featured);
-DEFINE INDEX idx_clients_status ON clients FIELDS (status);
+DEFINE INDEX idx_clients_featured ON clients FIELDS featured;
+DEFINE INDEX idx_clients_status ON clients FIELDS status;
 
-DEFINE INDEX idx_users_email ON users FIELDS (email) UNIQUE;
-DEFINE INDEX idx_users_username ON users FIELDS (username) UNIQUE;
+DEFINE INDEX idx_users_email ON users FIELDS email UNIQUE;
+DEFINE INDEX idx_users_username ON users FIELDS username UNIQUE;
 
-DEFINE INDEX idx_sessions_token ON sessions FIELDS (token) UNIQUE;
-DEFINE INDEX idx_sessions_user ON sessions FIELDS (user_id);
-DEFINE INDEX idx_sessions_expires ON sessions FIELDS (expires_at);
+DEFINE INDEX idx_sessions_token ON sessions FIELDS token UNIQUE;
+DEFINE INDEX idx_sessions_user ON sessions FIELDS user_id;
+DEFINE INDEX idx_sessions_expires ON sessions FIELDS expires_at;
 
-DEFINE INDEX idx_translation_cache_source ON translation_cache FIELDS (source_text, source_lang, target_lang);
+DEFINE INDEX idx_translation_cache_source ON translation_cache FIELDS source_text, source_lang, target_lang;
 
-DEFINE INDEX idx_analytics_events_type ON analytics_events FIELDS (event_type, created_at);
-DEFINE INDEX idx_analytics_events_session ON analytics_events FIELDS (session_id);
+DEFINE INDEX idx_analytics_events_type ON analytics_events FIELDS event_type, created_at;
+DEFINE INDEX idx_analytics_events_session ON analytics_events FIELDS session_id;

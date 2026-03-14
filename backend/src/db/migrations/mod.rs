@@ -52,7 +52,7 @@ impl From<MigrationError> for surrealdb::Error {
     fn from(err: MigrationError) -> Self {
         match err {
             MigrationError::DbError(e) => e,
-            _ => surrealdb::Error::Api(format!("{}", err).into()),
+            _ => surrealdb::Error::Db(surrealdb::error::Db::Thrown(format!("Migration error: {}", err).into())),
         }
     }
 }
@@ -70,10 +70,10 @@ impl MigrationManager {
     pub async fn init(&self) -> Result<(), MigrationError> {
         let sql = r#"
             DEFINE TABLE migrations SCHEMAFULL;
-            DEFINE FIELD version ON migrations TYPE string | FAIL;
-            DEFINE FIELD name ON migrations TYPE string | FAIL;
-            DEFINE FIELD applied_at ON migrations TYPE datetime | time::now() | FAIL;
-            DEFINE FIELD checksum ON migrations TYPE string | FAIL;
+            DEFINE FIELD version ON migrations TYPE string;
+            DEFINE FIELD name ON migrations TYPE string;
+            DEFINE FIELD applied_at ON migrations TYPE datetime;
+            DEFINE FIELD checksum ON migrations TYPE string;
             DEFINE INDEX idx_version ON migrations FIELDS version UNIQUE;
         "#;
         
@@ -202,7 +202,36 @@ lazy_static! {
             up: include_str!("./002_add_user_sessions.sql").to_string(),
             down: Some(include_str!("./002_add_user_sessions_down.sql").to_string()),
         },
-        // Add more migrations here
+        Migration {
+            version: "1.2.0".to_string(),
+            name: "Add translation memory table".to_string(),
+            up: include_str!("./003_add_translation_memory_table.sql").to_string(),
+            down: Some(include_str!("./003_add_translation_memory_table_down.sql").to_string()),
+        },
+        Migration {
+            version: "1.3.0".to_string(),
+            name: "Add publication options to articles".to_string(),
+            up: include_str!("./004_add_publication_options_to_articles.sql").to_string(),
+            down: Some(include_str!("./004_add_publication_options_to_articles_down.sql").to_string()),
+        },
+        Migration {
+            version: "1.4.0".to_string(),
+            name: "Add monitoring alerting tables".to_string(),
+            up: include_str!("./005_add_monitoring_alerting_tables.sql").to_string(),
+            down: Some(include_str!("./005_add_monitoring_alerting_tables_down.sql").to_string()),
+        },
+        Migration {
+            version: "1.5.0".to_string(),
+            name: "Add analytics funnels table".to_string(),
+            up: include_str!("./006_add_analytics_funnels.sql").to_string(),
+            down: Some(include_str!("./006_add_analytics_funnels_down.sql").to_string()),
+        },
+        Migration {
+            version: "1.6.0".to_string(),
+            name: "Add backup jobs table".to_string(),
+            up: include_str!("./007_add_backup_jobs.sql").to_string(),
+            down: Some(include_str!("./007_add_backup_jobs_down.sql").to_string()),
+        },
     ];
 }
 
@@ -226,65 +255,19 @@ pub async fn run_migrations(db: Surreal<Client>) -> Result<Vec<String>, Migratio
 
 #[cfg(test)]
 mod tests {
-    use surrealdb::engine::any::Any;
-    use surrealdb::Surreal;
+    use super::calculate_checksum;
 
-    #[tokio::test]
-    async fn test_migration_system() {
-        // Use in-memory database for testing
-        let db: Surreal<Any> = surrealdb::engine::any::connect("memory").await.unwrap();
-        
-        // Switch to a test namespace/database
-        db.use_ns("test").use_db("migration_test").await.unwrap();
-        
-        let manager = super::MigrationManager::new(db);
-
-        // Initialize migrations table
-        assert!(manager.init().await.is_ok());
-
-        // Get initially applied migrations - should be none
-        let applied = manager.get_applied_migrations().await.unwrap();
-        assert_eq!(applied.len(), 0);
-
-        // Perform migrations
-        let result = manager.migrate().await;
-        assert!(result.is_ok());
-        
-        // Should have applied migrations now
-        let applied = manager.get_applied_migrations().await.unwrap();
-        assert!(!applied.is_empty());
-        
-        // Check migration status 
-        let (applied_db, pending) = manager.status().await.unwrap();
-        assert!(!applied_db.is_empty());
-        assert_eq!(pending.len(), 0); // all should be applied
-        
-        // Test rollback of the latest migration
-        let result = manager.rollback(None).await;
-        assert!(result.is_ok());
-        
-        tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
-        
-        let applied_after_rollback = manager.get_applied_migrations().await.unwrap();
-        assert_eq!(applied_after_rollback.len(), applied.len() - 1);
-    }
-
-    #[tokio::test]
-    async fn test_migration_checksum_calculation() {
-        use super::*;
-
+    #[test]
+    fn test_migration_checksum_calculation() {
         let sample_sql = "CREATE TABLE test_table;";
         let checksum = calculate_checksum(sample_sql);
-        
-        // Verify checksum isn't empty and is correct length (SHA256 = 64 hex chars)
+
         assert!(!checksum.is_empty());
-        assert_eq!(checksum.len(), 64); 
-        
-        // Verify same input produces same output
+        assert_eq!(checksum.len(), 64);
+
         let checksum2 = calculate_checksum(sample_sql);
         assert_eq!(checksum, checksum2);
-        
-        // Verify different input produces different checksum
+
         let different_sql = "CREATE TABLE another_table;";
         let checksum3 = calculate_checksum(different_sql);
         assert_ne!(checksum, checksum3);

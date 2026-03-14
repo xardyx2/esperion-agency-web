@@ -4,13 +4,12 @@
  * Contains database connection and operations using SurrealDB.
  * 
  * Features:
- * - Connection pooling
+ * - Shared SurrealDB client lifecycle
  * - Schema migrations
  * - Query helpers
  */
 
-#[macro_use]
-extern crate lazy_static;
+use lazy_static::lazy_static;
 
 pub mod schema;
 pub mod migrations;
@@ -23,29 +22,41 @@ use std::sync::{Arc, OnceLock};
 /// Database client type alias
 pub type Db = Surreal<surrealdb::engine::remote::ws::Client>;
 
-/// Database state type for Axum State extractor
+/// Database state type for Axum State extractor.
+///
+/// This project currently reuses one initialized SurrealDB client behind an `Arc`.
+/// It does not implement a separate connection pool abstraction.
 pub type DbState = Arc<Db>;
 
-/// Global database connection
+/// Global shared database client used across handlers.
 static DB: OnceLock<Db> = OnceLock::new();
 
-/// Initialize database connection
+/// Get database URL from environment
+fn get_database_url() -> String {
+    let host = std::env::var("DB_HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
+    let port = std::env::var("DB_PORT").unwrap_or_else(|_| "8000".to_string());
+    format!("{}:{}", host, port)
+}
+
+/// Initialize the shared database client.
 pub async fn init() -> Result<(), Box<dyn std::error::Error>> {
-    let db = Surreal::new::<Ws>("127.0.0.1:8000").await?;
+    let db_url = get_database_url();
+    let db = Surreal::new::<Ws>(&db_url).await?;
     
     // Sign in as root
     db.signin(Root {
-        username: "root",
-        password: "root",
+        username: &std::env::var("DB_USER").unwrap_or_else(|_| "root".to_string()),
+        password: &std::env::var("DB_PASS").unwrap_or_else(|_| "root".to_string()),
     }).await?;
     
     // Select namespace and database
-    db.use_ns("esperion").use_db("esperion_db").await?;
+    db.use_ns(&std::env::var("DB_NS").unwrap_or_else(|_| "esperion".to_string()))
+     .use_db(&std::env::var("DB_DB").unwrap_or_else(|_| "esperion_db".to_string())).await?;
     
     // Store connection globally
     DB.set(db).map_err(|_| "Failed to set global DB connection")?;
     
-    tracing::info!("Database connection initialized");
+    tracing::info!("Database connection initialized to {}", db_url);
     
     Ok(())
 }
@@ -55,30 +66,35 @@ pub fn get_db() -> &'static Db {
     DB.get().expect("Database not initialized")
 }
 
-/// Get database connection as Arc (for Axum State)
+/// Get the shared database client wrapped in `Arc` for Axum state usage.
+///
+/// This keeps handler access cheap and consistent, but it is still a shared client,
+/// not a true pool with multiple managed connections.
 pub fn get_db_state() -> DbState {
     DB.get().cloned().expect("Database not initialized").into()
 }
 
 /// Initialize database connection with migrations
 pub async fn init_with_migrations() -> Result<Db, Box<dyn std::error::Error>> {
-    let db = Surreal::new::<Ws>("127.0.0.1:8000").await?;
+    let db_url = get_database_url();
+    let db = Surreal::new::<Ws>(&db_url).await?;
     
     // Sign in as root
     db.signin(Root {
-        username: "root",
-        password: "root",
+        username: &std::env::var("DB_USER").unwrap_or_else(|_| "root".to_string()),
+        password: &std::env::var("DB_PASS").unwrap_or_else(|_| "root".to_string()),
     }).await?;
     
     // Select namespace and database
-    db.use_ns("esperion").use_db("esperion_db").await?;
+    db.use_ns(&std::env::var("DB_NS").unwrap_or_else(|_| "esperion".to_string()))
+     .use_db(&std::env::var("DB_DB").unwrap_or_else(|_| "esperion_db".to_string())).await?;
     
     // Run migrations
     crate::db::migrations::run_migrations(db.clone()).await.map_err(|e| {
         Box::<dyn std::error::Error>::from(format!("Migration failed: {}", e))
     })?;
     
-    tracing::info!("Database initialized with migrations");
+    tracing::info!("Database initialized with migrations on {}", db_url);
     
     Ok(db)
 }

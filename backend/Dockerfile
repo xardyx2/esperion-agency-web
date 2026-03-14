@@ -1,9 +1,10 @@
 # Development stage with cargo-watch for hot reload
-FROM rust:1.80-alpine AS development
+FROM rustlang/rust:nightly-alpine AS development
 
 RUN apk add --no-cache \
     musl-dev \
     openssl-dev \
+    openssl-libs-static \
     pkgconfig \
     python3
 
@@ -15,34 +16,25 @@ RUN cargo install cargo-watch
 # Copy manifest first for better caching
 COPY Cargo.toml Cargo.lock ./
 
-# Create a dummy main.rs to enable caching of dependencies
-RUN mkdir src && echo "fn main() { println!(\"Dummy build for caching\"); }" > src/main.rs
-
-# Install dependencies
-RUN cargo build --release || true
+# Pre-fetch dependencies for faster first run
+RUN mkdir -p src && echo "fn main() {}" > src/main.rs && cargo fetch
 
 # Now copy the actual source code
 COPY . .
-
-# Remove the dummy files if they exist and copy actual src
-RUN rm -rf src && mkdir src
-COPY src ./src
-
-# Build and cache the application
-RUN cargo build --release
 
 # Expose port for development
 EXPOSE 8080
 
 # Use cargo watch for development with hot reload
-CMD ["cargo", "watch", "-s", "cargo run"]
+CMD ["cargo", "watch", "--poll", "-x", "run"]
 
 # Build stage
-FROM rust:1.80-alpine AS build
+FROM rustlang/rust:nightly-alpine AS build
 
 RUN apk add --no-cache \
     musl-dev \
     openssl-dev \
+    openssl-libs-static \
     pkgconfig
 
 WORKDIR /app

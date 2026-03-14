@@ -20,7 +20,7 @@ use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
 
 use crate::api::ApiResponse;
-use crate::db::DbState;
+use crate::AppState;
 use crate::models::client::{Client, ClientFilter, CreateClientRequest, UpdateClientRequest, ClientStatus, ClientStats, ClientStatusCounts, CategoryCount, ClientLogo};
 use crate::models::user::UserClaims;
 
@@ -62,9 +62,10 @@ pub struct ListClientsResponse {
 )]
 #[axum::debug_handler]
 pub async fn list_clients(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Query(filters): Query<ClientFilter>,
 ) -> ApiResponse<ListClientsResponse> {
+    let db = &app_state.db;
     let where_clause = filters.to_where_clause();
     let limit = filters.limit.unwrap_or(50);
     let offset = filters.offset.unwrap_or(0);
@@ -107,8 +108,9 @@ pub async fn list_clients(
 )]
 #[axum::debug_handler]
 pub async fn get_client_stats(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
 ) -> ApiResponse<ClientStats> {
+    let db = &app_state.db;
     // Get total count
     let total_query = "SELECT count() as count FROM clients";
     let mut total_result = db.query(total_query).await.map_err(|e| crate::api::internal_error(e))?;
@@ -190,9 +192,10 @@ pub async fn get_client_stats(
 )]
 #[axum::debug_handler]
 pub async fn get_client_logos(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Query(limit_query): Query<Option<u32>>,
 ) -> ApiResponse<Vec<ClientLogo>> {
+    let db = &app_state.db;
     let limit = limit_query.unwrap_or(20);
     
     let query = "SELECT id, name, logo, category FROM clients WHERE featured = true ORDER BY created_at DESC LIMIT $limit";
@@ -219,9 +222,10 @@ pub async fn get_client_logos(
 )]
 #[axum::debug_handler]
 pub async fn get_client(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Path(id): Path<String>,
 ) -> ApiResponse<Client> {
+    let db = &app_state.db;
     let query = "SELECT * FROM clients WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("clients", id.as_str()))))
@@ -254,10 +258,11 @@ pub async fn get_client(
 )]
 #[axum::debug_handler]
 pub async fn create_client(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Json(request): Json<CreateClientRequest>,
 ) -> ApiResponse<Client> {
+    let db = &app_state.db;
     let mut client = Client::new(
         request.name,
         request.logo,
@@ -317,11 +322,12 @@ pub async fn create_client(
 )]
 #[axum::debug_handler]
 pub async fn update_client(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
     Json(update): Json<UpdateClientRequest>,
 ) -> ApiResponse<Client> {
+    let db = &app_state.db;
     // First check if client exists
     let query = "SELECT * FROM clients WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
@@ -400,10 +406,11 @@ pub async fn update_client(
 )]
 #[axum::debug_handler]
 pub async fn delete_client(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
 ) -> ApiResponse<serde_json::Value> {
+    let db = &app_state.db;
     // First check if client exists
     let query = "SELECT * FROM clients WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
@@ -426,13 +433,13 @@ pub async fn delete_client(
 }
 
 /// Register clients routes
-pub fn register_routes(router: Router<crate::db::DbState>) -> Router<crate::db::DbState> {
+pub fn register_routes(router: Router<crate::AppState>) -> Router<crate::AppState> {
     router
         .route("/api/v1/clients", axum::routing::get(list_clients))
         .route("/api/v1/clients/stats", axum::routing::get(get_client_stats))
         .route("/api/v1/clients/logos", axum::routing::get(get_client_logos))
-        .route("/api/v1/clients/:id", axum::routing::get(get_client))
+        .route("/api/v1/clients/{id}", axum::routing::get(get_client))
         .route("/api/v1/clients", axum::routing::post(create_client))
-        .route("/api/v1/clients/:id", axum::routing::put(update_client))
-        .route("/api/v1/clients/:id", axum::routing::delete(delete_client))
+        .route("/api/v1/clients/{id}", axum::routing::put(update_client))
+        .route("/api/v1/clients/{id}", axum::routing::delete(delete_client))
 }

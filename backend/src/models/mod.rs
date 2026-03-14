@@ -1,8 +1,11 @@
+pub mod analytics;
 pub mod article;
+pub mod backup;
 pub mod client;
 pub mod contact;
 pub mod email;
 pub mod media;
+pub mod monitoring;
 pub mod recaptcha;
 pub mod seo_score;
 pub mod service;
@@ -17,6 +20,8 @@ pub mod service;
  * - client: Client model
  * - contact: Contact submission model
  * - recaptcha: reCAPTCHA response model
+ * - translation: Translation memory model
  */
+pub mod translation;
 pub mod user;
 pub mod work;

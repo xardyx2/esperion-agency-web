@@ -16,7 +16,7 @@ use axum::{
 use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
 use crate::api::ApiResponse;
-use crate::db::DbState;
+use crate::AppState;
 use crate::models::seo_score::{SeoScore, SeoScoreBreakdown, CalculateSeoScoreRequest, CompetitorAnalysis};
 use crate::models::user::UserClaims;
 
@@ -208,10 +208,11 @@ pub fn calculate_seo_score(request: &CalculateSeoScoreRequest) -> SeoScoreRespon
 )]
 #[axum::debug_handler]
 pub async fn calculate_seo(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Json(request): Json<CalculateSeoScoreRequest>,
 ) -> ApiResponse<SeoScoreResponse> {
+    let db = &app_state.db;
     // Calculate score
     let calculated_score = calculate_seo_score(&request);
 
@@ -251,9 +252,10 @@ pub async fn calculate_seo(
 )]
 #[axum::debug_handler]
 pub async fn get_seo_score(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Path(article_id): Path<String>,
 ) -> ApiResponse<SeoScoreResponse> {
+    let db = &app_state.db;
     let query = "SELECT * FROM seo_scores WHERE article_id = $article_id LIMIT 1";
     let mut result = db.query(query)
         .bind(("article_id", article_id.as_str()))
@@ -286,9 +288,10 @@ pub async fn get_seo_score(
 )]
 #[axum::debug_handler]
 pub async fn get_competitor_analysis(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Path(keyword): Path<String>,
 ) -> ApiResponse<CompetitorAnalysis> {
+    let db = &app_state.db;
     let query = "SELECT * FROM competitor_analysis WHERE keyword = $keyword LIMIT 1";
     let mut result = db.query(query)
         .bind(("keyword", keyword.as_str()))
@@ -305,9 +308,9 @@ pub async fn get_competitor_analysis(
 }
 
 /// Register SEO routes
-pub fn register_routes(router: axum::Router<crate::db::DbState>) -> axum::Router<crate::db::DbState> {
+pub fn register_routes(router: axum::Router<crate::AppState>) -> axum::Router<crate::AppState> {
     router
         .route("/api/v1/seo/calculate", axum::routing::post(calculate_seo))
-        .route("/api/v1/seo/:article_id", axum::routing::get(get_seo_score))
-        .route("/api/v1/seo/competitor/:keyword", axum::routing::get(get_competitor_analysis))
+        .route("/api/v1/seo/{article_id}", axum::routing::get(get_seo_score))
+        .route("/api/v1/seo/competitor/{keyword}", axum::routing::get(get_competitor_analysis))
 }

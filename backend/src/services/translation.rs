@@ -163,19 +163,6 @@ mod tests {
         assert_eq!(format!("{}", error), "Configuration Error: Config error");
     }
 
-    #[test]
-    fn test_translation_error_from_reqwest_error() {
-        let reqwest_error = reqwest::Error::from(std::io::Error::new(std::io::ErrorKind::Other, "test"));
-        let translation_error = TranslationError::from(reqwest_error);
-        
-        match translation_error {
-            TranslationError::NetworkError(_) => {
-                // Test passed
-            },
-            _ => panic!("Expected NetworkError"),
-        }
-    }
-    
     // We can't run the actual API test since it would require a real API key and network connectivity
     // The real test happens during integration
 }

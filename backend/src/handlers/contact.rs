@@ -18,16 +18,13 @@ use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
 
 use crate::api::ApiResponse;
-use crate::db::DbState;
+use crate::AppState;
 use crate::models::contact::{ContactSubmission, ContactFilter, CreateContactRequest, UpdateContactRequest, ContactStats, ContactStatusCounts, ServiceCount};
 use crate::models::user::UserClaims;
 use crate::services::email::EmailService;
 use crate::models::recaptcha::RecaptchaResponse;
 use crate::errors::{AppError, RecaptchaError};
 use std::sync::Arc;
-
-// Need to use State<AppState> and then extract what we need
-use axum::extract::State;
 
 /// Contact API tags for OpenAPI
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -113,12 +110,12 @@ impl From<AppError> for crate::api::ApiError {
         (status = 500, description = "Internal server error")
     )
 )]
-#[axum::debug_handler]
 pub async fn submit_contact(
-    State(db): State<Arc<crate::db::Db>>,
-    State(email_service): State<crate::services::email::EmailService>,
+    State(app_state): State<crate::AppState>,
     Json(request): Json<CreateContactRequest>,
 ) -> ApiResponse<ContactSubmission> {
+    let db = &app_state.db;
+    let email_service = &app_state.email_service;
     // Get reCAPTCHA secret key from environment
     let recaptcha_secret = std::env::var("RECAPTCHA_SECRET_KEY")
         .map_err(|_| crate::api::internal_error("RECAPTCHA_SECRET_KEY not configured"))?;
@@ -212,10 +209,11 @@ pub async fn submit_contact(
 )]
 #[axum::debug_handler]
 pub async fn list_submissions(
-    State(db): State<Arc<crate::db::Db>>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Query(filters): Query<ContactFilter>,
 ) -> ApiResponse<ListContactResponse> {
+    let db = &app_state.db;
     let where_clause = filters.to_where_clause();
     let limit = filters.limit.unwrap_or(50);
     let offset = filters.offset.unwrap_or(0);
@@ -266,10 +264,11 @@ pub async fn list_submissions(
 )]
 #[axum::debug_handler]
 pub async fn get_submission(
-    State(db): State<Arc<crate::db::Db>>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
 ) -> ApiResponse<ContactSubmission> {
+    let db = &app_state.db;
     let query = "SELECT * FROM contact_submissions WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
         .bind(("id", Thing::from(("contact_submissions", id.as_str()))))
@@ -305,11 +304,12 @@ pub async fn get_submission(
 )]
 #[axum::debug_handler]
 pub async fn update_submission(
-    State(db): State<Arc<crate::db::Db>>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
     Json(update): Json<UpdateContactRequest>,
 ) -> ApiResponse<ContactSubmission> {
+    let db = &app_state.db;
     // First check if submission exists
     let query = "SELECT * FROM contact_submissions WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
@@ -380,9 +380,10 @@ pub async fn update_submission(
 )]
 #[axum::debug_handler]
 pub async fn get_contact_stats(
-    State(db): State<Arc<crate::db::Db>>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
 ) -> ApiResponse<ContactStats> {
+    let db = &app_state.db;
     // Get total count
     let total_query = "SELECT count() as count FROM contact_submissions";
     let mut total_result = db.query(total_query).await.map_err(|e| crate::api::internal_error(e))?;
@@ -438,14 +439,4 @@ pub async fn get_contact_stats(
         by_status: ContactStatusCounts { new, contacted, qualified, converted, lost },
         by_service,
     }))
-}
-
-/// Register contact routes
-pub fn register_routes<T>(router: Router<T>) -> Router<T> where T: Clone + Send + Sync + 'static {
-    router
-        .route("/api/v1/contact", axum::routing::post(submit_contact))
-        .route("/api/v1/contact/submissions", axum::routing::get(list_submissions))
-        .route("/api/v1/contact/submissions/:id", axum::routing::get(get_submission))
-        .route("/api/v1/contact/submissions/:id", axum::routing::put(update_submission))
-        .route("/api/v1/contact/stats", axum::routing::get(get_contact_stats))
 }

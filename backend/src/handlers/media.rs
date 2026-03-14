@@ -21,10 +21,9 @@ use tokio::fs::{self, File};
 use tokio::io::AsyncWriteExt;
 use uuid::Uuid;
 use chrono::Datelike;
-use std::path::Path;
 
 use crate::api::ApiResponse;
-use crate::db::DbState;
+use crate::AppState;
 use crate::models::media::{Media, MediaType, MediaFilter, MediaUploadResponse, MediaSize};
 use crate::models::user::UserClaims;  // Add this import for authentication
 use crate::services::image_processor::ImageProcessor;
@@ -37,13 +36,13 @@ use dotenvy::dotenv;
 pub struct MediaApi;
 
 /// Register media routes
-pub fn register_routes(router: Router<crate::db::DbState>) -> Router<crate::db::DbState> {
+pub fn register_routes(router: Router<crate::AppState>) -> Router<crate::AppState> {
     router
         .route("/api/v1/media", axum::routing::get(list_media))
-        .route("/api/v1/media/:id", axum::routing::get(get_media))
+        .route("/api/v1/media/{id}", axum::routing::get(get_media))
         .route("/api/v1/media/upload", axum::routing::post(upload_media))
-        .route("/api/v1/media/:id", axum::routing::put(update_media))
-        .route("/api/v1/media/:id", axum::routing::delete(delete_media))
+        .route("/api/v1/media/{id}", axum::routing::put(update_media))
+        .route("/api/v1/media/{id}", axum::routing::delete(delete_media))
         .route("/api/v1/media/stats", axum::routing::get(get_media_stats))
 }
 
@@ -117,39 +116,6 @@ fn get_image_sizes() -> Vec<(String, u32, u32)> {
     sizes
 }
 
-/// Get image size configuration from environment, default to standard sizes
-fn get_image_sizes() -> Vec<(String, u32, u32)> {
-    dotenv().ok(); // Load .env file if it exists
-    let sizes_str = std::env::var("IMAGE_SIZES")
-        .unwrap_or_else(|_| "thumbnail:150x150,small:300x300,medium:600x600,large:1200x1200".to_string());
-    
-    let mut sizes = Vec::new();
-    for size_part in sizes_str.split(',') {
-        if let [name, dims] = size_part.trim().split(':').collect::<Vec<_>>()[..] {
-            if let [width_str, height_str] = dims.split('x').collect::<Vec<_>>()[..] {
-                if let (Ok(width), Ok(height)) = (width_str.parse::<u32>(), height_str.parse::<u32>()) {
-                    sizes.push((name.to_string(), width, height));
-                } else {
-                    // Use default sizes if parsing fails
-                    break;
-                }
-            }
-        }
-    }
-    
-    // Use defaults if parsing failed
-    if sizes.is_empty() {
-        sizes = vec![
-            ("thumbnail".to_string(), 150, 150),
-            ("small".to_string(), 300, 300),
-            ("medium".to_string(), 600, 600),
-            ("large".to_string(), 1200, 1200),
-        ];
-    }
-    
-    sizes
-}
-
 // ============== Handler Functions ==============
 
 /// GET /api/v1/media
@@ -174,9 +140,10 @@ fn get_image_sizes() -> Vec<(String, u32, u32)> {
 )]
 #[axum::debug_handler]
 pub async fn list_media(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Query(filters): Query<MediaFilter>,
 ) -> ApiResponse<ListMediaResponse> {
+    let db = &app_state.db;
     let where_clause = filters.to_where_clause();
     let limit = filters.limit.unwrap_or(50);
     let offset = filters.offset.unwrap_or(0);
@@ -224,9 +191,10 @@ pub async fn list_media(
 )]
 #[axum::debug_handler]
 pub async fn get_media(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Path(id): Path<String>,
 ) -> ApiResponse<Media> {
+    let db = &app_state.db;
     let query = "SELECT * FROM media_library WHERE id = $id LIMIT 1";
     let mut result = db.query(query).bind(("id", Thing::from(("media_library", id.as_str())))).await.map_err(|e| crate::api::internal_error(e))?;
     
@@ -257,10 +225,11 @@ pub async fn get_media(
 )]
 #[axum::debug_handler]
 pub async fn upload_media(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     mut multipart: Multipart,
 ) -> ApiResponse<MediaUploadResponse> {
+    let db = &app_state.db;
     // Get the file field
     let Some(field) = multipart.next_field().await.map_err(|e| {
         crate::api::bad_request_error(&format!("Failed to read multipart: {}", e))
@@ -377,11 +346,17 @@ pub async fn upload_media(
         media_type.clone(),
         data.len() as i64,
         None, // Will be set to the user who uploaded
-    )
-    .with_webp_path(webp_path)
-    .with_thumbnail_path(thumbnail_path)
-    .with_sizes(media_sizes)
-    .with_keep_original(keep_original);
+    );
+    
+    // Set optional fields
+    if let Some(path) = webp_path {
+        media = media.with_webp_path(path);
+    }
+    if let Some(path) = thumbnail_path {
+        media = media.with_thumbnail_path(path);
+    }
+    media = media.with_sizes(media_sizes)
+        .with_keep_original(keep_original);
 
     // Save to database
     let query = "CREATE media_library CONTENT $content";
@@ -440,11 +415,12 @@ pub async fn upload_media(
 )]
 #[axum::debug_handler]
 pub async fn update_media(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
     Json(update): Json<UpdateMediaRequest>,
 ) -> ApiResponse<Media> {
+    let db = &app_state.db;
     // First check if media exists
     let query = "SELECT * FROM media_library WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
@@ -505,10 +481,11 @@ pub async fn update_media(
 )]
 #[axum::debug_handler]
 pub async fn delete_media(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
 ) -> ApiResponse<serde_json::Value> {
+    let db = &app_state.db;
     // First check if media exists and get path information
     let query = "SELECT path, webp_path, original_path, keep_original FROM media_library WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
@@ -551,7 +528,7 @@ pub async fn delete_media(
 
         if let Some(base_name) = base_name {
             // The processed directory is where we store the WebP versions
-            let processed_dir = Path::new(&webp_path_val).parent().unwrap_or(std::path::Path::new(""));
+            let processed_dir = std::path::Path::new(&webp_path_val).parent().unwrap_or(std::path::Path::new(""));
             // Delete all related processing files associated with this original base name
             
             // Since async file traversal is complex here, we'll just log an approach for deletion
@@ -581,8 +558,9 @@ pub async fn delete_media(
 )]
 #[axum::debug_handler]
 pub async fn get_media_stats(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
 ) -> ApiResponse<serde_json::Value> {
+    let db = &app_state.db;
     let query = r#"
         SELECT 
             count() as total,

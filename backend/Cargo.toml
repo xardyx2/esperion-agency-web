@@ -5,11 +5,11 @@ edition = "2021"
 
 [dependencies]
 # Web framework
-axum = { version = "=0.7.9", features = ["multipart", "macros"] }
-tower-http = { version = "=0.5.2", features = ["cors"] }
+axum = { version = "=0.8.8", features = ["multipart", "macros"] }
+tower-http = { version = "=0.6.8", features = ["cors"] }
 
 # Async runtime
-tokio = { version = "=1.42.0", features = ["full"] }
+tokio = { version = "=1.50.0", features = ["full"] }
 
 # CLI
 clap = { version = "4.0", features = ["derive"] }
@@ -20,11 +20,13 @@ utoipa-scalar = "=0.1.0"
 
 # Authentication
 argon2 = "0.5"
-jsonwebtoken = "9"
+jsonwebtoken = { version = "10", features = ["rust_crypto"] }
 
 # Serialization
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+base64 = "0.22"
+urlencoding = "2.1"
 
 # Error handling
 thiserror = "1"
@@ -40,7 +42,7 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # Date/time
-chrono = { version = "=0.4.38", features = ["serde"] }
+chrono = { version = "=0.4.44", features = ["serde"] }
 
 # UUID
 uuid = { version = "1", features = ["v4", "serde"] }
@@ -56,10 +58,11 @@ webp = "0.3"
 dotenvy = "0.15"
 
 # Email utilities
-lettre = { version = "^0.11.3", features = ["tokio1-native-tls", "smtp-transport", "pool", "builder"] }
+lettre = { version = "=0.11.19", features = ["tokio1-native-tls", "smtp-transport", "pool", "builder"] }
 
 # Async traits
 async-trait = "=0.1.83"
+governor = { version = "0.10.4", features = ["std"] }
 
 [dev-dependencies]
 tokio-test = "0.4"

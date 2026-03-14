@@ -24,6 +24,7 @@ use clap::Parser;
 use clap::Subcommand;
 use std::sync::Arc;
 use axum::{extract::FromRef, Router};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use dotenvy;
 
@@ -217,69 +218,107 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn build_router(state: AppState) -> axum::Router {
     use axum::routing::{get, post, put, delete};
     use tower_http::cors::CorsLayer;
+    use crate::middleware::auth_middleware;
+    use crate::middleware::apply_rate_limit;
     
-    // Create base router with all routes registered directly, then add state
-    axum::Router::new()
-        // Geo routes
+    // Main application builder with state
+    let router = axum::Router::new()
+        // Public routes - apply general rate limiting and other public middleware
         .route("/api/geo", get(handlers::geo::get_geo_info))
-        // Auth routes
+        .route("/health", get(handlers::health::health_check))
+        .layer(axum::middleware::from_fn(apply_rate_limit))
+
+        // Authentication routes - no auth needed but has rate limits
         .route("/api/v1/auth/register", post(handlers::auth::register))
         .route("/api/v1/auth/login", post(handlers::auth::login))
         .route("/api/v1/auth/logout", post(handlers::auth::logout))
         .route("/api/v1/auth/refresh", post(handlers::auth::refresh_token))
-        // Articles routes
+        .route("/api/v1/auth/me", get(handlers::auth::get_current_user))
+        .route("/api/v1/auth/sessions", get(handlers::auth::get_sessions))
+        .route("/api/v1/auth/sessions/{session_id}", delete(handlers::auth::force_logout_session))
+        .layer(axum::middleware::from_fn(apply_rate_limit))
+        
+        // All other protected routes - authenticated and rate limited
         .route("/api/v1/articles", get(handlers::articles::list_articles))
         .route("/api/v1/articles", post(handlers::articles::create_article))
-        .route("/api/v1/articles/:slug", get(handlers::articles::get_article))
-        .route("/api/v1/articles/:id", put(handlers::articles::update_article))
-        .route("/api/v1/articles/:id", delete(handlers::articles::delete_article))
-        // Media routes
+        .route("/api/v1/articles/by-slug/{slug}", get(handlers::articles::get_article_by_slug))
+        .route("/api/v1/articles/{id}/translations", get(handlers::articles::get_article_translations))
+        .route("/api/v1/articles/{id}/translation-status", put(handlers::articles::update_translation_status))
+        .route("/api/v1/articles/{article_ref}", get(handlers::articles::get_article))
+        .route("/api/v1/articles/{article_ref}", put(handlers::articles::update_article))
+        .route("/api/v1/articles/{article_ref}", delete(handlers::articles::delete_article))
         .route("/api/v1/media", get(handlers::media::list_media))
-        .route("/api/v1/media/:id", get(handlers::media::get_media))
+        .route("/api/v1/media/{id}", get(handlers::media::get_media))
         .route("/api/v1/media/upload", post(handlers::media::upload_media))
-        .route("/api/v1/media/:id", put(handlers::media::update_media))
-        .route("/api/v1/media/:id", delete(handlers::media::delete_media))
+        .route("/api/v1/media/{id}", put(handlers::media::update_media))
+        .route("/api/v1/media/{id}", delete(handlers::media::delete_media))
         .route("/api/v1/media/stats", get(handlers::media::get_media_stats))
-        // Works routes
         .route("/api/v1/works", get(handlers::works::list_works))
         .route("/api/v1/works/featured", get(handlers::works::list_featured_works))
-        .route("/api/v1/works/:slug", get(handlers::works::get_work))
+        .route("/api/v1/works/{work_ref}", get(handlers::works::get_work))
         .route("/api/v1/works", post(handlers::works::create_work))
-        .route("/api/v1/works/:id", put(handlers::works::update_work))
-        .route("/api/v1/works/:id", delete(handlers::works::delete_work))
-        // Services routes
+        .route("/api/v1/works/{work_ref}", put(handlers::works::update_work))
+        .route("/api/v1/works/{work_ref}", delete(handlers::works::delete_work))
         .route("/api/v1/services", get(handlers::services::list_services))
-        .route("/api/v1/services/:slug", get(handlers::services::get_service))
+        .route("/api/v1/services/{service_ref}", get(handlers::services::get_service))
         .route("/api/v1/services", post(handlers::services::create_service))
-        .route("/api/v1/services/:id", put(handlers::services::update_service))
-        .route("/api/v1/services/:id", delete(handlers::services::delete_service))
-        // Clients routes
+        .route("/api/v1/services/{service_ref}", put(handlers::services::update_service))
+        .route("/api/v1/services/{service_ref}", delete(handlers::services::delete_service))
         .route("/api/v1/clients", get(handlers::clients::list_clients))
         .route("/api/v1/clients/stats", get(handlers::clients::get_client_stats))
         .route("/api/v1/clients/logos", get(handlers::clients::get_client_logos))
-        .route("/api/v1/clients/:id", get(handlers::clients::get_client))
+        .route("/api/v1/clients/{id}", get(handlers::clients::get_client))
         .route("/api/v1/clients", post(handlers::clients::create_client))
-        .route("/api/v1/clients/:id", put(handlers::clients::update_client))
-        .route("/api/v1/clients/:id", delete(handlers::clients::delete_client))
-        // Contact routes
+        .route("/api/v1/clients/{id}", put(handlers::clients::update_client))
+        .route("/api/v1/clients/{id}", delete(handlers::clients::delete_client))
         .route("/api/v1/contact", post(handlers::contact::submit_contact))
         .route("/api/v1/contact/submissions", get(handlers::contact::list_submissions))
-        .route("/api/v1/contact/submissions/:id", get(handlers::contact::get_submission))
-        .route("/api/v1/contact/submissions/:id", put(handlers::contact::update_submission))
+        .route("/api/v1/contact/submissions/{id}", get(handlers::contact::get_submission))
+        .route("/api/v1/contact/submissions/{id}", put(handlers::contact::update_submission))
         .route("/api/v1/contact/stats", get(handlers::contact::get_contact_stats))
-        // SEO routes
         .route("/api/v1/seo/calculate", post(handlers::seo_score::calculate_seo))
-        .route("/api/v1/seo/:article_id", get(handlers::seo_score::get_seo_score))
-        .route("/api/v1/seo/competitor/:keyword", get(handlers::seo_score::get_competitor_analysis))
-        // Article translation routes
-        .route("/api/v1/articles/:id/translate", post(handlers::translation::translate_article))
-        // Email routes
+        .route("/api/v1/seo/{article_id}", get(handlers::seo_score::get_seo_score))
+        .route("/api/v1/seo/competitor/{keyword}", get(handlers::seo_score::get_competitor_analysis))
+        .route("/api/v1/articles/{id}/translate", post(handlers::translation::translate_article))
+        .route("/api/v1/articles/{id}/translate/{lang}/review", post(handlers::translation::review_translation))
+        .route("/api/v1/translation/memory", post(handlers::translation::add_translation_memory_entry))
+        .route("/api/v1/translation/memory/search", post(handlers::translation::find_translation_memory))
         .route("/api/v1/email/contact-notification", post(handlers::email::send_contact_notification))
         .route("/api/v1/email/send", post(handlers::email::send_email))
-        // Health routes
-        .route("/health", get(handlers::health::health_check))
-        // Add CORS layer
+        .route("/api/v1/users", get(handlers::user_management::list_users))
+        .route("/api/v1/users", post(handlers::user_management::create_user))
+        .route("/api/v1/users/{id}", get(handlers::user_management::get_user))
+        .route("/api/v1/users/{id}", put(handlers::user_management::update_user))
+        .route("/api/v1/users/{id}", delete(handlers::user_management::delete_user))
+        .route("/api/v1/roles", get(handlers::user_management::list_roles))
+        .route("/api/v1/activity-logs", get(handlers::user_management::list_activity_logs))
+        .route("/api/v1/monitoring/settings", get(handlers::monitoring::get_settings))
+        .route("/api/v1/monitoring/settings", put(handlers::monitoring::update_settings))
+        .route("/api/v1/monitoring/status", get(handlers::monitoring::get_status))
+        .route("/api/v1/monitoring/alerts", get(handlers::monitoring::list_alerts))
+        .route("/api/v1/monitoring/alerts/test", post(handlers::monitoring::send_test_alert))
+        .route("/api/v1/analytics/settings", get(handlers::analytics::get_settings))
+        .route("/api/v1/analytics/settings", put(handlers::analytics::update_settings))
+        .route("/api/v1/analytics/report", get(handlers::analytics::get_report))
+        .route("/api/v1/backups/settings", get(handlers::backup::get_settings))
+        .route("/api/v1/backups/settings", put(handlers::backup::update_settings))
+        .route("/api/v1/backups/history", get(handlers::backup::list_history))
+        .route("/api/v1/backups/create", post(handlers::backup::create_backup))
+        .route("/api/v1/backups/restore", post(handlers::backup::restore_backup))
+        .route("/api/v1/analytics/public-config", get(handlers::analytics::get_public_config))
+        .route("/api/v1/analytics/track", post(handlers::analytics::track_event))
+        // Apply auth to all protected routes (the auth endpoints themselves are already public above)
+        .layer(axum::middleware::from_fn_with_state(
+            state.clone(),
+            auth_middleware
+        ))
+        .layer(axum::middleware::from_fn(apply_rate_limit))
+
+        // Add CORS layer - applies to all routes
         .layer(CorsLayer::very_permissive())
-        // Add state at the end
-        .with_state(state)
+        // Add state finally
+        .with_state(state);
+    
+    // Register OpenAPI documentation routes
+    crate::api::register_openapi(router)
 }

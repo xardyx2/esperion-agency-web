@@ -9,11 +9,12 @@
  */
 
 use async_trait::async_trait;
+use lettre::AsyncTransport;
 use serde::{Deserialize, Serialize};
 use crate::models::email::{EmailMessage, EmailError, EmailSettings};
 
 #[async_trait]
-pub trait EmailProvider: Send + Sync + 'static {
+pub trait EmailProvider: Send + Sync {
     async fn send(&self, message: &EmailMessage) -> Result<(), EmailError>;
 }
 
@@ -73,8 +74,6 @@ impl EmailProvider for SmtpProvider {
     async fn send(&self, message: &EmailMessage) -> Result<(), EmailError> {
         use lettre::message::{header::ContentType, Message, MultiPart, SinglePart};
         use lettre::transport::smtp::authentication::Credentials;
-        use std::time::Duration;
-
         // Build the email message
         let mut email_builder = Message::builder()
             .to(message.to.parse().map_err(|_| EmailError::InvalidAddress(message.to.clone()))?)
@@ -126,35 +125,33 @@ impl EmailProvider for SmtpProvider {
         };
 
         // Create a new transport for each email sending - it may be inefficient but avoids connection issues
-        let transport = match self.smtp_config.encryption.as_str() {
+        let mailer = match self.smtp_config.encryption.as_str() {
             "ssl" => {
-                lettre::AsyncSmtpTransport::relay(&self.smtp_config.host)
+                lettre::AsyncSmtpTransport::<lettre::Tokio1Executor>::relay(&self.smtp_config.host)
+                    .map_err(|e| EmailError::ConfigError(format!("SSL relay creation failed: {}", e)))?
                     .port(self.smtp_config.port)
-                    .timeout(Some(Duration::from_secs(30)))
-            }
+            },
             "starttls" | _ => {
-                lettre::AsyncSmtpTransport::starttls_relay(&self.smtp_config.host)
+                lettre::AsyncSmtpTransport::<lettre::Tokio1Executor>::starttls_relay(&self.smtp_config.host)
+                    .map_err(|e| EmailError::ConfigError(format!("STARTTLS relay creation failed: {}", e)))?
                     .port(self.smtp_config.port)
-                    .timeout(Some(Duration::from_secs(30)))
             }
         };
+
+        let mailer = mailer.timeout(Some(std::time::Duration::from_secs(30)));
 
         // Add credentials if provided
-        let transport = if let (Some(username), Some(password)) = (&self.smtp_config.username, &self.smtp_config.password) {
-            transport.credentials(Credentials::new(username.clone(), password.clone()))
+        let mailer = if let (Some(username), Some(password)) = (&self.smtp_config.username, &self.smtp_config.password) {
+            mailer.credentials(Credentials::new(username.clone(), password.clone()))
         } else {
-            transport
+            mailer
         };
 
-        let mailer = transport.build();
+        let mailer = mailer.build();
 
-        let result = mailer.send(email).await.map_err(|e| {
+        mailer.send(email).await.map_err(|e| {
             EmailError::SendFailure(format!("SMTP delivery failed: {}", e))
         })?;
-
-        if result.error_code() != 0 {
-            return Err(EmailError::SendFailure(format!("SMTP delivery failed with error code: {}", result.error_code())));  
-        }
 
         Ok(())
     }
@@ -304,26 +301,33 @@ impl EmailProvider for MailgunProvider {
         let req_client = reqwest::Client::new();
 
         let from_addr = match &message.from {
-            Some(from) => from,
-            None => &self.from_address,
+            Some(from) => from.clone(),
+            None => self.from_address.clone(),
         };
+
+        // Convert the message data to owned strings to avoid lifetime issues
+        let to_addr = message.to.clone();
+        let subject = message.subject.clone();
+        let text_body = message.body.clone();
+        let cc_str = message.cc.as_ref().map(|cc_list| cc_list.join(", "));
+        let bcc_str = message.bcc.as_ref().map(|bcc_list| bcc_list.join(", "));
 
         let mut form = reqwest::multipart::Form::new()
             .text("from", from_addr)
-            .text("to", &message.to)
-            .text("subject", &message.subject)
-            .text("text", &message.body);
+            .text("to", to_addr)
+            .text("subject", subject)
+            .text("text", text_body);
 
         if let Some(html) = &message.html_body {
-            form = form.text("html", html);
+            form = form.text("html", html.clone());
         }
 
-        if let Some(cc_list) = &message.cc {
-            form = form.text("cc", cc_list.join(", "));
+        if let Some(cc_list) = cc_str {
+            form = form.text("cc", cc_list);
         }
 
-        if let Some(bcc_list) = &message.bcc {
-            form = form.text("bcc", bcc_list.join(", "));
+        if let Some(bcc_list) = bcc_str {
+            form = form.text("bcc", bcc_list);
         }
 
         let resp = req_client
@@ -369,41 +373,69 @@ impl AmazonSESProvider {
 #[async_trait]
 impl EmailProvider for AmazonSESProvider {
     async fn send(&self, message: &EmailMessage) -> Result<(), EmailError> {
+        use lettre::{AsyncSmtpTransport, Message, Tokio1Executor};
         use lettre::{
             message::header::ContentType,
             transport::smtp::{
                 authentication::Credentials,
                 client::{Tls, TlsParameters},
             },
-            AsyncSmtpTransport, Message,
         };
 
         let from_addr = match &message.from {
-            Some(from) => from,
-            None => &self.from_address,
+            Some(from) => from.to_string(),
+            None => self.from_address.to_string(),
         };
 
-        let email = Message::builder()
+        // Build the email message
+        let mut email_builder = Message::builder()
             .to(message.to.parse().map_err(|_| EmailError::InvalidAddress(message.to.clone()))?)
-            .from(
-                from_addr
-                    .parse()
-                    .map_err(|_| EmailError::InvalidAddress(from_addr.to_string()))?,
-            )
             .subject(&message.subject);
 
-        let email = if let Some(html) = &message.html_body {
-            email
-                .set_content_type(ContentType::TEXT_HTML)
-                .body(html.clone())
+        email_builder = email_builder.from(
+            from_addr.parse().map_err(|_| EmailError::InvalidAddress(from_addr.to_string()))?
+        );
+
+        if let Some(cc) = &message.cc {
+            for addr in cc {
+                email_builder = email_builder.cc(addr.parse().map_err(|_| EmailError::InvalidAddress(addr.to_string()))?);
+            }
+        }
+
+        if let Some(bcc) = &message.bcc {
+            for addr in bcc {
+                email_builder = email_builder.bcc(addr.parse().map_err(|_| EmailError::InvalidAddress(addr.to_string()))?);
+            }
+        }
+
+        // Prepare email body as multipart message if there's HTML content
+        let email = if let Some(html_body) = &message.html_body {
+            email_builder.multipart(
+                lettre::message::MultiPart::alternative()
+                    .singlepart(
+                        lettre::message::SinglePart::builder()
+                            .header(ContentType::TEXT_PLAIN)
+                            .body(message.body.clone())
+                    )
+                    .singlepart(
+                        lettre::message::SinglePart::builder()
+                            .header(ContentType::TEXT_HTML)
+                            .body(html_body.clone())
+                    )
+            ).map_err(|e| EmailError::SendFailure(format!("Failed to build multipart email: {}", e)))?
         } else {
-            email.body(message.body.clone())
-        }.map_err(|_| EmailError::SendFailure("Failed to build email message".to_string()))?;
+            email_builder
+                .singlepart(
+                    lettre::message::SinglePart::builder()
+                        .header(ContentType::TEXT_PLAIN)
+                        .body(message.body.clone())
+                ).map_err(|e| EmailError::SendFailure(format!("Failed to build plain email: {}", e)))?
+        };
 
         // Use AWS SES SMTP settings
         let smtp_host = format!("email.{}.amazonaws.com", self.region);
         let creds = Credentials::new(
-            self.access_key_id.to_string().replace("AWS:", ""),
+            self.access_key_id.to_string(),
             self.secret_access_key.clone(),
         );
 
@@ -411,19 +443,16 @@ impl EmailProvider for AmazonSESProvider {
             EmailError::ConfigError(format!("SES TLS parameter creation failed: {}", e))
         })?;
 
-        let mailer = AsyncSmtpTransport::relay(&smtp_host)
+        let mailer = AsyncSmtpTransport::<Tokio1Executor>::relay(&smtp_host)
             .map_err(|e| EmailError::ConfigError(format!("SES SMTP relay creation failed: {}", e)))?
             .port(587)
             .credentials(creds)
-            .tls(Tls::Required(tls_params));
+            .tls(Tls::Required(tls_params))
+            .build();
 
-        let result = mailer.send(email).await.map_err(|e| {
+        mailer.send(email).await.map_err(|e| {
             EmailError::ProviderError(format!("AWS SES SMTP transport error: {}", e))
         })?;
-
-        if !result.is_positive() {
-            return Err(EmailError::ProviderError("AWS SES message rejected".to_string()));
-        }
 
         Ok(())
     }
@@ -718,126 +747,6 @@ impl EmailService {
             }
             _ => Err(EmailError::InvalidProvider),
         }
-    }
-
-    pub async fn send_contact_notification(&self, contact_submission: &crate::models::contact::ContactSubmission) -> Result<(), EmailError> {
-        let email_body = match &contact_submission.email {
-            Some(submission_email) => {
-                format!(
-                    "New Contact Form Submission\n\n\
-                    Full Name: {}\n\
-                    Company: {}\n\
-                    Email: {}\n\
-                    Phone: {}\n\
-                    Service: {}\n\
-                    Description:\n{}\n\n\
-                    Recaptcha Score: {:?}\n\
-                    Status: {}\n\
-                    Notes: {:?}\n\
-                    Submitted At: {:?}", 
-                    contact_submission.full_name,
-                    contact_submission.company_name.as_deref().unwrap_or("Not provided"),
-                    submission_email,
-                    contact_submission.phone.as_deref().unwrap_or("Not provided"),
-                    contact_submission.service,
-                    contact_subscription.description,
-                    contact_submission.recaptcha_score,
-                    contact_submission.status.as_str(),
-                    contact_submission.notes,
-                    contact_submission.created_at
-                )
-            },
-            None => {
-                format!(
-                    "New Contact Form Submission\n\n\
-                    Full Name: {}\n\
-                    Company: {}\n\
-                    Email: Not provided\n\
-                    Phone: {}\n\
-                    Service: {}\n\
-                    Description:\n{}\n\n\
-                    Recaptcha Score: {:?}\n\
-                    Status: {}\n\
-                    Notes: {:?}\n\
-                    Submitted At: {:?}", 
-                    contact_submission.full_name,
-                    contact_submission.company_name.as_deref().unwrap_or("Not provided"),
-                    contact_submission.phone.as_deref().unwrap_or("Not provided"),
-                    contact_submission.service,
-                    contact_submission.description,
-                    contact_submission.recaptcha_score,
-                    contact_submission.status.as_str(),
-                    contact_submission.notes,
-                    contact_submission.created_at
-                )
-            }
-        };
-
-        let message = EmailMessage::new(
-            "admin@esperion.agency".to_string(), // Should come from config in production
-            format!("New Contact Form Submission: {}", contact_submission.service),
-            email_body,
-        );
-
-        self.send(message).await
-    }
-}
-
-impl EmailService {
-    pub fn new(config: &EmailSettings) -> Result<Self, EmailError> {
-        let provider: Arc<dyn EmailProvider> = match config.provider.as_str() {
-            "smtp" => Arc::new(SmtpProvider::new(&EmailConfig {
-                provider: config.provider.clone(),
-                smtp_host: config.smtp_host.clone(),
-                smtp_port: config.smtp_port,
-                smtp_username: config.smtp_username.clone(),
-                smtp_password: config.smtp_password.clone(),
-                smtp_encryption: config.smtp_encryption.clone(),
-                api_key: config.api_key.clone(),
-                domain: config.domain.clone(),
-                region: config.region.clone(),
-                access_key_id: config.access_key_id.clone(),
-                secret_access_key: config.secret_access_key.clone(),
-                from_address: config.from_address.clone(),
-            })?),
-            "sendgrid" => Arc::new(SendGridProvider::new(
-                config.api_key.as_deref().unwrap_or(""),
-                &config.from_address,
-            )?),
-            "mailgun" => Arc::new(MailgunProvider::new(
-                config.api_key.as_deref().unwrap_or(""),
-                config.domain.as_deref().unwrap_or(""),
-                &config.from_address,
-            )?),
-            "ses" | "amazon_ses" => Arc::new(AmazonSESProvider::new(
-                config.access_key_id.as_deref().unwrap_or(""),
-                config.secret_access_key.as_deref().unwrap_or(""),
-                config.region.as_deref().unwrap_or("us-east-1"),
-                &config.from_address,
-            )?),
-            "postmark" => Arc::new(PostmarkProvider::new(
-                config.api_key.as_deref().unwrap_or(""),
-                &config.from_address,
-            )?),
-            "smtp2go" => Arc::new(SMTP2GOProvider::new(
-                config.api_key.as_deref().unwrap_or(""),
-                &config.from_address,
-            )?),
-            _ => return Err(EmailError::InvalidProvider),
-        };
-
-        Ok(Self {
-            provider,
-            from_address: config.from_address.clone(),
-        })
-    }
-
-    pub async fn send(&self, mut message: EmailMessage) -> Result<(), EmailError> {
-        // Ensure from_address is set
-        if message.from.is_none() {
-            message.from = Some(self.from_address.clone());
-        }
-        self.provider.send(&message).await
     }
 
     pub async fn send_contact_notification(&self, contact_submission: &crate::models::contact::ContactSubmission) -> Result<(), EmailError> {

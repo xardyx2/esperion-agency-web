@@ -1,13 +1,24 @@
 /**
  * SEO Score Handler Tests
- * 
+ *
  * Tests for the SEO scoring system
  */
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::models::seo_score::{CalculateSeoScoreRequest, SeoScoreResponse};
+    use esperion_backend::handlers::seo_score::{calculate_seo_score, SeoScoreResponse};
+    use esperion_backend::models::seo_score::{CalculateSeoScoreRequest, SeoScoreBreakdown};
+
+    fn empty_breakdown() -> SeoScoreBreakdown {
+        SeoScoreBreakdown {
+            content_quality: 0,
+            on_page_seo: 0,
+            readability: 0,
+            internal_linking: 0,
+            technical_seo: 0,
+            local_seo: 0,
+        }
+    }
 
     #[test]
     fn test_calculate_seo_score_excellent_content() {
@@ -19,8 +30,8 @@ mod tests {
             slug: "test-article".to_string(),
         };
 
-        let response = super::calculate_seo_score(&request);
-        
+        let response = calculate_seo_score(&request);
+
         assert!(response.score > 0);
         assert!(response.score <= 100);
         assert!(!response.grade.is_empty());
@@ -36,11 +47,11 @@ mod tests {
             slug: "short-article".to_string(),
         };
 
-        let response = super::calculate_seo_score(&request);
-        
+        let response = calculate_seo_score(&request);
+
         // Should have low content quality score
         assert!(response.breakdown.content_quality < 20);
-        
+
         // Should have suggestions
         assert!(!response.suggestions.is_empty());
     }
@@ -53,7 +64,7 @@ mod tests {
             score: 95,
             max_score: 100,
             grade: "Excellent".to_string(),
-            breakdown: Default::default(),
+            breakdown: empty_breakdown(),
             suggestions: vec![],
         };
         assert_eq!(excellent.grade, "Excellent");
@@ -64,7 +75,7 @@ mod tests {
             score: 85,
             max_score: 100,
             grade: "Good".to_string(),
-            breakdown: Default::default(),
+            breakdown: empty_breakdown(),
             suggestions: vec![],
         };
         assert_eq!(good.grade, "Good");
@@ -75,7 +86,7 @@ mod tests {
             score: 75,
             max_score: 100,
             grade: "Fair".to_string(),
-            breakdown: Default::default(),
+            breakdown: empty_breakdown(),
             suggestions: vec![],
         };
         assert_eq!(fair.grade, "Fair");
@@ -86,7 +97,7 @@ mod tests {
             score: 65,
             max_score: 100,
             grade: "Needs Improvement".to_string(),
-            breakdown: Default::default(),
+            breakdown: empty_breakdown(),
             suggestions: vec![],
         };
         assert_eq!(needs_improvement.grade, "Needs Improvement");
@@ -97,7 +108,7 @@ mod tests {
             score: 45,
             max_score: 100,
             grade: "Poor".to_string(),
-            breakdown: Default::default(),
+            breakdown: empty_breakdown(),
             suggestions: vec![],
         };
         assert_eq!(poor.grade, "Poor");
@@ -105,8 +116,6 @@ mod tests {
 
     #[test]
     fn test_seo_score_breakdown_total() {
-        use crate::models::seo_score::SeoScoreBreakdown;
-
         let breakdown = SeoScoreBreakdown {
             content_quality: 30,
             on_page_seo: 20,
@@ -121,8 +130,6 @@ mod tests {
 
     #[test]
     fn test_seo_score_breakdown_max() {
-        use crate::models::seo_score::SeoScoreBreakdown;
-
         let max_breakdown = SeoScoreBreakdown {
             content_quality: 35,
             on_page_seo: 25,

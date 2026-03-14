@@ -20,7 +20,7 @@ use surrealdb::sql::Thing;
 use serde::{Deserialize, Serialize};
 
 use crate::api::ApiResponse;
-use crate::db::DbState;
+use crate::AppState;
 use crate::models::work::{Work, WorkFilter, CreateWorkRequest, UpdateWorkRequest};
 use crate::models::user::UserClaims;
 
@@ -62,9 +62,10 @@ pub struct ListWorksResponse {
 )]
 #[axum::debug_handler]
 pub async fn list_works(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Query(filters): Query<WorkFilter>,
 ) -> ApiResponse<ListWorksResponse> {
+    let db = &app_state.db;
     let where_clause = filters.to_where_clause();
     let limit = filters.limit.unwrap_or(50);
     let offset = filters.offset.unwrap_or(0);
@@ -110,9 +111,10 @@ pub async fn list_works(
 )]
 #[axum::debug_handler]
 pub async fn list_featured_works(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Query(limit_query): Query<Option<u32>>,
 ) -> ApiResponse<Vec<Work>> {
+    let db = &app_state.db;
     let limit = limit_query.unwrap_or(10);
     
     let query = "SELECT * FROM works WHERE featured = true ORDER BY created_at DESC LIMIT $limit";
@@ -139,9 +141,10 @@ pub async fn list_featured_works(
 )]
 #[axum::debug_handler]
 pub async fn get_work(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Path(slug): Path<String>,
 ) -> ApiResponse<Work> {
+    let db = &app_state.db;
     let query = "SELECT * FROM works WHERE slug = $slug LIMIT 1";
     let mut result = db.query(query).bind(("slug", slug)).await.map_err(|e| crate::api::internal_error(e))?;
     
@@ -172,10 +175,11 @@ pub async fn get_work(
 )]
 #[axum::debug_handler]
 pub async fn create_work(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Json(request): Json<CreateWorkRequest>,
 ) -> ApiResponse<Work> {
+    let db = &app_state.db;
     let mut work = Work::new(
         request.title,
         request.slug,
@@ -231,11 +235,12 @@ pub async fn create_work(
 )]
 #[axum::debug_handler]
 pub async fn update_work(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
     Json(update): Json<UpdateWorkRequest>,
 ) -> ApiResponse<Work> {
+    let db = &app_state.db;
     // First check if work exists
     let query = "SELECT * FROM works WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
@@ -320,10 +325,11 @@ pub async fn update_work(
 )]
 #[axum::debug_handler]
 pub async fn delete_work(
-    State(db): State<DbState>,
+    State(app_state): State<crate::AppState>,
     Extension(_claims): Extension<UserClaims>,
     Path(id): Path<String>,
 ) -> ApiResponse<serde_json::Value> {
+    let db = &app_state.db;
     // First check if work exists
     let query = "SELECT * FROM works WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
@@ -346,12 +352,12 @@ pub async fn delete_work(
 }
 
 /// Register works routes
-pub fn register_routes(router: axum::Router<crate::db::DbState>) -> axum::Router<crate::db::DbState> {
+pub fn register_routes(router: Router<crate::AppState>) -> Router<crate::AppState> {
     router
         .route("/api/v1/works", axum::routing::get(list_works))
         .route("/api/v1/works/featured", axum::routing::get(list_featured_works))
-        .route("/api/v1/works/:slug", axum::routing::get(get_work))
+        .route("/api/v1/works/{work_ref}", axum::routing::get(get_work))
         .route("/api/v1/works", axum::routing::post(create_work))
-        .route("/api/v1/works/:id", axum::routing::put(update_work))
-        .route("/api/v1/works/:id", axum::routing::delete(delete_work))
+        .route("/api/v1/works/{work_ref}", axum::routing::put(update_work))
+        .route("/api/v1/works/{work_ref}", axum::routing::delete(delete_work))
 }

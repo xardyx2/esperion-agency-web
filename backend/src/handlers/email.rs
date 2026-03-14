@@ -55,9 +55,10 @@ pub struct SendEmailResponse {
 )]
 #[axum::debug_handler]
 pub async fn send_contact_notification(
-    State(email_service): State<EmailService>,
+    State(app_state): State<crate::AppState>,
     Json(contact): Json<ContactSubmission>,  // Use the actual ContactSubmission model
 ) -> ApiResponse<SendEmailResponse> {
+    let email_service = &app_state.email_service;
     email_service
         .send_contact_notification(&contact)
         .await
@@ -84,11 +85,12 @@ pub async fn send_contact_notification(
 )]
 #[axum::debug_handler]
 pub async fn send_email(
-    State(email_service): State<EmailService>,
+    State(app_state): State<crate::AppState>,
     Json(request): Json<SendEmailRequest>,
 ) -> ApiResponse<SendEmailResponse> {
     use crate::models::email::EmailMessage; // Import EmailMessage
 
+    let email_service = &app_state.email_service;
     let message = EmailMessage::new(request.to, request.subject, request.body)
         .with_html_body(request.html_body);
 
@@ -104,7 +106,7 @@ pub async fn send_email(
 }
 
 /// Register email routes  
-pub fn register_routes<T>(router: axum::Router<T>) -> axum::Router<T> {
+pub fn register_routes(router: axum::Router<crate::AppState>) -> axum::Router<crate::AppState> {
     use axum::routing::{post, get, put, delete};
 
     router

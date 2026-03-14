@@ -26,6 +26,7 @@ pub struct Article {
     pub published: bool,
     pub published_at: Option<String>,
     pub translation_status: String,
+    pub publication_options: String,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -55,6 +56,7 @@ impl Article {
             published: false,
             published_at: None,
             translation_status: "draft".to_string(),
+            publication_options: "both".to_string(),
             created_at: now.clone(),
             updated_at: now,
         }
@@ -104,6 +106,12 @@ impl Article {
         self.translation_status = status.to_string();
         self
     }
+
+    /// Set publication options
+    pub fn with_publication_options(mut self, options: &str) -> Self {
+        self.publication_options = options.to_string();
+        self
+    }
 }
 
 /// Request to create a new article
@@ -119,6 +127,7 @@ pub struct CreateArticleRequest {
     pub category: String,
     pub image: Option<String>,
     pub published: Option<bool>,
+    pub publication_options: Option<String>,
 }
 
 /// Request to update an article
@@ -135,6 +144,7 @@ pub struct UpdateArticleRequest {
     pub image: Option<String>,
     pub published: Option<bool>,
     pub translation_status: Option<String>,
+    pub publication_options: Option<String>,
 }
 
 /// Filter for listing articles
@@ -146,6 +156,7 @@ pub struct ArticleFilter {
     pub language: Option<String>,
     pub published: Option<bool>,
     pub translation_status: Option<String>,
+    pub publication_options: Option<String>,
 }
 
 impl ArticleFilter {
@@ -173,6 +184,13 @@ impl ArticleFilter {
             conditions.push(format!(
                 "translation_status = '{}'",
                 status.replace('\'', "''")
+            ));
+        }
+
+        if let Some(ref options) = self.publication_options {
+            conditions.push(format!(
+                "publication_options = '{}'",
+                options.replace('\'', "''")
             ));
         }
 
