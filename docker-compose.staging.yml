@@ -1,0 +1,76 @@
+# Docker Compose for SurrealDB v3 Migration Staging
+# Use this to test migration before production
+# Command: docker-compose -f docker-compose.staging.yml up -d
+
+services:
+  # Staging Database - SurrealDB v1.5.6 (for migration testing)
+  database:
+    image: surrealdb/surrealdb:v1.5.6
+    container_name: esperion-surrealdb-staging
+    user: "0:0"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    ports:
+      - "8003:8000"  # Different port from production (8002)
+    volumes:
+      - surreal-staging:/data  # Separate volume for staging
+    environment:
+      - SURREAL_USER=root
+      - SURREAL_PASS=root
+    command: start --log debug --user root --pass root --bind 0.0.0.0:8000 file:/data/esperion.db
+    networks:
+      - esperion-staging-network
+
+  # Staging Backend - for testing v3 compatibility
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
+    container_name: esperion-backend-staging
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    ports:
+      - "8082:8080"  # Different port from production (8081)
+    environment:
+      - DB_HOST=database
+      - DB_PORT=8000
+      - DB_USER=root
+      - DB_PASS=root
+      - DB_NS=esperion
+      - DB_DB=esperion_db
+      - JWT_SECRET=staging-jwt-secret-change-in-production
+      - JWT_EXPIRATION=7d
+      - REFRESH_TOKEN_EXPIRATION=30d
+      - RUST_LOG=debug
+    depends_on:
+      database:
+        condition: service_started
+    networks:
+      - esperion-staging-network
+    volumes:
+      - ./backend:/app
+      - /app/target
+
+networks:
+  esperion-staging-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  surreal-staging:
+    name: surreal-staging-data
