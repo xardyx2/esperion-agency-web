@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 /**
  * User Model
  *
@@ -5,7 +6,6 @@
  * Used for authentication and authorization
  */
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Datetime;
 use utoipa::ToSchema;
 
 /// User account model
@@ -19,8 +19,8 @@ pub struct User {
     pub phone: Option<String>,
     pub username: String,
     pub device_id: Option<String>,
-    pub created_at: Datetime,
-    pub updated_at: Datetime,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
 
 /// User roles for authorization

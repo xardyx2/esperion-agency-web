@@ -187,12 +187,12 @@ pub async fn create_user_session(
     ";
 
     let mut session_result = db.query(session_query)
-        .bind(("user_id", user_id))
-        .bind(("token", token))
+        .bind(("user_id", user_id.to_owned()))
+        .bind(("token", token.to_owned()))
         .bind(("device_id", device_id))
         .bind(("ip_address", ip_address))
         .bind(("user_agent", user_agent))
-        .bind(("expires_at", &expires_at))
+        .bind(("expires_at", expires_at.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
 

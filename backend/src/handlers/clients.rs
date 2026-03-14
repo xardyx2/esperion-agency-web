@@ -16,7 +16,7 @@ use axum::{
     Extension,
     Router,
 };
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
 use serde::{Deserialize, Serialize};
 
 use crate::api::ApiResponse;
@@ -228,7 +228,7 @@ pub async fn get_client(
     let db = &app_state.db;
     let query = "SELECT * FROM clients WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("id", Thing::from(("clients", id.as_str()))))
+        .bind(("id", RecordId::new("clients", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
     
     let client: Option<Client> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
@@ -278,7 +278,7 @@ pub async fn create_client(
         client = client.with_category(category);
     }
     if let Some(status) = request.status {
-        client = client.with_status(ClientStatus::from_str(&status));
+        client = client.with_status(&status);
     }
     if let Some(internal_notes) = request.internal_notes {
         client = client.with_internal_notes(internal_notes);
@@ -331,7 +331,7 @@ pub async fn update_client(
     // First check if client exists
     let query = "SELECT * FROM clients WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("id", Thing::from(("clients", id.as_str()))))
+        .bind(("id", RecordId::new("clients", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
     
     let existing: Option<Client> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
@@ -374,7 +374,7 @@ pub async fn update_client(
     );
 
     let mut update_result = db.query(update_query)
-        .bind(("id", Thing::from(("clients", id.as_str()))))
+        .bind(("id", RecordId::new("clients", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
 
     let updated: Option<Client> = update_result.take(0).map_err(|e| crate::api::internal_error(e))?;
@@ -414,7 +414,7 @@ pub async fn delete_client(
     // First check if client exists
     let query = "SELECT * FROM clients WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("id", Thing::from(("clients", id.as_str()))))
+        .bind(("id", RecordId::new("clients", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
     
     let existing: Option<Client> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
@@ -426,7 +426,7 @@ pub async fn delete_client(
     // Delete from database
     let delete_query = "DELETE clients WHERE id = $id";
     db.query(delete_query)
-        .bind(("id", Thing::from(("clients", id.as_str()))))
+        .bind(("id", RecordId::new("clients", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
 
     Ok(Json(serde_json::json!({ "success": true, "message": "Client deleted successfully" })))

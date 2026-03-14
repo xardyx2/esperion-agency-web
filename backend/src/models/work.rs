@@ -5,10 +5,11 @@
  * Used for showcasing completed projects
  */
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Thing;
+use surrealdb::types::SurrealValue;
+use surrealdb::types::RecordId;
 
 /// Metric for a work (e.g., "Increased traffic by 150%")
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct WorkMetric {
     pub label: String,
     pub value: String,
@@ -16,9 +17,9 @@ pub struct WorkMetric {
 }
 
 /// Portfolio work record
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct Work {
-    pub id: Option<Thing>,
+    pub id: Option<RecordId>,
     pub title: String,
     pub slug: String,
     pub description: String,
@@ -110,7 +111,7 @@ impl WorkFilter {
 }
 
 /// Create work request
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct CreateWorkRequest {
     pub title: String,
     pub slug: String,

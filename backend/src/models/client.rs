@@ -5,18 +5,19 @@
  * Used for showcasing client logos and testimonials
  */
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
+use surrealdb::types::SurrealValue;
 
 /// Client record
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct Client {
-    pub id: Option<Thing>,
+    pub id: Option<RecordId>,
     pub name: String,
     pub logo: String,
     pub testimonial: Option<String>,
     pub featured: bool,
     pub category: Option<String>,
-    pub status: ClientStatus,
+    pub status: String,
     pub internal_notes: Option<String>,
     pub created_at: Option<String>,
 }
@@ -65,7 +66,7 @@ impl Client {
             testimonial: None,
             featured: false,
             category: None,
-            status: ClientStatus::default(),
+            status: "active".to_string(),
             internal_notes: None,
             created_at: Some(chrono::Utc::now().to_rfc3339()),
         }
@@ -90,8 +91,8 @@ impl Client {
     }
 
     /// Set status
-    pub fn with_status(mut self, status: ClientStatus) -> Self {
-        self.status = status;
+    pub fn with_status(mut self, status: &str) -> Self {
+        self.status = status.to_string();
         self
     }
 
@@ -138,7 +139,7 @@ impl ClientFilter {
 }
 
 /// Create client request
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct CreateClientRequest {
     pub name: String,
     pub logo: String,
@@ -162,7 +163,7 @@ pub struct UpdateClientRequest {
 }
 
 /// Client stats response
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct ClientStats {
     pub total: u32,
     pub featured: u32,
@@ -170,21 +171,21 @@ pub struct ClientStats {
     pub by_category: Vec<CategoryCount>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct ClientStatusCounts {
     pub active: u32,
     pub inactive: u32,
     pub prospect: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct CategoryCount {
     pub category: String,
     pub count: u32,
 }
 
 /// Client logo for carousel
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct ClientLogo {
     pub id: String,
     pub name: String,

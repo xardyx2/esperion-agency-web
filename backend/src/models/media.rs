@@ -6,7 +6,8 @@ use chrono::Datelike;
  * Used for image/video upload and management
  */
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
+use surrealdb::types::SurrealValue;
 
 /// Media file types
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -54,7 +55,7 @@ impl MediaType {
 }
 
 /// Media size variant with path metadata
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct MediaSize {
     pub name: String,
     pub width: u32,
@@ -63,9 +64,9 @@ pub struct MediaSize {
 }
 
 /// Media file record
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct Media {
-    pub id: Option<Thing>,
+    pub id: Option<RecordId>,
     pub filename: String,
     pub path: String,
     pub alt_text: Option<String>,
@@ -79,7 +80,7 @@ pub struct Media {
     pub thumbnail_path: Option<String>,
     pub sizes: Vec<MediaSize>,
     pub keep_original: bool,
-    pub uploaded_by: Option<Thing>,
+    pub uploaded_by: Option<RecordId>,
     pub created_at: Option<String>,
 }
 
@@ -91,7 +92,7 @@ impl Media {
         original_path: String,
         media_type: MediaType,
         size: i64,
-        uploaded_by: Option<Thing>,
+        uploaded_by: Option<RecordId>,
     ) -> Self {
         let now = chrono::Utc::now();
 
@@ -146,7 +147,7 @@ impl Media {
 }
 
 /// Media upload response
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct MediaUploadResponse {
     pub id: String,
     pub filename: String,

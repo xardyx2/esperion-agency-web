@@ -16,7 +16,7 @@ use axum::{
     Extension,
     Router,
 };
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
 use serde::{Deserialize, Serialize};
 
 use crate::api::ApiResponse;
@@ -244,7 +244,7 @@ pub async fn update_work(
     // First check if work exists
     let query = "SELECT * FROM works WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("id", Thing::from(("works", id.as_str()))))
+        .bind(("id", RecordId::new("works", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
     
     let existing: Option<Work> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
@@ -293,7 +293,7 @@ pub async fn update_work(
     );
 
     let mut update_result = db.query(update_query)
-        .bind(("id", Thing::from(("works", id.as_str()))))
+        .bind(("id", RecordId::new("works", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
 
     let updated: Option<Work> = update_result.take(0).map_err(|e| crate::api::internal_error(e))?;
@@ -333,7 +333,7 @@ pub async fn delete_work(
     // First check if work exists
     let query = "SELECT * FROM works WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("id", Thing::from(("works", id.as_str()))))
+        .bind(("id", RecordId::new("works", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
     
     let existing: Option<Work> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
@@ -345,7 +345,7 @@ pub async fn delete_work(
     // Delete from database
     let delete_query = "DELETE works WHERE id = $id";
     db.query(delete_query)
-        .bind(("id", Thing::from(("works", id.as_str()))))
+        .bind(("id", RecordId::new("works", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
 
     Ok(Json(serde_json::json!({ "success": true, "message": "Work deleted successfully" })))

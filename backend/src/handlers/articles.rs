@@ -207,7 +207,7 @@ pub async fn get_article(
     let query = "SELECT * FROM articles WHERE id = $slug OR slug_id = $slug OR slug_en = $slug LIMIT 1";
     let mut result = db
         .query(query)
-        .bind(("slug", &slug))
+        .bind(("slug", slug.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
     
@@ -266,7 +266,7 @@ pub async fn get_article_translations(
 ) -> ApiResponse<ArticleTranslationsResponse> {
     let db = &app_state.db;
     let query = "SELECT * FROM articles WHERE id = $id LIMIT 1";
-    let mut result = db.query(query).bind(("id", &id)).await.map_err(|e| crate::api::internal_error(e))?;
+    let mut result = db.query(query).bind(("id", id)).await.map_err(|e| crate::api::internal_error(e.to_owned()))?;
     let article: Option<serde_json::Value> = result.take(0).ok().flatten();
     let article = article.ok_or_else(|| crate::api::not_found_error("Article not found"))?;
     let article: ArticleResponse = serde_json::from_value(article).map_err(|_| crate::api::internal_error("Failed to parse article"))?;
@@ -311,19 +311,19 @@ pub async fn create_article(
     
     let mut result = db
         .query(insert_query)
-        .bind(("title", &req.title))
-        .bind(("slug_id", &slug_id))
-        .bind(("slug_en", &slug_en))
-        .bind(("content_id", &req.content_id))
-        .bind(("content_en", &req.content_en))
-        .bind(("excerpt_id", &req.excerpt_id))
-        .bind(("excerpt_en", &req.excerpt_en))
-        .bind(("category", &req.category))
-        .bind(("image", &req.image))
-        .bind(("published", &published))
-        .bind(("published_at", &published_at))
-        .bind(("translation_status", &translation_status))
-        .bind(("now", &now))
+        .bind(("title", req.title.to_owned()))
+        .bind(("slug_id", slug_id.to_owned()))
+        .bind(("slug_en", slug_en.to_owned()))
+        .bind(("content_id", req.content_id.to_owned()))
+        .bind(("content_en", req.content_en.to_owned()))
+        .bind(("excerpt_id", req.excerpt_id.to_owned()))
+        .bind(("excerpt_en", req.excerpt_en.to_owned()))
+        .bind(("category", req.category.to_owned()))
+        .bind(("image", req.image.to_owned()))
+        .bind(("published", published.to_owned()))
+        .bind(("published_at", published_at.to_owned()))
+        .bind(("translation_status", translation_status.to_owned()))
+        .bind(("now", now.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
     
@@ -358,7 +358,7 @@ pub async fn update_article(
 ) -> ApiResponse<ArticleResponse> {
     let db = &app_state.db;
     let existing_query = "SELECT * FROM articles WHERE id = $id LIMIT 1";
-    let mut existing_result = db.query(existing_query).bind(("id", &id)).await.map_err(|e| crate::api::internal_error(e))?;
+    let mut existing_result = db.query(existing_query).bind(("id", id.clone())).await.map_err(|e| crate::api::internal_error(e.to_owned()))?;
     let existing: Option<serde_json::Value> = existing_result.take(0).ok().flatten();
     let existing = existing.ok_or_else(|| crate::api::not_found_error("Article not found"))?;
     let existing: ArticleResponse = serde_json::from_value(existing).map_err(|_| crate::api::internal_error("Failed to parse article"))?;
@@ -385,20 +385,20 @@ pub async fn update_article(
     
     let mut result = db
         .query(update_query)
-        .bind(("id", &id))
-        .bind(("title", &title))
-        .bind(("slug_id", &slug_id))
-        .bind(("slug_en", &slug_en))
-        .bind(("content_id", &content_id))
-        .bind(("content_en", &content_en))
-        .bind(("excerpt_id", &excerpt_id))
-        .bind(("excerpt_en", &excerpt_en))
-        .bind(("category", &category))
-        .bind(("image", &image))
-        .bind(("published", &published))
-        .bind(("published_at", &published_at))
-        .bind(("translation_status", &translation_status))
-        .bind(("now", &now))
+        .bind(("id", id.to_owned()))
+        .bind(("title", title.to_owned()))
+        .bind(("slug_id", slug_id.to_owned()))
+        .bind(("slug_en", slug_en.to_owned()))
+        .bind(("content_id", content_id.to_owned()))
+        .bind(("content_en", content_en.to_owned()))
+        .bind(("excerpt_id", excerpt_id.to_owned()))
+        .bind(("excerpt_en", excerpt_en.to_owned()))
+        .bind(("category", category.to_owned()))
+        .bind(("image", image.to_owned()))
+        .bind(("published", published.to_owned()))
+        .bind(("published_at", published_at.to_owned()))
+        .bind(("translation_status", translation_status.to_owned()))
+        .bind(("now", now.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
     
@@ -433,10 +433,10 @@ pub async fn update_translation_status(
     let query = "UPDATE articles SET translation_status = $translation_status, publication_options = $publication_options, updated_at = $updated_at WHERE id = $id";
     let mut result = db
         .query(query)
-        .bind(("id", &id))
-        .bind(("translation_status", &req.translation_status))
-        .bind(("publication_options", &req.publication_options.clone().unwrap_or_else(|| "both".to_string())))
-        .bind(("updated_at", &now))
+        .bind(("id", id.to_owned()))
+        .bind(("translation_status", req.translation_status.to_owned()))
+        .bind(("publication_options", req.publication_options.clone().unwrap_or_else(|| "both".to_string()).to_owned()))
+        .bind(("updated_at", now.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
 
@@ -471,7 +471,7 @@ pub async fn delete_article(
     
     let mut result = db
         .query(delete_query)
-        .bind(("id", &id))
+        .bind(("id", id.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
     

@@ -1,17 +1,18 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
+use surrealdb::types::SurrealValue;
 
 /// Translation Memory Entry - for storing approved human translations
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TranslationMemory {
-    pub id: Option<Thing>,
+    pub id: Option<RecordId>,
     pub source_text: String,
     pub translated_text: String,
     pub source_lang: String,
     pub target_lang: String,
     pub approved: bool,
-    pub reviewer_id: Option<Thing>,
+    pub reviewer_id: Option<RecordId>,
     pub version: i32,
     pub notes: Option<String>,
     pub created_at: DateTime<Utc>,
@@ -42,7 +43,7 @@ impl TranslationMemory {
         }
     }
 
-    pub fn with_reviewer(mut self, reviewer_id: Thing) -> Self {
+    pub fn with_reviewer(mut self, reviewer_id: RecordId) -> Self {
         self.reviewer_id = Some(reviewer_id);
         self
     }

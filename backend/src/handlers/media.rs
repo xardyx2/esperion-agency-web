@@ -15,7 +15,7 @@ use axum::{
     Extension,
     Router,
 };
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
 use serde::{Deserialize, Serialize};
 use tokio::fs::{self, File};
 use tokio::io::AsyncWriteExt;
@@ -196,7 +196,7 @@ pub async fn get_media(
 ) -> ApiResponse<Media> {
     let db = &app_state.db;
     let query = "SELECT * FROM media_library WHERE id = $id LIMIT 1";
-    let mut result = db.query(query).bind(("id", Thing::from(("media_library", id.as_str())))).await.map_err(|e| crate::api::internal_error(e))?;
+    let mut result = db.query(query).bind(("id", RecordId::new("media_library", id.as_str()))).await.map_err(|e| crate::api::internal_error(e))?;
     
     let media: Option<Media> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
     
@@ -370,7 +370,10 @@ pub async fn upload_media(
     
     let created_media = created_media.ok_or_else(|| crate::api::internal_error("Failed to create media record"))?;
 
-    let id = created_media.id.as_ref().unwrap().id.to_string();
+    let id = match &created_media.id {
+        Some(rid) => format!("{}:{:?}", rid.table, rid.key),
+        None => return Err(crate::api::internal_error("No ID in created media record")),
+    };
 
     // Only delete the original file if configured not to keep it
     if !keep_original && is_image && original_file_path != save_path {
@@ -424,7 +427,7 @@ pub async fn update_media(
     // First check if media exists
     let query = "SELECT * FROM media_library WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("id", Thing::from(("media_library", id.as_str()))))
+        .bind(("id", RecordId::new("media_library", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
     
     let existing: Option<Media> = result.take(0).ok().flatten();
@@ -449,7 +452,7 @@ pub async fn update_media(
     );
 
     let mut update_result = db.query(update_query)
-        .bind(("id", Thing::from(("media_library", id.as_str()))))
+        .bind(("id", RecordId::new("media_library", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
 
     let updated: Option<Media> = update_result.take(0).ok().flatten();
@@ -489,7 +492,7 @@ pub async fn delete_media(
     // First check if media exists and get path information
     let query = "SELECT path, webp_path, original_path, keep_original FROM media_library WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("id", Thing::from(("media_library", id.as_str()))))
+        .bind(("id", RecordId::new("media_library", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
     
     let existing: Option<(String, Option<String>, String, bool)> = result.take(0).ok().flatten();
@@ -540,7 +543,7 @@ pub async fn delete_media(
     // Delete from database
     let delete_query = "DELETE media_library WHERE id = $id";
     db.query(delete_query)
-        .bind(("id", Thing::from(("media_library", id.as_str()))))
+        .bind(("id", RecordId::new("media_library", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
 
     Ok(Json(serde_json::json!({ "success": true, "message": "Media deleted successfully" })))

@@ -61,7 +61,7 @@ dotenvy = "0.15"
 lettre = { version = "=0.11.19", features = ["tokio1-native-tls", "smtp-transport", "pool", "builder"] }
 
 # Async traits
-async-trait = "=0.1.83"
+async-trait = "=0.1.89"
 governor = { version = "0.10.4", features = ["std"] }
 
 [dev-dependencies]

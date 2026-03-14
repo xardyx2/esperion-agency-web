@@ -14,7 +14,7 @@ use axum::{
     Extension,
     Router,
 };
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
 use serde::{Deserialize, Serialize};
 
 use crate::api::ApiResponse;
@@ -271,7 +271,7 @@ pub async fn get_submission(
     let db = &app_state.db;
     let query = "SELECT * FROM contact_submissions WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("id", Thing::from(("contact_submissions", id.as_str()))))
+        .bind(("id", RecordId::new("contact_submissions", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
     
     let submission: Option<ContactSubmission> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
@@ -313,7 +313,7 @@ pub async fn update_submission(
     // First check if submission exists
     let query = "SELECT * FROM contact_submissions WHERE id = $id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("id", Thing::from(("contact_submissions", id.as_str()))))
+        .bind(("id", RecordId::new("contact_submissions", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
     
     let existing: Option<ContactSubmission> = result.take(0).map_err(|e| crate::api::internal_error(e))?;
@@ -356,7 +356,7 @@ pub async fn update_submission(
     );
 
     let mut update_result = db.query(update_query)
-        .bind(("id", Thing::from(("contact_submissions", id.as_str()))))
+        .bind(("id", RecordId::new("contact_submissions", id.as_str())))
         .await.map_err(|e| crate::api::internal_error(e))?;
 
     let updated: Option<ContactSubmission> = update_result.take(0).map_err(|e| crate::api::internal_error(e))?;

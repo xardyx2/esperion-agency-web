@@ -5,7 +5,8 @@
  * Used for managing leads and inquiries
  */
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
+use surrealdb::types::SurrealValue;
 
 /// Contact submission status
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -48,9 +49,9 @@ impl ContactStatus {
 }
 
 /// Contact submission record
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct ContactSubmission {
-    pub id: Option<Thing>,
+    pub id: Option<RecordId>,
     pub full_name: String,
     pub company_name: Option<String>,
     pub service: String,
@@ -58,7 +59,7 @@ pub struct ContactSubmission {
     pub email: Option<String>,
     pub phone: Option<String>,
     pub recaptcha_score: Option<f32>,
-    pub status: ContactStatus,
+    pub status: String,
     pub notes: Option<String>,
     pub created_at: Option<String>,
 }
@@ -75,7 +76,7 @@ impl ContactSubmission {
             email: None,
             phone: None,
             recaptcha_score: None,
-            status: ContactStatus::default(),
+            status: "new".to_string(),
             notes: None,
             created_at: Some(chrono::Utc::now().to_rfc3339()),
         }
@@ -107,7 +108,7 @@ impl ContactSubmission {
 
     /// Set status
     pub fn with_status(mut self, status: ContactStatus) -> Self {
-        self.status = status;
+        self.status = status.as_str().to_string();
         self
     }
 
@@ -159,7 +160,7 @@ impl ContactFilter {
 }
 
 /// Create contact submission request
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct CreateContactRequest {
     pub full_name: String,
     pub company_name: Option<String>,
@@ -183,14 +184,14 @@ pub struct UpdateContactRequest {
 }
 
 /// Contact submission stats
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct ContactStats {
     pub total: u32,
     pub by_status: ContactStatusCounts,
     pub by_service: Vec<ServiceCount>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct ContactStatusCounts {
     pub new: u32,
     pub contacted: u32,
@@ -199,7 +200,7 @@ pub struct ContactStatusCounts {
     pub lost: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct ServiceCount {
     pub service: String,
     pub count: u32,

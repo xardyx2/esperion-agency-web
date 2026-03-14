@@ -1,6 +1,7 @@
-use std::collections::HashMap;
 use surrealdb::Surreal;
 use surrealdb::engine::remote::ws::Client;
+use surrealdb::types::RecordId;
+use surrealdb::types::SurrealValue;
 use sha2::{Sha256, Digest};
 use lazy_static::lazy_static;
 
@@ -12,9 +13,9 @@ pub struct Migration {
     pub down: Option<String>,
 }
 
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize, surrealdb::types::SurrealValue)]
 pub struct MigrationRecord {
-    pub id: surrealdb::sql::Thing,
+    pub id: RecordId,
     pub version: String,
     pub name: String,
     pub applied_at: chrono::DateTime<chrono::Utc>,
@@ -52,7 +53,7 @@ impl From<MigrationError> for surrealdb::Error {
     fn from(err: MigrationError) -> Self {
         match err {
             MigrationError::DbError(e) => e,
-            _ => surrealdb::Error::Db(surrealdb::error::Db::Thrown(format!("Migration error: {}", err).into())),
+            _ => surrealdb::Error::thrown(format!("Migration error: {}", err).into()),
         }
     }
 }
@@ -129,8 +130,8 @@ impl MigrationManager {
         "#;
         
         self.db.query(sql)
-            .bind(("version", &migration.version))
-            .bind(("name", &migration.name))
+            .bind(("version", migration.version.to_owned()))
+            .bind(("name", migration.name.to_owned()))
             .bind(("checksum", checksum))
             .await?;
 
@@ -141,7 +142,7 @@ impl MigrationManager {
     pub async fn rollback(&self, version: Option<&str>) -> Result<String, MigrationError> {
         let mut latest_migration_query = if let Some(v) = version {
             self.db.query("SELECT * FROM migrations WHERE version = $version ORDER BY version DESC LIMIT 1")
-                .bind(("version", v))
+                .bind(("version", v.to_owned()))
                 .await?
         } else {
             self.db.query("SELECT * FROM migrations ORDER BY version DESC LIMIT 1")
@@ -159,7 +160,7 @@ impl MigrationManager {
                     
                     // Remove migration record
                     self.db.query("DELETE FROM migrations WHERE version = $version")
-                        .bind(("version", &migration.version))
+                        .bind(("version", migration.version.to_owned()))
                         .await?;
                     
                     return Ok(migration.version);

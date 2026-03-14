@@ -5,10 +5,11 @@
  * Used for showcasing services on the website
  */
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Thing;
+use surrealdb::types::SurrealValue;
+use surrealdb::types::RecordId;
 
 /// FAQ item for a service
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct FaqItem {
     pub question: String,
     pub answer: String,
@@ -16,7 +17,7 @@ pub struct FaqItem {
 }
 
 /// Pricing table row
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct PricingRow {
     pub feature: String,
     pub basic: String,
@@ -25,16 +26,16 @@ pub struct PricingRow {
 }
 
 /// Pricing table for a service
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct PricingTable {
     pub currency: String,
     pub rows: Vec<PricingRow>,
 }
 
 /// Service record
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct Service {
-    pub id: Option<Thing>,
+    pub id: Option<RecordId>,
     pub title: String,
     pub slug: String,
     pub description: String,
@@ -120,7 +121,7 @@ impl ServiceFilter {
 }
 
 /// Create service request
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct CreateServiceRequest {
     pub title: String,
     pub slug: String,

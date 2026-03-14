@@ -90,7 +90,7 @@ pub async fn get_current_user(
 
     let mut result = db
         .query("SELECT * FROM users WHERE id = $id LIMIT 1")
-        .bind(("id", &claims.sub))
+        .bind(("id", claims.sub.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
 
@@ -196,7 +196,7 @@ pub async fn register(
     let check_query = "SELECT * FROM users WHERE email = $email LIMIT 1";
     let mut check_result = db
         .query(check_query)
-        .bind(("email", &reg_req.email))
+        .bind(("email", reg_req.email.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
     
@@ -209,11 +209,11 @@ pub async fn register(
     let insert_query = "CREATE users SET email = $email, password_hash = $password_hash, full_name = $full_name, username = $username, phone = $phone, role = 'editor', created_at = time::now()";
     let mut insert_result = db
         .query(insert_query)
-        .bind(("email", &reg_req.email))
-        .bind(("password_hash", &password_hash))
-        .bind(("full_name", &reg_req.full_name))
-        .bind(("username", &reg_req.username))
-        .bind(("phone", &reg_req.phone))
+        .bind(("email", reg_req.email.to_owned()))
+        .bind(("password_hash", password_hash.to_owned()))
+        .bind(("full_name", reg_req.full_name.to_owned()))
+        .bind(("username", reg_req.username.to_owned()))
+        .bind(("phone", reg_req.phone.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
     
@@ -279,7 +279,7 @@ pub async fn login(
     let query = "SELECT * FROM users WHERE email = $email LIMIT 1";
     let mut result = db
         .query(query)
-        .bind(("email", &login_req.email))
+        .bind(("email", login_req.email.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
     
@@ -396,8 +396,8 @@ pub async fn logout(
     
     let mut result = db
         .query(query)
-        .bind(("refresh_token", &logout_req.refresh_token))
-        .bind(("expires_at", &fifteen_days_later))
+        .bind(("refresh_token", logout_req.refresh_token.to_owned()))
+        .bind(("expires_at", fifteen_days_later.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
     
@@ -411,8 +411,8 @@ pub async fn logout(
         ";
         
         let _ = db.query(delete_session_query)
-            .bind(("user_id", &uid))
-            .bind(("refresh_token", &logout_req.refresh_token))
+            .bind(("user_id", uid.to_owned()))
+            .bind(("refresh_token", logout_req.refresh_token.to_owned()))
             .await
             .map_err(|e| internal_error(e))?;
         
@@ -434,8 +434,8 @@ pub async fn logout(
         
         let _ = db
             .query(audit_query)
-            .bind(("user_id", &uid))
-            .bind(("details", &details))
+            .bind(("user_id", uid.to_owned()))
+            .bind(("details", details.to_owned()))
             .await
             .map_err(|e| internal_error(e))?;
     }
@@ -496,7 +496,7 @@ pub async fn refresh_token(
     ";
     let mut blacklist_result = db
         .query(blacklist_check_query)
-        .bind(("refresh_token", &req.refresh_token))
+        .bind(("refresh_token", req.refresh_token.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
     
@@ -520,7 +520,7 @@ pub async fn refresh_token(
     let user_query = "SELECT * FROM users WHERE id = $id LIMIT 1";
     let mut user_result = db
         .query(user_query)
-        .bind(("id", &claims.sub))
+        .bind(("id", claims.sub.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
         
@@ -545,8 +545,8 @@ pub async fn refresh_token(
     ";
     let _ = db
         .query(invalidate_query)
-        .bind(("refresh_token", &req.refresh_token))
-        .bind(("expires_at", &fifteen_days_later))
+        .bind(("refresh_token", req.refresh_token.to_owned()))
+        .bind(("expires_at", fifteen_days_later.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
     
@@ -602,7 +602,7 @@ pub async fn get_sessions(
     
     let mut result = db
         .query(query.as_str())
-        .bind(("user_id", &claims.sub))
+        .bind(("user_id", claims.sub.to_owned()))
         .bind(("page", page as i64))
         .bind(("limit", limit as i64))
         .await
@@ -614,7 +614,7 @@ pub async fn get_sessions(
     let count_query = "SELECT count(*) AS total FROM sessions WHERE user_id = $user_id";
     let mut count_result = db
         .query(count_query)
-        .bind(("user_id", &claims.sub))
+        .bind(("user_id", claims.sub.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
     
@@ -696,7 +696,7 @@ pub async fn force_logout_session(
     
     let mut result = db
         .query(query)
-        .bind(("session_id", &session_id))
+        .bind(("session_id", session_id.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
     
@@ -719,6 +719,7 @@ pub async fn force_logout_session(
     if let Some(token) = session.get("token").and_then(|v| v.as_str()) {
         let now = Utc::now();
         let fifteen_days_later = now + Duration::days(15);
+        let token_owned = token.to_owned();
         
         let blacklist_query = "
             CREATE token_blacklist SET 
@@ -729,8 +730,8 @@ pub async fn force_logout_session(
         
         let _ = db
             .query(blacklist_query)
-            .bind(("token", token))
-            .bind(("expires_at", &fifteen_days_later))
+            .bind(("token", token_owned))
+            .bind(("expires_at", fifteen_days_later.to_owned()))
             .await
             .map_err(|e| crate::api::internal_error(e))?;
     }
@@ -740,7 +741,7 @@ pub async fn force_logout_session(
     
     let _ = db
         .query(delete_query)
-        .bind(("session_id", &session_id))
+        .bind(("session_id", session_id.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
     

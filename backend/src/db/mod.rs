@@ -9,14 +9,13 @@
  * - Query helpers
  */
 
-use lazy_static::lazy_static;
 
 pub mod schema;
 pub mod migrations;
 
 use surrealdb::engine::remote::ws::Ws;
-use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
+use surrealdb::opt::auth::Root;
 use std::sync::{Arc, OnceLock};
 
 /// Database client type alias
@@ -45,13 +44,13 @@ pub async fn init() -> Result<(), Box<dyn std::error::Error>> {
     
     // Sign in as root
     db.signin(Root {
-        username: &std::env::var("DB_USER").unwrap_or_else(|_| "root".to_string()),
-        password: &std::env::var("DB_PASS").unwrap_or_else(|_| "root".to_string()),
+        username: std::env::var("DB_USER").unwrap_or_else(|_| "root".to_string()),
+        password: std::env::var("DB_PASS").unwrap_or_else(|_| "root".to_string()),
     }).await?;
     
     // Select namespace and database
-    db.use_ns(&std::env::var("DB_NS").unwrap_or_else(|_| "esperion".to_string()))
-     .use_db(&std::env::var("DB_DB").unwrap_or_else(|_| "esperion_db".to_string())).await?;
+    db.use_ns(std::env::var("DB_NS").unwrap_or_else(|_| "esperion".to_string()))
+     .use_db(std::env::var("DB_DB").unwrap_or_else(|_| "esperion_db".to_string())).await?;
     
     // Store connection globally
     DB.set(db).map_err(|_| "Failed to set global DB connection")?;
@@ -81,13 +80,13 @@ pub async fn init_with_migrations() -> Result<Db, Box<dyn std::error::Error>> {
     
     // Sign in as root
     db.signin(Root {
-        username: &std::env::var("DB_USER").unwrap_or_else(|_| "root".to_string()),
-        password: &std::env::var("DB_PASS").unwrap_or_else(|_| "root".to_string()),
+        username: std::env::var("DB_USER").unwrap_or_else(|_| "root".to_string()),
+        password: std::env::var("DB_PASS").unwrap_or_else(|_| "root".to_string()),
     }).await?;
     
     // Select namespace and database
-    db.use_ns(&std::env::var("DB_NS").unwrap_or_else(|_| "esperion".to_string()))
-     .use_db(&std::env::var("DB_DB").unwrap_or_else(|_| "esperion_db".to_string())).await?;
+    db.use_ns(std::env::var("DB_NS").unwrap_or_else(|_| "esperion".to_string()))
+     .use_db(std::env::var("DB_DB").unwrap_or_else(|_| "esperion_db".to_string())).await?;
     
     // Run migrations
     crate::db::migrations::run_migrations(db.clone()).await.map_err(|e| {
@@ -106,7 +105,7 @@ pub async fn init_schema() -> Result<(), Box<dyn std::error::Error>> {
     // Run schema SQL
     let schema_sql = schema::get_schema();
     let mut schema_result = db.query(&schema_sql).await?;
-    let _result: Vec<surrealdb::sql::Value> = schema_result.take(0)?;
+    let _result: Vec<surrealdb::types::Value> = schema_result.take(0)?;
     
     tracing::info!("Database schema initially loaded from schema file");
     
@@ -133,10 +132,10 @@ pub async fn seed_initial_data() -> Result<(), Box<dyn std::error::Error>> {
             .bind(("slug", slug))
             .await?;
         
-        let count_result: Vec<surrealdb::sql::Value> = check_result.take(0)?;  // Get Vec<Value>
-        let count_value = if !count_result.is_empty() {
-            if let surrealdb::sql::Value::Number(num) = &count_result[0] {
-                num.to_int() // Get as integer
+        let count_result: Vec<surrealdb::types::Value> = check_result.take(0)?;  // Get Vec<Value>
+        let count_value: i64 = if !count_result.is_empty() {
+            if let surrealdb::types::Value::Number(num) = &count_result[0] {
+                num.to_int().unwrap_or(0)
             } else {
                 0
             }
@@ -158,7 +157,7 @@ pub async fn seed_initial_data() -> Result<(), Box<dyn std::error::Error>> {
             .bind(("description", description))
             .await?;
             
-            let created_service: Option<surrealdb::sql::Value> = insert_result.take(0).ok().flatten();
+            let created_service: Option<surrealdb::types::Value> = insert_result.take(0).ok().flatten();
             if created_service.is_some() {
                 tracing::info!("Seeded service: {}", slug);
             }

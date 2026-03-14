@@ -165,7 +165,7 @@ fn map_managed_user(value: &serde_json::Value) -> Result<ManagedUser, ApiError> 
 async fn fetch_user_record(db: &crate::db::DbState, user_id: &str) -> Result<serde_json::Value, ApiError> {
     let mut result = db
         .query("SELECT * FROM users WHERE id = $id LIMIT 1")
-        .bind(("id", user_id))
+        .bind(("id", user_id.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
 
@@ -187,9 +187,9 @@ async fn count_admins(db: &crate::db::DbState) -> Result<u32, ApiError> {
 
 async fn write_audit_log(
     db: &crate::db::DbState,
-    actor_id: &str,
-    action: &str,
-    entity_id: &str,
+    actor_id: String,
+    action: String,
+    entity_id: String,
     details: serde_json::Value,
 ) -> Result<(), ApiError> {
     db.query("CREATE activity_logs SET user_id = $user_id, action = $action, entity = 'USER', entity_id = $entity_id, details = $details, created_at = time::now()")
@@ -321,8 +321,8 @@ pub async fn create_user(
 
     let mut existing_result = db
         .query("SELECT * FROM users WHERE email = $email OR username = $username")
-        .bind(("email", &payload.email))
-        .bind(("username", &payload.username))
+        .bind(("email", payload.email.to_owned()))
+        .bind(("username", payload.username.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
     let existing: Vec<serde_json::Value> = existing_result.take(0).unwrap_or_default();
@@ -334,11 +334,11 @@ pub async fn create_user(
     let role_value = role_label(&role);
     let mut create_result = db
         .query("CREATE users SET email = $email, password_hash = $password_hash, full_name = $full_name, username = $username, phone = $phone, role = $role, created_at = time::now(), updated_at = time::now()")
-        .bind(("email", &payload.email))
-        .bind(("password_hash", &password_hash))
-        .bind(("full_name", &payload.full_name))
-        .bind(("username", &payload.username))
-        .bind(("phone", &payload.phone))
+        .bind(("email", payload.email.to_owned()))
+        .bind(("password_hash", password_hash.to_owned()))
+        .bind(("full_name", payload.full_name.to_owned()))
+        .bind(("username", payload.username.to_owned()))
+        .bind(("phone", payload.phone.to_owned()))
         .bind(("role", role_value))
         .await
         .map_err(|e| internal_error(e))?;
@@ -349,9 +349,9 @@ pub async fn create_user(
 
     write_audit_log(
         db,
-        &claims.sub,
-        "USER_CREATE",
-        &managed.id,
+        claims.sub.clone(),
+        "USER_CREATE".to_string(),
+        managed.id.clone(),
         serde_json::json!({
             "email": managed.email,
             "username": managed.username,
@@ -387,10 +387,10 @@ pub async fn update_user(
 
     let db = &app_state.db;
     let existing = fetch_user_record(db, &id).await?;
-    let current_role = existing.get("role").and_then(|v| v.as_str()).unwrap_or("editor");
+    let current_role = existing.get("role").and_then(|v| v.as_str()).unwrap_or("editor").to_string();
     let next_role = match payload.role.as_deref() {
-        Some(role) => role_label(&normalize_role(role)?),
-        None => current_role,
+        Some(role) => role_label(&normalize_role(role)?).to_string(),
+        None => current_role.clone(),
     };
 
     if current_role == "admin" && next_role != "admin" && count_admins(db).await? <= 1 {
@@ -404,8 +404,8 @@ pub async fn update_user(
 
     let mut duplicate_result = db
         .query("SELECT * FROM users WHERE username = $username AND id != $id")
-        .bind(("username", &username))
-        .bind(("id", &id))
+        .bind(("username", username.to_owned()))
+        .bind(("id", id.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
     let duplicates: Vec<serde_json::Value> = duplicate_result.take(0).unwrap_or_default();
@@ -415,11 +415,11 @@ pub async fn update_user(
 
     let mut update_result = db
         .query("UPDATE users SET full_name = $full_name, username = $username, phone = $phone, role = $role, updated_at = time::now() WHERE id = $id")
-        .bind(("full_name", &full_name))
-        .bind(("username", &username))
-        .bind(("phone", &phone))
-        .bind(("role", next_role))
-        .bind(("id", &id))
+        .bind(("full_name", full_name.to_owned()))
+        .bind(("username", username.to_owned()))
+        .bind(("phone", phone.to_owned()))
+        .bind(("role", next_role.clone()))
+        .bind(("id", id.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
 
@@ -429,9 +429,9 @@ pub async fn update_user(
 
     write_audit_log(
         db,
-        &claims.sub,
-        if current_role != next_role { "USER_ROLE_UPDATE" } else { "USER_UPDATE" },
-        &managed.id,
+        claims.sub.clone(),
+        if current_role != next_role { "USER_ROLE_UPDATE".to_string() } else { "USER_UPDATE".to_string() },
+        managed.id.clone(),
         serde_json::json!({
             "email": email,
             "username": managed.username,
@@ -466,21 +466,21 @@ pub async fn delete_user(
 
     let db = &app_state.db;
     let existing = fetch_user_record(db, &id).await?;
-    let current_role = existing.get("role").and_then(|v| v.as_str()).unwrap_or("editor");
+    let current_role = existing.get("role").and_then(|v| v.as_str()).unwrap_or("editor").to_string();
     if current_role == "admin" && count_admins(db).await? <= 1 {
         return Err(bad_request_error("Cannot delete the last remaining admin"));
     }
 
     db.query("DELETE users WHERE id = $id")
-        .bind(("id", &id))
+        .bind(("id", id.to_owned()))
         .await
         .map_err(|e| internal_error(e))?;
 
     write_audit_log(
         db,
-        &claims.sub,
-        "USER_DELETE",
-        &id,
+        claims.sub.clone(),
+        "USER_DELETE".to_string(),
+        id.clone(),
         serde_json::json!({
             "deleted_role": current_role,
             "deleted_email": existing.get("email").and_then(|v| v.as_str()).unwrap_or_default(),
@@ -541,7 +541,7 @@ pub async fn list_activity_logs(
     let (page, limit, start) = parse_pagination(query.page, query.limit);
     let mut result = if let Some(user_id) = &query.user_id {
         db.query("SELECT * FROM activity_logs WHERE user_id = $user_id ORDER BY created_at DESC")
-            .bind(("user_id", user_id))
+            .bind(("user_id", user_id.to_owned()))
             .await
             .map_err(|e| internal_error(e))?
     } else {
@@ -781,8 +781,8 @@ mod tests {
         let editor_id = seed_user(&state, "editor@example.com", "editor", "editor").await;
 
         state.db.query("CREATE activity_logs SET user_id = $user_id, action = 'USER_UPDATE', entity = 'USER', entity_id = $entity_id, details = { source: 'test' }, created_at = time::now()")
-            .bind(("user_id", &editor_id))
-            .bind(("entity_id", &editor_id))
+            .bind(("user_id", editor_id.to_owned()))
+            .bind(("entity_id", editor_id.to_owned()))
             .await
             .unwrap();
 

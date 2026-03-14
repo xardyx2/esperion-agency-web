@@ -3,7 +3,7 @@ use std::time::Instant;
 use chrono::Utc;
 use serde::de::DeserializeOwned;
 use serde_json::json;
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
 use uuid::Uuid;
 
 use crate::models::email::EmailMessage;
@@ -557,7 +557,7 @@ where
 {
     let mut result = db
         .query("SELECT value FROM site_settings WHERE key = $key LIMIT 1")
-        .bind(("key", key))
+        .bind(("key", key.to_owned()))
         .await
         .map_err(|error| format!("Failed to read setting {key}: {error}"))?;
 
@@ -586,14 +586,14 @@ where
         .map_err(|error| format!("Failed to serialize setting {key}: {error}"))?;
 
     db.query("DELETE site_settings WHERE key = $key")
-        .bind(("key", key))
+        .bind(("key", key.to_owned()))
         .await
         .map_err(|error| format!("Failed to replace setting {key}: {error}"))?;
 
     db.query(
         "CREATE site_settings CONTENT { key: $key, value: $value, type: 'json', updated_at: time::now() }",
     )
-    .bind(("key", key))
+    .bind(("key", key.to_owned()))
     .bind(("value", json_value))
     .await
     .map_err(|error| format!("Failed to write setting {key}: {error}"))?;
@@ -819,11 +819,11 @@ async fn record_delivery_attempt(
     db.query(
         "CREATE alert_deliveries SET instance_id = $instance_id, channel = $channel, destination = $destination, attempt_count = $attempt_count, delivery_status = $delivery_status, last_error = $last_error, updated_at = time::now()",
     )
-    .bind(("instance_id", instance_id))
-    .bind(("channel", channel))
-    .bind(("destination", destination))
+    .bind(("instance_id", instance_id.to_owned()))
+    .bind(("channel", channel.to_owned()))
+    .bind(("destination", destination.to_owned()))
     .bind(("attempt_count", attempt_count))
-    .bind(("delivery_status", delivery_status))
+    .bind(("delivery_status", delivery_status.to_owned()))
     .bind(("last_error", last_error))
     .await
     .map_err(|error| format!("Failed to write delivery attempt: {error}"))?;
@@ -831,12 +831,12 @@ async fn record_delivery_attempt(
     Ok(())
 }
 
-fn record_thing(table: &str, record_id: &str) -> Thing {
+fn record_thing(table: &str, record_id: &str) -> RecordId {
     let id_segment = record_id
         .split_once(':')
         .and_then(|(prefix, id)| if prefix == table { Some(id) } else { None })
         .unwrap_or(record_id);
-    Thing::from((table, id_segment))
+    RecordId::new(table.to_owned(), id_segment.to_owned())
 }
 
 #[cfg(test)]

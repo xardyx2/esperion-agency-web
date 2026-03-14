@@ -12,7 +12,7 @@ use axum::{
     Json,
 };
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
 use tracing::info;
 
 use crate::api::ApiResponse;
@@ -79,7 +79,7 @@ pub async fn translate_article(
     let query = "SELECT * FROM articles WHERE id = $id LIMIT 1";
     let mut result = db
         .query(query)
-        .bind(("id", &id))
+        .bind(("id", id.clone()))
         .await
         .map_err(|e| {
             tracing::error!("Database query failed: {}", e);
@@ -223,12 +223,12 @@ pub async fn translate_article(
     
     let mut result = db
         .query(update_query)
-        .bind(("id", &id))
-        .bind(("content_en", &article.content_en))
-        .bind(("content_id", &article.content_id))
-        .bind(("slug_en", &article.slug_en))
-        .bind(("translation_status", &article.translation_status))
-        .bind(("updated_at", &article.updated_at))
+        .bind(("id", id.clone()))
+        .bind(("content_en", article.content_en.clone()))
+        .bind(("content_id", article.content_id.clone()))
+        .bind(("slug_en", article.slug_en.clone()))
+        .bind(("translation_status", article.translation_status.clone()))
+        .bind(("updated_at", article.updated_at.clone()))
         .await
         .map_err(|e| {
             tracing::error!("Failed to update article: {}", e);
@@ -263,6 +263,14 @@ async fn update_translation_cache(
     source_lang: &str,
     target_lang: &str,
 ) -> Result<(), crate::api::ApiError> {
+    // Convert &str to owned Strings to avoid lifetime issues
+    let source_content = source_content.to_owned();
+    let source_slug = source_slug.to_owned();
+    let translated_content = translated_content.to_owned();
+    let translated_slug = translated_slug.to_owned();
+    let source_lang = source_lang.to_owned();
+    let target_lang = target_lang.to_owned();
+    
     let query = r#"
         -- Update or insert into translation cache for article content
         INSERT INTO translation_cache (
@@ -308,8 +316,8 @@ async fn update_translation_cache(
         .bind(("source_slug", source_slug))
         .bind(("translated_content", translated_content))
         .bind(("translated_slug", translated_slug))
-        .bind(("source_lang", source_lang))
-        .bind(("target_lang", target_lang))
+        .bind(("source_lang", source_lang.to_owned()))
+        .bind(("target_lang", target_lang.to_owned()))
         .await
         .map_err(|e| {
             tracing::error!("Failed to update translation cache: {}", e);
@@ -358,7 +366,7 @@ pub async fn review_translation(
     let query = "SELECT * FROM articles WHERE id = $id LIMIT 1";
     let mut result = db
         .query(query)
-        .bind(("id", &id))
+        .bind(("id", id.clone()))
         .await
         .map_err(|e| {
             tracing::error!("Database query failed: {}", e);
@@ -403,7 +411,7 @@ pub async fn review_translation(
                                     &req.translated_text,
                                     source_lang,
                                     "en",
-                                    Some(Thing::from(("users".to_string(), claims.sub.clone()))),
+                                    Some(RecordId::new("users", claims.sub.clone())),
                                     req.approve.unwrap_or(true),
                                     req.notes.clone(),
                                 ).await?;
@@ -435,7 +443,7 @@ pub async fn review_translation(
                                 &req.translated_text,
                                 source_lang,
                                 "id",
-                                Some(Thing::from(("users".to_string(), claims.sub.clone()))),
+                                Some(RecordId::new("users", claims.sub.clone())),
                                 req.approve.unwrap_or(true),
                                 req.notes.clone(),
                             ).await?;
@@ -478,11 +486,11 @@ pub async fn review_translation(
     
     let _result = db
         .query(update_query)
-        .bind(("id", &id))
-        .bind(("content_en", &article.content_en))
-        .bind(("content_id", &article.content_id))
-        .bind(("translation_status", &article.translation_status))
-        .bind(("updated_at", &article.updated_at))
+        .bind(("id", id.clone()))
+        .bind(("content_en", article.content_en.clone()))
+        .bind(("content_id", article.content_id.clone()))
+        .bind(("translation_status", article.translation_status.clone()))
+        .bind(("updated_at", article.updated_at.clone()))
         .await
         .map_err(|e| {
             tracing::error!("Failed to update reviewed article: {}", e);
@@ -509,7 +517,7 @@ async fn add_to_translation_memory(
     translated_text: &str,
     source_lang: &str,
     target_lang: &str,
-    reviewer_id: Option<Thing>,
+    reviewer_id: Option<RecordId>,
     approved: bool,
     notes: Option<String>,
 ) -> Result<(), crate::api::ApiError> {
@@ -542,10 +550,10 @@ async fn add_to_translation_memory(
     "#;
 
     db.query(query)
-        .bind(("source_text", source_text))
-        .bind(("translated_text", translated_text))
-        .bind(("source_lang", source_lang))
-        .bind(("target_lang", target_lang))
+        .bind(("source_text", source_text.to_owned()))
+        .bind(("translated_text", translated_text.to_owned()))
+        .bind(("source_lang", source_lang.to_owned()))
+        .bind(("target_lang", target_lang.to_owned()))
         .bind(("reviewer_id", reviewer_id))
         .bind(("approved", approved))
         .bind(("notes", notes))
@@ -616,13 +624,13 @@ pub async fn add_translation_memory_entry(
     
     let mut result = db
         .query(query)
-        .bind(("source_text", &translation_memory.source_text))
-        .bind(("translated_text", &translation_memory.translated_text))
-        .bind(("source_lang", &translation_memory.source_lang))
-        .bind(("target_lang", &translation_memory.target_lang))
-        .bind(("approved", &translation_memory.approved))
-        .bind(("notes", translation_memory.notes.as_ref()))
-        .bind(("reviewer_id", Thing::from(("users".to_string(), claims.sub.clone()))))
+        .bind(("source_text", translation_memory.source_text.clone()))
+        .bind(("translated_text", translation_memory.translated_text.clone()))
+        .bind(("source_lang", translation_memory.source_lang.clone()))
+        .bind(("target_lang", translation_memory.target_lang.clone()))
+        .bind(("approved", translation_memory.approved))
+        .bind(("notes", translation_memory.notes.clone()))
+        .bind(("reviewer_id", RecordId::new("users", claims.sub.clone())))
         .await
         .map_err(|e| {
             tracing::error!("Failed to create translation memory entry: {}", e);
@@ -677,9 +685,9 @@ pub async fn find_translation_memory(
     let mut result = db
         .db
         .query(query)
-        .bind(("source_text", &req.source_text))
-        .bind(("source_lang", &req.source_lang))
-        .bind(("target_lang", &req.target_lang))
+        .bind(("source_text", req.source_text.clone()))
+        .bind(("source_lang", req.source_lang.clone()))
+        .bind(("target_lang", req.target_lang.clone()))
         .await
         .map_err(|e| {
             tracing::error!("Failed to search translation memory: {}", e);

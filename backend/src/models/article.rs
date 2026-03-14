@@ -7,12 +7,13 @@
  * - SEO-friendly slugs
  */
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
+use surrealdb::types::SurrealValue;
 
 /// Article model matching the articles table in SurrealDB
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct Article {
-    pub id: Option<Thing>,
+    pub id: Option<RecordId>,
     pub title: String,
     pub slug_id: String,
     pub slug_en: String,
@@ -22,7 +23,7 @@ pub struct Article {
     pub excerpt_en: Option<String>,
     pub category: String,
     pub image: Option<String>,
-    pub author: Option<Thing>,
+    pub author: Option<RecordId>,
     pub published: bool,
     pub published_at: Option<String>,
     pub translation_status: String,
@@ -87,7 +88,7 @@ impl Article {
     }
 
     /// Set author
-    pub fn with_author(mut self, author: Thing) -> Self {
+    pub fn with_author(mut self, author: RecordId) -> Self {
         self.author = Some(author);
         self
     }
@@ -115,7 +116,7 @@ impl Article {
 }
 
 /// Request to create a new article
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct CreateArticleRequest {
     pub title: String,
     pub slug_id: Option<String>,
@@ -131,7 +132,7 @@ pub struct CreateArticleRequest {
 }
 
 /// Request to update an article
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct UpdateArticleRequest {
     pub title: Option<String>,
     pub slug_id: Option<String>,

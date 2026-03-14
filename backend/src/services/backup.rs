@@ -484,7 +484,7 @@ where
 {
     let mut result = db
         .query("SELECT value FROM site_settings WHERE key = $key LIMIT 1")
-        .bind(("key", key))
+        .bind(("key", key.to_owned()))
         .await
         .map_err(|error| format!("Failed to read setting {key}: {error}"))?;
 
@@ -512,14 +512,14 @@ where
         .map_err(|error| format!("Failed to serialize setting {key}: {error}"))?;
 
     db.query("DELETE site_settings WHERE key = $key")
-        .bind(("key", key))
+        .bind(("key", key.to_owned()))
         .await
         .map_err(|error| format!("Failed to replace setting {key}: {error}"))?;
 
     db.query(
         "CREATE site_settings CONTENT { key: $key, value: $value, type: 'json', updated_at: time::now() }",
     )
-    .bind(("key", key))
+    .bind(("key", key.to_owned()))
     .bind(("value", json_value))
     .await
     .map_err(|error| format!("Failed to write setting {key}: {error}"))?;

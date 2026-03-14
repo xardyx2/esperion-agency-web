@@ -5,10 +5,11 @@
  * Used for tracking and improving article SEO
  */
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Thing;
+use surrealdb::types::SurrealValue;
+use surrealdb::types::RecordId;
 
 /// SEO Score breakdown
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct SeoScoreBreakdown {
     pub content_quality: u32,  // 35 points max
     pub on_page_seo: u32,      // 25 points max
@@ -30,10 +31,10 @@ impl SeoScoreBreakdown {
 }
 
 /// SEO Score record
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct SeoScore {
-    pub id: Option<Thing>,
-    pub article_id: Thing,
+    pub id: Option<RecordId>,
+    pub article_id: RecordId,
     pub score: u32,
     pub breakdown: SeoScoreBreakdown,
     pub suggestions: Vec<String>,
@@ -41,7 +42,7 @@ pub struct SeoScore {
 }
 
 impl SeoScore {
-    pub fn new(article_id: Thing) -> Self {
+    pub fn new(article_id: RecordId) -> Self {
         Self {
             id: None,
             article_id,
@@ -61,7 +62,7 @@ impl SeoScore {
 }
 
 /// SEO Score request for calculation
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct CalculateSeoScoreRequest {
     pub article_id: String,
     pub title: String,
@@ -71,9 +72,9 @@ pub struct CalculateSeoScoreRequest {
 }
 
 /// Competitor analysis record
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, surrealdb::types::SurrealValue)]
 pub struct CompetitorAnalysis {
-    pub id: Option<Thing>,
+    pub id: Option<RecordId>,
     pub keyword: String,
     pub data: serde_json::Value,
     pub fetched_at: Option<String>,

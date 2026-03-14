@@ -13,7 +13,8 @@ use axum::{
     Extension,
     Router,
 };
-use surrealdb::sql::Thing;
+use surrealdb::types::RecordId;
+use surrealdb::types::ToSql;
 use serde::{Deserialize, Serialize};
 use crate::api::ApiResponse;
 use crate::AppState;
@@ -42,7 +43,7 @@ impl SeoScoreResponse {
         };
 
         Self {
-            article_id: score.article_id.to_string(),
+            article_id: format!("{}:{:?}", score.article_id.table, score.article_id.key),
             score: score.score,
             max_score: 100,
             grade,
@@ -217,7 +218,7 @@ pub async fn calculate_seo(
     let calculated_score = calculate_seo_score(&request);
 
     // Save to database
-    let mut seo_record = SeoScore::new(Thing::from(("articles", request.article_id.as_str())));
+    let mut seo_record = SeoScore::new(RecordId::new("articles", request.article_id.as_str()));
     seo_record.score = calculated_score.score;
     seo_record.breakdown = calculated_score.breakdown.clone();
     seo_record.suggestions = calculated_score.suggestions.clone();
@@ -258,7 +259,7 @@ pub async fn get_seo_score(
     let db = &app_state.db;
     let query = "SELECT * FROM seo_scores WHERE article_id = $article_id LIMIT 1";
     let mut result = db.query(query)
-        .bind(("article_id", article_id.as_str()))
+        .bind(("article_id", article_id.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
 
@@ -294,7 +295,7 @@ pub async fn get_competitor_analysis(
     let db = &app_state.db;
     let query = "SELECT * FROM competitor_analysis WHERE keyword = $keyword LIMIT 1";
     let mut result = db.query(query)
-        .bind(("keyword", keyword.as_str()))
+        .bind(("keyword", keyword.to_owned()))
         .await
         .map_err(|e| crate::api::internal_error(e))?;
 
