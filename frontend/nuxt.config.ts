@@ -12,12 +12,11 @@ export default ({
     '@nuxtjs/robots',
     'nuxt-schema-org',
     '@nuxt/eslint',
-    '@nuxt/scripts',
-    '@formkit/auto-animate/nuxt',
     '@nuxtjs/color-mode',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt'
+    'pinia-plugin-persistedstate/nuxt',
+    'nuxt-security'
   ],
   pages: true,
 
@@ -54,9 +53,9 @@ export default ({
 
   // Color mode configuration
   colorMode: {
-    classSuffix: '',
-    preference: 'light',
-    fallback: 'light'
+    preference: 'system',
+    fallback: 'light',
+    dataValue: 'theme'
   },
   // Runtime config
   runtimeConfig: {
@@ -111,14 +110,14 @@ export default ({
     // API routes - SSR default with CORS
     '/api/**': { cors: true }
   },
-  experimental: {
-    appManifest: false
-  },
-  compatibilityDate: '2025-03-13',
   future: {
     compatibilityVersion: 4
   },
 
+  experimental: {
+    appManifest: false
+  },
+  compatibilityDate: '2025-03-13',
   // Vite configuration
   vite: {
     vue: {
@@ -141,7 +140,24 @@ export default ({
       }
     }
   },
-  // i18n configuration
+
+  // Fonts configuration
+  fonts: {
+    families: [
+      {
+        name: 'Inter',
+        provider: 'google',
+        weights: ['400', '500', '600', '700'],
+        subsets: ['latin'],
+        preload: true
+      }
+    ],
+    defaults: {
+      weights: [400, 500, 600, 700],
+      styles: ['normal'],
+      subsets: ['latin']
+    }
+  }, // i18n configuration
   i18n: {
     strategy: 'prefix',
     locales: [
@@ -149,7 +165,6 @@ export default ({
       { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' }
     ],
     defaultLocale: 'id',
-    lazy: true,
     langDir: 'locales',
     detectBrowserLanguage: {
       useCookie: true,
@@ -158,6 +173,9 @@ export default ({
       fallbackLocale: 'id',
       alwaysRedirect: true
     },
+    // v10: hmr promoted from experimental.hmr, lazy loading is now default (lazy option removed)
+    hmr: true,
+    // v10: explicitly disable to silence deprecation warning (recommended by i18n team)
     bundle: {
       optimizeTranslationDirective: false
     }
@@ -170,13 +188,25 @@ export default ({
     densities: [1, 2],
     provider: 'ipx',
     screens: {
-      'xs': 320,
       'sm': 640,
       'md': 768,
       'lg': 1024,
       'xl': 1280,
-      'xxl': 1536,
       '2xl': 1536
+    },
+    // WebP optimization settings
+    ipx: {
+      // Use sharp for better WebP compression
+      sharp: {
+        webp: {
+          quality: 80,
+          effort: 6 // Higher effort = better compression, slower
+        },
+        avif: {
+          quality: 70,
+          effort: 4
+        }
+      }
     }
   },
 
@@ -197,6 +227,71 @@ export default ({
     sitemap: [
       '/sitemap.xml'
     ]
+  },
+
+  // Security configuration
+  security: {
+    headers: {
+      crossOriginResourcePolicy: 'cross-origin',
+      crossOriginOpenerPolicy: 'same-origin',
+      crossOriginEmbedderPolicy: 'require-corp',
+      contentSecurityPolicy: {
+        'default-src': ['\'self\''],
+        'script-src': [
+          '\'self\'',
+          '\'unsafe-inline\'',
+          '\'unsafe-eval\'',
+          'https://www.google.com/recaptcha/',
+          'https://www.gstatic.com/recaptcha/',
+          'https://www.googletagmanager.com',
+          'https://connect.facebook.net',
+          'https://analytics.tiktok.com',
+          'https://snap.licdn.com',
+          'https://www.clarity.ms',
+          'https://*.googlesyndication.com',
+          'https://*.google-analytics.com',
+          'https://*.doubleclick.net'
+        ],
+        'style-src': ['\'self\'', '\'unsafe-inline\'', 'https://fonts.googleapis.com'],
+        'img-src': ['\'self\'', 'data:', 'blob:', 'https:', '*'],
+        'font-src': ['\'self\'', 'https:', 'data:'],
+        'connect-src': [
+          '\'self\'',
+          'http://localhost:8080',
+          'http://localhost:8081',
+          'https://*.google.com',
+          'https://*.google-analytics.com',
+          'https://*.facebook.com',
+          'https://*.tiktok.com',
+          'https://*.linkedin.com',
+          'https://*.clarity.ms',
+          'https://*.googlesyndication.com',
+          'https://*.doubleclick.net',
+          'https://translation.aliyuncs.com'
+        ],
+        'frame-src': [
+          '\'self\'',
+          'https://www.google.com/recaptcha/',
+          'https://www.gstatic.com/recaptcha/',
+          'https://*.google.com'
+        ],
+        'object-src': ['\'none\''],
+        'base-uri': ['\'self\''],
+        'form-action': ['\'self\'']
+      },
+      permissionsPolicy: {
+        camera: [],
+        microphone: [],
+        geolocation: [],
+        payment: []
+      }
+    },
+    csrf: {
+      enabled: true
+    },
+    corsHandler: {
+      enabled: false // Backend handles CORS
+    }
   },
 
   // Sitemap configuration

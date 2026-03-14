@@ -4,33 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest",
-    "dev": "nuxt dev",
-    "build": "nuxt build",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "test": "cd frontend && npm run test",
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "generate": "cd frontend && npm run generate",
+    "preview": "cd frontend && npm run preview",
+    "postinstall": "cd frontend && npm run postinstall",
+    "lint": "cd frontend && npm run lint",
+    "type-check": "cd frontend && npm run type-check",
+    "test:unit": "cd frontend && npm run test:unit",
+    "test:e2e": "cd frontend && npm run test:e2e",
+    "test:components": "cd frontend && npm run test:components",
+    "test:coverage": "cd frontend && npm run test:coverage",
+    "test:ui": "cd frontend && npm run test:ui",
+    "format": "cd frontend && npm run format"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
-  "dependencies": {
-    "@formkit/auto-animate": "^0.9.0",
-    "@nuxt/eslint": "^1.15.2",
-    "@nuxt/fonts": "^0.14.0",
-    "@nuxt/image": "^2.0.0",
-    "@nuxt/scripts": "^0.13.2",
-    "@nuxt/test-utils": "^4.0.0",
-    "@nuxt/ui": "^4.5.1",
-    "@nuxtjs/color-mode": "^4.0.0",
-    "@nuxtjs/i18n": "^10.2.3",
-    "@nuxtjs/robots": "^5.7.1",
-    "@nuxtjs/sitemap": "^7.6.0",
-    "@pinia/nuxt": "^0.11.3",
-    "@vueuse/nuxt": "^14.2.1",
-    "nuxt": "^4.3.1"
-  },
   "devDependencies": {
     "@types/node": "^25.3.3"
   }
