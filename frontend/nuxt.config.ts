@@ -26,7 +26,15 @@ export default ({
       pathPrefix: false
     }
   ],
-  devtools: { enabled: true },
+  devtools: {
+    enabled: true
+  },
+
+  // DevServer config untuk Docker - expose ke semua interface
+  devServer: {
+    host: '0.0.0.0',
+    port: 3000
+  },
 
   // App configuration
   app: {
@@ -122,6 +130,20 @@ export default ({
   vite: {
     vue: {
       scriptSetup: true
+    },
+    // Fix untuk Docker - HMR pakai port yang sama (3000)
+    server: {
+      hmr: {
+        // Use same port as dev server to avoid CORS/WebSocket issues
+        protocol: 'ws',
+        port: 3000,
+        clientPort: 3000
+      },
+      // Allow all hosts for Docker environment
+      host: '0.0.0.0',
+      port: 3000,
+      strictPort: true,
+      cors: true
     }
   },
 
@@ -229,8 +251,8 @@ export default ({
     ]
   },
 
-  // Security configuration
-  security: {
+  // Security configuration - disabled in development for DevTools compatibility
+  security: isDev ? {} : {
     headers: {
       crossOriginResourcePolicy: 'cross-origin',
       crossOriginOpenerPolicy: 'same-origin',
