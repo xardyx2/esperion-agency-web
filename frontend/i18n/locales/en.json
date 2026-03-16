@@ -326,7 +326,7 @@
       "phone": "Phone / WhatsApp",
       "phoneText": "+62 812 3456 7890",
       "email": "Email",
-      "emailText": "{'hello@esperion.id'}",
+      "emailText": "{'hello@esperion.one'}",
       "businessHours": "Business Hours",
       "businessHoursText": "Monday - Friday: 09.00 - 18.00 WIB"
     },
@@ -335,8 +335,8 @@
     },
     "map": {
       "title": "Our Location",
-      "description": "Detailed address information will be displayed after final publication materials are confirmed",
-      "placeholder": "Map placeholder - waiting for official publication location details"
+      "description": "Visit the Esperion office in Sawangan, Depok, or open the official destination in Google Maps.",
+      "placeholder": "Esperion office location in Sawangan, Depok"
     }
   },
   "footer": {
@@ -347,9 +347,9 @@
     "followUs": "Follow Us",
     "appearance": "Appearance",
     "contact": {
-      "city": "Jakarta, Indonesia",
-      "addressPending": "Jl. Sudirman Kav. 52-53, Jakarta Selatan 12190",
-      "businessHours": "Monday-Friday: 09:00-17:00 WIB"
+      "city": "Sawangan, Depok, Indonesia",
+      "addressPending": "Sawangan Elok A1 No 5 RT 1 RW 10",
+      "businessHours": "Monday-Friday: 09:00-18:00 WIB"
     },
     "services": {
       "webDevelopment": "Web Development",
@@ -361,7 +361,8 @@
     },
     "copyright": "© {year} Esperion. All rights reserved.",
     "privacyPolicy": "Privacy Policy",
-    "termsOfService": "Terms of Service"
+    "termsOfService": "Terms of Service",
+    "cookieSettings": "Cookie Settings"
   },
   "social": {
     "instagram": "Instagram",
@@ -1271,6 +1272,16 @@
         "eventLabel": "event"
       },
       "empty": "No analytics data."
+    },
+    "apiDocs": {
+      "title": "Esperion API Documentation",
+      "description": "Browse the Esperion backend OpenAPI reference from the dashboard.",
+      "loading": "Loading API documentation...",
+      "errorTitle": "API documentation unavailable",
+      "errorMessage": "The backend OpenAPI specification is currently unavailable. Please ensure the backend server is running.",
+      "backendUrl": "Backend URL",
+      "retry": "Retry",
+      "openDirect": "Open OpenAPI Directly"
     }
   },
   "error": {

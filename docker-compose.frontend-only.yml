@@ -17,8 +17,8 @@ services:
     # Volume mounts for hot reload with node_modules exclusion
     volumes:
       - ./frontend:/app:cached
-      - /app/node_modules
-      - /app/.nuxt
+      - frontend-node-modules:/app/node_modules
+      - frontend-nuxt:/app/.nuxt
     environment:
       - NODE_ENV=development
       - NUXT_HOST=0.0.0.0
@@ -27,7 +27,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WDS_SOCKET_PORT=3000
       - NUXT_TELEMETRY_DISABLED=1
-    command: npx nuxt dev --host 0.0.0.0
+    command: sh /app/docker-entrypoint.sh
     networks:
       - esperion-network
     restart: unless-stopped
@@ -35,3 +35,7 @@ services:
 networks:
   esperion-network:
     driver: bridge
+
+volumes:
+  frontend-node-modules:
+  frontend-nuxt:

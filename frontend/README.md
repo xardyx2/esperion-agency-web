@@ -196,6 +196,14 @@ removeNotification(id)
 | Users | `/dashboard/users` | User management |
 | Settings | `/dashboard/settings` | Site settings |
 
+## Runtime Notes
+
+- **Public caching:** production public routes use Nuxt `routeRules` with `swr` windows in `frontend/nuxt.config.ts`.
+- **Dashboard rendering:** dashboard and capital routes stay client-rendered with `ssr: false`.
+- **Scalar API docs:** the Nuxt dashboard exposes API docs at `/dashboard/api-docs`, backed by the backend OpenAPI document at `http://localhost:8081/api/v1/openapi.json` in Docker development.
+- **MCP endpoint:** the Nuxt app exposes MCP capabilities at `/mcp` with definitions under `frontend/server/mcp/`.
+- **Package manager:** use `bun` for dependency changes so `frontend/bun.lock` stays authoritative.
+
 ## Multi-Language (i18n)
 
 ### Overview
@@ -337,11 +345,30 @@ docker compose up --build -d
 
 The Docker-based frontend runs at `http://localhost:3000` and calls the local backend at `http://localhost:8081`.
 
+The frontend dev container bind-mounts `./frontend` into `/app`, but keeps `node_modules` and `.nuxt` in Docker-managed volumes. Because of that, dependency changes must be reflected in `bun.lock` and the container startup now runs `bun install --frozen-lockfile` before `nuxt dev` so the runtime dependency tree matches the repository state.
+
+If frontend dependencies become stale, recover with:
+
+```bash
+docker compose stop frontend
+docker compose rm -f frontend
+docker volume rm esperionopenspec_frontend-node-modules esperionopenspec_frontend-nuxt
+docker compose up -d --build frontend
+```
+
+`frontend/i18n/locales/` is the authoritative runtime locale tree. `frontend/app/locales/` contains older translation data and should not receive new runtime keys.
+
+The current form-validation setup intentionally uses a local Zod v4 bridge in `frontend/app/composables/useValidation.ts` because `@nuxtjs/mcp-toolkit` requires `zod` v4 while `@vee-validate/zod` still peers on `zod` v3. If the VeeValidate module continues to warn about the missing adapter, treat that as an acknowledged compatibility trade-off unless the project explicitly chooses to downgrade or replace the Zod integration.
+
+If the shared local Docker stack fails because the SurrealDB container reports `Expected: 3, Actual: 1`, recover the legacy database volume from the repository root with `bash scripts/recover-local-surrealdb.sh migrate` or reset it with `bash scripts/recover-local-surrealdb.sh reset --yes` before restarting the stack.
+
 ### Build
 
 ```bash
 npm run build
 ```
+
+On Windows, `nuxt build` may finish generating `.output/public` and `.output/server/index.mjs` but keep the process alive because of an upstream Nitro/module handle issue. If that happens, verify `.output/server/index.mjs` exists, stop the lingering build process, and smoke-test the generated server with `node .output/server/index.mjs`.
 
 ### Generate (SSG)
 

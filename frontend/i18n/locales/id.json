@@ -1,13 +1,13 @@
 {
   "nav": {
-    "home": "Beranda",
-    "works": "Portofolio",
-    "services": "Layanan",
-    "articles": "Artikel",
-    "about": "Tentang",
-    "contact": "Hubungi Kami",
-    "appearance": "Tampilan",
-    "darkMode": "Mode Gelap",
+    "home": "Home",
+    "works": "Portfolio",
+    "services": "Services",
+    "articles": "Articles",
+    "about": "About",
+    "contact": "Contact",
+    "appearance": "Appearance",
+    "darkMode": "Dark Mode",
     "aria": {
       "home": "Beranda Esperion",
       "openMenu": "Buka menu",
@@ -24,22 +24,22 @@
     "success": "Berhasil",
     "cancel": "Batal",
     "save": "Simpan",
-    "delete": "Hapus",
+    "delete": "Delete",
     "edit": "Edit",
-    "view": "Lihat",
-    "search": "Cari",
+    "view": "View",
+    "search": "Search",
     "filter": "Filter",
-    "sort": "Urutkan",
+    "sort": "Sort",
     "reset": "Reset",
-    "readMore": "Baca Selengkapnya",
-    "learnMore": "Pelajari",
-    "submit": "Kirim",
+    "readMore": "Read More",
+    "learnMore": "Learn More",
+    "submit": "Submit",
     "pagination": {
-      "previous": "Sebelumnya",
-      "next": "Selanjutnya",
-      "page": "Halaman",
-      "of": "dari",
-      "results": "hasil"
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page",
+      "of": "of",
+      "results": "results"
     },
     "aria": {
       "close": "Tutup",
@@ -55,26 +55,20 @@
       "slide1Title": "Bangun Kehadiran Digital Anda",
       "slide1Sub": "Solusi terpercaya untuk bisnis Indonesia",
       "slide1Desc": "Kami merancang website dan produk digital yang membantu bisnis tampil jelas, cepat, dan siap berkembang.",
-      "slide1Cta": "Mulai Konsultasi",
-      "slide2Title": "Siap untuk Fase Pertumbuhan Berikutnya?",
-      "slide2Sub": "Solusi digital untuk fase tumbuh berikutnya",
-      "slide2Desc": "Dari perencanaan sampai peluncuran, Esperion membantu tim Anda merilis pengalaman digital yang relevan dan terukur.",
-      "slide2Cta": "Lihat Portofolio",
-      "slide3Title": "Tim Kecil, Dampak Nyata",
-      "slide3Sub": "Tim kecil yang fokus pada hasil nyata",
-      "slide3Desc": "Kami menggabungkan strategi, desain, dan pengembangan untuk menghadirkan pengalaman digital yang konsisten dengan brand Anda.",
-      "slide3Cta": "Pelajari Lebih Lanjut",
-      "slide4Title": "Layanan Digital Lengkap",
-      "slide4Sub": "Layanan Digital Lengkap",
+      "slide1Cta": "Start Consultation",
+      "slide2Cta": "View Portfolio",
+      "slide3Cta": "Learn More",
+      "slide4Title": "Comprehensive Digital Services",
+      "slide4Sub": "Comprehensive Digital Services",
       "slide4Desc": "Dari web development hingga digital marketing, kami menyediakan solusi end-to-end untuk transformasi digital.",
-      "slide4Cta": "Jelajahi Layanan",
+      "slide4Cta": "Explore Services",
       "slide5Title": "Dipercaya oleh Bisnis yang Berkembang",
       "slide5Sub": "Dipercaya oleh Bisnis yang Berkembang",
       "slide5Desc": "Bergabung dengan bisnis yang telah tumbuh bersama Esperion melalui solusi digital yang terukur dan berdampak.",
-      "slide5Cta": "Lihat Testimoni"
+      "slide5Cta": "View Testimonials"
     },
     "whoAreWe": {
-      "title": "Tentang Esperion",
+      "title": "About Esperion",
       "description": "Esperion adalah mitra digital untuk bisnis yang membutuhkan arah, eksekusi, dan pengalaman brand yang konsisten. Kami menggabungkan strategi, desain, dan pengembangan agar setiap peluncuran terasa lebih siap dan lebih relevan.",
       "value1": "Strategi yang jelas",
       "value2": "Eksekusi yang rapi",
@@ -84,50 +78,50 @@
     "ourServices": {
       "title": "Layanan Kami",
       "subtitle": "Solusi digital yang dirancang untuk target bisnis Anda",
-      "cta": "Lihat Semua Layanan"
+      "cta": "View All Services"
     },
     "stats": {
-      "projects": "Proyek Diselesaikan",
-      "clients": "Kolaborasi Klien",
-      "experience": "Tahun Pengalaman",
-      "talent": "Talenta Inti"
+      "projects": "Projects Completed",
+      "clients": "Client Collaborations",
+      "experience": "Years of Experience",
+      "talent": "Core Talent"
     },
     "clientLogos": {
       "placeholder": "Dipercaya oleh pemimpin industri",
-      "namePlaceholder": "Nama Klien"
+      "namePlaceholder": "Client Name"
     },
     "featuredWorks": {
-      "title": "Karya Unggulan",
+      "title": "Featured Works",
       "subtitle": "Sorotan proyek yang mewakili pendekatan kerja Esperion",
-      "cta": "Lihat Semua Portofolio →"
+      "cta": "View All Portfolio →"
     },
     "articles": {
-      "title": "Artikel Terbaru",
+      "title": "Latest Articles",
       "subtitle": "Insight singkat, pembelajaran, dan pembaruan dari tim Esperion",
-      "cta": "Lihat Semua Artikel →",
-      "readMore": "Baca Selengkapnya →"
+      "cta": "View All Articles →",
+      "readMore": "Read More →"
     },
     "cta": {
-      "title": "Siap untuk Langkah Digital Berikutnya?",
+      "title": "Ready for the Next Digital Step?",
       "description": "Ceritakan konteks bisnis Anda, lalu kami bantu memetakan solusi yang paling relevan untuk tahap pertumbuhan berikutnya.",
-      "button": "Mulai Diskusi Hari Ini"
+      "button": "Start Discussion Today"
     },
     "aria": {
-      "slideNav": "Ke slide {index}",
-      "prevSlide": "Slide sebelumnya",
-      "nextSlide": "Slide berikutnya"
+      "slideNav": "Go to slide {index}",
+      "prevSlide": "Previous slide",
+      "nextSlide": "Next slide"
     }
   },
   "services": {
     "banner": {
-      "title": "Layanan Kami",
+      "title": "Our Services",
       "description": "Solusi digital yang dirancang untuk membantu bisnis Anda bergerak lebih jelas dan lebih siap tumbuh"
     },
     "cta": {
-      "learnMore": "Pelajari Detailnya"
+      "learnMore": "Learn More"
     },
     "whyChooseUs": {
-      "title": "Kenapa Memilih Esperion?",
+      "title": "Why Choose Esperion?",
       "description": "Kami menggabungkan strategi, eksekusi, dan kolaborasi yang rapi untuk hasil yang lebih terarah"
     },
     "reasons": {
@@ -149,27 +143,47 @@
       }
     },
     "ctaSection": {
-      "title": "Siap Memulai Proyek Anda?",
+      "title": "Ready to Start Your Project?",
       "description": "Ceritakan konteks bisnis Anda, lalu kami bantu petakan solusi digital yang paling relevan.",
-      "button": "Jadwalkan Konsultasi"
+      "button": "Schedule Consultation"
     },
     "detail": {
-      "serviceScope": "Ruang Lingkup Layanan",
-      "workflow": "Alur Kerja",
-      "estimateStartingFrom": "Estimasi Mulai Dari",
+      "serviceScope": "Service Scope",
+      "workflow": "Workflow",
+      "estimateStartingFrom": "Estimate Starting From",
       "estimateNote": "Estimasi akhir disesuaikan berdasarkan ruang lingkup, kompleksitas, dan kebutuhan integrasi.",
-      "requestEstimate": "Minta Estimasi",
-      "faq": "Pertanyaan yang Sering Diajukan",
-      "relatedServices": "Layanan Terkait",
-      "ctaTitle": "Siap Melangkah ke Tahap Berikutnya?",
+      "requestEstimate": "Request Estimate",
+      "faq": "FAQ",
+      "relatedServices": "Related Services",
+      "ctaTitle": "Ready for the Next Step?",
       "ctaDescription": "Kategorikan konteks bisnis Anda, lalu kami bantu menyusun pendekatan yang paling relevan.",
-      "ctaButton": "Hubungi Tim Esperion"
+      "ctaButton": "Contact Esperion Team"
     }
   },
   "articles": {
     "banner": {
-      "title": "Artikel",
+      "title": "Articles",
       "description": "Insight, pembelajaran, dan pembaruan dari tim Esperion"
+    },
+    "filters": {
+      "allCategories": "All Categories",
+      "marketing": "Pemasaran",
+      "design": "Desain",
+      "development": "Pengembangan",
+      "ecommerce": "E-Commerce",
+      "business": "Bisnis",
+      "reset": "Reset"
+    },
+    "search": {
+      "placeholder": "Search articles..."
+    },
+    "emptyState": {
+      "title": "No Articles Found",
+      "description": "Coba ubah kata kunci atau filter yang dipilih",
+      "resetButton": "Reset All Filters"
+    },
+    "loadMore": {
+      "button": "Load More Articles"
     },
     "filters": {
       "allCategories": "Semua Kategori",
@@ -181,7 +195,7 @@
       "reset": "Reset"
     },
     "search": {
-      "placeholder": "Cari artikel..."
+      "placeholder": "Search articles..."
     },
     "results": {
       "count": "Menampilkan {visible} dari {total} artikel"
@@ -195,7 +209,7 @@
       "button": "Muat Artikel Lainnya"
     },
     "newsletter": {
-      "title": "Ikuti Pembaruan dari Esperion",
+      "title": "Follow Esperion Updates",
       "description": "Dapatkan artikel dan pembaruan terbaru langsung ke email Anda",
       "placeholder": "Masukkan email Anda",
       "subscribeButton": "Berlangganan",
@@ -227,7 +241,7 @@
       "relatedArticles": "Artikel Terkait",
       "newsletterTitle": "Ingin membaca insight lainnya?",
       "newsletterDescription": "Jelajahi artikel lain dari tim Esperion untuk memahami prioritas digital dengan lebih terarah.",
-      "viewAllArticles": "Lihat Semua Artikel"
+      "viewAllArticles": "View All Articles"
     }
   },
   "contact": {
@@ -236,7 +250,7 @@
       "description": "Ceritakan kebutuhan Anda, lalu kami bantu petakan langkah digital yang paling relevan"
     },
     "form": {
-      "title": "Kirim Brief Anda",
+      "title": "Send Your Brief",
       "fullNameLabel": "Nama Lengkap",
       "companyNameLabel": "Nama Perusahaan",
       "emailLabel": "Email",
@@ -245,55 +259,55 @@
       "descriptionLabel": "Ringkasan Proyek",
       "servicePlaceholder": "Pilih layanan",
       "serviceOptions": {
-        "webDevelopment": "Pengembangan Web",
-        "mobileApp": "Aplikasi Mobile",
+        "webDevelopment": "Web Development",
+        "mobileApp": "Mobile App Development",
         "uiUxDesign": "UI/UX Design",
         "digitalMarketing": "Digital Marketing",
-        "ecommerce": "Solusi E-Commerce",
-        "consulting": "Konsultasi Digital",
-        "other": "Lainnya"
+        "ecommerce": "E-Commerce Solutions",
+        "consulting": "Consulting",
+        "other": "Other"
       },
       "fullNamePlaceholder": "Nama Anda",
       "companyNamePlaceholder": "Nama perusahaan atau brand",
       "emailPlaceholder": "{'anda@contoh.com'}",
       "phonePlaceholder": "+62 812 3456 7890",
       "descriptionPlaceholder": "Ceritakan tujuan, konteks, dan target waktu proyek Anda...",
-      "submitButton": "Kirim Pesan",
-      "submittingButton": "Mengirim...",
+      "submitButton": "Send Message",
+      "submittingButton": "Sending...",
       "successMessage": "Terima kasih. Brief Anda sudah terkirim dan tim Esperion akan segera menghubungi Anda.",
       "errorMessage": "Terjadi kendala saat mengirim pesan. Silakan coba beberapa saat lagi."
     },
     "info": {
-      "title": "Informasi Kontak",
-      "location": "Lokasi",
-      "locationText": "Jakarta, Indonesia",
-      "phone": "Telepon / WhatsApp",
+      "title": "Contact Information",
+      "location": "Location",
+      "locationText": "Sawangan Elok A1 No 5 RT 1 RW 10, Sawangan, Depok, Jawa Barat, Indonesia",
+      "phone": "Phone / WhatsApp",
       "phoneText": "+62 812 3456 7890",
       "email": "Email",
-      "emailText": "{'hello@esperion.id'}",
-      "businessHours": "Jam Operasional",
+      "emailText": "{'hello@esperion.one'}",
+      "businessHours": "Business Hours",
       "businessHoursText": "Senin - Jumat: 09.00 - 18.00 WIB"
     },
     "social": {
-      "title": "Ikuti Esperion"
+      "title": "Follow Esperion"
     },
     "map": {
-      "title": "Lokasi Kami",
-      "description": "Kunjungi kantor kami di Jakarta. Kami terletak strategis di kawasan bisnis Sudirman.",
-      "placeholder": "Lokasi Kantor Jakarta"
+      "title": "Our Location",
+      "description": "Kunjungi kantor Esperion di Sawangan, Depok, atau buka rute langsung ke lokasi resmi kami di Google Maps.",
+      "placeholder": "Esperion office location in Sawangan, Depok"
     }
   },
   "footer": {
     "companyDescription": "Esperion membantu bisnis bertumbuh lewat strategi, desain, dan pengembangan digital yang terarah.",
-    "quickLinks": "Navigasi Cepat",
-    "ourServices": "Layanan Kami",
-    "contactUs": "Hubungi Kami",
-    "followUs": "Ikuti Kami",
-    "appearance": "Tampilan",
+    "quickLinks": "Quick Links",
+    "ourServices": "Our Services",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "appearance": "Appearance",
     "contact": {
-      "city": "Jakarta, Indonesia",
-      "addressPending": "Jl. Sudirman Kav. 52-53, Jakarta Selatan 12190",
-      "businessHours": "Senin-Jumat: 09.00-17.00 WIB"
+      "city": "Sawangan, Depok, Indonesia",
+      "addressPending": "Sawangan Elok A1 No 5 RT 1 RW 10",
+      "businessHours": "Senin-Jumat: 09.00-18.00 WIB"
     },
     "services": {
       "webDevelopment": "Web Development",
@@ -304,9 +318,10 @@
       "digitalConsulting": "Digital Consulting"
     },
     "copyright": "© {year} Esperion. Seluruh hak cipta dilindungi.",
-    "privacyPolicy": "Kebijakan Privasi",
-    "termsOfService": "Syarat Layanan"
-},
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookieSettings": "Pengaturan Cookie"
+  },
   "social": {
     "instagram": "Instagram",
     "facebook": "Facebook",
@@ -315,57 +330,57 @@
     "twitter": "Twitter"
   },
   "aria": {
-    "location": "Lokasi",
-    "phone": "Telepon",
+    "location": "Location",
+    "phone": "Phone",
     "email": "Email",
-    "businessHours": "Jam operasional",
-    "switchToLightMode": "Ubah ke mode terang",
-    "switchToDarkMode": "Ubah ke mode gelap",
-    "lightMode": "Mode terang",
-    "darkMode": "Mode gelap"
+    "businessHours": "Business Hours",
+    "switchToLightMode": "Switch to light mode",
+    "switchToDarkMode": "Switch to dark mode",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
   },
   "offline": {
-    "title": "Anda Sedang Offline",
+    "title": "You're Offline",
     "message": "Sepertinya koneksi internet Anda terputus. Jangan khawatir, Anda masih dapat melihat beberapa konten yang tersimpan.",
-    "tryAgain": "Coba Lagi",
-    "goToHomepage": "Ke Halaman Utama",
-    "availablePages": "Halaman-halaman berikut tersedia offline:",
+    "tryAgain": "Try Again",
+    "goToHomepage": "Go to Homepage",
+    "availablePages": "Available pages:",
     "cachedPages": {
-      "home": "Halaman Utama",
-      "works": "Portofolio",
-      "services": "Layanan",
-      "articles": "Artikel"
+      "home": "Home",
+      "works": "Portfolio",
+      "services": "Services",
+      "articles": "Articles"
     },
-    "stillOffline": "Masih offline. Silakan periksa koneksi internet Anda.",
+    "stillOffline": "Still offline. Please check your internet connection.",
     "seo": {
       "title": "Offline - Esperion",
       "description": "Anda saat ini sedang offline."
     }
   },
   "breadcrumb": {
-    "home": "Beranda",
-    "services": "Layanan Kami",
-    "works": "Portofolio",
-    "articles": "Artikel",
-    "contact": "Kontak Kami",
-    "about": "Tentang Kami"
+    "home": "Home",
+    "services": "Our Services",
+    "works": "Portfolio",
+    "articles": "Articles",
+    "contact": "Contact Us",
+    "about": "About Us"
   },
   "about": {
     "banner": {
-      "title": "Tentang Kami",
+      "title": "About Us",
       "description": "Mengenal cara Esperion membangun kerja sama, kualitas, dan arah digital yang konsisten"
     },
     "aboutSection": {
-      "title": "Tentang Esperion",
+      "title": "About Esperion",
       "paragraph1": "Esperion adalah mitra digital yang membantu bisnis menyiapkan pengalaman online yang lebih jelas, lebih cepat, dan lebih siap tumbuh. Kami bekerja dengan pendekatan strategis agar setiap keputusan desain dan pengembangan tetap terhubung dengan tujuan bisnis.",
       "paragraph2": "Tim kami menggabungkan riset, desain, pengembangan, dan validasi agar solusi yang dirilis tidak hanya terlihat baik, tetapi juga terasa relevan bagi pengguna dan mudah dikembangkan oleh bisnis Anda.",
       "paragraph3": "Fokus kami bukan sekadar meluncurkan halaman baru, tetapi membantu bisnis membangun fondasi digital yang bisa dipakai untuk tahap pertumbuhan berikutnya."
     },
     "visionMission": {
-      "title": "Visi dan Misi",
-      "visionTitle": "Visi",
+      "title": "Vision and Mission",
+      "visionTitle": "Vision",
       "visionDescription": "Menjadi mitra digital yang membantu bisnis mengambil keputusan lebih percaya diri melalui pengalaman brand dan produk yang rapi, relevan, dan berkelanjutan.",
-      "missionTitle": "Misi",
+      "missionTitle": "Mission",
       "missionItems": [
         "Menyusun solusi digital yang selaras dengan tujuan bisnis dan kebutuhan pengguna",
         "Membangun kerja sama jangka panjang lewat komunikasi yang terbuka dan hasil yang terukur",
@@ -374,10 +389,10 @@
       ]
     },
     "stats": {
-      "projectsCompleted": "Proyek Terselesaikan",
-      "clientCollaborations": "Kolaborasi Klien",
-      "yearsExperience": "Tahun Pengalaman",
-      "coreTalent": "Talenta Inti"
+      "projectsCompleted": "Projects Completed",
+      "clientCollaborations": "Client Collaborations",
+      "yearsExperience": "Years of Experience",
+      "coreTalent": "Core Talent"
     },
     "founders": {
       "title": "Kepemimpinan Kami",
@@ -488,22 +503,22 @@
       "client": "Klien",
       "projectSummary": "Ringkasan Proyek",
       "projectDescription": "Halaman ini menampilkan gambaran singkat hasil kerja, ruang lingkup utama, dan indikator hasil yang paling relevan untuk memahami konteks proyek tanpa mengklaim detail rahasia yang belum dipublikasikan.",
-      "keyFeatures": "Ruang Lingkup Utama",
-      "projectGallery": "Galeri Proyek",
-      "startProjectDiscussion": "Mulai Diskusi Proyek",
-      "viewAllPortfolio": "Lihat Semua Portofolio",
-      "relatedWorks": "Proyek Terkait",
+      "keyFeatures": "Key Features",
+      "projectGallery": "Project Gallery",
+      "startProjectDiscussion": "Start Project Discussion",
+      "viewAllPortfolio": "View All Portfolio",
+      "relatedWorks": "Related Works",
       "seo": {
         "title": "{title} - Esperion Digital Agency",
         "description": "{description}"
       }
     },
     "banner": {
-      "title": "Portofolio Kami",
+      "title": "Our Portfolio",
       "description": "Lihat contoh pendekatan kerja Esperion di berbagai kebutuhan digital"
     },
     "services": {
-      "all": "Semua Layanan",
+      "all": "All Services",
       "webDevelopment": "Web Development",
       "mobileApp": "Mobile App Development",
       "uiUxDesign": "UI/UX Design",
@@ -512,7 +527,7 @@
       "consulting": "Consulting"
     },
     "platforms": {
-      "all": "Semua Platform",
+      "all": "All Platforms",
       "shopify": "Shopify",
       "reactNative": "React Native",
       "nextjs": "Next.js",
@@ -533,9 +548,9 @@
       "description": "Coba ubah filter untuk melihat hasil lain",
       "resetButton": "Reset Semua Filter"
     },
-    "featuredBadge": "Sorotan",
+    "featuredBadge": "Featured",
     "loadMore": {
-      "button": "Lihat Proyek Lainnya"
+      "button": "View More Projects"
     }
   },
   "seo": {
@@ -764,12 +779,12 @@
         "service": {
           "label": "Layanan",
           "options": {
-            "webDevelopment": "Pengembangan Web",
-            "mobileAppDevelopment": "Pengembangan Aplikasi Mobile",
-            "uiUxDesign": "Desain UI/UX",
+            "webDevelopment": "Web Development",
+            "mobileAppDevelopment": "Mobile App Development",
+            "uiUxDesign": "UI/UX Design",
             "digitalMarketing": "Digital Marketing",
-            "ecommerceSolutions": "Solusi E-Commerce",
-            "consulting": "Konsultasi"
+            "ecommerceSolutions": "E-Commerce Solutions",
+            "consulting": "Consulting"
           }
         },
         "platform": {
@@ -1271,6 +1286,16 @@
         "eventLabel": "event"
       },
       "empty": "Tidak ada data analytics."
+    },
+    "apiDocs": {
+      "title": "Dokumentasi API Esperion",
+      "description": "Lihat referensi OpenAPI backend Esperion dari dashboard.",
+      "loading": "Memuat dokumentasi API...",
+      "errorTitle": "Dokumentasi API tidak tersedia",
+      "errorMessage": "Spesifikasi OpenAPI backend sedang tidak tersedia. Pastikan server backend berjalan.",
+      "backendUrl": "URL backend",
+      "retry": "Coba Lagi",
+      "openDirect": "Buka OpenAPI Langsung"
     }
   },
   "error": {

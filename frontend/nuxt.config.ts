@@ -16,8 +16,32 @@ export default ({
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
-    'nuxt-security'
+    'nuxt-security',
+    '@vee-validate/nuxt',
+    '@scalar/nuxt',
+    '@nuxtjs/mcp-toolkit'
   ],
+
+  // MCP Server configuration
+  mcp: {
+    name: 'Esperion MCP Server',
+    version: '1.0.0',
+    route: '/mcp',
+    dir: 'mcp',
+  },
+
+  // Scalar API Reference configuration
+  scalar: {
+    url: 'http://localhost:8081/api/v1/openapi.json',
+    pathRouting: {
+      basePath: '/dashboard/api-docs'
+    },
+    metaData: {
+      title: 'Esperion API Documentation',
+    },
+    // Proxy for CORS in production
+    proxyUrl: 'https://proxy.scalar.com'
+  },
   pages: true,
 
   components: [
@@ -84,39 +108,50 @@ export default ({
 
   // Route rules for ISR (public pages) and CSR (dashboard)
   routeRules: isDev ? {} : {
-    // Home page - 60s revalidation
-    '/': { isr: 60 },
-    '/id/**': { isr: 60 },
-    '/en/**': { isr: 60 },
-
-    // Work/Service detail - 300s revalidation (less frequent updates)
-    '/id/our-works/**': { isr: 300 },
-    '/en/our-works/**': { isr: 300 },
-    '/id/our-services/**': { isr: 300 },
-    '/en/our-services/**': { isr: 300 },
-
-    // Article detail - 300s revalidation
-    '/id/articles/**': { isr: 300 },
-    '/en/articles/**': { isr: 300 },
-
-    // About & Contact - 600s revalidation (static content)
-    '/id/about': { isr: 600 },
-    '/en/about': { isr: 600 },
-    '/id/contact-us': { isr: 600 },
-    '/en/contact-us': { isr: 600 },
-
-    // Legal pages - 86400s revalidation (24 hours)
-    '/id/privacy-policy': { isr: 86400 },
-    '/en/privacy-policy': { isr: 86400 },
-    '/id/terms-of-service': { isr: 86400 },
-    '/en/terms-of-service': { isr: 86400 },
-
     // Dashboard pages - CSR (Client-Side Rendering)
     '/dashboard/**': { ssr: false },
+    '/id/dashboard/**': { ssr: false },
+    '/en/dashboard/**': { ssr: false },
     '/capital/**': { ssr: false },
+    '/id/capital/**': { ssr: false },
+    '/en/capital/**': { ssr: false },
 
-    // API routes - SSR default with CORS
-    '/api/**': { cors: true }
+    // Home page - 60s revalidation
+    '/': { swr: 60 },
+    '/id': { swr: 60 },
+    '/en': { swr: 60 },
+
+    // Work/Service detail - 300s revalidation (less frequent updates)
+    '/id/our-works': { swr: 300 },
+    '/en/our-works': { swr: 300 },
+    '/id/our-works/**': { swr: 300 },
+    '/en/our-works/**': { swr: 300 },
+    '/id/our-services': { swr: 300 },
+    '/en/our-services': { swr: 300 },
+    '/id/our-services/**': { swr: 300 },
+    '/en/our-services/**': { swr: 300 },
+
+    // Article detail - 300s revalidation
+    '/id/articles': { swr: 300 },
+    '/en/articles': { swr: 300 },
+    '/id/articles/**': { swr: 300 },
+    '/en/articles/**': { swr: 300 },
+
+    // About & Contact - 600s revalidation (static content)
+    '/id/about': { swr: 600 },
+    '/en/about': { swr: 600 },
+    '/id/contact-us': { swr: 600 },
+    '/en/contact-us': { swr: 600 },
+
+    // Legal pages - 86400s revalidation (24 hours)
+    '/id/privacy-policy': { swr: 86400 },
+    '/en/privacy-policy': { swr: 86400 },
+    '/id/terms-of-service': { swr: 86400 },
+    '/en/terms-of-service': { swr: 86400 },
+
+    // API and MCP routes - SSR default with CORS
+    '/api/**': { cors: true },
+    '/mcp/**': { cors: true }
   },
   future: {
     compatibilityVersion: 4
@@ -128,6 +163,25 @@ export default ({
   compatibilityDate: '2025-03-13',
   // Vite configuration
   vite: {
+    optimizeDeps: {
+      include: [
+        '@scalar/nuxt > @scalar/api-reference',
+        '@scalar/nuxt > jsonpointer',
+        '@scalar/nuxt > ajv-draft-04',
+        '@scalar/nuxt > ajv-formats',
+        '@scalar/nuxt > ajv',
+        '@scalar/nuxt > ajv-draft-04 > ajv',
+        '@scalar/nuxt > ajv-formats > ajv',
+        '@scalar/nuxt > whatwg-mimetype',
+        '@scalar/nuxt > @scalar/openapi-parser',
+        '@scalar/nuxt > debug',
+        '@scalar/nuxt > extend',
+        '@scalar/nuxt > highlightjs-curl',
+        '@scalar/nuxt > highlight.js/lib/core',
+        '@vue/devtools-core',
+        '@vue/devtools-kit'
+      ]
+    },
     vue: {
       scriptSetup: true
     },
@@ -187,6 +241,7 @@ export default ({
       { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' }
     ],
     defaultLocale: 'id',
+    // Runtime source of truth for translations.
     langDir: 'locales',
     detectBrowserLanguage: {
       useCookie: true,
