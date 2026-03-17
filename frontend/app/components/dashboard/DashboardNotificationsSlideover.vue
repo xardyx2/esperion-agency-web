@@ -82,6 +82,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { useUiStore } from '../../stores/ui'
 
 const open = defineModel<boolean>('open', { default: false })
 
