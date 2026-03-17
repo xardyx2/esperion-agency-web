@@ -187,3 +187,438 @@
 - [ ] 11.4 Create changelog for dashboard improvements
 - [ ] 11.5 Train internal team on new features
 - [ ] 11.6 Gather user feedback after 2 weeks of usage
+
+## 12. Advanced Article Editor (P0 Priority - 6 Weeks)
+
+### 12.1 Phase 1: Core Editor with Dual View (Week 1-2)
+
+#### Editor Layout Infrastructure
+- [ ] 12.1.1 Create `ArticleEditor.vue` main container
+- [ ] 12.1.2 Create `SplitViewLayout.vue` with dual panes
+- [ ] 12.1.3 Create `SingleViewLayout.vue` with language tabs
+- [ ] 12.1.4 Create `ViewModeToggle.vue` component (Split/Single buttons)
+- [ ] 12.1.5 Implement `useScrollSync.ts` composable for synchronized scrolling
+- [ ] 12.1.6 Add percentage-based scroll synchronization between panes
+- [ ] 12.1.7 Implement cursor position saving per language
+- [ ] 12.1.8 Create `LanguageTabs.vue` for single view switching
+- [ ] 12.1.9 Add keyboard shortcuts: Ctrl/Cmd+1 (single), Ctrl/Cmd+2 (split)
+- [ ] 12.1.10 Add keyboard shortcut: Ctrl/Cmd+Tab (switch language in single view)
+
+#### TipTap Editor Setup
+- [ ] 12.1.11 Install `@nuxt/ui` Editor dependencies (TipTap, extensions)
+- [ ] 12.1.12 Add vite.optimizeDeps for prosemirror packages in `nuxt.config.ts`
+- [ ] 12.1.13 Create `TipTapEditor.vue` wrapper component
+- [ ] 12.1.14 Configure TipTap extensions: StarterKit, Image, Link, Placeholder
+- [ ] 12.1.15 Add slash commands (`/`) for block insertion
+- [ ] 12.1.16 Implement floating bubble toolbar for text formatting
+- [ ] 12.1.17 Add block drag handle for reordering
+- [ ] 12.1.18 Configure dark mode support for editor
+- [ ] 12.1.19 Create `SyncedScrollContainer.vue` for split view
+- [ ] 12.1.20 Add resize handle for adjustable pane widths
+
+#### State Management
+- [ ] 12.1.21 Create `articleEditor.ts` Pinia store
+- [ ] 12.1.22 Define state: content (id/en), viewMode, activeLanguage
+- [ ] 12.1.23 Define state: cursorPositions, scrollPositions
+- [ ] 12.1.24 Add getters for combined content, word counts
+- [ ] 12.1.25 Add actions for language switching
+- [ ] 12.1.26 Add actions for view mode switching with state preservation
+- [ ] 12.1.27 Implement content change tracking
+
+### 12.2 Phase 2: Save System with Revision History (Week 3)
+
+#### Save Coordinator
+- [ ] 12.2.1 Create `SaveCoordinator.ts` service
+- [ ] 12.2.2 Implement idle detection (2 seconds no typing)
+- [ ] 12.2.3 Implement word count tracking (save every 100 words)
+- [ ] 12.2.4 Implement manual save (Ctrl+S / button)
+- [ ] 12.2.5 Add token-based save coordination (prevent conflicts)
+- [ ] 12.2.6 Implement save priority: manual > word-count > idle
+- [ ] 12.2.7 Add save metadata: type, timestamp, word count, author
+- [ ] 12.2.8 Create `useSaveCoordinator.ts` composable
+- [ ] 12.2.9 Add save status tracking (idle/saving/saved/error)
+
+#### Revision History - Backend
+- [ ] 12.2.10 Create SurrealDB `revisions` table schema
+- [ ] 12.2.11 Add fields: article_id, content_id, content_en, metadata
+- [ ] 12.2.12 Add metadata fields: save_type, word_count, author_id, author_name
+- [ ] 12.2.13 Create indexes for efficient querying
+- [ ] 12.2.14 Add API endpoint: POST /api/v1/articles/:id/revisions
+- [ ] 12.2.15 Add API endpoint: GET /api/v1/articles/:id/revisions (paginated)
+- [ ] 12.2.16 Add API endpoint: GET /api/v1/articles/:id/revisions/:revisionId
+- [ ] 12.2.17 Add API endpoint: POST /api/v1/articles/:id/revisions/:id/restore
+- [ ] 12.2.18 Add API endpoint: POST /api/v1/articles/:id/revisions/compare
+- [ ] 12.2.19 Add API endpoint: POST /api/v1/articles/:id/revisions/cleanup
+- [ ] 12.2.20 Implement revision cleanup logic (keep last 100)
+
+#### Revision History - Frontend
+- [ ] 12.2.21 Create `RevisionHistoryPanel.vue` component
+- [ ] 12.2.22 Create `RevisionItem.vue` for individual revision display
+- [ ] 12.2.23 Add revision grouping by date (Today, Yesterday, etc.)
+- [ ] 12.2.24 Show revision metadata: type, timestamp, word count, author
+- [ ] 12.2.25 Add "Restore" button per revision
+- [ ] 12.2.26 Add "Preview" button for revision preview
+- [ ] 12.2.27 Add "Compare" button for diff view
+- [ ] 12.2.28 Create `RevisionDiff.vue` for side-by-side comparison
+- [ ] 12.2.29 Add diff statistics: +words, -words, ~changed
+- [ ] 12.2.30 Create `RevisionSettings.vue` for max revisions config
+- [ ] 12.2.31 Add settings: max revisions slider (10, 50, 100, 250, 500)
+- [ ] 12.2.32 Add settings: auto-cleanup toggle
+- [ ] 12.2.33 Implement revision search/filter
+
+#### UI Components
+- [ ] 12.2.34 Create `SaveStatusIndicator.vue` component
+- [ ] 12.2.35 Create `WordCountDisplay.vue` component
+- [ ] 12.2.36 Create `ArticleEditorStatusBar.vue` with save info
+- [ ] 12.2.37 Add "Last saved" timestamp display
+- [ ] 12.2.38 Add save type indicator (Manual/Auto) with icon
+
+### 12.3 Phase 3: Offline Editing Support (Week 4)
+
+#### IndexedDB Setup
+- [ ] 12.3.1 Create IndexedDB database schema
+- [ ] 12.3.2 Create `pending_changes` object store
+- [ ] 12.3.3 Create `article_drafts` object store
+- [ ] 12.3.4 Create `revision_cache` object store
+- [ ] 12.3.5 Implement IndexedDB service with CRUD operations
+- [ ] 12.3.6 Add transactions for data integrity
+
+#### Offline Manager
+- [ ] 12.3.7 Create `OfflineManager.ts` service
+- [ ] 12.3.8 Implement connection status detection (navigator.onLine)
+- [ ] 12.3.9 Add heartbeat ping every 30 seconds for accurate status
+- [ ] 12.3.10 Implement `useConnectionStatus.ts` composable
+- [ ] 12.3.11 Add pending changes queue management
+- [ ] 12.3.12 Implement `useOfflineEditing.ts` composable
+- [ ] 12.3.13 Add draft saving to IndexedDB on content change
+- [ ] 12.3.14 Implement draft retrieval on page load
+
+#### Service Worker Sync
+- [ ] 12.3.15 Configure Service Worker for background sync
+- [ ] 12.3.16 Register sync tags for article changes
+- [ ] 12.3.17 Implement fetch interception when offline
+- [ ] 12.3.18 Queue failed requests for retry
+- [ ] 12.3.19 Auto-trigger sync when connection restored
+
+#### Conflict Resolution
+- [ ] 12.3.20 Implement conflict detection logic
+- [ ] 12.3.21 Default strategy: server wins (configurable)
+- [ ] 12.3.22 Create `ConflictResolver.vue` component
+- [ ] 12.3.23 Show conflict notification with options
+- [ ] 12.3.24 Add "Use Server Version" button
+- [ ] 12.3.25 Add "Use My Version" button
+- [ ] 12.3.26 Add "Review Diff" button (future enhancement)
+- [ ] 12.3.27 Implement version comparison logic
+
+#### Notification System
+- [ ] 12.3.28 Create `ConnectionStatusBar.vue` component
+- [ ] 12.3.29 Show offline mode notification (red banner)
+- [ ] 12.3.30 Show online mode + syncing notification (blue banner)
+- [ ] 12.3.31 Show sync complete notification (green banner)
+- [ ] 12.3.32 Show sync conflict notification (yellow banner)
+- [ ] 12.3.33 Show sync failed notification (red banner with retry)
+- [ ] 12.3.34 Add sync progress indicator (count of pending changes)
+- [ ] 12.3.35 Create `SyncNotification.vue` component
+
+### 12.4 Phase 4: Live SEO Scoring (Week 5)
+
+#### Client-Side SEO Calculation
+- [ ] 12.4.1 Create `useLiveSEO.ts` composable
+- [ ] 12.4.2 Implement word count calculation (fast)
+- [ ] 12.4.3 Implement heading structure analysis
+- [ ] 12.4.4 Implement link count (internal/external)
+- [ ] 12.4.5 Implement image count and alt text check
+- [ ] 12.4.6 Implement keyword presence check
+- [ ] 12.4.7 Add weighted scoring for client-side metrics
+
+#### API Integration
+- [ ] 12.4.8 Use existing POST /api/v1/seo/calculate endpoint
+- [ ] 12.4.9 Implement debounced API calls (500ms)
+- [ ] 12.4.10 Merge client-side and API results
+- [ ] 12.4.11 Cache API results to prevent duplicate calls
+- [ ] 12.4.12 Handle API errors gracefully (show cached/last known)
+
+#### SEO Panel UI
+- [ ] 12.4.13 Create `LiveSEOPanel.vue` component
+- [ ] 12.4.14 Create `SEOScoreRing.vue` for circular progress
+- [ ] 12.4.15 Add live score display (0-100)
+- [ ] 12.4.16 Add color coding: green >80, yellow 60-80, red <60
+- [ ] 12.4.17 Create `SEOMetricsList.vue` component
+- [ ] 12.4.18 Show client metrics: word count, headings, links, images
+- [ ] 12.4.19 Show API metrics: readability, keyword density, content quality
+- [ ] 12.4.20 Add loading indicator for API-calculated metrics
+- [ ] 12.4.21 Add "Refresh Analysis" button
+- [ ] 12.4.22 Implement real-time updates on content change
+
+### 12.5 Phase 5: Document Settings & Polish (Week 5-6)
+
+#### Document Settings Panel
+- [ ] 12.5.1 Create `DocumentPanel.vue` component
+- [ ] 12.5.2 Add status selector: Draft, Published, Archived
+- [ ] 12.5.3 Add visibility selector: Public, Private, Password
+- [ ] 12.5.4 Add publish date picker
+- [ ] 12.5.5 Add author display (read-only)
+- [ ] 12.5.6 Add slug editor with auto-generate from title
+
+#### Featured Image
+- [ ] 12.5.7 Create `FeaturedImage.vue` component
+- [ ] 12.5.8 Add upload from computer
+- [ ] 12.5.9 Add "Select from Media Library"
+- [ ] 12.5.10 Show image preview with remove button
+- [ ] 12.5.11 Add alt text input field
+
+#### Categories & Tags
+- [ ] 12.5.12 Create `CategoriesPanel.vue` with checkboxes
+- [ ] 12.5.13 Fetch categories from API
+- [ ] 12.5.14 Support category hierarchy
+- [ ] 12.5.15 Add "+ Add New Category" button
+- [ ] 12.5.16 Create `TagsPanel.vue` with input
+- [ ] 12.5.17 Add tag suggestions as user types
+- [ ] 12.5.18 Show tags as removable chips
+
+#### Performance Optimization
+- [ ] 12.5.19 Implement virtual scrolling for large articles
+- [ ] 12.5.20 Add chunk-based content rendering (500 words per chunk)
+- [ ] 12.5.21 Create content analysis Web Worker
+- [ ] 12.5.22 Offload word count to Web Worker
+- [ ] 12.5.23 Offload SEO calculation to Web Worker
+- [ ] 12.5.24 Limit revision cache in memory (max 20)
+- [ ] 12.5.25 Implement aggressive cleanup for unused data
+
+#### Editor Enhancements
+- [ ] 12.5.26 Add word count display in toolbar
+- [ ] 12.5.27 Add reading time estimation
+- [ ] 12.5.28 Add undo/redo buttons
+- [ ] 12.5.29 Add fullscreen editing mode
+- [ ] 12.5.30 Add distraction-free mode (hide sidebar)
+- [ ] 12.5.31 Add keyboard shortcuts help modal (Ctrl/Cmd+/)
+
+### 12.6 Testing & Documentation (Week 6)
+
+#### E2E Tests
+- [ ] 12.6.1 Write test: Create new article with editor
+- [ ] 12.6.2 Write test: Edit existing article
+- [ ] 12.6.3 Write test: Switch between split/single view
+- [ ] 12.6.4 Write test: Synchronized scrolling in split view
+- [ ] 12.6.5 Write test: Auto-save on idle (2 seconds)
+- [ ] 12.6.6 Write test: Auto-save every 100 words
+- [ ] 12.6.7 Write test: Manual save creates revision
+- [ ] 12.6.8 Write test: View revision history
+- [ ] 12.6.9 Write test: Restore to previous revision
+- [ ] 12.6.10 Write test: Compare two revisions
+- [ ] 12.6.11 Write test: Offline mode detection
+- [ ] 12.6.12 Write test: Offline changes saved to IndexedDB
+- [ ] 12.6.13 Write test: Auto-sync when back online
+- [ ] 12.6.14 Write test: Conflict resolution
+- [ ] 12.6.15 Write test: Live SEO score updates
+- [ ] 12.6.16 Write test: Block operations (add, delete, reorder)
+
+#### Unit Tests
+- [ ] 12.6.17 Test SaveCoordinator logic
+- [ ] 12.6.18 Test word count calculation
+- [ ] 12.6.19 Test scroll synchronization
+- [ ] 12.6.20 Test SEO score calculation
+- [ ] 12.6.21 Test IndexedDB operations
+- [ ] 12.6.22 Test connection status detection
+
+#### Documentation
+- [ ] 12.6.23 Create editor usage guide
+- [ ] 12.6.24 Document keyboard shortcuts
+- [ ] 12.6.25 Document save mechanisms
+- [ ] 12.6.26 Document offline editing
+- [ ] 12.6.27 Document revision history
+- [ ] 12.6.28 Document SEO best practices
+- [ ] 12.6.29 Create video tutorial for content editor
+- [ ] 12.6.30 Add inline help tooltips
+
+#### Nuxt UI Editor Setup
+- [ ] 12.1.1 Install `@nuxt/ui` Editor dependencies (TipTap, extensions)
+- [ ] 12.1.2 Add vite.optimizeDeps for prosemirror packages in `nuxt.config.ts`
+- [ ] 12.1.3 Create `ContentEditor.vue` container component with Nuxt UI Editor
+- [ ] 12.1.4 Implement title input field (separate from editor content)
+- [ ] 12.1.5 Configure TipTap extensions: StarterKit, Image, Link, Placeholder
+- [ ] 12.1.6 Add slash commands (`/`) for block insertion
+- [ ] 12.1.7 Implement floating bubble toolbar for text formatting
+- [ ] 12.1.8 Add drag handle for block reordering
+- [ ] 12.1.9 Configure dark mode support for editor
+- [ ] 12.1.10 Add keyboard shortcuts documentation
+
+#### Auto-Save System
+- [ ] 12.1.11 Implement auto-save composable (`useAutoSave`)
+- [ ] 12.1.12 Auto-save every 30 seconds
+- [ ] 12.1.13 Auto-save on pause after 2 seconds of no typing
+- [ ] 12.1.14 Show "Saving..." / "Saved" indicator in toolbar
+- [ ] 12.1.15 Handle offline state with retry queue
+
+### 12.2 Phase 2: Sidebar & Document Settings (Week 2-3)
+
+#### Layout Implementation
+- [ ] 12.2.1 Create Gutenberg-style layout (editor left, sidebar right)
+- [ ] 12.2.2 Make sidebar collapsible on mobile
+- [ ] 12.2.3 Create sticky toolbar with back button, status, actions
+- [ ] 12.2.4 Add responsive breakpoints (sidebar hides below 1024px)
+
+#### Document Panel
+- [ ] 12.2.5 Create `DocumentPanel.vue` component
+- [ ] 12.2.6 Add status dropdown (Draft, Pending, Published, Scheduled, Archived)
+- [ ] 12.2.7 Implement visibility selector (Public, Private, Password)
+- [ ] 12.2.8 Add publish date picker with "Immediately" option
+- [ ] 12.2.9 Show author selector (current user default)
+- [ ] 12.2.10 Add slug editor with auto-generate from title
+
+#### Featured Image
+- [ ] 12.2.11 Create `FeaturedImage.vue` component
+- [ ] 12.2.12 Add upload from computer option
+- [ ] 12.2.13 Add "Select from Media Library" option
+- [ ] 12.2.14 Show image preview with remove button
+- [ ] 12.2.15 Add alt text input field
+
+#### Categories & Tags
+- [ ] 12.2.16 Create `CategoriesPanel.vue` with checkboxes
+- [ ] 12.2.17 Fetch categories from backend API
+- [ ] 12.2.18 Support category hierarchy (indent subcategories)
+- [ ] 12.2.19 Add "+ Add New Category" button (opens modal)
+- [ ] 12.2.20 Create `TagsPanel.vue` with comma-separated input
+- [ ] 12.2.21 Add tag suggestions as user types
+- [ ] 12.2.22 Show tags as removable chips
+
+### 12.3 Phase 3: SEO Panel Integration (Week 3-4)
+
+#### SEO Panel UI
+- [ ] 12.3.1 Create `SeoPanel.vue` component
+- [ ] 12.3.2 Display SEO score with circular progress indicator
+- [ ] 12.3.3 Show grade badge (Excellent, Good, Fair, etc.)
+- [ ] 12.3.4 Add color coding (green >80, yellow 60-80, red <60)
+- [ ] 12.3.5 Create score breakdown accordion (6 categories)
+
+#### Focus Keyword
+- [ ] 12.3.6 Add focus keyword input field
+- [ ] 12.3.7 Show keyword density indicator
+- [ ] 12.3.8 Highlight keyword occurrences in content
+- [ ] 12.3.9 Add "+ Add Secondary Keyword" option
+
+#### Snippet Editor
+- [ ] 12.3.10 Create SEO title input with character counter (50-60 optimal)
+- [ ] 12.3.11 Create meta description textarea (120-160 optimal)
+- [ ] 12.3.12 Add URL slug editor with validation
+- [ ] 12.3.13 Show Google search result preview
+- [ ] 12.3.14 Add "Edit Snippet" toggle for advanced editing
+
+#### SEO Analysis Checklist
+- [ ] 12.3.15 Display 10+ SEO factors with pass/warning/fail icons
+- [ ] 12.3.16 Show dynamic suggestions from backend
+- [ ] 12.3.17 Highlight failing items in red
+- [ ] 12.3.18 Add "Fix" links that scroll to relevant field
+- [ ] 12.3.19 Real-time recalculation on content/meta changes
+
+#### Social Previews
+- [ ] 12.3.20 Create `SocialPreviewFacebook.vue` component
+- [ ] 12.3.21 Create `SocialPreviewTwitter.vue` component
+- [ ] 12.3.22 Show image, title, description in card format
+- [ ] 12.3.23 Add toggle to customize social metadata separately
+- [ ] 12.3.24 Add social image uploader
+
+#### Schema Markup
+- [ ] 12.3.25 Add schema type selector (Article, BlogPosting, etc.)
+- [ ] 12.3.26 Show schema configuration button
+
+### 12.4 Phase 4: Backend API Integration (Week 4-5)
+
+#### API Integration
+- [ ] 12.4.1 Connect to `POST /api/v1/seo/calculate` for real-time scoring
+- [ ] 12.4.2 Implement debounced API calls (500ms)
+- [ ] 12.4.3 Cache score results in Pinia store
+- [ ] 12.4.4 Connect article save/update endpoints
+- [ ] 12.4.5 Save SEO metadata with article content
+- [ ] 12.4.6 Fetch existing SEO score on page load
+- [ ] 12.4.7 Handle API errors with user-friendly messages
+
+#### Revision History
+- [ ] 12.4.8 Add "Revisions" section to sidebar
+- [ ] 12.4.9 Show revision list with timestamps
+- [ ] 12.4.10 Add "Preview" and "Restore" buttons per revision
+- [ ] 12.4.11 Show diff between current and selected revision
+- [ ] 12.4.12 Add "Compare" mode for two revisions
+
+### 12.5 Phase 5: Polish & Advanced Features (Week 5-6)
+
+#### Block Enhancements
+- [ ] 12.5.1 Add custom block types (Callout, Table, Embed)
+- [ ] 12.5.2 Implement image alignment options
+- [ ] 12.5.3 Add image caption support
+- [ ] 12.5.4 Create link card/embed block
+- [ ] 12.5.5 Add table block with cell editing
+
+#### Editor Improvements
+- [ ] 12.5.6 Add word count display in toolbar
+- [ ] 12.5.7 Add reading time estimation
+- [ ] 12.5.8 Implement undo/redo buttons
+- [ ] 12.5.9 Add fullscreen editing mode
+- [ ] 12.5.10 Create distraction-free writing mode (hide sidebar)
+
+#### Validation & Feedback
+- [ ] 12.5.11 Add required field validation
+- [ ] 12.5.12 Show error states for empty title/content
+- [ ] 12.5.13 Add "Publish" button validation
+- [ ] 12.5.14 Show success toast on save/publish
+- [ ] 12.5.15 Add confirmation dialog for navigate away with unsaved changes
+
+#### Accessibility
+- [ ] 12.5.16 Add ARIA labels to all editor controls
+- [ ] 12.5.17 Ensure keyboard navigation works in sidebar
+- [ ] 12.5.18 Add focus management for modals
+- [ ] 12.5.19 Test with screen reader
+- [ ] 12.5.20 Ensure color contrast meets WCAG 2.1
+
+### 12.6 Testing & Documentation
+
+#### E2E Tests
+- [ ] 12.6.1 Write test: Create new article with editor
+- [ ] 12.6.2 Write test: Edit existing article
+- [ ] 12.6.3 Write test: Auto-save functionality
+- [ ] 12.6.4 Write test: SEO score calculation
+- [ ] 12.6.5 Write test: Block operations (add, delete, reorder)
+- [ ] 12.6.6 Write test: Sidebar interactions
+- [ ] 12.6.7 Write test: Publish workflow
+- [ ] 12.6.8 Write test: Revision restore
+
+#### Unit Tests
+- [ ] 12.6.9 Test SEO score calculation logic
+- [ ] 12.6.10 Test auto-save composable
+- [ ] 12.6.11 Test slash command filtering
+- [ ] 12.6.12 Test validation functions
+
+#### Documentation
+- [ ] 12.6.13 Create editor usage guide
+- [ ] 12.6.14 Document SEO best practices
+- [ ] 12.6.15 Add inline help tooltips to SEO panel
+- [ ] 12.6.16 Create video tutorial for content editor
+
+### 12.7 Component Structure
+
+```
+frontend/app/components/dashboard/content/
+├── ContentEditor.vue                    # Main container
+├── ContentEditorToolbar.vue             # Top action bar
+├── ContentEditorSidebar.vue             # Right sidebar
+├── blocks/
+│   ├── BlockEditor.vue                  # Block-based content
+│   ├── SlashCommandMenu.vue             # / command palette
+│   ├── BlockToolbar.vue                 # Floating toolbar
+│   └── DragHandle.vue                   # Block reorder handle
+├── document/
+│   ├── DocumentPanel.vue                # Document settings
+│   ├── StatusSelector.vue               # Draft/Published/etc
+│   ├── FeaturedImage.vue                # Image upload/selector
+│   ├── CategoriesPanel.vue              # Category checkboxes
+│   └── TagsPanel.vue                    # Tags input
+└── seo/
+    ├── SeoPanel.vue                     # Main SEO container
+    ├── SeoScore.vue                     # Score display
+    ├── SeoScoreBreakdown.vue            # Category breakdown
+    ├── SeoFocusKeyword.vue              # Focus keyword input
+    ├── SeoSnippetEditor.vue             # Title/meta/slug
+    ├── SeoAnalysis.vue                  # Checklist
+    ├── SeoSocialPreview.vue             # FB/Twitter cards
+    └── SeoSchemaSelector.vue            # Schema markup
+```

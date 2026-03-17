@@ -676,6 +676,187 @@ This change is therefore a cross-cutting frontend redesign: it affects the authe
 **Alternatives considered:**
 - One-shot rewrite of every dashboard page: rejected because it increases delivery risk and makes regressions harder to isolate.
 
+### 21. Implement block-based content editor with Nuxt UI Editor (TipTap) and WordPress Gutenberg-style layout
+
+**Decision:** The article/work content editor will be rebuilt using Nuxt UI Editor (based on TipTap) with a WordPress Gutenberg-inspired layout featuring a block-based editing canvas, right sidebar for document settings, and integrated SEO panel inspired by RankMath.
+
+**Rationale:**
+- The user explicitly requested Nuxt UI Editor combined with WordPress Gutenberg sidebar pattern for document settings
+- Block-based editing is the modern standard (WordPress, Notion, Linear, GitHub)
+- Sidebar-separated concerns (content vs meta) improves UX compared to current single-page form
+- Integrated SEO panel provides real-time feedback during content creation
+- Nuxt UI Editor provides production-ready rich text with slash commands, drag-drop, mentions out-of-the-box
+
+**Layout Structure:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  [Toolbar: Back, Status, Preview, Publish]                     │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌───────────────────────────────┐  ┌────────────────────────┐ │
+│  │  Title Input                  │  │ 📋 Document            │ │
+│  │                               │  │ Status: Draft          │ │
+│  │  ┌─────────────────────────┐  │  │ Visibility: Public     │ │
+│  │  │ Block Toolbar           │  │  │ ⭐ Featured Image      │ │
+│  │  │ [B][I][Link][...]       │  │  │ 🏷️ Categories          │ │
+│  │  └─────────────────────────┘  │  │ 🔖 Tags                │ │
+│  │                               │  ├────────────────────────┤ │
+│  │  Block Content                │  │ 🔍 SEO Panel           │ │
+│  │  Type '/' for commands        │  │ Score: 82/100          │ │
+│  │                               │  │ Focus Keyword...       │ │
+│  │                               │  │ SEO Title...           │ │
+│  │                               │  │ Meta Description...    │ │
+│  │                               │  │ 📊 Analysis            │ │
+│  │                               │  │ 📱 Social Preview      │ │
+│  └───────────────────────────────┘  └────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Implementation details:**
+- **Editor Component**: Use `UEditor` from `@nuxt/ui` with TipTap extensions
+- **Content Type**: Store as HTML in database, editable as JSON in component
+- **Slash Commands**: Type `/` to insert blocks (paragraph, heading, list, image, quote, code)
+- **Floating Toolbar**: Contextual toolbar appears when text selected (bubble menu)
+- **Block Drag Handle**: Left-side drag handle for reordering blocks
+- **Auto-save**: Save draft every 30 seconds + on pause after typing
+
+**Sidebar Sections (Right):**
+1. **Document**: Status, visibility, publish date, author, slug
+2. **Featured Image**: Upload/select from media, alt text
+3. **Categories**: Checkboxes with hierarchy
+4. **Tags**: Comma-separated input with suggestions
+5. **SEO Panel**: See detailed spec in `specs/content-editor/spec.md`
+
+**SEO Panel Features (RankMath-inspired):**
+- Overall SEO score (0-100) with color indicator
+- Focus keyword input with density analysis
+- SEO title input with length indicator (50-60 chars optimal)
+- Meta description with length check (120-160 chars)
+- URL slug editor
+- Real-time analysis checklist (10+ factors)
+- Social media previews (Facebook, Twitter)
+- Schema markup selector
+
+**Alternatives considered:**
+- Keep current form-based editor: rejected because block-based is modern standard
+- Use Markdown editor: rejected because non-technical users prefer WYSIWYG
+- Build custom editor: rejected because Nuxt UI Editor is production-ready
+
+### 22. Implement dual-view editor layout with split and single modes
+
+**Decision:** The article editor will support two viewing modes: Split View (dual-pane side-by-side Indonesian and English with synchronized scrolling) and Single View (one language at a time with tab switching).
+
+**Rationale:**
+- User explicitly requested dual-pane layout for simultaneous bilingual editing
+- Split view enables real-time comparison and translation context
+- Single view provides focused editing without distraction
+- Cursor positions and scroll states must be preserved when switching modes
+- Synchronized scrolling helps maintain context across languages
+
+**Layout Modes:**
+1. **Split View**: Left pane (Indonesian), Right pane (English), scroll sync enabled
+2. **Single View**: One editor instance, language tabs (ID/EN), cursor position saved per language
+
+**Technical Approach:**
+- Split view uses two TipTap instances with scroll sync via percentage-based synchronization
+- Single view uses one TipTap instance with virtual language switching
+- Cursor positions stored in Pinia store per language
+- Keyboard shortcuts: Ctrl/Cmd+1 (single), Ctrl/Cmd+2 (split), Ctrl/Cmd+Tab (switch language)
+
+**Alternatives considered:**
+- Always split view: rejected because some users prefer focused single-language editing
+- Always single view: rejected because bilingual comparison is essential
+- Separate pages for each language: rejected because context switching is disruptive
+
+### 23. Implement three-tier save mechanism with revision history
+
+**Decision:** The editor will implement three save mechanisms: Auto-save on idle (2 seconds), Auto-save every 100 words, and Manual save (Ctrl+S). Each save creates a revision with metadata.
+
+**Rationale:**
+- User explicitly requested sophisticated save with multiple triggers
+- Auto-save prevents data loss from browser crashes or disconnections
+- Word-count based saves capture significant progress milestones
+- Manual save gives user control over important checkpoints
+- Revision history enables recovery and audit trail
+- All saves create revisions - no distinction between "draft" and "revision"
+
+**Save Coordinator:**
+- Token-based coordination to prevent simultaneous save conflicts
+- Manual save has highest priority and cancels pending auto-saves
+- Save metadata includes: type, timestamp, word count, author, reason
+- Revisions stored in SurrealDB with automatic cleanup (keep last 100)
+
+**Alternatives considered:**
+- Simple auto-save only: rejected because user needs manual checkpoints
+- No revision history: rejected because user needs recovery options
+- Separate draft vs revision: rejected because complicates mental model
+
+### 24. Implement offline editing with IndexedDB and auto-sync
+
+**Decision:** The editor will support offline editing using IndexedDB for local storage, Service Worker for background sync, and automatic conflict resolution when reconnecting.
+
+**Rationale:**
+- User explicitly requested offline mode for unreliable connections
+- IndexedDB handles large content better than localStorage
+- Service Worker enables background sync without user intervention
+- Conflict resolution strategy: server wins by default (configurable)
+- Notifications inform user of offline status and sync results
+
+**Architecture:**
+- IndexedDB stores: pending_changes queue, article_drafts, revision_cache
+- Connection status detected via navigator.onLine + heartbeat ping
+- Pending changes queued and synced automatically when online
+- Three notification types: offline mode, sync success, sync conflict
+
+**Alternatives considered:**
+- localStorage: rejected because 5MB limit insufficient for large articles
+- No offline support: rejected because user explicitly requested
+- Manual sync only: rejected because auto-sync is more reliable
+
+### 25. Implement live SEO scoring with client-side calculation
+
+**Decision:** SEO scores will update in real-time as user types using hybrid approach: client-side for fast metrics (word count, headings, links) and debounced API call for comprehensive analysis.
+
+**Rationale:**
+- User explicitly requested live SEO without requiring save
+- Client-side calculation gives instant feedback (<50ms)
+- API provides comprehensive analysis (readability, keyword density)
+- Debounced API calls (500ms) prevent server overload
+- Uses existing backend SEO scoring logic from `backend/src/handlers/seo_score.rs`
+
+**Calculation Strategy:**
+- Client: word count, headings, links, images, keyword presence
+- API (debounced): readability, keyword density, content quality, internal linking
+- Scores merged with weighted calculation
+- UI shows loading state for API-calculated metrics
+
+**Alternatives considered:**
+- API-only: rejected because 100-300ms latency too slow for live feedback
+- Client-only: rejected because limited accuracy without backend analysis
+- Save-triggered only: rejected because user wants live updates
+
+### 26. Use IndexedDB for offline storage with Service Worker sync
+
+**Decision:** Offline data persistence will use IndexedDB (not localStorage) with Service Worker handling background synchronization.
+
+**Rationale:**
+- IndexedDB supports structured data, indexing, and large storage (>5MB)
+- Service Worker enables background sync without page open
+- Transaction-based operations ensure data integrity
+- Compatible with PWA architecture already in place
+
+**Schema:**
+```typescript
+// IndexedDB stores
+pending_changes: { id, articleId, changeType, payload, timestamp, retryCount, status }
+article_drafts: { articleId, content, lastModified, syncStatus, serverVersionAt }
+revision_cache: { articleId, revisions[], lastFetched }
+```
+
+**Alternatives considered:**
+- localStorage: rejected because synchronous, 5MB limit, no transactions
+- Cache API: rejected because designed for HTTP responses, not structured data
+- Native File System API: rejected because limited browser support
+
 ## Risks / Trade-offs
 
 - **[Template drift]** Borrowing too literally from the Nuxt template could make Esperion feel generic -> Mitigation: require continued use of Esperion tokens, labels, and module structure.
