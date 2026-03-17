@@ -1,52 +1,59 @@
 <template>
-  <div class="space-y-6">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-          {{ t('dashboard.services.title') }}
-        </h1>
-        <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-          {{ t('dashboard.services.description') }}
-        </p>
-      </div>
-      <button
-        type="button"
-        class="inline-flex items-center justify-center px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
-        @click="openCreate"
-      >
-        <span class="text-xl mr-2">+</span> {{ t('dashboard.services.newButton') }}
-      </button>
-    </div>
+  <div class="space-y-8">
+    <DashboardPageHeader
+      eyebrow="Content"
+      :title="t('dashboard.services.title')"
+      :description="t('dashboard.services.description')"
+    >
+      <template #actions>
+        <UButton
+          color="primary"
+          class="rounded-full"
+          @click="openCreate"
+        >
+          <span class="mr-1 text-lg">+</span>
+          {{ t('dashboard.services.newButton') }}
+        </UButton>
+      </template>
+    </DashboardPageHeader>
 
     <div
       v-if="error"
-      class="rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700"
+      class="rounded-3xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700"
     >
       {{ error }}
     </div>
 
-    <section
+    <UCard
       v-if="showForm"
-      class="rounded-xl border border-es-border bg-es-bg-secondary p-5 shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark"
+      :ui="{
+        root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
+        header: 'border-b border-es-border/70 px-6 py-5 dark:border-es-border-dark/70',
+        body: 'px-6 py-5'
+      }"
     >
-      <div class="mb-4 flex items-center justify-between gap-4">
-        <div>
-          <h2 class="text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
-            {{ editingServiceId ? t('dashboard.services.create.update') : t('dashboard.services.create.title') }}
-          </h2>
-          <p class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
-            {{ editingServiceId ? 'Update retained service catalog fields.' : t('dashboard.services.create.title') }}
-          </p>
+      <template #header>
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ editingServiceId ? 'Update service' : 'Create service' }}
+            </p>
+            <h2 class="mt-2 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
+              {{ editingServiceId ? t('dashboard.services.create.update') : t('dashboard.services.create.title') }}
+            </h2>
+          </div>
+
+          <UButton
+            color="neutral"
+            variant="outline"
+            class="rounded-full border-es-border text-es-text-primary dark:border-es-border-dark dark:text-es-text-primary-dark"
+            :disabled="submitting"
+            @click="closeForm"
+          >
+            {{ t('dashboard.services.create.cancel') }}
+          </UButton>
         </div>
-        <button
-          type="button"
-          class="rounded-lg border border-es-border px-3 py-2 text-sm text-es-text-primary hover:bg-es-bg-tertiary dark:border-es-border-dark dark:text-es-text-primary-dark dark:hover:bg-es-bg-tertiary-dark"
-          :disabled="submitting"
-          @click="closeForm"
-        >
-          {{ t('dashboard.services.create.cancel') }}
-        </button>
-      </div>
+      </template>
 
       <form
         class="grid gap-4 md:grid-cols-2"
@@ -90,7 +97,7 @@
             rows="4"
             required
             class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
-          ></textarea>
+          />
         </label>
 
         <label class="space-y-2 text-sm">
@@ -113,69 +120,93 @@
         </label>
 
         <div class="md:col-span-2 flex justify-end">
-          <button
+          <UButton
             type="submit"
-            class="inline-flex items-center justify-center rounded-lg bg-es-accent-primary px-5 py-3 font-semibold text-es-text-inverse transition-colors hover:bg-es-accent-primary-hover disabled:opacity-60 dark:bg-es-accent-primary-dark dark:text-es-text-inverse-dark dark:hover:bg-es-accent-primary-hover-dark"
+            color="primary"
+            class="rounded-full"
             :disabled="submitting"
           >
             {{ submitting ? t('dashboard.services.create.saveInProgress') : editingServiceId ? t('dashboard.services.create.saveButton') : t('dashboard.services.create.createButton') }}
-          </button>
+          </UButton>
         </div>
       </form>
-    </section>
+    </UCard>
 
-    <div
+    <UCard
       v-if="pending"
-      class="rounded-xl border border-es-border bg-es-bg-secondary px-4 py-6 text-sm text-es-text-secondary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-secondary-dark"
+      :ui="{
+        root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
+        body: 'px-6 py-5'
+      }"
     >
-      {{ t('dashboard.services.create.loading') }}
-    </div>
+      <p class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+        {{ t('dashboard.services.create.loading') }}
+      </p>
+    </UCard>
 
     <div
       v-else
-      class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+      class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
     >
-      <div
+      <UCard
         v-for="service in services"
         :key="service.id"
-        class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl p-6"
+        :ui="{
+          root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
+          body: 'p-6'
+        }"
       >
-        <div class="text-sm mb-4 text-es-text-secondary dark:text-es-text-secondary-dark">
-          {{ service.icon || t('dashboard.services.buttons.noIcon') }}
-        </div>
-        <h3 class="font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-          {{ service.title }}
-        </h3>
-        <p class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark mb-4 line-clamp-2">
-          {{ service.description }}
-        </p>
-        <div class="flex items-center justify-between">
-          <span
-            v-if="service.featured"
-            class="px-2 py-1 bg-yellow-500/10 text-yellow-500 text-xs rounded-full"
-          >{{ t('dashboard.services.buttons.featured') }}</span>
-          <div class="flex items-center gap-2 ml-auto">
-            <button
-              type="button"
-              class="p-2 hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark rounded-lg"
+        <div class="space-y-4">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
+              <span v-if="service.icon" class="text-sm font-semibold">{{ service.icon }}</span>
+              <UIcon v-else name="i-lucide-briefcase" class="h-5 w-5" />
+            </div>
+
+            <UBadge
+              v-if="service.featured"
+              color="primary"
+              variant="soft"
+              class="shrink-0"
+            >
+              {{ t('dashboard.services.buttons.featured') }}
+            </UBadge>
+          </div>
+
+          <div>
+            <h3 class="text-base font-semibold text-es-text-primary dark:text-es-text-primary-dark">
+              {{ service.title }}
+            </h3>
+            <p class="mt-2 text-sm text-es-text-secondary dark:text-es-text-secondary-dark line-clamp-2">
+              {{ service.description }}
+            </p>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 border-t border-es-border pt-4 dark:border-es-border-dark">
+            <UButton
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              class="text-es-text-primary dark:text-es-text-primary-dark"
               @click="openEdit(service)"
             >
               {{ t('dashboard.services.buttons.edit') }}
-            </button>
-            <button
-              type="button"
-              class="p-2 hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark rounded-lg"
+            </UButton>
+            <UButton
+              color="danger"
+              variant="ghost"
+              size="sm"
               @click="removeService(service)"
             >
               {{ t('dashboard.services.buttons.delete') }}
-            </button>
+            </UButton>
           </div>
         </div>
-      </div>
+      </UCard>
 
       <div
         v-if="!services.length"
-        class="col-span-full rounded-xl border border-es-border bg-es-bg-secondary px-4 py-8 text-center text-sm text-es-text-secondary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-secondary-dark"
+        class="col-span-full rounded-3xl border border-dashed border-es-border bg-es-bg-secondary px-4 py-10 text-center text-sm text-es-text-secondary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-secondary-dark"
       >
         {{ t('dashboard.services.noResults') }}
       </div>
@@ -184,6 +215,12 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: 'dashboard'
+})
+
+
+
 import { useServicesApi } from '../../composables/useApi'
 import type { Service } from '../../types/api'
 

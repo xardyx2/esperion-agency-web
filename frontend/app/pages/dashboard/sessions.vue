@@ -1,31 +1,38 @@
 <template>
-  <div class="space-y-6">
-    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.sessions.title') }}</h1>
-        <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-          {{ t('dashboard.sessions.description') }}
-        </p>
-      </div>
-      <button
-        type="button"
-        class="inline-flex items-center justify-center rounded-lg border border-es-border px-4 py-2 text-sm font-semibold text-es-text-primary transition-colors hover:bg-es-bg-tertiary dark:border-es-border-dark dark:text-es-text-primary-dark dark:hover:bg-es-bg-tertiary-dark"
-        :disabled="pending"
-        @click="loadSessions"
-      >
-        {{ pending ? t('dashboard.sessions.refresh.inProgress') : t('dashboard.sessions.refresh.button') }}
-      </button>
-    </div>
+  <div class="space-y-8">
+    <DashboardPageHeader
+      eyebrow="Security"
+      :title="t('dashboard.sessions.title')"
+      :description="t('dashboard.sessions.description')"
+    >
+      <template #actions>
+        <UButton
+          color="neutral"
+          variant="outline"
+          class="rounded-full border-es-border text-es-text-primary dark:border-es-border-dark dark:text-es-text-primary-dark"
+          :disabled="pending"
+          @click="loadSessions"
+        >
+          {{ pending ? t('dashboard.sessions.refresh.inProgress') : t('dashboard.sessions.refresh.button') }}
+        </UButton>
+      </template>
+    </DashboardPageHeader>
 
-    <div v-if="error" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+    <div
+      v-if="error"
+      class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+    >
       {{ error }}
     </div>
 
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      <article
+      <UCard
         v-for="session in sessions"
         :key="session.id"
-        class="rounded-xl border border-es-border bg-es-bg-secondary p-5 shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark"
+        :ui="{
+          root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
+          body: 'p-5'
+        }"
       >
         <div class="mb-4 flex items-start justify-between gap-4">
           <div>
@@ -36,40 +43,53 @@
               {{ session.device_id || 'No device id recorded' }}
             </p>
           </div>
-          <span
-            class="rounded-full px-3 py-1 text-xs font-semibold"
-            :class="session.is_current
-              ? 'bg-green-100 text-green-700'
-              : 'bg-es-bg-tertiary text-es-text-secondary dark:bg-es-bg-tertiary-dark dark:text-es-text-secondary-dark'"
+          <UBadge
+            :color="session.is_current ? 'success' : 'neutral'"
+            variant="soft"
+            class="rounded-full font-semibold"
           >
             {{ session.is_current ? t('dashboard.sessions.status.current') : t('dashboard.sessions.status.active') }}
-          </span>
+          </UBadge>
         </div>
 
         <dl class="space-y-3 text-sm">
           <div>
-            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.sessions.columns.ipAddress') }}</dt>
-            <dd class="text-es-text-primary dark:text-es-text-primary-dark">{{ session.ip_address || 'Unknown' }}</dd>
+            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ t('dashboard.sessions.columns.ipAddress') }}
+            </dt>
+            <dd class="text-es-text-primary dark:text-es-text-primary-dark">
+              {{ session.ip_address || 'Unknown' }}
+            </dd>
           </div>
           <div>
-            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.sessions.columns.created') }}</dt>
-            <dd class="text-es-text-primary dark:text-es-text-primary-dark">{{ formatDate(session.created_at) }}</dd>
+            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ t('dashboard.sessions.columns.created') }}
+            </dt>
+            <dd class="text-es-text-primary dark:text-es-text-primary-dark">
+              {{ formatDate(session.created_at) }}
+            </dd>
           </div>
           <div>
-            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.sessions.columns.expires') }}</dt>
-            <dd class="text-es-text-primary dark:text-es-text-primary-dark">{{ formatDate(session.expires_at) }}</dd>
+            <dt class="text-xs uppercase tracking-wide text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ t('dashboard.sessions.columns.expires') }}
+            </dt>
+            <dd class="text-es-text-primary dark:text-es-text-primary-dark">
+              {{ formatDate(session.expires_at) }}
+            </dd>
           </div>
         </dl>
 
-        <button
-          type="button"
-          class="mt-5 inline-flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+        <UButton
+          color="red"
+          variant="solid"
+          block
+          class="mt-5 rounded-xl"
           :disabled="pending || session.is_current"
           @click="revokeSession(session.id)"
         >
           {{ session.is_current ? t('dashboard.sessions.columns.currentSession') : t('dashboard.sessions.columns.forceLogout') }}
-        </button>
-      </article>
+        </UButton>
+      </UCard>
     </div>
 
     <div
@@ -82,18 +102,20 @@
 </template>
 
 <script setup lang="ts">
+
+
 import { useAuthApi } from '../../composables/useApi'
 import type { Session } from '~/types/api'
 
 const { t } = useI18n()
 
 definePageMeta({
-  layout: 'dashboard',
+  layout: 'dashboard'
 })
 
 useSeoMeta({
   title: t('dashboard.sessions.seo.title'),
-  description: t('dashboard.sessions.seo.description'),
+  description: t('dashboard.sessions.seo.description')
 })
 
 const authApi = useAuthApi()
@@ -133,11 +155,9 @@ const loadSessions = async () => {
   try {
     const response = await authApi.getSessions()
     sessions.value = response.sessions
-  }
-  catch (err) {
+  } catch (err) {
     error.value = err instanceof Error ? err.message : t('dashboard.sessions.loading')
-  }
-  finally {
+  } finally {
     pending.value = false
   }
 }
@@ -149,11 +169,9 @@ const revokeSession = async (sessionId: string) => {
   try {
     await authApi.forceLogoutSession(sessionId)
     sessions.value = sessions.value.filter(session => session.id !== sessionId)
-  }
-  catch (err) {
+  } catch (err) {
     error.value = err instanceof Error ? err.message : t('dashboard.sessions.error.title')
-  }
-  finally {
+  } finally {
     pending.value = false
   }
 }

@@ -1,22 +1,20 @@
 <template>
   <div class="space-y-6">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">
-          {{ t('dashboard.clients.title') }}
-        </h1>
-        <p class="text-es-text-secondary dark:text-es-text-secondary-dark">
-          {{ t('dashboard.clients.description') }}
-        </p>
-      </div>
-      <button
-        type="button"
-        class="inline-flex items-center justify-center px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
-        @click="openCreate"
-      >
-        <span class="text-xl mr-2">+</span> {{ t('dashboard.clients.newButton') }}
-      </button>
-    </div>
+    <DashboardPageHeader
+      eyebrow="Client showcase"
+      :title="t('dashboard.clients.title')"
+      :description="t('dashboard.clients.description')"
+    >
+      <template #actions>
+        <button
+          type="button"
+          class="inline-flex items-center justify-center rounded-full bg-es-accent-primary px-6 py-3 font-semibold text-es-text-inverse transition-colors hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:text-es-text-inverse-dark dark:hover:bg-es-accent-primary-hover-dark"
+          @click="openCreate"
+        >
+          <span class="mr-2 text-xl">+</span> {{ t('dashboard.clients.newButton') }}
+        </button>
+      </template>
+    </DashboardPageHeader>
 
     <div
       v-if="error"
@@ -101,7 +99,7 @@
             v-model="form.testimonial"
             rows="3"
             class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
-          ></textarea>
+          />
         </label>
 
         <label class="space-y-2 text-sm md:col-span-2">
@@ -110,7 +108,7 @@
             v-model="form.internal_notes"
             rows="3"
             class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
-          ></textarea>
+          />
         </label>
 
         <label class="flex items-center gap-3 text-sm text-es-text-primary dark:text-es-text-primary-dark md:col-span-2">
@@ -225,6 +223,12 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: 'dashboard'
+})
+
+
+
 import { useClientsApi } from '../../composables/useApi'
 import type { Client } from '../../types/api'
 

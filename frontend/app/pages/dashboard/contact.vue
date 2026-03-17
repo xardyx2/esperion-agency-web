@@ -1,106 +1,220 @@
 <template>
-  <div class="space-y-6">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-2">{{ t('dashboard.contact.title') }}</h1>
-        <p class="text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.contact.description') }}</p>
-      </div>
-      <button type="button" class="inline-flex items-center justify-center px-6 py-3 bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark text-es-text-primary dark:text-es-text-primary-dark rounded-lg font-semibold hover:bg-es-accent-primary hover:text-es-text-inverse dark:hover:bg-es-accent-primary-dark dark:hover:text-es-text-inverse-dark transition-colors" @click="exportCsv">
-        📥 {{ t('dashboard.contact.export.button') }}
-      </button>
-    </div>
+  <div class="space-y-8">
+    <DashboardPageHeader
+      eyebrow="Leads"
+      :title="t('dashboard.contact.title')"
+      :description="t('dashboard.contact.description')"
+    >
+      <template #actions>
+        <UButton
+          color="primary"
+          variant="outline"
+          class="rounded-full"
+          @click="exportCsv"
+        >
+          <template #leading>
+            <UIcon name="i-lucide-download" class="h-4 w-4" />
+          </template>
+          {{ t('dashboard.contact.export.button') }}
+        </UButton>
+      </template>
+    </DashboardPageHeader>
 
-    <div class="grid gap-4 md:grid-cols-3">
-      <div class="rounded-xl border border-es-border bg-es-bg-secondary p-4 dark:border-es-border-dark dark:bg-es-bg-secondary-dark">
-        <p class="text-xs uppercase text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.contact.stats.total') }}</p>
-        <p class="mt-2 text-2xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">{{ stats.total }}</p>
-      </div>
-      <div class="rounded-xl border border-es-border bg-es-bg-secondary p-4 dark:border-es-border-dark dark:bg-es-bg-secondary-dark">
-        <p class="text-xs uppercase text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.contact.stats.new') }}</p>
-        <p class="mt-2 text-2xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">{{ stats.by_status.new }}</p>
-      </div>
-      <div class="rounded-xl border border-es-border bg-es-bg-secondary p-4 dark:border-es-border-dark dark:bg-es-bg-secondary-dark">
-        <p class="text-xs uppercase text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.contact.stats.qualified') }}</p>
-        <p class="mt-2 text-2xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">{{ stats.by_status.qualified }}</p>
-      </div>
-    </div>
-
-    <section class="rounded-xl border border-es-border bg-es-bg-secondary p-4 dark:border-es-border-dark dark:bg-es-bg-secondary-dark">
-      <div class="flex flex-col gap-4 md:flex-row">
-        <input v-model="serviceFilter" type="text" :placeholder="t('dashboard.contact.filters.service')" class="flex-1 rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
-        <select v-model="statusFilter" class="rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark">
-          <option value="">{{ t('dashboard.contact.filters.allStatuses') }}</option>
-          <option value="new">{{ t('dashboard.contact.filters.statusOptions.new') }}</option>
-          <option value="contacted">{{ t('dashboard.contact.filters.statusOptions.contacted') }}</option>
-          <option value="qualified">{{ t('dashboard.contact.filters.statusOptions.qualified') }}</option>
-          <option value="converted">{{ t('dashboard.contact.filters.statusOptions.converted') }}</option>
-          <option value="lost">{{ t('dashboard.contact.filters.statusOptions.lost') }}</option>
-        </select>
-        <button type="button" class="rounded-lg border border-es-border px-4 py-3 text-sm font-medium text-es-text-primary hover:bg-es-bg-tertiary dark:border-es-border-dark dark:text-es-text-primary-dark dark:hover:bg-es-bg-tertiary-dark" :disabled="pending" @click="loadContactData">
-          {{ t('dashboard.contact.filters.refresh') }}
-        </button>
-      </div>
+    <section class="grid gap-4 md:grid-cols-3">
+      <DashboardMetricCard
+        :label="t('dashboard.contact.stats.total')"
+        :value="stats.total"
+        :icon="'i-lucide-inbox'"
+        detail="All contact submissions."
+      />
+      <DashboardMetricCard
+        :label="t('dashboard.contact.stats.new')"
+        :value="stats.by_status.new"
+        :icon="'i-lucide-bell'"
+        detail="New submissions pending review."
+      />
+      <DashboardMetricCard
+        :label="t('dashboard.contact.stats.qualified')"
+        :value="stats.by_status.qualified"
+        :icon="'i-lucide-circle-check'"
+        detail="Qualified leads ready for outreach."
+      />
     </section>
 
-    <div v-if="error" class="rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
-      {{ error }}
-    </div>
+    <UCard
+      :ui="{
+        root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
+        body: 'p-4'
+      }"
+    >
+      <div class="flex flex-col gap-4 md:flex-row">
+        <input
+          v-model="serviceFilter"
+          type="text"
+          :placeholder="t('dashboard.contact.filters.service')"
+          class="flex-1 rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+        >
+        <select
+          v-model="statusFilter"
+          class="rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+        >
+          <option value="">
+            {{ t('dashboard.contact.filters.allStatuses') }}
+          </option>
+          <option value="new">
+            {{ t('dashboard.contact.filters.statusOptions.new') }}
+          </option>
+          <option value="contacted">
+            {{ t('dashboard.contact.filters.statusOptions.contacted') }}
+          </option>
+          <option value="qualified">
+            {{ t('dashboard.contact.filters.statusOptions.qualified') }}
+          </option>
+          <option value="converted">
+            {{ t('dashboard.contact.filters.statusOptions.converted') }}
+          </option>
+          <option value="lost">
+            {{ t('dashboard.contact.filters.statusOptions.lost') }}
+          </option>
+        </select>
+        <UButton
+          color="neutral"
+          variant="outline"
+          class="rounded-lg"
+          :loading="pending"
+          @click="loadContactData"
+        >
+          {{ t('dashboard.contact.filters.refresh') }}
+        </UButton>
+      </div>
+    </UCard>
 
-    <div v-if="pending" class="rounded-xl border border-es-border bg-es-bg-secondary px-4 py-6 text-sm text-es-text-secondary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-secondary-dark">
-      {{ t('dashboard.contact.loading') }}
-    </div>
+    <UCard
+      :ui="{
+        root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
+        body: 'p-0'
+      }"
+    >
+      <div
+        v-if="error"
+        class="rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700"
+      >
+        {{ error }}
+      </div>
 
-    <div v-else class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark rounded-xl overflow-hidden">
-      <table class="w-full">
-        <thead class="bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.contact.table.name') }}</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.contact.table.email') }}</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.contact.table.service') }}</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.contact.table.date') }}</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.contact.table.status') }}</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">{{ t('dashboard.contact.table.actions') }}</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-es-border dark:divide-es-border-dark">
-          <tr v-for="submission in submissions" :key="submission.id" class="hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark">
-            <td class="px-6 py-4">
-              <div>
-                <div class="font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ submission.full_name }}</div>
-                <div class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">{{ submission.company_name || '-' }}</div>
-              </div>
-            </td>
-            <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">{{ submission.email || '-' }}</td>
-            <td class="px-6 py-4">
-              <span class="px-3 py-1 bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 text-es-accent-primary dark:text-es-accent-primary-dark text-xs rounded-full">{{ submission.service }}</span>
-            </td>
-            <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">{{ formatDate(submission.created_at) }}</td>
-            <td class="px-6 py-4">
-              <span :class="statusClass(submission.status)" class="px-3 py-1 text-xs rounded-full capitalize">{{ submission.status }}</span>
-            </td>
-            <td class="px-6 py-4 text-right">
-              <div class="flex items-center justify-end gap-2">
-                <select :value="submission.status" class="rounded-lg border border-es-border bg-es-bg-primary px-3 py-2 text-xs text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" :disabled="updatingId === submission.id" @change="onStatusChange(submission.id, $event)">
-                  <option value="new">{{ t('dashboard.contact.filters.statusOptions.new') }}</option>
-                  <option value="contacted">{{ t('dashboard.contact.filters.statusOptions.contacted') }}</option>
-                  <option value="qualified">{{ t('dashboard.contact.filters.statusOptions.qualified') }}</option>
-                  <option value="converted">{{ t('dashboard.contact.filters.statusOptions.converted') }}</option>
-                  <option value="lost">{{ t('dashboard.contact.filters.statusOptions.lost') }}</option>
-                </select>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div
+        v-if="pending"
+        class="px-4 py-6 text-sm text-es-text-secondary dark:text-es-text-secondary-dark"
+      >
+        {{ t('dashboard.contact.loading') }}
+      </div>
 
-      <div v-if="!submissions.length" class="px-6 py-10 text-center text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+      <div
+        v-else-if="submissions.length"
+        class="overflow-hidden"
+      >
+        <table class="w-full">
+          <thead class="bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+                {{ t('dashboard.contact.table.name') }}
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+                {{ t('dashboard.contact.table.email') }}
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+                {{ t('dashboard.contact.table.service') }}
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+                {{ t('dashboard.contact.table.date') }}
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+                {{ t('dashboard.contact.table.status') }}
+              </th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+                {{ t('dashboard.contact.table.actions') }}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-es-border dark:divide-es-border-dark">
+            <tr
+              v-for="submission in submissions"
+              :key="submission.id"
+              class="hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark"
+            >
+              <td class="px-6 py-4">
+                <div>
+                  <div class="font-medium text-es-text-primary dark:text-es-text-primary-dark">
+                    {{ submission.full_name }}
+                  </div>
+                  <div class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+                    {{ submission.company_name || '-' }}
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ submission.email || '-' }}
+              </td>
+              <td class="px-6 py-4">
+                <span class="px-3 py-1 bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 text-es-accent-primary dark:text-es-accent-primary-dark text-xs rounded-full">{{ submission.service }}</span>
+              </td>
+              <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ formatDate(submission.created_at) }}
+              </td>
+              <td class="px-6 py-4">
+                <span
+                  :class="statusClass(submission.status)"
+                  class="px-3 py-1 text-xs rounded-full capitalize"
+                >{{ submission.status }}</span>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex items-center justify-end gap-2">
+                  <select
+                    :value="submission.status"
+                    class="rounded-lg border border-es-border bg-es-bg-primary px-3 py-2 text-xs text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+                    :disabled="updatingId === submission.id"
+                    @change="onStatusChange(submission.id, $event)"
+                  >
+                    <option value="new">
+                      {{ t('dashboard.contact.filters.statusOptions.new') }}
+                    </option>
+                    <option value="contacted">
+                      {{ t('dashboard.contact.filters.statusOptions.contacted') }}
+                    </option>
+                    <option value="qualified">
+                      {{ t('dashboard.contact.filters.statusOptions.qualified') }}
+                    </option>
+                    <option value="converted">
+                      {{ t('dashboard.contact.filters.statusOptions.converted') }}
+                    </option>
+                    <option value="lost">
+                      {{ t('dashboard.contact.filters.statusOptions.lost') }}
+                    </option>
+                  </select>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        v-else-if="!pending && !error"
+        class="px-6 py-10 text-center text-sm text-es-text-secondary dark:text-es-text-secondary-dark"
+      >
         {{ t('dashboard.contact.table.noResults') }}
       </div>
-    </div>
+    </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: 'dashboard'
+})
+
+
+
 import { useContactApi } from '../../composables/useApi'
 import type { ContactStats, ContactSubmission, ContactStatus } from '../../types/api'
 
@@ -118,9 +232,9 @@ const stats = reactive<ContactStats>({
     contacted: 0,
     qualified: 0,
     converted: 0,
-    lost: 0,
+    lost: 0
   },
-  by_service: [],
+  by_service: []
 })
 
 const pending = ref(false)
@@ -151,19 +265,17 @@ const loadContactData = async () => {
       contactApi.list({
         limit: 100,
         service: serviceFilter.value || undefined,
-        status: statusFilter.value || undefined,
+        status: statusFilter.value || undefined
       }),
-      contactApi.stats(),
+      contactApi.stats()
     ])
     submissions.value = listResponse.data
     stats.total = statsResponse.total
     stats.by_status = statsResponse.by_status
     stats.by_service = statsResponse.by_service
-  }
-  catch (err) {
+  } catch (err) {
     error.value = err instanceof Error ? err.message : t('dashboard.contact.loading')
-  }
-  finally {
+  } finally {
     pending.value = false
   }
 }
@@ -182,12 +294,10 @@ const onStatusChange = async (id: string, event: Event) => {
     if (existing) {
       existing.status = nextStatus
     }
-  }
-  catch (err) {
+  } catch (err) {
     error.value = err instanceof Error ? err.message : 'Failed to update submission status'
     await loadContactData()
-  }
-  finally {
+  } finally {
     updatingId.value = null
   }
 }
@@ -203,8 +313,8 @@ const exportCsv = () => {
       item.company_name || '',
       item.service,
       item.status,
-      item.created_at || '',
-    ]),
+      item.created_at || ''
+    ])
   ]
 
   const csv = rows

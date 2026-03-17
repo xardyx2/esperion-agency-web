@@ -1,29 +1,40 @@
 <template>
   <div class="space-y-6">
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.users.title') }}</h1>
-        <p class="text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.users.description') }}</p>
-      </div>
-      <button
-        type="button"
-        class="inline-flex items-center justify-center rounded-lg bg-es-accent-primary px-5 py-3 font-semibold text-es-text-inverse transition-colors hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:text-es-text-inverse-dark dark:hover:bg-es-accent-primary-hover-dark"
-        :disabled="pending || accessDenied"
-        @click="openCreate"
-      >
-        {{ t('dashboard.users.newButton') }}
-      </button>
-    </div>
+    <DashboardPageHeader
+      eyebrow="Access control"
+      :title="t('dashboard.users.title')"
+      :description="t('dashboard.users.description')"
+    >
+      <template #actions>
+        <button
+          type="button"
+          class="inline-flex items-center justify-center rounded-full bg-es-accent-primary px-5 py-3 font-semibold text-es-text-inverse transition-colors hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:text-es-text-inverse-dark dark:hover:bg-es-accent-primary-hover-dark"
+          :disabled="pending || accessDenied"
+          @click="openCreate"
+        >
+          {{ t('dashboard.users.newButton') }}
+        </button>
+      </template>
+    </DashboardPageHeader>
 
-    <div v-if="pending" class="rounded-xl border border-es-border bg-es-bg-secondary px-4 py-6 text-sm text-es-text-secondary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-secondary-dark">
+    <div
+      v-if="pending"
+      class="rounded-xl border border-es-border bg-es-bg-secondary px-4 py-6 text-sm text-es-text-secondary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-secondary-dark"
+    >
       {{ t('dashboard.users.create.loading') }}
     </div>
 
-    <div v-else-if="accessDenied" class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-800">
+    <div
+      v-else-if="accessDenied"
+      class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-800"
+    >
       {{ t('dashboard.users.create.denied') }}
     </div>
 
-    <div v-else-if="error" class="rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
+    <div
+      v-else-if="error"
+      class="rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700"
+    >
       {{ error }}
     </div>
 
@@ -50,39 +61,118 @@
         </button>
       </div>
 
-      <form class="grid gap-4 md:grid-cols-2" @submit.prevent="submitForm">
+      <form
+        class="grid gap-4 md:grid-cols-2"
+        @submit="onSubmit"
+      >
         <label class="space-y-2 text-sm">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.users.create.fullNameTitle') }}</span>
-          <input v-model="form.full_name" type="text" required class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
+          <input
+            v-model="values.full_name"
+            v-bind="fullNameField"
+            type="text"
+            required
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+            :class="{ 'border-red-500': getError('full_name') }"
+          >
+          <p
+            v-if="getError('full_name')"
+            class="text-xs text-red-600"
+          >
+            {{ getError('full_name') }}
+          </p>
         </label>
 
         <label class="space-y-2 text-sm">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.users.create.usernameTitle') }}</span>
-          <input v-model="form.username" type="text" required class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
+          <input
+            v-model="values.username"
+            v-bind="usernameField"
+            type="text"
+            required
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+            :class="{ 'border-red-500': getError('username') }"
+          >
+          <p
+            v-if="getError('username')"
+            class="text-xs text-red-600"
+          >
+            {{ getError('username') }}
+          </p>
         </label>
 
         <label class="space-y-2 text-sm">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.users.create.emailTitle') }}</span>
-          <input v-model="form.email" type="email" required :disabled="Boolean(editingUserId)" class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary disabled:opacity-60 dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
+          <input
+            v-model="values.email"
+            v-bind="emailField"
+            type="email"
+            required
+            :disabled="Boolean(editingUserId)"
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary disabled:opacity-60 dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+            :class="{ 'border-red-500': getError('email') }"
+          >
+          <p
+            v-if="getError('email')"
+            class="text-xs text-red-600"
+          >
+            {{ getError('email') }}
+          </p>
         </label>
 
         <label class="space-y-2 text-sm">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.users.create.phoneTitle') }}</span>
-          <input v-model="form.phone" type="tel" class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
+          <input
+            v-model="values.phone"
+            v-bind="phoneField"
+            type="tel"
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+          >
         </label>
 
         <label class="space-y-2 text-sm">
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.users.create.roleTitle') }}</span>
-          <select v-model="form.role" class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark">
-            <option v-for="role in roles" :key="role.role" :value="role.role">
+          <select
+            v-model="values.role"
+            v-bind="roleField"
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+            :class="{ 'border-red-500': getError('role') }"
+          >
+            <option
+              v-for="role in roles"
+              :key="role.role"
+              :value="role.role"
+            >
               {{ role.role }}
             </option>
           </select>
+          <p
+            v-if="getError('role')"
+            class="text-xs text-red-600"
+          >
+            {{ getError('role') }}
+          </p>
         </label>
 
-        <label v-if="!editingUserId" class="space-y-2 text-sm">
+        <label
+          v-if="!editingUserId"
+          class="space-y-2 text-sm"
+        >
           <span class="block font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ t('dashboard.users.create.passwordTitle') }}</span>
-          <input v-model="form.password" type="password" minlength="8" required class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" />
+          <input
+            v-model="values.password"
+            v-bind="passwordField"
+            type="password"
+            required
+            class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+            :class="{ 'border-red-500': getError('password') }"
+          >
+          <p
+            v-if="getError('password')"
+            class="text-xs text-red-600"
+          >
+            {{ getError('password') }}
+          </p>
         </label>
 
         <div class="md:col-span-2 flex justify-end">
@@ -104,21 +194,42 @@
       <table class="w-full">
         <thead class="bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.users.table.user') }}</th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.users.table.role') }}</th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.users.table.phone') }}</th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.users.table.joined') }}</th>
-            <th class="px-6 py-3 text-right text-xs font-medium uppercase text-es-text-secondary dark:text-es-text-secondary-dark">{{ t('dashboard.users.table.actions') }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ t('dashboard.users.table.user') }}
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ t('dashboard.users.table.role') }}
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ t('dashboard.users.table.phone') }}
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ t('dashboard.users.table.joined') }}
+            </th>
+            <th class="px-6 py-3 text-right text-xs font-medium uppercase text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ t('dashboard.users.table.actions') }}
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-es-border dark:divide-es-border-dark">
-          <tr v-for="user in users" :key="user.id" class="hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark">
+          <tr
+            v-for="user in users"
+            :key="user.id"
+            class="hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark"
+          >
             <td class="px-6 py-4">
-              <div class="font-medium text-es-text-primary dark:text-es-text-primary-dark">{{ user.full_name }}</div>
-              <div class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">{{ user.email }}</div>
+              <div class="font-medium text-es-text-primary dark:text-es-text-primary-dark">
+                {{ user.full_name }}
+              </div>
+              <div class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ user.email }}
+              </div>
             </td>
             <td class="px-6 py-4">
-              <span class="rounded-full px-3 py-1 text-xs font-semibold capitalize" :class="roleClass(user.role)">
+              <span
+                class="rounded-full px-3 py-1 text-xs font-semibold capitalize"
+                :class="roleClass(user.role)"
+              >
                 {{ user.role }}
               </span>
             </td>
@@ -130,10 +241,18 @@
             </td>
             <td class="px-6 py-4">
               <div class="flex justify-end gap-2">
-                <button type="button" class="rounded-lg px-3 py-2 text-sm font-medium text-es-text-primary hover:bg-es-bg-primary dark:text-es-text-primary-dark dark:hover:bg-es-bg-primary-dark" @click="openEdit(user)">
+                <button
+                  type="button"
+                  class="rounded-lg px-3 py-2 text-sm font-medium text-es-text-primary hover:bg-es-bg-primary dark:text-es-text-primary-dark dark:hover:bg-es-bg-primary-dark"
+                  @click="openEdit(user)"
+                >
                   {{ t('dashboard.users.buttons.edit') }}
                 </button>
-                <button type="button" class="rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50" @click="removeUser(user)">
+                <button
+                  type="button"
+                  class="rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+                  @click="removeUser(user)"
+                >
                   {{ t('dashboard.users.buttons.delete') }}
                 </button>
               </div>
@@ -142,7 +261,10 @@
         </tbody>
       </table>
 
-      <div v-if="!users.length" class="px-6 py-10 text-center text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+      <div
+        v-if="!users.length"
+        class="px-6 py-10 text-center text-sm text-es-text-secondary dark:text-es-text-secondary-dark"
+      >
         {{ t('dashboard.users.table.noResults') }}
       </div>
     </section>
@@ -150,6 +272,9 @@
 </template>
 
 <script setup lang="ts">
+
+
+import { useForm } from 'vee-validate'
 import { useAuthApi, useUsersApi } from '../../composables/useApi'
 import { useUiStore } from '../../stores/ui'
 import type {
@@ -157,18 +282,19 @@ import type {
   FixedRoleCatalogEntry,
   UpdateManagedUserRequest,
   User,
-  UserRole,
+  UserRole
 } from '~/types/api'
+import { createUserSchema, toVeeTypedSchema, type UserFormValues } from '../../composables/useValidation'
 
 const { t } = useI18n()
 
 definePageMeta({
-  layout: 'dashboard',
+  layout: 'dashboard'
 })
 
 useSeoMeta({
   title: t('dashboard.users.seo.title'),
-  description: t('dashboard.users.seo.description'),
+  description: t('dashboard.users.seo.description')
 })
 
 const authApi = useAuthApi()
@@ -184,14 +310,37 @@ const accessDenied = ref(false)
 const showForm = ref(false)
 const editingUserId = ref<string | null>(null)
 
-const form = reactive<CreateManagedUserRequest>({
-  email: '',
-  password: '',
-  full_name: '',
-  username: '',
-  phone: '',
-  role: 'editor',
+// Form state for VeeValidate
+const isEditMode = computed(() => Boolean(editingUserId.value))
+const locale = useI18n().locale
+const schema = computed(() => toVeeTypedSchema(createUserSchema(t, locale.value, !isEditMode.value)))
+
+const {
+  values,
+  errors,
+  defineField,
+  handleSubmit,
+  resetForm,
+  setValues
+} = useForm<UserFormValues>({
+  validationSchema: schema,
+  initialValues: {
+    full_name: '',
+    username: '',
+    email: '',
+    phone: '',
+    role: 'editor',
+    password: ''
+  }
 })
+
+// Define fields with VeeValidate
+const [fullName, fullNameField] = defineField('full_name')
+const [username, usernameField] = defineField('username')
+const [email, emailField] = defineField('email')
+const [phone, phoneField] = defineField('phone')
+const [role, roleField] = defineField('role')
+const [password, passwordField] = defineField('password')
 
 const roleClass = (role: string) => {
   if (role === 'admin') return 'bg-red-100 text-red-700'
@@ -205,18 +354,27 @@ const formatDate = (value?: string) => {
   return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString()
 }
 
-const resetForm = () => {
-  form.email = ''
-  form.password = ''
-  form.full_name = ''
-  form.username = ''
-  form.phone = ''
-  form.role = 'editor'
+// Translate error helper
+const getError = (field: string) => {
+  return errors.value[field as keyof typeof errors.value]
+}
+
+const resetUserForm = () => {
+  resetForm({
+    values: {
+      full_name: '',
+      username: '',
+      email: '',
+      phone: '',
+      role: 'editor',
+      password: ''
+    }
+  })
   editingUserId.value = null
 }
 
 const closeForm = () => {
-  resetForm()
+  resetUserForm()
   showForm.value = false
 }
 
@@ -245,84 +403,83 @@ const loadPage = async () => {
 
     const [userResponse, roleResponse] = await Promise.all([
       usersApi.list({ page: 1, limit: 50 }),
-      usersApi.listRoles(),
+      usersApi.listRoles()
     ])
     users.value = userResponse.data
     roles.value = roleResponse.roles
-  }
-  catch (err) {
+  } catch (err) {
     error.value = err instanceof Error ? err.message : t('dashboard.users.create.loading')
-  }
-  finally {
+  } finally {
     pending.value = false
   }
 }
 
 const openCreate = () => {
-  resetForm()
+  resetUserForm()
   showForm.value = true
 }
 
 const openEdit = (user: User) => {
   editingUserId.value = user.id
-  form.email = user.email
-  form.password = ''
-  form.full_name = user.full_name
-  form.username = user.username
-  form.phone = user.phone || ''
-  form.role = user.role as UserRole
+  setValues({
+    full_name: user.full_name,
+    username: user.username,
+    email: user.email,
+    phone: user.phone || '',
+    role: user.role as UserRole,
+    password: ''
+  })
   showForm.value = true
 }
 
-const submitForm = async () => {
+const onSubmit = handleSubmit(async () => {
   submitting.value = true
   error.value = null
 
   try {
     if (editingUserId.value) {
       const payload: UpdateManagedUserRequest = {
-        full_name: form.full_name,
-        username: form.username,
-        phone: form.phone || undefined,
-        role: form.role,
+        full_name: values.full_name,
+        username: values.username,
+        phone: values.phone || undefined,
+        role: values.role
       }
       await usersApi.update(editingUserId.value, payload)
       uiStore.addNotification({
         title: t('dashboard.users.notifications.userUpdated.title'),
         message: t('dashboard.users.notifications.userUpdated.message'),
-        type: 'success',
+        type: 'success'
       })
     } else {
-      await usersApi.create({
-        email: form.email,
-        password: form.password,
-        full_name: form.full_name,
-        username: form.username,
-        phone: form.phone || undefined,
-        role: form.role,
-      })
+      const payload: CreateManagedUserRequest = {
+        email: values.email,
+        password: values.password || '',
+        full_name: values.full_name,
+        username: values.username,
+        phone: values.phone || undefined,
+        role: values.role
+      }
+      await usersApi.create(payload)
       uiStore.addNotification({
         title: t('dashboard.users.notifications.userCreated.title'),
         message: t('dashboard.users.notifications.userCreated.message'),
-        type: 'success',
+        type: 'success'
       })
     }
 
     await loadUsers()
     closeForm()
-  }
-  catch (err) {
+  } catch (err) {
     error.value = err instanceof Error ? err.message : t('dashboard.users.create.createButton')
     uiStore.addNotification({
       title: t('dashboard.users.notifications.error.title'),
       message: error.value,
-      type: 'error',
+      type: 'error'
     })
-  }
-  finally {
+  } finally {
     submitting.value = false
   }
-}
+})
 
 const removeUser = async (user: User) => {
   const confirmed = globalThis.confirm?.(t('dashboard.users.buttons.deleteConfirm', { name: user.full_name })) ?? true
@@ -335,19 +492,17 @@ const removeUser = async (user: User) => {
     uiStore.addNotification({
       title: t('dashboard.users.notifications.userDeleted.title'),
       message: t('dashboard.users.notifications.userDeleted.message', { name: user.full_name }),
-      type: 'success',
+      type: 'success'
     })
     await loadUsers()
-  }
-  catch (err) {
+  } catch (err) {
     error.value = err instanceof Error ? err.message : t('dashboard.users.buttons.delete')
     uiStore.addNotification({
       title: t('dashboard.users.notifications.deleteFailed.title'),
       message: error.value,
-      type: 'error',
+      type: 'error'
     })
-  }
-  finally {
+  } finally {
     pending.value = false
   }
 }

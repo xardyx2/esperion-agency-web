@@ -51,7 +51,7 @@
             v-model="form.content_id"
             rows="10"
             class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
-          ></textarea>
+          />
         </div>
 
         <div class="rounded-xl border border-es-border bg-es-bg-secondary p-6 dark:border-es-border-dark dark:bg-es-bg-secondary-dark">
@@ -77,7 +77,7 @@
             v-model="englishDraft"
             rows="10"
             class="w-full rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
-          ></textarea>
+          />
           <div class="mt-4 flex justify-end">
             <button
               type="button"
@@ -165,6 +165,12 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: 'dashboard'
+})
+
+
+
 import { useArticlesApi } from '../../../composables/useApi'
 import type { Article, ArticleTranslationsResponse, UpdateArticleRequest } from '../../../types/api'
 
