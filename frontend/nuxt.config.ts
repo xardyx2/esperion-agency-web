@@ -107,8 +107,8 @@ export default ({
   srcDir: '.',
 
   // Route rules for ISR (public pages) and CSR (dashboard)
-  routeRules: isDev ? {} : {
-    // Dashboard pages - CSR (Client-Side Rendering)
+  routeRules: {
+    // Dashboard pages - CSR (Client-Side Rendering) - Always disable SSR for dashboard
     '/dashboard/**': { ssr: false },
     '/id/dashboard/**': { ssr: false },
     '/en/dashboard/**': { ssr: false },
@@ -116,12 +116,13 @@ export default ({
     '/id/capital/**': { ssr: false },
     '/en/capital/**': { ssr: false },
 
-    // Home page - 60s revalidation
-    '/': { swr: 60 },
-    '/id': { swr: 60 },
-    '/en': { swr: 60 },
+    ...(isDev ? {} : {
+      // Home page - 60s revalidation
+      '/': { swr: 60 },
+      '/id': { swr: 60 },
+      '/en': { swr: 60 },
 
-    // Work/Service detail - 300s revalidation (less frequent updates)
+      // Work/Service detail - 300s revalidation (less frequent updates)
     '/id/our-works': { swr: 300 },
     '/en/our-works': { swr: 300 },
     '/id/our-works/**': { swr: 300 },
@@ -152,6 +153,12 @@ export default ({
     // API and MCP routes - SSR default with CORS
     '/api/**': { cors: true },
     '/mcp/**': { cors: true }
+    }),
+
+    // Development fallbacks
+    ...(isDev ? {
+      '/**': { ssr: false }
+    } : {})
   },
   future: {
     compatibilityVersion: 4
