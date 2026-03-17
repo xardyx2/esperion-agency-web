@@ -19,8 +19,8 @@ services:
       - frontend-nuxt:/app/.nuxt
     ports:
       - "3000:3000"
-      - "24678:24678"  # Vite HMR / DevTools
-      - "3001:3001"  # Nuxt DevTools alternative
+      # - "24678:24678"  # Vite HMR / DevTools - disabled due to port conflict
+      # - "3001:3001"  # Nuxt DevTools alternative - disabled
     environment:
       - NODE_ENV=development
       - NUXT_HOST=0.0.0.0
