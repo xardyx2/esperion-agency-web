@@ -43,7 +43,29 @@ import type {
   ContactFilter,
   CreateContactRequest,
   UpdateContactRequest,
-  ContactStats
+  ContactStats,
+  // Analytics
+  PublicAnalyticsConfig,
+  TrackEventRequest,
+  TrackEventResponse,
+  ConsentPreferences,
+  ConsentSavedResponse,
+  DashboardStatsResponse,
+  BehaviorOverviewResponse,
+  RealTimeStatsResponse,
+  JourneyListResponse,
+  CreateJourneyRequest,
+  CustomJourney,
+  JourneyCompletion,
+  JourneyComparisonRequest,
+  JourneyComparison,
+  FunnelListResponse,
+  CreateFunnelRequest,
+  UserFunnel,
+  AnalyzeFunnelRequest,
+  FunnelAnalysisResponse,
+  EnterpriseDashboardResponse,
+  AnalyticsReportResponse
 } from '../types/api'
 
 // API Base URL from environment
@@ -394,6 +416,100 @@ export const useContactApi = () => {
         method: 'PUT',
         body: JSON.stringify(data)
       })
+    }
+  }
+}
+
+// ============== Analytics API ==============
+
+export const useAnalyticsApi = () => {
+  return {
+    // Public config
+    getPublicConfig: async (): Promise<PublicAnalyticsConfig> => {
+      return fetchApi<PublicAnalyticsConfig>('/analytics/public-config')
+    },
+
+    // Track event
+    trackEvent: async (data: TrackEventRequest): Promise<TrackEventResponse> => {
+      return fetchApi<TrackEventResponse>('/analytics/track', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      })
+    },
+
+    // Save consent preferences
+    saveConsent: async (preferences: ConsentPreferences): Promise<ConsentSavedResponse> => {
+      return fetchApi<ConsentSavedResponse>('/analytics/consent', {
+        method: 'POST',
+        body: JSON.stringify(preferences)
+      })
+    },
+
+    // Dashboard stats
+    getDashboardStats: async (): Promise<DashboardStatsResponse> => {
+      return fetchApi<DashboardStatsResponse>('/analytics/stats')
+    },
+
+    // Behavior overview
+    getBehaviorOverview: async (): Promise<BehaviorOverviewResponse> => {
+      return fetchApi<BehaviorOverviewResponse>('/analytics/behavior')
+    },
+
+    // Real-time stats
+    getRealtimeStats: async (): Promise<RealTimeStatsResponse> => {
+      return fetchApi<RealTimeStatsResponse>('/analytics/realtime')
+    },
+
+    // Analytics report
+    getReport: async (): Promise<AnalyticsReportResponse> => {
+      return fetchApi<AnalyticsReportResponse>('/analytics/report')
+    },
+
+    // Journeys
+    listJourneys: async (): Promise<JourneyListResponse> => {
+      return fetchApi<JourneyListResponse>('/analytics/journeys')
+    },
+
+    createJourney: async (data: CreateJourneyRequest): Promise<CustomJourney> => {
+      return fetchApi<CustomJourney>('/analytics/journeys', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      })
+    },
+
+    getJourneyCompletion: async (journeyId: string): Promise<JourneyCompletion> => {
+      return fetchApi<JourneyCompletion>(`/analytics/journeys/${journeyId}/completion`)
+    },
+
+    compareJourneys: async (journeyId: string, data: JourneyComparisonRequest): Promise<JourneyComparison> => {
+      return fetchApi<JourneyComparison>(`/analytics/journeys/${journeyId}/compare`, {
+        method: 'POST',
+        body: JSON.stringify(data)
+      })
+    },
+
+    // Funnels
+    listFunnels: async (): Promise<FunnelListResponse> => {
+      return fetchApi<FunnelListResponse>('/analytics/funnels')
+    },
+
+    createFunnel: async (data: CreateFunnelRequest): Promise<UserFunnel> => {
+      return fetchApi<UserFunnel>('/analytics/funnels', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      })
+    },
+
+    analyzeFunnel: async (funnelId: string, data: AnalyzeFunnelRequest): Promise<FunnelAnalysisResponse> => {
+      return fetchApi<FunnelAnalysisResponse>(`/analytics/funnels/${funnelId}/analyze`, {
+        method: 'POST',
+        body: JSON.stringify(data)
+      })
+    },
+
+    // Enterprise dashboard
+    getEnterpriseDashboard: async (): Promise<EnterpriseDashboardResponse> => {
+      return fetchApi<EnterpriseDashboardResponse>('/analytics/enterprise')
     }
   }
 }

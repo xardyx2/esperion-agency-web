@@ -1,6 +1,6 @@
 <template>
   <component
-    :is="to ? NuxtLink : 'div'"
+    :is="to ? 'NuxtLink' : 'div'"
     :to="to"
     class="group block rounded-3xl border border-es-border bg-es-bg-secondary p-5 shadow-sm transition-all dark:border-es-border-dark dark:bg-es-bg-secondary-dark"
     :class="to ? 'hover:-translate-y-0.5 hover:border-es-accent-primary/40 hover:shadow-md dark:hover:border-es-accent-primary-dark/40' : ''"
