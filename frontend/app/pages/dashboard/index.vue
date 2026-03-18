@@ -132,6 +132,63 @@
       </UDashboardSection>
     </section>
 
+    <!-- Activity Feed Section -->
+    <section class="grid gap-6 xl:grid-cols-[1fr,1.4fr]">
+      <UDashboardActivityFeed
+        :activities="activities"
+        :loading="loading"
+        :has-more="hasMore"
+        @load-more="loadMore"
+        @filter-change="setFilter"
+      />
+
+      <!-- Recent Content Section -->
+      <UDashboardSection
+        title="Recent Content"
+        description="Latest articles and works"
+        icon="i-lucide-clock"
+      >
+        <template #actions>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            size="sm"
+            :to="localePath('/dashboard/articles')"
+          >
+            View all
+          </UButton>
+        </template>
+
+        <div class="space-y-3">
+          <div
+            v-for="item in recentContent"
+            :key="item.id"
+            class="flex items-center gap-3 rounded-2xl border border-es-border bg-es-bg-primary px-4 py-3 dark:border-es-border-dark dark:bg-es-bg-primary-dark"
+          >
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
+              <UIcon :name="item.icon" class="h-5 w-5" />
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-medium text-es-text-primary dark:text-es-text-primary-dark truncate">
+                {{ item.title }}
+              </p>
+              <p class="text-xs text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ item.date }}
+              </p>
+            </div>
+            <UButton
+              color="neutral"
+              variant="ghost"
+              size="xs"
+              :to="item.to"
+            >
+              Edit
+            </UButton>
+          </div>
+        </div>
+      </UDashboardSection>
+    </section>
+
     <!-- System Status Section -->
     <UDashboardSection
       title="System Status"

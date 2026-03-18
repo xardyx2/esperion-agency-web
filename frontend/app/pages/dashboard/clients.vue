@@ -226,6 +226,9 @@
                 {{ t('dashboard.clients.table.status') }}
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
+                Featured
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ t('dashboard.clients.table.testimonial') }}
               </th>
               <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
@@ -257,7 +260,12 @@
                     <span v-else class="text-xs">Logo</span>
                   </div>
                   <div class="font-medium text-es-text-primary dark:text-es-text-primary-dark">
-                    {{ client.name }}
+                    <UInlineEdit
+                      v-model="client.name"
+                      type="text"
+                      placeholder="Client name"
+                      @save="(value, prev) => handleInlineEdit(client.id, 'name', value, prev)"
+                    />
                   </div>
                   <UBadge
                     v-if="client.featured"
@@ -271,15 +279,12 @@
                 </div>
               </td>
               <td class="px-6 py-4">
-                <UBadge
-                  v-if="client.category"
-                  color="neutral"
-                  variant="soft"
-                  size="sm"
-                >
-                  {{ client.category }}
-                </UBadge>
-                <span v-else class="text-sm text-es-text-tertiary">-</span>
+                <UInlineEdit
+                  v-model="client.category"
+                  type="text"
+                  placeholder="Category"
+                  @save="(value, prev) => handleInlineEdit(client.id, 'category', value, prev)"
+                />
               </td>
               <td class="px-6 py-4">
                 <UBadge
@@ -289,6 +294,16 @@
                 >
                   {{ client.status }}
                 </UBadge>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">Featured:</span>
+                  <UInlineEdit
+                    v-model="client.featured"
+                    type="toggle"
+                    @save="(value, prev) => handleInlineEdit(client.id, 'featured', value, prev)"
+                  />
+                </div>
               </td>
               <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
                 <div class="flex items-center gap-2">
@@ -338,6 +353,7 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const toast = useToast()
 
 useSeoMeta({
   title: t('dashboard.clients.seo.title'),
@@ -527,6 +543,39 @@ const removeClient = async (client: Client) => {
     error.value = err instanceof Error ? err.message : t('dashboard.clients.create.loading')
   } finally {
     pending.value = false
+  }
+}
+
+// Inline editing
+const handleInlineEdit = async (id: string, field: string, value: any, previousValue: any) => {
+  try {
+    await clientsApi.update(id, { [field]: value })
+    toast.add({
+      title: 'Updated',
+      description: `${field} updated successfully`,
+      color: 'success',
+      actions: [
+        {
+          label: 'Undo',
+          click: async () => {
+            await clientsApi.update(id, { [field]: previousValue })
+            await loadClients()
+            toast.add({
+              title: 'Restored',
+              description: `${field} restored to previous value`,
+              color: 'info'
+            })
+          }
+        }
+      ]
+    })
+  } catch (err) {
+    toast.add({
+      title: 'Error',
+      description: err instanceof Error ? err.message : 'Failed to update',
+      color: 'error'
+    })
+    await loadClients()
   }
 }
 

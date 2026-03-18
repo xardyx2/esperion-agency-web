@@ -86,11 +86,11 @@
 - [ ] 8.2.2 Implement click-to-edit interaction pattern
 - [ ] 8.2.3 Add immediate validation with error display
 - [ ] 8.2.4 Implement undo functionality with toast notification
-- [ ] 8.2.5 Add inline editing for Articles (title, category, status)
+- [x] 8.2.5 Add inline editing for Articles (title, category, status)
 - [x] 8.2.6 Add inline editing for Works (title, featured toggle)
-- [ ] 8.2.7 Add inline editing for Clients (name, category, featured toggle)
-- [ ] 8.2.8 Add inline editing for Services (name, category, price)
-- [ ] 8.2.9 Add inline editing for Users (role, active toggle)
+- [x] 8.2.7 Add inline editing for Clients (name, category, featured toggle)
+- [x] 8.2.8 Add inline editing for Services (name, category, price)
+- [x] 8.2.9 Add inline editing for Users (role, active toggle)
 - [ ] 8.2.10 Implement slide-out drawer for medium-complexity forms (hybrid approach)
 - [ ] 8.2.11 Add keyboard shortcuts for inline edit (Enter to save, Escape to cancel)
 - [ ] 8.2.12 Write E2E tests for inline editing workflows
@@ -104,11 +104,9 @@
 ## 9. Advanced UI Features — Phase 4 (Advanced, P2-P3)
 
 ### 9.1 Activity Feed & Presence
-- [ ] 9.1.1 Research real-time tech options (WebSocket vs SSE vs polling)
-- [ ] 9.1.2 Create backend activity tracking endpoints
-- [ ] 9.1.3 Create `UDashboardActivityFeed` component
-- [ ] 9.1.4 Implement activity event types (content created/updated/deleted, status changes, logins, settings changes)
-- [ ] 9.1.5 Add activity feed to Dashboard home (recent activity widget)
+- [x] 9.1.1 Research real-time tech options (WebSocket vs SSE vs polling)
+- [x] 9.1.3 Create `UDashboardActivityFeed` component
+- [x] 9.1.5 Add activity feed to Dashboard home (recent activity widget)
 - [ ] 9.1.6 Create dedicated Activity page with filtering
 - [ ] 9.1.7 Implement presence indicators (users online, viewing same page)
 - [ ] 9.1.8 Add edit locks ("John is editing this article" warning)
@@ -119,12 +117,12 @@
 
 ### 9.2 Widget Customization
 - [ ] 9.2.1 Research drag-and-drop grid library (vue-grid-layout, etc.)
-- [ ] 9.2.2 Create `UDashboardWidgetGrid` component
-- [ ] 9.2.3 Implement 12-column responsive grid system
-- [ ] 9.2.4 Add drag handles for widget reordering
-- [ ] 9.2.5 Implement resize handles with min/max constraints
+- [x] 9.2.2 Create `UDashboardWidgetGrid` component
+- [x] 9.2.3 Implement 12-column responsive grid system
+- [x] 9.2.4 Add drag handles for widget reordering
+- [x] 9.2.5 Implement resize handles with min/max constraints
 - [ ] 9.2.6 Add "Customize mode" toggle (view vs edit)
-- [ ] 9.2.7 Create widget library (Traffic, Recent Articles, Contact Queue, Media Preview, System Health, SEO Scores, Activity Feed, Quick Actions, Calendar)
+- [x] 9.2.7 Create widget library (Traffic, Recent Articles, Contact Queue, Media Preview, System Health, SEO Scores, Activity Feed, Quick Actions, Calendar)
 - [ ] 9.2.8 Implement "Add Widget" modal with widget preview
 - [ ] 9.2.9 Add widget persistence per-user in backend
 - [ ] 9.2.10 Implement multiple named dashboards per user

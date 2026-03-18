@@ -230,9 +230,14 @@
             </div>
 
             <div>
-              <h3 class="text-base font-semibold text-es-text-primary dark:text-es-text-primary-dark">
-                {{ service.title }}
-              </h3>
+              <div class="flex items-center gap-2">
+                <UInlineEdit
+                  :model-value="service.title"
+                  type="text"
+                  placeholder="Service name"
+                  @save="(value: any, previousValue: any) => handleInlineEdit(service, 'title', value, previousValue)"
+                />
+              </div>
               <p class="mt-2 text-sm text-es-text-secondary dark:text-es-text-secondary-dark line-clamp-2">
                 {{ service.description }}
               </p>
@@ -243,24 +248,45 @@
               <span>/services/{{ service.slug }}</span>
             </div>
 
-            <div class="flex items-center justify-end gap-2 border-t border-es-border pt-4 dark:border-es-border-dark">
-              <UButton
-                color="neutral"
-                variant="ghost"
-                size="sm"
-                @click="openEdit(service)"
-              >
-                <UIcon name="i-lucide-pencil" class="h-4 w-4 mr-1" />
-                {{ t('dashboard.services.buttons.edit') }}
-              </UButton>
-              <UButton
-                color="danger"
-                variant="ghost"
-                size="sm"
-                @click="removeService(service)"
-              >
-                <UIcon name="i-lucide-trash-2" class="h-4 w-4" />
-              </UButton>
+            <div class="flex items-center justify-between gap-2 border-t border-es-border pt-4 dark:border-es-border-dark">
+              <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-es-text-tertiary dark:text-es-text-tertiary-dark">Order:</span>
+                  <UInlineEdit
+                    :model-value="service.display_order"
+                    type="text"
+                    placeholder="0"
+                    @save="(value: any, previousValue: any) => handleInlineEdit(service, 'display_order', Number(value), previousValue)"
+                  />
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-es-text-tertiary dark:text-es-text-tertiary-dark">Featured:</span>
+                  <UInlineEdit
+                    :model-value="service.featured"
+                    type="toggle"
+                    @save="(value: any, previousValue: any) => handleInlineEdit(service, 'featured', value, previousValue)"
+                  />
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <UButton
+                  color="neutral"
+                  variant="ghost"
+                  size="sm"
+                  @click="openEdit(service)"
+                >
+                  <UIcon name="i-lucide-pencil" class="h-4 w-4 mr-1" />
+                  {{ t('dashboard.services.buttons.edit') }}
+                </UButton>
+                <UButton
+                  color="danger"
+                  variant="ghost"
+                  size="sm"
+                  @click="removeService(service)"
+                >
+                  <UIcon name="i-lucide-trash-2" class="h-4 w-4" />
+                </UButton>
+              </div>
             </div>
           </div>
         </UCard>
@@ -272,10 +298,13 @@
 <script setup lang="ts">
 import { useServicesApi } from '../../composables/useApi'
 import type { Service } from '../../types/api'
+import type { EditType } from '../../components/dashboard/UInlineEdit.vue'
 
 definePageMeta({
   layout: 'dashboard'
 })
+
+const toast = useToast()
 
 const { t } = useI18n()
 
@@ -399,6 +428,46 @@ const removeService = async (service: Service) => {
     error.value = err instanceof Error ? err.message : t('dashboard.services.create.loading')
   } finally {
     pending.value = false
+  }
+}
+
+const handleInlineEdit = async (service: Service, field: keyof Service, value: any, previousValue: any) => {
+  try {
+    await servicesApi.update(service.id, {
+      [field]: value
+    })
+
+    toast.add({
+      id: `service-update-${service.id}`,
+      title: 'Service updated',
+      description: `Service ${field} has been updated`,
+      color: 'success',
+      icon: 'i-lucide-check-circle',
+      actions: [{
+        label: 'Undo',
+        color: 'neutral',
+        onClick: async () => {
+          try {
+            await servicesApi.update(service.id, {
+              [field]: previousValue
+            })
+            await loadServices()
+          } catch (err) {
+            toast.add({
+              title: 'Undo failed',
+              description: err instanceof Error ? err.message : 'Could not revert change',
+              color: 'error'
+            })
+          }
+        }
+      }]
+    })
+  } catch (err) {
+    toast.add({
+      title: 'Update failed',
+      description: err instanceof Error ? err.message : 'Could not update service',
+      color: 'error'
+    })
   }
 }
 

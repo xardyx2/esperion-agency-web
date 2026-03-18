@@ -254,6 +254,9 @@
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ t('dashboard.users.table.joined') }}
               </th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ t('dashboard.users.table.joined') }}
+              </th>
               <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ t('dashboard.users.table.actions') }}
               </th>
@@ -293,13 +296,15 @@
                 </div>
               </td>
               <td class="px-6 py-4">
-                <UBadge
-                  :color="roleColor(user.role)"
-                  variant="soft"
-                  size="sm"
-                >
-                  {{ user.role }}
-                </UBadge>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">Active:</span>
+                  <UInlineEdit
+                    v-model="user.active"
+                    type="toggle"
+                    :disabled="pending"
+                    @save="(value, previousValue) => handleInlineEdit(user, 'active', value, previousValue)"
+                  />
+                </div>
               </td>
               <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ user.phone || '-' }}
@@ -342,6 +347,7 @@ import { useAuthApi, useUsersApi } from '../../composables/useApi'
 import { useUiStore } from '../../stores/ui'
 import type { CreateManagedUserRequest, FixedRoleCatalogEntry, UpdateManagedUserRequest, User, UserRole } from '~/types/api'
 import { createUserSchema, toVeeTypedSchema, type UserFormValues } from '../../composables/useValidation'
+import { useToast } from '#ui/composables/useToast'
 
 definePageMeta({
   layout: 'dashboard'
@@ -357,6 +363,7 @@ useSeoMeta({
 const authApi = useAuthApi()
 const usersApi = useUsersApi()
 const uiStore = useUiStore()
+const toast = useToast()
 
 const users = ref<User[]>([])
 const roles = ref<FixedRoleCatalogEntry[]>([])
@@ -647,6 +654,76 @@ const removeUser = async (user: User) => {
     })
   } finally {
     pending.value = false
+  }
+}
+
+const handleInlineEdit = async (user: User, field: 'role' | 'active', value: any, previousValue: any) => {
+  try {
+    const payload: UpdateManagedUserRequest = {
+      [field]: value
+    }
+    
+    await usersApi.update(user.id, payload)
+    
+    toast.add({
+      title: 'Updated',
+      description: `${field === 'active' ? 'Status' : 'Role'} updated for ${user.full_name}`,
+      color: 'success',
+      actions: [
+        {
+          label: 'Undo',
+          click: async () => {
+            await usersApi.update(user.id, { [field]: previousValue })
+            await loadUsers()
+            toast.add({
+              title: 'Restored',
+              description: `${field === 'active' ? 'Status' : 'Role'} restored`,
+              color: 'info'
+            })
+          }
+        }
+      ]
+    })
+  } catch (err) {
+    toast.add({
+      title: 'Error',
+      description: err instanceof Error ? err.message : `Failed to update ${field}`,
+      color: 'error'
+    })
+    await loadUsers()
+  }
+}
+    
+    await usersApi.update(user.id, payload)
+    
+    const toastMessage = t('dashboard.users.notifications.roleUpdated.message', { name: user.full_name, role: value })
+    
+    toast.add({
+      title: t('dashboard.users.notifications.roleUpdated.title'),
+      message: toastMessage,
+      type: 'success',
+      actions: [{
+        label: 'Undo',
+        onClick: async () => {
+          const revertPayload: UpdateManagedUserRequest = {
+            role: previousValue
+          }
+          await usersApi.update(user.id, revertPayload)
+          user.role = previousValue
+          await loadUsers()
+        }
+      }]
+    })
+    
+    await loadUsers()
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : t('dashboard.users.notifications.error.message')
+    toast.add({
+      title: t('dashboard.users.notifications.error.title'),
+      message: errorMessage,
+      type: 'error'
+    })
+    await loadUsers()
   }
 }
 
