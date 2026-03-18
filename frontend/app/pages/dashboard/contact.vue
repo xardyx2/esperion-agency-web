@@ -1,5 +1,6 @@
 <template>
-  <div class="space-y-8">
+  <div class="space-y-6">
+    <!-- Page Header -->
     <DashboardPageHeader
       eyebrow="Leads"
       :title="t('dashboard.contact.title')"
@@ -12,129 +13,150 @@
           class="rounded-full"
           @click="exportCsv"
         >
-          <template #leading>
-            <UIcon
-              name="i-lucide-download"
-              class="h-4 w-4"
-            />
-          </template>
+          <UIcon name="i-lucide-download" class="h-4 w-4 mr-1" />
           {{ t('dashboard.contact.export.button') }}
         </UButton>
       </template>
     </DashboardPageHeader>
 
+    <!-- Stats Overview -->
     <section class="grid gap-4 md:grid-cols-3">
       <DashboardMetricCard
         :label="t('dashboard.contact.stats.total')"
         :value="stats.total"
-        :icon="'i-lucide-inbox'"
+        icon="i-lucide-inbox"
         detail="All contact submissions."
       />
       <DashboardMetricCard
         :label="t('dashboard.contact.stats.new')"
         :value="stats.by_status.new"
-        :icon="'i-lucide-bell'"
+        icon="i-lucide-bell"
         detail="New submissions pending review."
+        trend="+ today"
       />
       <DashboardMetricCard
         :label="t('dashboard.contact.stats.qualified')"
         :value="stats.by_status.qualified"
-        :icon="'i-lucide-circle-check'"
+        icon="i-lucide-circle-check"
         detail="Qualified leads ready for outreach."
+        trend="ready"
       />
     </section>
 
-    <UCard
-      :ui="{
-        root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
-        body: 'p-4'
-      }"
+    <!-- Filter Bar -->
+    <UDashboardSection class="!p-0">
+      <UDashboardFilterBar
+        v-model:search="serviceFilter"
+        v-model:filters="filters"
+        :filter-options="filterOptions"
+        search-placeholder="Filter by service..."
+        @search="loadContactData"
+      />
+    </UDashboardSection>
+
+    <!-- Error State -->
+    <div
+      v-if="error"
+      class="rounded-3xl border border-red-200 bg-red-50 px-4 py-6"
     >
-      <div class="flex flex-col gap-4 md:flex-row">
-        <input
-          v-model="serviceFilter"
-          type="text"
-          :placeholder="t('dashboard.contact.filters.service')"
-          class="flex-1 rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
-        >
-        <select
-          v-model="statusFilter"
-          class="rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
-        >
-          <option value="">
-            {{ t('dashboard.contact.filters.allStatuses') }}
-          </option>
-          <option value="new">
-            {{ t('dashboard.contact.filters.statusOptions.new') }}
-          </option>
-          <option value="contacted">
-            {{ t('dashboard.contact.filters.statusOptions.contacted') }}
-          </option>
-          <option value="qualified">
-            {{ t('dashboard.contact.filters.statusOptions.qualified') }}
-          </option>
-          <option value="converted">
-            {{ t('dashboard.contact.filters.statusOptions.converted') }}
-          </option>
-          <option value="lost">
-            {{ t('dashboard.contact.filters.statusOptions.lost') }}
-          </option>
-        </select>
-        <UButton
-          color="neutral"
-          variant="outline"
-          class="rounded-lg"
-          :loading="pending"
-          @click="loadContactData"
-        >
-          {{ t('dashboard.contact.filters.refresh') }}
-        </UButton>
+      <div class="flex items-center gap-3">
+        <UIcon name="i-lucide-alert-circle" class="h-5 w-5 text-red-600" />
+        <p class="text-sm text-red-700">{{ error }}</p>
       </div>
-    </UCard>
+    </div>
 
-    <UCard
-      :ui="{
-        root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
-        body: 'p-0'
-      }"
+    <!-- Bulk Actions Toolbar -->
+    <UDashboardBulkActionsToolbar
+      v-if="!pending"
+      :selected-count="selectedCount"
+      :total-count="submissions.length"
+      :actions="bulkActions"
+      @clear="clearSelection"
+      @select-all="toggleAllSelection"
+    />
+
+    <!-- Content Section -->
+    <UDashboardSection
+      :badge="submissions.length"
+      class="overflow-hidden"
     >
-      <div
-        v-if="error"
-        class="rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700"
-      >
-        {{ error }}
+      <template #header>
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-es-text-secondary dark:text-es-text-secondary-dark">
+              Submissions
+            </p>
+            <h2 class="mt-2 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
+              Contact Leads
+            </h2>
+          </div>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            size="sm"
+            :loading="pending"
+            @click="loadContactData"
+          >
+            <UIcon name="i-lucide-refresh-cw" class="h-4 w-4 mr-1" />
+            {{ t('dashboard.contact.filters.refresh') }}
+          </UButton>
+        </div>
+      </template>
+
+      <!-- Loading State -->
+      <div v-if="pending">
+        <UDashboardSkeleton type="table" :rows="5" :columns="6" />
       </div>
 
-      <div
-        v-if="pending"
-        class="px-4 py-6 text-sm text-es-text-secondary dark:text-es-text-secondary-dark"
-      >
-        {{ t('dashboard.contact.loading') }}
-      </div>
+      <!-- Empty State -->
+      <UDashboardEmptyState
+        v-else-if="!submissions.length"
+        icon="i-lucide-mail"
+        title="No submissions yet"
+        description="Contact form submissions will appear here when potential clients reach out through your website."
+        :secondary-actions="[
+          { label: 'View Contact Page', to: '/contact-us', icon: 'i-lucide-external-link', variant: 'outline' }
+        ]"
+        :tips="[
+          'Monitor new submissions daily',
+          'Update status as you progress leads',
+          'Export data for CRM integration'
+        ]"
+      />
 
+      <!-- Submissions Table -->
       <div
-        v-else-if="submissions.length"
-        class="overflow-hidden"
+        v-else
+        class="overflow-x-auto"
       >
         <table class="w-full">
           <thead class="bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              <th class="w-12 px-4 py-3">
+                <input
+                  type="checkbox"
+                  :checked="isAllSelected"
+                  :disabled="!submissions.length"
+                  class="h-4 w-4 rounded border-es-border bg-es-bg-primary text-es-accent-primary focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-accent-primary-dark dark:focus:ring-es-accent-primary-dark"
+                  @change="toggleAllSelection"
+                />
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ t('dashboard.contact.table.name') }}
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ t('dashboard.contact.table.email') }}
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ t('dashboard.contact.table.service') }}
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ t('dashboard.contact.table.date') }}
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ t('dashboard.contact.table.status') }}
               </th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-es-text-secondary dark:text-es-text-secondary-dark uppercase">
+              <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ t('dashboard.contact.table.actions') }}
               </th>
             </tr>
@@ -143,71 +165,68 @@
             <tr
               v-for="submission in submissions"
               :key="submission.id"
-              class="hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark"
+              :class="[
+                'transition-colors',
+                selectedIds.has(submission.id) ? 'bg-es-accent-primary/5 dark:bg-es-accent-primary-dark/5' : 'hover:bg-es-bg-tertiary/50 dark:hover:bg-es-bg-tertiary-dark/50'
+              ]"
             >
+              <td class="px-4 py-4">
+                <input
+                  type="checkbox"
+                  :checked="selectedIds.has(submission.id)"
+                  class="h-4 w-4 rounded border-es-border bg-es-bg-primary text-es-accent-primary focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-accent-primary-dark dark:focus:ring-es-accent-primary-dark"
+                  @change="toggleSelection(submission.id)"
+                />
+              </td>
               <td class="px-6 py-4">
-                <div>
-                  <div class="font-medium text-es-text-primary dark:text-es-text-primary-dark">
-                    {{ submission.full_name }}
-                  </div>
-                  <div class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
-                    {{ submission.company_name || '-' }}
-                  </div>
+                <div class="font-medium text-es-text-primary dark:text-es-text-primary-dark">
+                  {{ submission.full_name }}
+                </div>
+                <div class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+                  {{ submission.company_name || '-' }}
                 </div>
               </td>
               <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ submission.email || '-' }}
               </td>
               <td class="px-6 py-4">
-                <span class="px-3 py-1 bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10 text-es-accent-primary dark:text-es-accent-primary-dark text-xs rounded-full">{{ submission.service }}</span>
+                <UBadge
+                  color="neutral"
+                  variant="soft"
+                  size="sm"
+                >
+                  {{ submission.service }}
+                </UBadge>
               </td>
               <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
                 {{ formatDate(submission.created_at) }}
               </td>
               <td class="px-6 py-4">
-                <span
-                  :class="statusClass(submission.status)"
-                  class="px-3 py-1 text-xs rounded-full capitalize"
-                >{{ submission.status }}</span>
+                <UBadge
+                  :color="statusColor(submission.status)"
+                  variant="soft"
+                  size="sm"
+                >
+                  {{ submission.status }}
+                </UBadge>
               </td>
-              <td class="px-6 py-4 text-right">
+              <td class="px-6 py-4">
                 <div class="flex items-center justify-end gap-2">
-                  <select
-                    :value="submission.status"
-                    class="rounded-lg border border-es-border bg-es-bg-primary px-3 py-2 text-xs text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+                  <USelect
+                    :model-value="submission.status"
+                    :options="statusOptions"
+                    size="sm"
+                    class="w-32"
                     :disabled="updatingId === submission.id"
-                    @change="onStatusChange(submission.id, $event)"
-                  >
-                    <option value="new">
-                      {{ t('dashboard.contact.filters.statusOptions.new') }}
-                    </option>
-                    <option value="contacted">
-                      {{ t('dashboard.contact.filters.statusOptions.contacted') }}
-                    </option>
-                    <option value="qualified">
-                      {{ t('dashboard.contact.filters.statusOptions.qualified') }}
-                    </option>
-                    <option value="converted">
-                      {{ t('dashboard.contact.filters.statusOptions.converted') }}
-                    </option>
-                    <option value="lost">
-                      {{ t('dashboard.contact.filters.statusOptions.lost') }}
-                    </option>
-                  </select>
+                    @update:model-value="(val) => onStatusChange(submission.id, val as ContactStatus)"
+                  />
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-
-      <div
-        v-else-if="!pending && !error"
-        class="px-6 py-10 text-center text-sm text-es-text-secondary dark:text-es-text-secondary-dark"
-      >
-        {{ t('dashboard.contact.table.noResults') }}
-      </div>
-    </UCard>
+    </UDashboardSection>
   </div>
 </template>
 
@@ -221,7 +240,10 @@ definePageMeta({
 
 const { t } = useI18n()
 
-useSeoMeta({ title: t('dashboard.contact.seo.title'), description: t('dashboard.contact.seo.description') })
+useSeoMeta({
+  title: t('dashboard.contact.seo.title'),
+  description: t('dashboard.contact.seo.description')
+})
 
 const contactApi = useContactApi()
 
@@ -242,14 +264,112 @@ const pending = ref(false)
 const error = ref('')
 const updatingId = ref<string | null>(null)
 const serviceFilter = ref('')
-const statusFilter = ref('')
+const filters = ref({
+  status: ''
+})
 
-const statusClass = (status: ContactStatus) => {
-  if (status === 'new') return 'bg-blue-500/10 text-blue-500'
-  if (status === 'contacted') return 'bg-yellow-500/10 text-yellow-500'
-  if (status === 'qualified') return 'bg-green-500/10 text-green-500'
-  if (status === 'converted') return 'bg-emerald-500/10 text-emerald-500'
-  return 'bg-gray-500/10 text-gray-500'
+// Bulk selection state
+const selectedIds = ref<Set<string>>(new Set())
+const isAllSelected = computed(() => {
+  return submissions.value.length > 0 && submissions.value.every(s => selectedIds.value.has(s.id))
+})
+const selectedCount = computed(() => selectedIds.value.size)
+
+const toggleSelection = (id: string) => {
+  if (selectedIds.value.has(id)) {
+    selectedIds.value.delete(id)
+  } else {
+    selectedIds.value.add(id)
+  }
+}
+
+const toggleAllSelection = () => {
+  if (isAllSelected.value) {
+    submissions.value.forEach(s => selectedIds.value.delete(s.id))
+  } else {
+    submissions.value.forEach(s => selectedIds.value.add(s.id))
+  }
+}
+
+const clearSelection = () => {
+  selectedIds.value.clear()
+}
+
+// Bulk actions
+const bulkActions = computed(() => [
+  { 
+    label: 'Export', 
+    icon: 'i-lucide-download', 
+    color: 'primary' as const,
+    onClick: () => handleBulkAction('export')
+  }
+])
+
+const handleBulkAction = async (action: string) => {
+  const ids = Array.from(selectedIds.value)
+  
+  switch (action) {
+    case 'export':
+      const selectedSubmissions = submissions.value.filter(s => selectedIds.value.has(s.id))
+      const rows = [
+        ['id', 'full_name', 'email', 'company_name', 'service', 'status', 'created_at'],
+        ...selectedSubmissions.map(item => [
+          item.id,
+          item.full_name,
+          item.email || '',
+          item.company_name || '',
+          item.service,
+          item.status,
+          item.created_at || ''
+        ])
+      ]
+      const csv = rows
+        .map(row => row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(','))
+        .join('\n')
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `contact-submissions-${new Date().toISOString().slice(0, 10)}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      clearSelection()
+      break
+  }
+}
+
+const filterOptions = [
+  {
+    key: 'status',
+    label: 'Status',
+    type: 'select' as const,
+    options: [
+      { label: 'All Status', value: '' },
+      { label: t('dashboard.contact.filters.statusOptions.new'), value: 'new' },
+      { label: t('dashboard.contact.filters.statusOptions.contacted'), value: 'contacted' },
+      { label: t('dashboard.contact.filters.statusOptions.qualified'), value: 'qualified' },
+      { label: t('dashboard.contact.filters.statusOptions.converted'), value: 'converted' },
+      { label: t('dashboard.contact.filters.statusOptions.lost'), value: 'lost' }
+    ]
+  }
+]
+
+const statusOptions = [
+  { label: t('dashboard.contact.filters.statusOptions.new'), value: 'new' },
+  { label: t('dashboard.contact.filters.statusOptions.contacted'), value: 'contacted' },
+  { label: t('dashboard.contact.filters.statusOptions.qualified'), value: 'qualified' },
+  { label: t('dashboard.contact.filters.statusOptions.converted'), value: 'converted' },
+  { label: t('dashboard.contact.filters.statusOptions.lost'), value: 'lost' }
+]
+
+const statusColor = (status: ContactStatus) => {
+  if (status === 'new') return 'info' as const
+  if (status === 'contacted') return 'warning' as const
+  if (status === 'qualified') return 'success' as const
+  if (status === 'converted') return 'primary' as const
+  return 'neutral' as const
 }
 
 const formatDate = (value?: string) => {
@@ -266,7 +386,7 @@ const loadContactData = async () => {
       contactApi.list({
         limit: 100,
         service: serviceFilter.value || undefined,
-        status: statusFilter.value || undefined
+        status: filters.value.status || undefined
       }),
       contactApi.stats()
     ])
@@ -281,14 +401,10 @@ const loadContactData = async () => {
   }
 }
 
-const onStatusChange = async (id: string, event: Event) => {
-  const target = event.target
-  if (!(target instanceof HTMLSelectElement)) return
-
+const onStatusChange = async (id: string, nextStatus: ContactStatus) => {
   updatingId.value = id
   error.value = ''
 
-  const nextStatus = target.value as ContactStatus
   try {
     await contactApi.update(id, { status: nextStatus })
     const existing = submissions.value.find(item => item.id === id)
@@ -333,7 +449,7 @@ const exportCsv = () => {
   window.URL.revokeObjectURL(url)
 }
 
-watch([serviceFilter, statusFilter], () => {
+watch([serviceFilter, () => filters.value.status], () => {
   loadContactData()
 })
 

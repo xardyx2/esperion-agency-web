@@ -1,5 +1,6 @@
 <template>
   <div class="space-y-8">
+    <!-- Welcome Header -->
     <DashboardPageHeader
       eyebrow="Agency workspace"
       :title="t('dashboard.index.title')"
@@ -11,6 +12,7 @@
           class="rounded-full"
           :to="localePath('/dashboard/articles/new')"
         >
+          <UIcon name="i-lucide-plus" class="h-4 w-4 mr-1" />
           New article
         </UButton>
         <UButton
@@ -19,11 +21,13 @@
           class="rounded-full border-es-border text-es-text-primary dark:border-es-border-dark dark:text-es-text-primary-dark"
           :to="localePath('/dashboard/settings')"
         >
-          Open settings
+          <UIcon name="i-lucide-settings-2" class="h-4 w-4 mr-1" />
+          Settings
         </UButton>
       </template>
     </DashboardPageHeader>
 
+    <!-- Metrics Overview -->
     <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       <DashboardMetricCard
         v-for="card in overviewCards"
@@ -37,82 +41,68 @@
       />
     </section>
 
+    <!-- Main Content Grid -->
     <section class="grid gap-6 xl:grid-cols-[1.4fr,1fr]">
-      <UCard
-        :ui="{
-          root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
-          header: 'border-b border-es-border/70 px-6 py-5 dark:border-es-border-dark/70',
-          body: 'px-6 py-5'
-        }"
+      <!-- Priority Content Section -->
+      <UDashboardSection
+        title="Content Overview"
+        description="Recent activity and content status"
+        icon="i-lucide-layout-dashboard"
       >
-        <template #header>
-          <div class="flex items-center justify-between gap-4">
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.2em] text-es-text-secondary dark:text-es-text-secondary-dark">
-                Priority lanes
-              </p>
-              <h2 class="mt-2 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
-                Focus checklist
-              </h2>
-            </div>
-
-            <UBadge
-              color="primary"
-              variant="soft"
-            >
-              {{ focusChecklist.length }} lanes
-            </UBadge>
-          </div>
+        <template #actions>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            size="sm"
+            :to="localePath('/dashboard/articles')"
+          >
+            View all
+          </UButton>
         </template>
 
         <div class="grid gap-4 md:grid-cols-2">
           <article
-            v-for="item in focusChecklist"
+            v-for="item in contentModules"
             :key="item.title"
-            class="rounded-2xl border border-es-border bg-es-bg-primary p-4 dark:border-es-border-dark dark:bg-es-bg-primary-dark"
+            class="rounded-2xl border border-es-border bg-es-bg-primary p-4 transition-colors hover:bg-es-bg-tertiary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:hover:bg-es-bg-tertiary-dark"
           >
             <div class="flex items-start justify-between gap-3">
               <div class="space-y-2">
                 <p class="text-sm font-semibold text-es-text-primary dark:text-es-text-primary-dark">
-                  {{ t(item.title) }}
+                  {{ item.title }}
                 </p>
                 <p class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
-                  {{ t(item.detail) }}
+                  {{ item.description }}
                 </p>
+                <NuxtLink
+                  :to="item.to"
+                  class="inline-flex items-center gap-1 text-xs font-medium text-es-accent-primary hover:underline dark:text-es-accent-primary-dark"
+                >
+                  {{ item.action }}
+                  <UIcon name="i-lucide-arrow-right" class="h-3 w-3" />
+                </NuxtLink>
               </div>
 
-              <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
                 <UIcon
                   :name="item.icon"
-                  class="h-4 w-4"
+                  class="h-5 w-5"
                 />
               </div>
             </div>
           </article>
         </div>
-      </UCard>
+      </UDashboardSection>
 
-      <UCard
-        :ui="{
-          root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
-          header: 'border-b border-es-border/70 px-6 py-5 dark:border-es-border-dark/70',
-          body: 'px-6 py-5'
-        }"
+      <!-- Quick Actions Section -->
+      <UDashboardSection
+        title="Quick Actions"
+        description="Frequently used workflows"
+        icon="i-lucide-zap"
       >
-        <template #header>
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-es-text-secondary dark:text-es-text-secondary-dark">
-              Navigation
-            </p>
-            <h2 class="mt-2 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
-              Quick actions
-            </h2>
-          </div>
-        </template>
-
         <div class="space-y-3">
           <NuxtLink
-            v-for="item in quickActions"
+            v-for="item in quickActionItems"
             :key="item.to"
             :to="item.to"
             class="flex items-center gap-3 rounded-2xl border border-es-border bg-es-bg-primary px-4 py-4 transition-colors hover:bg-es-bg-tertiary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:hover:bg-es-bg-tertiary-dark"
@@ -139,8 +129,38 @@
             />
           </NuxtLink>
         </div>
-      </UCard>
+      </UDashboardSection>
     </section>
+
+    <!-- System Status Section -->
+    <UDashboardSection
+      title="System Status"
+      description="Dashboard health and operational metrics"
+      icon="i-lucide-activity"
+    >
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div
+          v-for="status in systemStatus"
+          :key="status.label"
+          class="flex items-center gap-3 rounded-2xl border border-es-border bg-es-bg-primary px-4 py-3 dark:border-es-border-dark dark:bg-es-bg-primary-dark"
+        >
+          <div
+            class="flex h-8 w-8 items-center justify-center rounded-xl"
+            :class="status.statusClass"
+          >
+            <UIcon :name="status.icon" class="h-4 w-4" />
+          </div>
+          <div>
+            <p class="text-sm font-medium text-es-text-primary dark:text-es-text-primary-dark">
+              {{ status.label }}
+            </p>
+            <p class="text-xs text-es-text-secondary dark:text-es-text-secondary-dark">
+              {{ status.value }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </UDashboardSection>
   </div>
 </template>
 
@@ -153,7 +173,7 @@ definePageMeta({
 
 const { t } = useI18n()
 const localePath = useLocalePath()
-const { navigationGroups, quickActions } = useDashboardNavigation()
+const { navigationGroups } = useDashboardNavigation()
 
 useSeoMeta({
   title: t('dashboard.index.title'),
@@ -168,31 +188,31 @@ const overviewCards = computed(() => {
     {
       label: 'Content modules',
       value: contentModules,
-      detail: 'Articles, works, services, clients, media, and contact flows.',
+      detail: 'Active content management areas',
       icon: 'i-lucide-panels-top-left',
-      trend: '+ refreshed',
+      trend: '+ active',
       to: localePath('/dashboard/articles')
     },
     {
-      label: 'Operational tools',
+      label: 'System modules',
       value: systemModules,
-      detail: 'Admin support surfaces like settings, users, and API docs.',
+      detail: 'Admin and configuration tools',
       icon: 'i-lucide-settings-2',
-      trend: 'system',
+      trend: 'ready',
       to: localePath('/dashboard/settings')
     },
     {
-      label: 'Active quick actions',
-      value: quickActions.value.length,
-      detail: 'Fast routes exposed directly from the redesigned shell.',
+      label: 'Quick actions',
+      value: 5,
+      detail: 'Fast routes for common tasks',
       icon: 'i-lucide-zap',
-      trend: 'ready',
+      trend: 'available',
       to: localePath('/dashboard/analytics')
     },
     {
-      label: 'Brand token mode',
+      label: 'Brand mode',
       value: 'Esperion',
-      detail: 'Dashboard chrome stays aligned with the shared semantic token system.',
+      detail: 'Using Esperion design tokens',
       icon: 'i-lucide-palette',
       trend: 'on-brand',
       to: localePath('/dashboard/settings')
@@ -200,21 +220,82 @@ const overviewCards = computed(() => {
   ]
 })
 
-const focusChecklist = [
+const contentModules = [
   {
-    title: 'focus.authTitle',
-    detail: 'focus.authDetail',
-    icon: 'i-lucide-shield-check'
+    title: 'Articles',
+    description: 'Manage blog posts and editorial content',
+    icon: 'i-lucide-file-text',
+    to: '/dashboard/articles',
+    action: 'Manage articles'
   },
   {
-    title: 'focus.translationTitle',
-    detail: 'focus.translationDetail',
-    icon: 'i-lucide-languages'
+    title: 'Portfolio Works',
+    description: 'Showcase projects and case studies',
+    icon: 'i-lucide-briefcase-business',
+    to: '/dashboard/works',
+    action: 'View works'
   },
   {
-    title: 'focus.archiveTitle',
-    detail: 'focus.archiveDetail',
-    icon: 'i-lucide-archive'
+    title: 'Services',
+    description: 'Configure service offerings',
+    icon: 'i-lucide-panels-top-left',
+    to: '/dashboard/services',
+    action: 'Edit services'
+  },
+  {
+    title: 'Media Library',
+    description: 'Upload and organize media files',
+    icon: 'i-lucide-images',
+    to: '/dashboard/media',
+    action: 'Open library'
+  }
+]
+
+const quickActionItems = [
+  {
+    label: 'Create New Article',
+    description: 'Start writing new content',
+    icon: 'i-lucide-file-plus',
+    to: '/dashboard/articles/new'
+  },
+  {
+    label: 'View Analytics',
+    description: 'Check traffic and performance',
+    icon: 'i-lucide-chart-column',
+    to: '/dashboard/analytics'
+  },
+  {
+    label: 'Manage Users',
+    description: 'Review team access and roles',
+    icon: 'i-lucide-users',
+    to: '/dashboard/users'
+  },
+  {
+    label: 'API Documentation',
+    description: 'Backend API reference',
+    icon: 'i-lucide-book-open',
+    to: '/dashboard/api-docs'
+  }
+]
+
+const systemStatus = [
+  {
+    label: 'Dashboard Status',
+    value: 'Operational',
+    icon: 'i-lucide-check-circle',
+    statusClass: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+  },
+  {
+    label: 'Authentication',
+    value: 'Secure',
+    icon: 'i-lucide-shield',
+    statusClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+  },
+  {
+    label: 'Theme System',
+    value: 'Active',
+    icon: 'i-lucide-sun-moon',
+    statusClass: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
   }
 ]
 </script>

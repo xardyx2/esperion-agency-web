@@ -1,159 +1,224 @@
 <template>
   <div class="space-y-6">
+    <!-- Page Header -->
     <DashboardPageHeader
       eyebrow="Content management"
       :title="t('dashboard.articles.title')"
       :description="t('dashboard.articles.description')"
     >
       <template #actions>
-        <NuxtLink
-          to="/dashboard/articles/new"
-          class="inline-flex items-center justify-center rounded-full bg-es-accent-primary px-6 py-3 font-semibold text-es-text-inverse transition-colors hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:text-es-text-inverse-dark dark:hover:bg-es-accent-primary-hover-dark"
+        <UButton
+          color="primary"
+          class="rounded-full"
+          :to="localePath('/dashboard/articles/new')"
         >
-          <span class="mr-2 text-xl">+</span>
+          <UIcon name="i-lucide-plus" class="h-4 w-4 mr-1" />
           {{ t('dashboard.articles.newButton') }}
-        </NuxtLink>
+        </UButton>
       </template>
     </DashboardPageHeader>
 
-    <section class="rounded-xl border border-es-border bg-es-bg-secondary p-4 dark:border-es-border-dark dark:bg-es-bg-secondary-dark">
-      <div class="flex flex-col gap-4 md:flex-row">
-        <input
-          v-model="searchQuery"
-          type="text"
-          :placeholder="t('dashboard.articles.search.placeholder')"
-          class="flex-1 rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
-        >
-        <select
-          v-model="selectedCategory"
-          class="rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
-        >
-          <option value="">
-            {{ t('dashboard.articles.filters.allCategories') }}
-          </option>
-          <option
-            v-for="category in categories"
-            :key="category"
-            :value="category"
-          >
-            {{ category }}
-          </option>
-        </select>
-        <select
-          v-model="selectedStatus"
-          class="rounded-lg border border-es-border bg-es-bg-primary px-4 py-3 text-es-text-primary focus:outline-none focus:ring-2 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
-        >
-          <option value="">
-            {{ t('dashboard.articles.filters.allTranslationStatus') }}
-          </option>
-          <option value="draft">
-            {{ t('dashboard.articles.status.draft') }}
-          </option>
-          <option value="id_only">
-            {{ t('dashboard.articles.status.id_only') }}
-          </option>
-          <option value="en_only">
-            {{ t('dashboard.articles.status.en_only') }}
-          </option>
-          <option value="complete">
-            {{ t('dashboard.articles.status.complete') }}
-          </option>
-        </select>
-      </div>
-    </section>
+    <!-- Filter Bar -->
+    <UDashboardSection class="!p-0">
+      <UDashboardFilterBar
+        v-model:search="searchQuery"
+        v-model:filters="filters"
+        :filter-options="filterOptions"
+        search-placeholder="Search articles by title, slug..."
+        @search="handleSearch"
+      />
+    </UDashboardSection>
 
-    <div
-      v-if="pending"
-      class="rounded-xl border border-es-border bg-es-bg-secondary px-4 py-6 text-sm text-es-text-secondary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-secondary-dark"
-    >
-      {{ t('dashboard.articles.placeholders.loading') }}
-    </div>
+    <!-- Loading State -->
+    <UDashboardSection v-if="pending" class="overflow-hidden">
+      <UDashboardSkeleton type="table" :rows="5" :columns="6" />
+    </UDashboardSection>
+
+    <!-- Error State -->
     <div
       v-else-if="error"
-      class="rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700"
+      class="rounded-3xl border border-red-200 bg-red-50 px-4 py-6"
     >
-      {{ t('dashboard.articles.placeholders.error') }}
+      <div class="flex items-center gap-3">
+        <UIcon name="i-lucide-alert-circle" class="h-5 w-5 text-red-600" />
+        <p class="text-sm text-red-700">{{ error }}</p>
+      </div>
     </div>
 
-    <section
-      v-else
-      class="overflow-hidden rounded-xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark"
+    <!-- Bulk Actions Toolbar -->
+    <UDashboardBulkActionsToolbar
+      v-if="!pending && !error"
+      :selected-count="selectedCount"
+      :total-count="filteredArticles.length"
+      :actions="bulkActions"
+      @clear="clearSelection"
+      @select-all="toggleAllSelection"
+    />
+
+    <!-- Content Section -->
+    <UDashboardSection
+      v-if="!pending && !error"
+      :badge="filteredArticles.length"
+      class="overflow-hidden"
     >
-      <table class="w-full">
-        <thead class="bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
-              {{ t('dashboard.articles.columns.title') }}
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
-              {{ t('dashboard.articles.columns.category') }}
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
-              {{ t('dashboard.articles.columns.translation') }}
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
-              {{ t('dashboard.articles.columns.publish') }}
-            </th>
-            <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
-              {{ t('dashboard.articles.columns.actions') }}
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-es-border dark:divide-es-border-dark">
-          <tr
-            v-for="article in filteredArticles"
-            :key="article.id"
-            class="hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark"
+      <template #header>
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-es-text-secondary dark:text-es-text-secondary-dark">
+              Articles
+            </p>
+            <h2 class="mt-2 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
+              All Articles
+            </h2>
+          </div>
+          <UBadge
+            color="primary"
+            variant="soft"
           >
-            <td class="px-6 py-4 align-top">
-              <div class="font-medium text-es-text-primary dark:text-es-text-primary-dark">
-                {{ article.title }}
-              </div>
-              <div class="mt-1 text-xs text-es-text-secondary dark:text-es-text-secondary-dark">
-                `{{ article.slug_id }}` / `{{ article.slug_en || article.slug_id }}`
-              </div>
-            </td>
-            <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
-              {{ article.category }}
-            </td>
-            <td class="px-6 py-4">
-              <span
-                class="rounded-full px-3 py-1 text-xs font-semibold capitalize"
-                :class="translationStatusClass(article.translation_status)"
-              >
-                {{ article.translation_status.replace('_', ' ') }}
-              </span>
-            </td>
-            <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
-              {{ article.published ? formatDate(article.published_at) : t('dashboard.articles.status.draft') }}
-            </td>
-            <td class="px-6 py-4">
-              <div class="flex justify-end gap-2">
-                <NuxtLink
-                  :to="`/dashboard/articles/${article.id}`"
-                  class="rounded-lg px-3 py-2 text-sm font-medium text-es-text-primary hover:bg-es-bg-primary dark:text-es-text-primary-dark dark:hover:bg-es-bg-primary-dark"
-                >
-                  {{ t('dashboard.articles.buttons.edit') }}
-                </NuxtLink>
-                <button
-                  type="button"
-                  class="rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
-                  @click="removeArticle(article.id)"
-                >
-                  {{ t('dashboard.articles.buttons.delete') }}
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div
+            {{ filteredArticles.length }} items
+          </UBadge>
+        </div>
+      </template>
+
+      <!-- Empty State -->
+      <UDashboardEmptyState
         v-if="!filteredArticles.length"
-        class="px-6 py-10 text-center text-sm text-es-text-secondary dark:text-es-text-secondary-dark"
+        icon="i-lucide-file-text"
+        title="No articles found"
+        description="Try adjusting your search or filters, or create your first article to get started."
+        :primary-action="{ label: 'Create Article', to: '/dashboard/articles/new', icon: 'i-lucide-plus' }"
+        :secondary-actions="[
+          { label: 'Clear Filters', icon: 'i-lucide-x', variant: 'ghost', onClick: clearFilters }
+        ]"
+        :tips="[
+          'Use the search bar to find specific articles',
+          'Filter by category or translation status',
+          `Click 'New Article' to create content`
+        ]"
+      />
+
+      <!-- Articles Table -->
+      <div
+        v-else
+        class="overflow-x-auto"
       >
-        {{ t('dashboard.articles.placeholders.noResults') }}
+        <table class="w-full">
+          <thead class="bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark">
+            <tr>
+              <th class="w-12 px-4 py-3">
+                <input
+                  type="checkbox"
+                  :checked="isAllSelected"
+                  :disabled="!filteredArticles.length"
+                  class="h-4 w-4 rounded border-es-border bg-es-bg-primary text-es-accent-primary focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-accent-primary-dark dark:focus:ring-es-accent-primary-dark"
+                  @change="toggleAllSelection"
+                />
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ t('dashboard.articles.columns.title') }}
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ t('dashboard.articles.columns.category') }}
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ t('dashboard.articles.columns.translation') }}
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ t('dashboard.articles.columns.publish') }}
+              </th>
+              <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ t('dashboard.articles.columns.actions') }}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-es-border dark:divide-es-border-dark">
+            <tr
+              v-for="article in filteredArticles"
+              :key="article.id"
+              :class="[
+                'transition-colors',
+                selectedIds.has(article.id) ? 'bg-es-accent-primary/5 dark:bg-es-accent-primary-dark/5' : 'hover:bg-es-bg-tertiary/50 dark:hover:bg-es-bg-tertiary-dark/50'
+              ]"
+            >
+              <td class="px-4 py-4">
+                <input
+                  type="checkbox"
+                  :checked="selectedIds.has(article.id)"
+                  class="h-4 w-4 rounded border-es-border bg-es-bg-primary text-es-accent-primary focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-accent-primary-dark dark:focus:ring-es-accent-primary-dark"
+                  @change="toggleSelection(article.id, $event as MouseEvent)"
+                />
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
+                    <UIcon name="i-lucide-file-text" class="h-5 w-5" />
+                  </div>
+                  <div>
+                    <UInlineEdit
+                      v-model="article.title"
+                      type="text"
+                      placeholder="Article title"
+                      @save="(value, prev) => handleInlineEdit(article.id, 'title', value, prev)"
+                    />
+                    <div class="mt-0.5 text-xs text-es-text-secondary dark:text-es-text-secondary-dark">
+                      {{ article.slug_id }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+                <UInlineEdit
+                  v-model="article.category"
+                  type="text"
+                  placeholder="Category"
+                  @save="(value, prev) => handleInlineEdit(article.id, 'category', value, prev)"
+                />
+              </td>
+              <td class="px-6 py-4">
+                <UBadge
+                  :color="translationStatusColor(article.translation_status)"
+                  variant="soft"
+                  size="sm"
+                >
+                  {{ article.translation_status.replace('_', ' ') }}
+                </UBadge>
+              </td>
+              <td class="px-6 py-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+                <div class="flex items-center gap-2">
+                  <UIcon
+                    :name="article.published ? 'i-lucide-check-circle' : 'i-lucide-circle'"
+                    class="h-4 w-4"
+                    :class="article.published ? 'text-green-500' : 'text-es-text-tertiary'"
+                  />
+                  {{ article.published ? formatDate(article.published_at) : t('dashboard.articles.status.draft') }}
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex justify-end gap-2">
+                  <UButton
+                    color="neutral"
+                    variant="ghost"
+                    size="sm"
+                    :to="`/dashboard/articles/${article.id}`"
+                  >
+                    <UIcon name="i-lucide-pencil" class="h-4 w-4 mr-1" />
+                    {{ t('dashboard.articles.buttons.edit') }}
+                  </UButton>
+                  <UButton
+                    color="error"
+                    variant="ghost"
+                    size="sm"
+                    @click="removeArticle(article.id)"
+                  >
+                    <UIcon name="i-lucide-trash-2" class="h-4 w-4" />
+                  </UButton>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </section>
+    </UDashboardSection>
   </div>
 </template>
 
@@ -166,6 +231,7 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 
 useSeoMeta({
   title: t('dashboard.articles.seo.title'),
@@ -178,10 +244,243 @@ const articles = ref<Article[]>([])
 const pending = ref(false)
 const error = ref('')
 const searchQuery = ref('')
-const selectedCategory = ref('')
-const selectedStatus = ref('')
+const filters = ref({
+  category: '',
+  status: ''
+})
 
-const categories = computed(() => [...new Set(articles.value.map(article => article.category))].sort())
+// Smart Search
+const { 
+  parsedQuery, 
+  recentSearches,
+  setQuery: setSmartQuery,
+  clearQuery: clearSmartQuery 
+} = useSmartSearch({
+  onSearch: (parsed) => {
+    // Apply parsed operators to filter
+    parsed.operators.forEach(op => {
+      if (op.type === 'field') {
+        if (op.field === 'category') {
+          filters.value.category = String(op.value)
+        } else if (op.field === 'status') {
+          filters.value.status = String(op.value)
+        }
+      }
+    })
+  }
+})
+
+const handleSmartSearch = (value: string) => {
+  searchQuery.value = value
+  setSmartQuery(value)
+}
+
+// Bulk selection state with persistence
+const {
+  selectedIds,
+  selectedCount,
+  toggleSelection: togglePersistentSelection,
+  selectAll: selectAllPersistent,
+  deselectAll: deselectAllPersistent,
+  isAllSelected: checkIsAllSelected,
+  clearPersistedSelection
+} = usePersistentSelection({
+  key: 'articles',
+  maxAge: 60 * 60 * 1000 // 1 hour
+})
+
+const isAllSelected = computed(() => {
+  return checkIsAllSelected(filteredArticles.value.map(a => a.id))
+})
+
+const toggleSelection = (id: string, event?: MouseEvent) => {
+  // Handle shift+click for range selection
+  if (event?.shiftKey && lastSelectedId.value) {
+    const ids = filteredArticles.value.map(a => a.id)
+    const lastIndex = ids.indexOf(lastSelectedId.value)
+    const currentIndex = ids.indexOf(id)
+    
+    if (lastIndex !== -1 && currentIndex !== -1) {
+      const start = Math.min(lastIndex, currentIndex)
+      const end = Math.max(lastIndex, currentIndex)
+      
+      for (let i = start; i <= end; i++) {
+        togglePersistentSelection(ids[i], false)
+      }
+      lastSelectedId.value = id
+      return
+    }
+  }
+  
+  // Normal toggle
+  togglePersistentSelection(id, true, filteredArticles.value.length)
+  lastSelectedId.value = id
+}
+
+const toggleAllSelection = () => {
+  if (isAllSelected.value) {
+    deselectAllPersistent(filteredArticles.value.map(a => a.id))
+  } else {
+    selectAllPersistent(filteredArticles.value.map(a => a.id), true, filteredArticles.value.length)
+  }
+}
+
+const clearSelection = () => {
+  clearPersistedSelection()
+  lastSelectedId.value = null
+}
+      lastSelectedId.value = id
+      return
+    }
+  }
+  
+  // Normal toggle
+  if (selectedIds.value.has(id)) {
+    selectedIds.value.delete(id)
+  } else {
+    selectedIds.value.add(id)
+    lastSelectedId.value = id
+  }
+}
+
+const toggleAllSelection = () => {
+  if (isAllSelected.value) {
+    // Deselect all visible
+    filteredArticles.value.forEach(a => selectedIds.value.delete(a.id))
+  } else {
+    // Select all visible
+    filteredArticles.value.forEach(a => selectedIds.value.add(a.id))
+  }
+}
+
+const clearSelection = () => {
+  selectedIds.value.clear()
+}
+
+// Bulk actions
+const bulkActions = computed(() => [
+  { 
+    label: 'Delete', 
+    icon: 'i-lucide-trash-2', 
+    color: 'error' as const,
+    onClick: () => handleBulkAction('delete')
+  },
+  { 
+    label: 'Publish', 
+    icon: 'i-lucide-check-circle', 
+    color: 'success' as const,
+    onClick: () => handleBulkAction('publish')
+  },
+  { 
+    label: 'Unpublish', 
+    icon: 'i-lucide-x-circle', 
+    color: 'neutral' as const,
+    onClick: () => handleBulkAction('unpublish')
+  },
+  { 
+    label: 'Export', 
+    icon: 'i-lucide-download', 
+    color: 'primary' as const,
+    onClick: () => handleBulkAction('export')
+  }
+])
+
+const handleInlineEdit = async (id: string, field: string, value: any, previousValue: any) => {
+  try {
+    await articlesApi.update(id, { [field]: value })
+    // Show toast with undo option
+    const toast = useToast()
+    toast.add({
+      title: 'Updated',
+      description: `${field} updated successfully`,
+      color: 'success',
+      actions: [
+        {
+          label: 'Undo',
+          click: async () => {
+            await articlesApi.update(id, { [field]: previousValue })
+            await loadArticles()
+            toast.add({
+              title: 'Restored',
+              description: `${field} restored to previous value`,
+              color: 'info'
+            })
+          }
+        }
+      ]
+    })
+  } catch (err) {
+    const toast = useToast()
+    toast.add({
+      title: 'Error',
+      description: err instanceof Error ? err.message : 'Failed to update',
+      color: 'error'
+    })
+    // Revert to previous value
+    await loadArticles()
+  }
+}
+  const ids = Array.from(selectedIds.value)
+  
+  switch (action) {
+    case 'delete':
+      if (confirm(`Delete ${ids.length} articles?`)) {
+        // Implement bulk delete
+        for (const id of ids) {
+          await articlesApi.delete(id)
+        }
+        clearSelection()
+        await loadArticles()
+      }
+      break
+    case 'publish':
+      // Implement bulk publish
+      clearSelection()
+      await loadArticles()
+      break
+    case 'unpublish':
+      // Implement bulk unpublish
+      clearSelection()
+      await loadArticles()
+      break
+    case 'export':
+      // Implement export
+      const data = articles.value.filter(a => selectedIds.value.has(a.id))
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `articles-export-${new Date().toISOString().split('T')[0]}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+      clearSelection()
+      break
+  }
+}
+
+const filterOptions = [
+  {
+    key: 'category',
+    label: 'Category',
+    type: 'select' as const,
+    options: computed(() => [
+      { label: 'All Categories', value: '' },
+      ...[...new Set(articles.value.map(a => a.category))].sort().map(c => ({ label: c, value: c }))
+    ])
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    type: 'select' as const,
+    options: [
+      { label: 'All Status', value: '' },
+      { label: 'Draft', value: 'draft' },
+      { label: 'ID Only', value: 'id_only' },
+      { label: 'EN Only', value: 'en_only' },
+      { label: 'Complete', value: 'complete' }
+    ]
+  }
+]
 
 const filteredArticles = computed(() => {
   return articles.value.filter((article) => {
@@ -189,22 +488,31 @@ const filteredArticles = computed(() => {
       .join(' ')
       .toLowerCase()
       .includes(searchQuery.value.toLowerCase())
-    const matchesCategory = !selectedCategory.value || article.category === selectedCategory.value
-    const matchesStatus = !selectedStatus.value || article.translation_status === selectedStatus.value
+    const matchesCategory = !filters.value.category || article.category === filters.value.category
+    const matchesStatus = !filters.value.status || article.translation_status === filters.value.status
     return matchesSearch && matchesCategory && matchesStatus
   })
 })
 
-const translationStatusClass = (status: string) => {
-  if (status === 'complete') return 'bg-green-100 text-green-700'
-  if (status === 'id_only' || status === 'en_only') return 'bg-blue-100 text-blue-700'
-  return 'bg-yellow-100 text-yellow-700'
+const translationStatusColor = (status: string) => {
+  if (status === 'complete') return 'success' as const
+  if (status === 'id_only' || status === 'en_only') return 'info' as const
+  return 'warning' as const
 }
 
 const formatDate = (value?: string) => {
   if (!value) return '-'
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString()
+}
+
+const clearFilters = () => {
+  searchQuery.value = ''
+  filters.value = { category: '', status: '' }
+}
+
+const handleSearch = (value: string) => {
+  searchQuery.value = value
 }
 
 const loadArticles = async () => {

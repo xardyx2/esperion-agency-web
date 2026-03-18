@@ -24,7 +24,7 @@ interface Props {
   loading?: 'eager' | 'lazy'
   fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside'
   placeholder?: string
-  class?: string
+  imgClass?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<Props>(), {
   loading: 'lazy',
   fit: 'cover',
   placeholder: undefined,
-  class: ''
+  imgClass: ''
 })
 
 // Compute format based on browser support
@@ -56,7 +56,7 @@ const quality = 80
     :loading="loading"
     :fit="fit"
     :placeholder="placeholder"
-    :class="['object-cover', class]"
+    :class="['object-cover', imgClass]"
     provider="ipx"
     densities="1x 2x"
     preload

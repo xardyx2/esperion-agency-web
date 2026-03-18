@@ -6,15 +6,22 @@
       :description="t('dashboard.analytics.description')"
     >
       <template #actions>
-        <UButton
-          color="neutral"
-          variant="outline"
-          class="rounded-full border-es-border text-es-text-primary dark:border-es-border-dark dark:text-es-text-primary-dark"
-          :disabled="loading"
-          @click="loadReport"
-        >
-          {{ loading ? t('dashboard.analytics.refresh.inProgress') : t('dashboard.analytics.refresh.button') }}
-        </UButton>
+        <div class="flex items-center gap-2">
+          <UDashboardHelpTooltip
+            title="Analytics Dashboard"
+            description="View website performance metrics, track user behavior, and analyze conversion funnels."
+            :learn-more="{ label: 'Learn more', to: '/docs/analytics' }"
+          />
+          <UButton
+            color="neutral"
+            variant="outline"
+            class="rounded-full border-es-border text-es-text-primary dark:border-es-border-dark dark:text-es-text-primary-dark"
+            :disabled="loading"
+            @click="loadReport"
+          >
+            {{ loading ? t('dashboard.analytics.refresh.inProgress') : t('dashboard.analytics.refresh.button') }}
+          </UButton>
+        </div>
       </template>
     </DashboardPageHeader>
 
@@ -62,13 +69,19 @@
       >
         <template #header>
           <div class="flex items-center justify-between gap-4">
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.2em] text-es-text-secondary dark:text-es-text-secondary-dark">
-                Funnel reporting
-              </p>
-              <h2 class="mt-2 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
-                {{ t('dashboard.analytics.funnels.title') }}
-              </h2>
+            <div class="flex items-center gap-2">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-es-text-secondary dark:text-es-text-secondary-dark">
+                  Funnel reporting
+                </p>
+                <h2 class="mt-2 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
+                  {{ t('dashboard.analytics.funnels.title') }}
+                </h2>
+              </div>
+              <UDashboardHelpTooltip
+                title="Funnel Reporting"
+                description="Track user journey through your site. Funnels show conversion rates between steps and identify drop-off points."
+              />
             </div>
 
             <UBadge

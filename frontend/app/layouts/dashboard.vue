@@ -114,6 +114,7 @@
 
       <template #footer="{ collapsed }">
         <div class="space-y-4">
+          <!-- Appearance section (only when expanded) -->
           <div
             v-if="!collapsed"
             class="rounded-2xl border border-es-border bg-es-bg-primary p-3 dark:border-es-border-dark dark:bg-es-bg-primary-dark"
@@ -126,39 +127,35 @@
             </div>
           </div>
 
-          <UDropdownMenu
-            :items="userMenuItems"
-            :content="{ align: 'center', collisionPadding: 12 }"
+          <!-- Simplified user display (no dropdown in sidebar) -->
+          <div
+            class="flex items-center gap-3 rounded-2xl border border-es-border bg-es-bg-primary px-3 py-3 dark:border-es-border-dark dark:bg-es-bg-primary-dark"
+            :class="{ 'justify-center': collapsed }"
           >
-            <UButton
-              color="neutral"
-              variant="ghost"
-              block
-              :square="collapsed"
-              class="justify-start rounded-2xl border border-es-border bg-es-bg-primary px-3 py-3 text-left text-es-text-primary hover:bg-es-bg-tertiary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark dark:hover:bg-es-bg-tertiary-dark"
-            >
-              <template #leading>
-                <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
-                  <UIcon
-                    name="i-lucide-user-round"
-                    class="h-4 w-4"
-                  />
-                </div>
-              </template>
+            <UAvatar
+              v-if="userAvatar"
+              :src="userAvatar"
+              :alt="displayUserName"
+              size="sm"
+            />
+            <UAvatar
+              v-else
+              :text="userInitials"
+              size="sm"
+            />
 
-              <div
-                v-if="!collapsed"
-                class="min-w-0 flex-1"
-              >
-                <p class="truncate text-sm font-medium">
-                  {{ displayUserName }}
-                </p>
-                <p class="truncate text-xs text-es-text-secondary dark:text-es-text-secondary-dark">
-                  {{ displayUserRole }}
-                </p>
-              </div>
-            </UButton>
-          </UDropdownMenu>
+            <div
+              v-if="!collapsed"
+              class="min-w-0 flex-1"
+            >
+              <p class="truncate text-sm font-medium text-es-text-primary dark:text-es-text-primary-dark">
+                {{ displayUserName }}
+              </p>
+              <p class="truncate text-xs text-es-text-secondary dark:text-es-text-secondary-dark">
+                {{ displayUserRole }}
+              </p>
+            </div>
+          </div>
         </div>
       </template>
     </UDashboardSidebar>
@@ -194,19 +191,44 @@
           </template>
 
           <template #right>
-            <div class="hidden xl:flex items-center gap-2">
+            <!-- Quick Create Dropdown -->
+            <UDropdownMenu
+              :items="quickCreateItems"
+              :content="{ align: 'end', collisionPadding: 12 }"
+            >
               <UButton
-                v-for="item in quickActions"
-                :key="item.to"
-                color="neutral"
-                variant="ghost"
-                :to="item.to"
-                class="rounded-full border border-es-border bg-es-bg-secondary px-4 py-2 text-es-text-primary hover:bg-es-bg-tertiary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-primary-dark dark:hover:bg-es-bg-tertiary-dark"
+                color="primary"
+                variant="soft"
+                class="hidden md:flex rounded-full"
               >
-                {{ item.label }}
+                <template #leading>
+                  <UIcon name="i-lucide-plus" class="h-4 w-4" />
+                </template>
+                <span>New</span>
               </UButton>
+            </UDropdownMenu>
+
+            <!-- Visit Site Link -->
+            <UButton
+              color="neutral"
+              variant="ghost"
+              class="hidden lg:flex rounded-full"
+              :to="localePath('/')"
+              target="_blank"
+              external
+            >
+              <template #leading>
+                <UIcon name="i-lucide-globe" class="h-4 w-4" />
+              </template>
+              <span>Visit Site</span>
+            </UButton>
+
+            <!-- Language Switcher -->
+            <div class="hidden xl:block">
+              <LanguageSwitcher size="sm" />
             </div>
 
+            <!-- Notifications -->
             <UButton
               color="neutral"
               variant="ghost"
@@ -226,10 +248,12 @@
               </UChip>
             </UButton>
 
+            <!-- Theme Toggle -->
             <div class="hidden md:block">
               <ThemeToggle />
             </div>
 
+            <!-- User Menu -->
             <UDropdownMenu
               :items="userMenuItems"
               :content="{ align: 'end', collisionPadding: 12 }"
@@ -240,12 +264,17 @@
                 class="rounded-full border border-es-border bg-es-bg-secondary px-2 py-2 text-es-text-primary hover:bg-es-bg-tertiary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-primary-dark dark:hover:bg-es-bg-tertiary-dark"
               >
                 <template #leading>
-                  <div class="flex h-8 w-8 items-center justify-center rounded-full bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
-                    <UIcon
-                      name="i-lucide-user-round"
-                      class="h-4 w-4"
-                    />
-                  </div>
+                  <UAvatar
+                    v-if="userAvatar"
+                    :src="userAvatar"
+                    :alt="displayUserName"
+                    size="sm"
+                  />
+                  <UAvatar
+                    v-else
+                    :text="userInitials"
+                    size="sm"
+                  />
                 </template>
 
                 <span class="hidden lg:inline">{{ displayUserName }}</span>
@@ -300,6 +329,12 @@
     </UDashboardPanel>
 
     <DashboardNotificationsSlideover v-model:open="notificationsOpen" />
+    
+    <!-- Command Palette -->
+    <UDashboardCommandPalette v-model:open="commandPaletteOpen" />
+    
+    <!-- Shortcuts Help Modal -->
+    <ShortcutsHelpModal v-model:open="shortcutsOpen" />
   </UDashboardGroup>
 </template>
 
@@ -315,12 +350,15 @@ const uiStore = useUiStore()
 const appConfig = useAppConfig()
 const router = useRouter()
 const localePath = useLocalePath()
+const { locale, setLocale } = useI18n()
 
 const { navigationGroups, quickActions, searchGroups, currentPageTitle } = useDashboardNavigation()
 const { unreadNotifications } = storeToRefs(uiStore)
 
 const sidebarOpen = ref(false)
 const notificationsOpen = ref(false)
+const commandPaletteOpen = ref(false)
+const shortcutsOpen = ref(false)
 
 const dashboardRoot = computed(() => localePath('/dashboard'))
 const brandName = computed(() => appConfig.esperion?.name || 'Esperion')
@@ -328,6 +366,17 @@ const brandTagline = computed(() => appConfig.esperion?.tagline || 'Dashboard')
 const displayUserName = computed(() => authStore.user?.full_name || authStore.user?.username || 'Dashboard User')
 const displayUserRole = computed(() => authStore.user?.role || 'authenticated')
 const unreadCount = computed(() => unreadNotifications.value.length)
+
+// Avatar support - check for avatar URL from user store
+const userAvatar = computed(() => authStore.user?.avatar || null)
+
+// Generate initials from user name
+const userInitials = computed(() => {
+  const name = authStore.user?.full_name || authStore.user?.username || 'U'
+  const parts = name.trim().split(/\s+/)
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+})
 
 const isActive = (to: string) => {
   return router.currentRoute.value.path === to || (to !== dashboardRoot.value && router.currentRoute.value.path.startsWith(`${to}/`))
@@ -343,27 +392,96 @@ const logout = async () => {
   await router.push(localePath('/login'))
 }
 
-const userMenuItems = computed<DropdownMenuItem[][]>(() => ([
+// Quick Create menu items
+const quickCreateItems = computed<DropdownMenuItem[][]>(() => [
   [
     {
-      type: 'label',
-      label: displayUserName.value,
-      icon: 'i-lucide-user-round'
-    }
-  ],
-  [
-    {
-      label: 'Sessions',
-      icon: 'i-lucide-shield-check',
-      to: localePath('/dashboard/sessions')
+      label: 'Article',
+      icon: 'i-lucide-file-text',
+      to: localePath('/dashboard/articles/new'),
+      shortcut: 'G A'
     },
     {
-      label: 'Settings',
-      icon: 'i-lucide-settings-2',
-      to: localePath('/dashboard/settings')
+      label: 'Work',
+      icon: 'i-lucide-briefcase-business',
+      to: localePath('/dashboard/works/new'),
+      shortcut: 'G W'
+    },
+    {
+      label: 'Service',
+      icon: 'i-lucide-panels-top-left',
+      to: localePath('/dashboard/services'),
+      hint: 'Create from list'
+    },
+    {
+      label: 'Client',
+      icon: 'i-lucide-users-round',
+      to: localePath('/dashboard/clients'),
+      hint: 'Create from list'
+    },
+    {
+      label: 'Media',
+      icon: 'i-lucide-images',
+      to: localePath('/dashboard/media'),
+      hint: 'Upload interface'
     }
-  ],
-  [
+  ]
+])
+
+// Enhanced user menu with avatar, profile, and language options
+const userMenuItems = computed<DropdownMenuItem[][]>(() => {
+  const items: DropdownMenuItem[][] = [
+    // Group 1: User Info (label)
+    [
+      {
+        type: 'label',
+        label: displayUserName.value,
+        description: displayUserRole.value,
+        icon: 'i-lucide-user-round'
+      }
+    ],
+    // Group 2: Profile & Settings
+    [
+      {
+        label: 'My Profile',
+        icon: 'i-lucide-user-cog',
+        to: localePath('/dashboard/users')
+      },
+      {
+        label: 'Sessions',
+        icon: 'i-lucide-shield-check',
+        to: localePath('/dashboard/sessions')
+      },
+      {
+        label: 'Settings',
+        icon: 'i-lucide-settings-2',
+        to: localePath('/dashboard/settings')
+      }
+    ]
+  ]
+
+  // Group 3: Language (mobile fallback - only show on smaller screens)
+  items.push([
+    {
+      type: 'label',
+      label: 'Language'
+    },
+    {
+      label: 'Bahasa Indonesia',
+      icon: locale.value === 'id' ? 'i-lucide-check' : undefined,
+      onSelect: () => setLocale('id'),
+      class: locale.value === 'id' ? 'bg-es-accent-primary/10' : undefined
+    },
+    {
+      label: 'English',
+      icon: locale.value === 'en' ? 'i-lucide-check' : undefined,
+      onSelect: () => setLocale('en'),
+      class: locale.value === 'en' ? 'bg-es-accent-primary/10' : undefined
+    }
+  ])
+
+  // Group 4: Logout
+  items.push([
     {
       label: 'Log out',
       icon: 'i-lucide-log-out',
@@ -372,8 +490,10 @@ const userMenuItems = computed<DropdownMenuItem[][]>(() => ([
         await logout()
       }
     }
-  ]
-]))
+  ])
+
+  return items
+})
 
 onMounted(async () => {
   authStore.initFromCookie()

@@ -17,13 +17,19 @@
       >
         <template #header>
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.22em] text-es-text-secondary dark:text-es-text-secondary-dark">
-                {{ t('dashboard.settings.analytics.title') }}
-              </p>
-              <h2 class="mt-1 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
-                {{ t('dashboard.settings.analytics.title') }}
-              </h2>
+            <div class="flex items-center gap-2">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-es-text-secondary dark:text-es-text-secondary-dark">
+                  {{ t('dashboard.settings.analytics.title') }}
+                </p>
+                <h2 class="mt-1 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
+                  {{ t('dashboard.settings.analytics.title') }}
+                </h2>
+              </div>
+              <UDashboardHelpTooltip
+                title="Analytics Integrations"
+                description="Connect third-party analytics tools to track website performance. GA4 provides traffic insights, Clarity records user sessions, and Meta/TikTok pixels track ad conversions."
+              />
             </div>
             <NuxtLink
               to="/dashboard/analytics"

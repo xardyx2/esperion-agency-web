@@ -1,7 +1,8 @@
 <template>
-  <div class="space-y-8">
+  <div class="space-y-6">
+    <!-- Page Header -->
     <DashboardPageHeader
-      eyebrow="Content"
+      eyebrow="Services"
       :title="t('dashboard.services.title')"
       :description="t('dashboard.services.description')"
     >
@@ -11,19 +12,24 @@
           class="rounded-full"
           @click="openCreate"
         >
-          <span class="mr-1 text-lg">+</span>
+          <UIcon name="i-lucide-plus" class="h-4 w-4 mr-1" />
           {{ t('dashboard.services.newButton') }}
         </UButton>
       </template>
     </DashboardPageHeader>
 
+    <!-- Error State -->
     <div
       v-if="error"
-      class="rounded-3xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700"
+      class="rounded-3xl border border-red-200 bg-red-50 px-4 py-6"
     >
-      {{ error }}
+      <div class="flex items-center gap-3">
+        <UIcon name="i-lucide-alert-circle" class="h-5 w-5 text-red-600" />
+        <p class="text-sm text-red-700">{{ error }}</p>
+      </div>
     </div>
 
+    <!-- Create/Edit Form -->
     <UCard
       v-if="showForm"
       :ui="{
@@ -50,6 +56,7 @@
             :disabled="submitting"
             @click="closeForm"
           >
+            <UIcon name="i-lucide-x" class="h-4 w-4 mr-1" />
             {{ t('dashboard.services.create.cancel') }}
           </UButton>
         </div>
@@ -126,98 +133,139 @@
             class="rounded-full"
             :disabled="submitting"
           >
+            <UIcon v-if="submitting" name="i-lucide-loader-2" class="h-4 w-4 mr-1 animate-spin" />
             {{ submitting ? t('dashboard.services.create.saveInProgress') : editingServiceId ? t('dashboard.services.create.saveButton') : t('dashboard.services.create.createButton') }}
           </UButton>
         </div>
       </form>
     </UCard>
 
-    <UCard
-      v-if="pending"
-      :ui="{
-        root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
-        body: 'px-6 py-5'
-      }"
-    >
-      <p class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
-        {{ t('dashboard.services.create.loading') }}
-      </p>
-    </UCard>
-
+    <!-- Loading State -->
     <div
-      v-else
-      class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+      v-if="pending"
+      class="rounded-3xl border border-es-border bg-es-bg-secondary px-4 py-12 dark:border-es-border-dark dark:bg-es-bg-secondary-dark"
     >
-      <UCard
-        v-for="service in services"
-        :key="service.id"
-        :ui="{
-          root: 'rounded-3xl border border-es-border bg-es-bg-secondary shadow-sm dark:border-es-border-dark dark:bg-es-bg-secondary-dark',
-          body: 'p-6'
-        }"
-      >
-        <div class="space-y-4">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
-              <span
-                v-if="service.icon"
-                class="text-sm font-semibold"
-              >{{ service.icon }}</span>
-              <UIcon
-                v-else
-                name="i-lucide-briefcase"
-                class="h-5 w-5"
-              />
-            </div>
-
-            <UBadge
-              v-if="service.featured"
-              color="primary"
-              variant="soft"
-              class="shrink-0"
-            >
-              {{ t('dashboard.services.buttons.featured') }}
-            </UBadge>
-          </div>
-
-          <div>
-            <h3 class="text-base font-semibold text-es-text-primary dark:text-es-text-primary-dark">
-              {{ service.title }}
-            </h3>
-            <p class="mt-2 text-sm text-es-text-secondary dark:text-es-text-secondary-dark line-clamp-2">
-              {{ service.description }}
-            </p>
-          </div>
-
-          <div class="flex items-center justify-end gap-2 border-t border-es-border pt-4 dark:border-es-border-dark">
-            <UButton
-              color="neutral"
-              variant="ghost"
-              size="sm"
-              class="text-es-text-primary dark:text-es-text-primary-dark"
-              @click="openEdit(service)"
-            >
-              {{ t('dashboard.services.buttons.edit') }}
-            </UButton>
-            <UButton
-              color="danger"
-              variant="ghost"
-              size="sm"
-              @click="removeService(service)"
-            >
-              {{ t('dashboard.services.buttons.delete') }}
-            </UButton>
-          </div>
-        </div>
-      </UCard>
-
-      <div
-        v-if="!services.length"
-        class="col-span-full rounded-3xl border border-dashed border-es-border bg-es-bg-secondary px-4 py-10 text-center text-sm text-es-text-secondary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-secondary-dark"
-      >
-        {{ t('dashboard.services.noResults') }}
+      <div class="flex flex-col items-center justify-center gap-4">
+        <UIcon name="i-lucide-loader-2" class="h-8 w-8 animate-spin text-es-accent-primary" />
+        <p class="text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+          {{ t('dashboard.services.create.loading') }}
+        </p>
       </div>
     </div>
+
+    <!-- Content Section -->
+    <UDashboardSection
+      v-else-if="!showForm"
+      :badge="services.length"
+    >
+      <template #header>
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-es-text-secondary dark:text-es-text-secondary-dark">
+              Services
+            </p>
+            <h2 class="mt-2 text-lg font-semibold text-es-text-primary dark:text-es-text-primary-dark">
+              All Services
+            </h2>
+          </div>
+          <UBadge
+            color="primary"
+            variant="soft"
+          >
+            {{ services.length }} items
+          </UBadge>
+        </div>
+      </template>
+
+      <!-- Empty State -->
+      <UDashboardEmptyState
+        v-if="!services.length"
+        icon="i-lucide-panels-top-left"
+        title="No services yet"
+        description="Define your agency services to showcase on your website. Services help clients understand what you offer."
+        :primary-action="{ label: 'Add Service', icon: 'i-lucide-plus', onClick: openCreate }"
+        :tips="[
+          'Create clear, concise service descriptions',
+          'Set display order to control listing',
+          'Mark featured services for homepage'
+        ]"
+      />
+
+      <!-- Services Grid -->
+      <div
+        v-else
+        class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <UCard
+          v-for="service in services"
+          :key="service.id"
+          :ui="{
+            root: 'rounded-3xl border border-es-border bg-es-bg-primary shadow-sm overflow-hidden transition-shadow hover:shadow-md dark:border-es-border-dark dark:bg-es-bg-primary-dark',
+            body: 'p-6'
+          }"
+        >
+          <div class="space-y-4">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
+                <span
+                  v-if="service.icon"
+                  class="text-sm font-semibold"
+                >{{ service.icon }}</span>
+                <UIcon
+                  v-else
+                  name="i-lucide-briefcase"
+                  class="h-5 w-5"
+                />
+              </div>
+
+              <UBadge
+                v-if="service.featured"
+                color="warning"
+                variant="soft"
+                class="shrink-0"
+              >
+                <UIcon name="i-lucide-star" class="h-3 w-3 mr-1" />
+                {{ t('dashboard.services.buttons.featured') }}
+              </UBadge>
+            </div>
+
+            <div>
+              <h3 class="text-base font-semibold text-es-text-primary dark:text-es-text-primary-dark">
+                {{ service.title }}
+              </h3>
+              <p class="mt-2 text-sm text-es-text-secondary dark:text-es-text-secondary-dark line-clamp-2">
+                {{ service.description }}
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs text-es-text-tertiary dark:text-es-text-tertiary-dark">
+              <UIcon name="i-lucide-link" class="h-3 w-3" />
+              <span>/services/{{ service.slug }}</span>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 border-t border-es-border pt-4 dark:border-es-border-dark">
+              <UButton
+                color="neutral"
+                variant="ghost"
+                size="sm"
+                @click="openEdit(service)"
+              >
+                <UIcon name="i-lucide-pencil" class="h-4 w-4 mr-1" />
+                {{ t('dashboard.services.buttons.edit') }}
+              </UButton>
+              <UButton
+                color="danger"
+                variant="ghost"
+                size="sm"
+                @click="removeService(service)"
+              >
+                <UIcon name="i-lucide-trash-2" class="h-4 w-4" />
+              </UButton>
+            </div>
+          </div>
+        </UCard>
+      </div>
+    </UDashboardSection>
   </div>
 </template>
 
@@ -231,7 +279,10 @@ definePageMeta({
 
 const { t } = useI18n()
 
-useSeoMeta({ title: t('dashboard.services.seo.title'), description: t('dashboard.services.seo.description') })
+useSeoMeta({
+  title: t('dashboard.services.seo.title'),
+  description: t('dashboard.services.seo.description')
+})
 
 const servicesApi = useServicesApi()
 
