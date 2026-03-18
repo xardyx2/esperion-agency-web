@@ -1033,6 +1033,10 @@
           "title": "Pengguna dihapus",
           "message": "{name} berhasil dihapus."
         },
+        "roleUpdated": {
+          "title": "Peran diperbarui",
+          "message": "Peran {name} diubah menjadi {role}."
+        },
         "error": {
           "title": "Manajemen pengguna error",
           "message": "Gagal menyimpan pengguna"

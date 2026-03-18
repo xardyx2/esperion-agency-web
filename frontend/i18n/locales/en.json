@@ -1006,28 +1006,32 @@
         "prospect": "Prospect",
         "inactive": "Inactive"
       },
-      "notifications": {
-        "userUpdated": {
-          "title": "User updated",
-          "message": "User details were updated successfully."
-        },
-        "userCreated": {
-          "title": "User created",
-          "message": "The new dashboard user was created successfully."
-        },
-        "userDeleted": {
-          "title": "User deleted",
-          "message": "{name} was deleted successfully."
-        },
-        "error": {
-          "title": "User management error",
-          "message": "Failed to save user"
-        },
-        "deleteFailed": {
-          "title": "Delete failed",
-          "message": "Failed to delete user"
-        }
-      },
+  "notifications": {
+    "userUpdated": {
+      "title": "User updated",
+      "message": "User details were updated successfully."
+    },
+    "userCreated": {
+      "title": "User created",
+      "message": "The new dashboard user was created successfully."
+    },
+    "userDeleted": {
+      "title": "User deleted",
+      "message": "{name} was deleted successfully."
+    },
+    "roleUpdated": {
+      "title": "Role updated",
+      "message": "{name}'s role was changed to {role}."
+    },
+    "error": {
+      "title": "User management error",
+      "message": "Failed to save user"
+    },
+    "deleteFailed": {
+      "title": "Delete failed",
+      "message": "Failed to delete user"
+    }
+  },
       "seo": {
         "title": "Users - Dashboard",
         "description": "Manage dashboard users."
