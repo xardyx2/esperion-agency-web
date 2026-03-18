@@ -142,6 +142,7 @@ const displayValue = computed(() => {
     <!-- View Mode -->
     <div
       v-if="!isEditing"
+      :data-testid="`inline-edit-${type}`"
       class="group flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark"
       @click="startEdit"
     >
@@ -151,6 +152,7 @@ const displayValue = computed(() => {
           :model-value="modelValue as boolean"
           :disabled="disabled"
           size="sm"
+          data-testid="inline-edit-toggle"
         />
       </template>
       
@@ -159,6 +161,7 @@ const displayValue = computed(() => {
         <span 
           class="text-es-text-primary dark:text-es-text-primary-dark"
           :class="{ 'italic text-es-text-tertiary': !modelValue }"
+          data-testid="inline-edit-display"
         >
           {{ displayValue || placeholder || 'Click to edit' }}
         </span>
@@ -167,6 +170,7 @@ const displayValue = computed(() => {
       <UIcon 
         name="i-lucide-pencil" 
         class="h-3.5 w-3.5 opacity-0 text-es-text-tertiary transition-opacity group-hover:opacity-100 dark:text-es-text-tertiary-dark"
+        data-testid="inline-edit-icon"
       />
     </div>
 
@@ -174,6 +178,7 @@ const displayValue = computed(() => {
     <div
       v-else
       class="flex flex-col gap-1"
+      data-testid="inline-edit-mode"
     >
       <div class="flex items-center gap-2">
         <!-- Text Input -->
@@ -182,6 +187,7 @@ const displayValue = computed(() => {
           ref="inputRef"
           v-model="editValue"
           type="text"
+          data-testid="inline-edit-input"
           class="w-full rounded-lg border border-es-border bg-es-bg-primary px-2 py-1 text-sm text-es-text-primary focus:border-es-accent-primary focus:outline-none focus:ring-1 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
           :placeholder="placeholder"
           @keydown="handleKeydown"
@@ -194,6 +200,7 @@ const displayValue = computed(() => {
           ref="inputRef"
           v-model="textValue"
           rows="3"
+          data-testid="inline-edit-textarea"
           class="w-full rounded-lg border border-es-border bg-es-bg-primary px-2 py-1 text-sm text-es-text-primary focus:border-es-accent-primary focus:outline-none focus:ring-1 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
           :placeholder="placeholder"
           @keydown="handleKeydown"
@@ -204,6 +211,7 @@ const displayValue = computed(() => {
           v-else-if="type === 'select'"
           ref="inputRef"
           v-model="editValue"
+          data-testid="inline-edit-select"
           class="w-full rounded-lg border border-es-border bg-es-bg-primary px-2 py-1 text-sm text-es-text-primary focus:border-es-accent-primary focus:outline-none focus:ring-1 focus:ring-es-accent-primary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
           @keydown="handleKeydown"
           @blur="handleBlur"
@@ -220,15 +228,21 @@ const displayValue = computed(() => {
         <!-- Action Buttons -->
         <div class="flex items-center gap-1">
           <button
+            type="button"
             class="rounded-md p-1 text-es-success hover:bg-es-success/10"
             :disabled="loading"
+            aria-label="Save"
+            data-testid="inline-edit-save"
             @click="save"
           >
             <UIcon name="i-lucide-check" class="h-4 w-4" />
           </button>
           <button
+            type="button"
             class="rounded-md p-1 text-es-error hover:bg-es-error/10"
             :disabled="loading"
+            aria-label="Cancel"
+            data-testid="inline-edit-cancel"
             @click="cancel"
           >
             <UIcon name="i-lucide-x" class="h-4 w-4" />
@@ -239,6 +253,7 @@ const displayValue = computed(() => {
       <!-- Error Message -->
       <p
         v-if="error"
+        data-testid="inline-edit-error"
         class="text-xs text-es-error"
       >
         {{ error }}

@@ -1311,6 +1311,49 @@
       "backendUrl": "URL backend",
       "retry": "Coba Lagi",
       "openDirect": "Buka OpenAPI Langsung"
+    },
+    "activity": {
+      "title": "Activity Log",
+      "description": "Monitor semua aktivitas pengguna dan sistem di dashboard",
+      "export": "Export CSV",
+      "customRange": "Custom",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "activityType": "Activity Type",
+      "userFilter": "User",
+      "clearFilters": "Clear Filters",
+      "today": "Today",
+      "last7Days": "Last 7 Days",
+      "last30Days": "Last 30 Days",
+      "allTime": "All Time",
+      "allTypes": "All Types",
+      "allUsers": "All Users",
+      "contentType": "Content",
+      "userType": "User",
+      "systemType": "System",
+      "feedTitle": "Activity Feed",
+      "allActivity": "All Activity",
+      "items": "items",
+      "loadMore": "Load More Activity",
+      "justNow": "Just now",
+      "minutesAgo": "{count}m ago",
+      "hoursAgo": "{count}h ago",
+      "daysAgo": "{count}d ago",
+      "exportSuccess": "Activity exported successfully",
+      "exportError": "Failed to export activity",
+      "emptyState": {
+        "title": "No activities found",
+        "description": "Try adjusting your filters to see more activities",
+        "tips": [
+          "Select a wider date range",
+          "Try filtering by different activity types",
+          "Check back later for new activities"
+        ]
+      },
+      "seo": {
+        "title": "Activity Log - Esperion Dashboard",
+        "description": "Monitor all user and system activities in the Esperion dashboard"
+      }
     }
   },
   "error": {

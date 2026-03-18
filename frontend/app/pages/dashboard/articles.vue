@@ -97,13 +97,16 @@
         ]"
       />
 
-      <!-- Articles Table -->
+      <!-- Articles Table with Virtual Scroll -->
       <div
         v-else
+        ref="virtualScrollContainer"
         class="overflow-x-auto"
+        :style="{ maxHeight: '600px', overflowY: 'auto' }"
+        @scroll="handleVirtualScroll"
       >
         <table class="w-full">
-          <thead class="bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark">
+          <thead class="bg-es-bg-tertiary dark:bg-es-bg-tertiary-dark sticky top-0 z-10">
             <tr>
               <th class="w-12 px-4 py-3">
                 <input
@@ -132,8 +135,13 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-es-border dark:divide-es-border-dark">
+            <!-- Spacer for virtual scroll -->
+            <tr v-if="virtualScrollSpacerHeight > 0">
+              <td :style="{ height: `${virtualScrollSpacerHeight}px` }" class="p-0"></td>
+            </tr>
+            <!-- Visible rows only -->
             <tr
-              v-for="article in filteredArticles"
+              v-for="article in visibleArticles"
               :key="article.id"
               :class="[
                 'transition-colors',
@@ -226,6 +234,11 @@
 import { useArticlesApi } from '../../composables/useApi'
 import type { Article } from '../../types/api'
 
+// Virtual scroll configuration
+const ROW_HEIGHT = 64 // pixels per row (including borders)
+const BUFFER_SIZE = 5 // rows to render above/below viewport
+const VIRTUAL_SCROLL_THRESHOLD = 50 // enable virtual scroll for 50+ items
+
 definePageMeta({
   layout: 'dashboard'
 })
@@ -248,6 +261,7 @@ const filters = ref({
   category: '',
   status: ''
 })
+const lastSelectedId = ref<string | null>(null)
 
 // Smart Search
 const { 
@@ -329,33 +343,6 @@ const clearSelection = () => {
   clearPersistedSelection()
   lastSelectedId.value = null
 }
-      lastSelectedId.value = id
-      return
-    }
-  }
-  
-  // Normal toggle
-  if (selectedIds.value.has(id)) {
-    selectedIds.value.delete(id)
-  } else {
-    selectedIds.value.add(id)
-    lastSelectedId.value = id
-  }
-}
-
-const toggleAllSelection = () => {
-  if (isAllSelected.value) {
-    // Deselect all visible
-    filteredArticles.value.forEach(a => selectedIds.value.delete(a.id))
-  } else {
-    // Select all visible
-    filteredArticles.value.forEach(a => selectedIds.value.add(a.id))
-  }
-}
-
-const clearSelection = () => {
-  selectedIds.value.clear()
-}
 
 // Bulk actions
 const bulkActions = computed(() => [
@@ -420,6 +407,8 @@ const handleInlineEdit = async (id: string, field: string, value: any, previousV
     await loadArticles()
   }
 }
+
+const handleBulkAction = async (action: 'delete' | 'publish' | 'unpublish' | 'export') => {
   const ids = Array.from(selectedIds.value)
   
   switch (action) {
@@ -494,6 +483,65 @@ const filteredArticles = computed(() => {
   })
 })
 
+// Virtual Scroll for large lists
+const virtualScrollContainer = ref<HTMLElement | null>(null)
+const virtualScrollStartIndex = ref(0)
+const virtualScrollEndIndex = ref(0)
+const virtualScrollSpacerHeight = ref(0)
+
+// Enable virtual scroll only for large lists
+const useVirtualScroll = computed(() => filteredArticles.value.length >= VIRTUAL_SCROLL_THRESHOLD)
+
+// Get visible articles based on scroll position
+const visibleArticles = computed(() => {
+  if (!useVirtualScroll.value) {
+    return filteredArticles.value
+  }
+  return filteredArticles.value.slice(virtualScrollStartIndex.value, virtualScrollEndIndex.value)
+})
+
+// Calculate visible range based on scroll position
+const calculateVisibleRange = () => {
+  const container = virtualScrollContainer.value
+  if (!container) return
+
+  const scrollTop = container.scrollTop
+  const containerHeight = container.clientHeight
+  
+  // Calculate visible range with buffer
+  const start = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - BUFFER_SIZE)
+  const end = Math.min(
+    filteredArticles.value.length,
+    Math.ceil((scrollTop + containerHeight) / ROW_HEIGHT) + BUFFER_SIZE
+  )
+
+  virtualScrollStartIndex.value = start
+  virtualScrollEndIndex.value = end
+  virtualScrollSpacerHeight.value = start * ROW_HEIGHT
+}
+
+// Handle scroll events
+const handleVirtualScroll = () => {
+  if (useVirtualScroll.value) {
+    calculateVisibleRange()
+  }
+}
+
+// Watch for filter changes to reset scroll position
+watch([searchQuery, filters], () => {
+  if (virtualScrollContainer.value) {
+    virtualScrollContainer.value.scrollTop = 0
+  }
+  calculateVisibleRange()
+}, { deep: true })
+
+// Initialize virtual scroll after data loads
+watch(() => filteredArticles.value.length, () => {
+  nextTick(() => {
+    calculateVisibleRange()
+  })
+})
+
 const translationStatusColor = (status: string) => {
   if (status === 'complete') return 'success' as const
   if (status === 'id_only' || status === 'en_only') return 'info' as const
@@ -541,5 +589,10 @@ const removeArticle = async (id: string) => {
   }
 }
 
-onMounted(loadArticles)
+onMounted(async () => {
+  await loadArticles()
+  nextTick(() => {
+    calculateVisibleRange()
+  })
+})
 </script>
