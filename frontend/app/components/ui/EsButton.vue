@@ -2,7 +2,7 @@
 /**
  * Esperion Button Component
  * Reusable button with Esperion Design System styling
- * 
+ *
  * @usage
  * ```vue
  * <EsButton variant="primary">Click me</EsButton>
@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   disabled: false,
   type: 'button',
-  loading: false,
+  loading: false
 })
 
 const emit = defineEmits<{
@@ -41,14 +41,14 @@ const handleClick = (event: MouseEvent) => {
 const variantClasses = {
   primary: 'bg-es-accent-primary hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:hover:bg-es-accent-primary-hover-dark text-es-text-inverse dark:text-es-text-inverse-dark',
   secondary: 'bg-es-bg-secondary dark:bg-es-bg-secondary-dark border border-es-border dark:border-es-border-dark text-es-text-primary dark:text-es-text-primary-dark hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
-  danger: 'bg-red-600 hover:bg-red-700 text-white',
+  danger: 'bg-red-600 hover:bg-red-700 text-white'
 }
 
 // Size classes
 const sizeClasses = {
   sm: 'px-3 py-1.5 text-sm',
   md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
+  lg: 'px-6 py-3 text-lg'
 }
 </script>
 
@@ -60,7 +60,7 @@ const sizeClasses = {
       'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-es-accent-primary dark:focus:ring-es-accent-primary-dark',
       variantClasses[variant],
       sizeClasses[size],
-      (disabled || loading) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
+      (disabled || loading) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
     ]"
     @click="handleClick"
   >

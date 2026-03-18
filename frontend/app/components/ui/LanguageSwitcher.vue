@@ -1,45 +1,51 @@
 <script setup lang="ts">
 /**
  * Language Switcher Component
- * Allows users to switch between Indonesian and English
- * 
+ * Dropdown style like vuejs.org
+ *
  * @usage
  * ```vue
  * <LanguageSwitcher />
- * <LanguageSwitcher variant="dropdown" />
- * <LanguageSwitcher variant="toggle" />
+ * <LanguageSwitcher size="sm" />
  * ```
  */
 
 interface Props {
-  variant?: 'dropdown' | 'toggle' | 'buttons'
   size?: 'sm' | 'md' | 'lg'
-  showFlags?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  variant: 'dropdown',
-  size: 'md',
-  showFlags: true,
+  size: 'md'
 })
 
 const { locale, setLocale } = useI18n()
+const colorMode = useColorMode()
 
-// Language options
+// Dropdown state
+const isOpen = ref(false)
+const dropdownRef = ref<HTMLDivElement>()
+
+// Language options with translations
 const languages = [
-  { code: 'id' as const, name: 'Indonesia', flag: '🇮🇩' },
-  { code: 'en' as const, name: 'English', flag: '🇬🇧' },
+  { code: 'id' as const, name: 'Bahasa Indonesia', shortName: 'ID' },
+  { code: 'en' as const, name: 'English', shortName: 'EN' }
 ]
 
 // Size classes
 const sizeClasses = {
-  sm: 'px-2 py-1 text-xs',
-  md: 'px-3 py-1.5 text-sm',
-  lg: 'px-4 py-2 text-base',
+  sm: 'text-xs px-2 py-1',
+  md: 'text-sm px-3 py-1.5',
+  lg: 'text-base px-4 py-2'
+}
+
+const iconSizes = {
+  sm: 'w-3.5 h-3.5',
+  md: 'w-4 h-4',
+  lg: 'w-5 h-5'
 }
 
 // Current language info
-const currentLang = computed(() => 
+const currentLang = computed(() =>
   languages.find(l => l.code === locale.value) || languages[0]
 )
 
@@ -48,102 +54,137 @@ async function switchToLanguage(code: 'id' | 'en') {
   if (code !== locale.value) {
     await setLocale(code)
   }
+  isOpen.value = false
 }
 
-// Toggle between languages
-function toggleLanguage() {
-  const newLang: 'id' | 'en' = locale.value === 'id' ? 'en' : 'id'
-  switchToLanguage(newLang)
+// Close dropdown when clicking outside
+function handleClickOutside(event: MouseEvent) {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+    isOpen.value = false
+  }
 }
+
+// Toggle dropdown
+function toggleDropdown() {
+  isOpen.value = !isOpen.value
+}
+
+// Add/remove click outside listener
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <template>
-  <div class="language-switcher">
-    <!-- Toggle Variant -->
+  <div
+    ref="dropdownRef"
+    class="relative inline-block"
+  >
+    <!-- Dropdown Trigger Button -->
     <button
-      v-if="variant === 'toggle'"
+      type="button"
       :class="[
-        'inline-flex items-center gap-2 rounded-lg transition-colors',
-        'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
-        'border border-es-border dark:border-es-border-dark',
+        'inline-flex items-center gap-1.5 rounded-lg transition-colors duration-200',
+        'text-es-text-secondary dark:text-es-text-secondary-dark',
+        'hover:text-es-text-primary dark:hover:text-es-text-primary-dark',
         'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
-        sizeClasses[size],
+        sizeClasses[size]
       ]"
-      @click="toggleLanguage"
-      :aria-label="'Toggle language'"
+      :aria-label="`Current language: ${currentLang.name}. Click to change`"
+      :aria-expanded="isOpen"
+      @click.stop="toggleDropdown"
     >
-      <span v-if="showFlags">{{ currentLang.flag }}</span>
-      <span>{{ currentLang.name }}</span>
+      <!-- Translate Icon -->
+      <svg
+        :class="iconSizes[size]"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+        />
+      </svg>
+      <span class="font-medium">{{ currentLang.shortName }}</span>
+      <!-- Chevron Icon -->
+      <svg
+        :class="[iconSizes[size], 'transition-transform duration-200', isOpen ? 'rotate-180' : '']"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
     </button>
 
-    <!-- Dropdown Variant -->
-    <div v-else-if="variant === 'dropdown'" class="relative">
-      <button
-        :class="[
-          'inline-flex items-center gap-2 rounded-lg transition-colors',
-          'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
-          'border border-es-border dark:border-es-border-dark',
-          'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
-          sizeClasses[size],
-        ]"
-        :aria-label="'Select language'"
-      >
-        <span v-if="showFlags">{{ currentLang.flag }}</span>
-        <span>{{ currentLang.name }}</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-
-      <!-- Dropdown menu -->
+    <!-- Dropdown Menu -->
+    <Transition
+      enter-active-class="transition ease-out duration-200"
+      enter-from-class="opacity-0 translate-y-1"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition ease-in duration-150"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 translate-y-1"
+    >
       <div
-        class="absolute right-0 mt-2 w-48 rounded-lg shadow-lg z-50"
+        v-if="isOpen"
+        class="absolute bottom-full mb-2 right-0 w-48 rounded-lg shadow-lg z-50 overflow-hidden"
         :class="[
           'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
-          'border border-es-border dark:border-es-border-dark',
+          'border border-es-border dark:border-es-border-dark'
         ]"
       >
-        <button
-          v-for="lang in languages"
-          :key="lang.code"
-          :class="[
-            'w-full px-4 py-2 text-left transition-colors',
-            'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
-            locale === lang.code ? 'bg-es-accent-primary/10 dark:bg-es-accent-primary-dark/10' : '',
-            sizeClasses[size],
-          ]"
-          @click="switchToLanguage(lang.code)"
-        >
-          <span v-if="showFlags">{{ lang.flag }}</span>
-          <span class="ml-2">{{ lang.name }}</span>
-        </button>
+        <div class="py-1">
+          <button
+            v-for="lang in languages"
+            :key="lang.code"
+            :class="[
+              'w-full px-4 py-2.5 text-left transition-colors flex items-center gap-3',
+              'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
+              locale === lang.code 
+                ? 'text-es-accent-primary dark:text-es-accent-primary-dark font-medium' 
+                : 'text-es-text-secondary dark:text-es-text-secondary-dark'
+            ]"
+            @click="switchToLanguage(lang.code)"
+          >
+            <!-- Check Icon for active language -->
+            <svg
+              v-if="locale === lang.code"
+              class="w-4 h-4"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <span
+              v-else
+              class="w-4 h-4"
+            />
+            <span>{{ lang.name }}</span>
+          </button>
+        </div>
       </div>
-    </div>
-
-    <!-- Buttons Variant -->
-    <div v-else-if="variant === 'buttons'" class="flex gap-2">
-      <button
-        v-for="lang in languages"
-        :key="lang.code"
-        :class="[
-          'inline-flex items-center gap-1 rounded-lg transition-colors',
-          locale === lang.code
-            ? 'bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark'
-            : 'bg-es-bg-secondary dark:bg-es-bg-secondary-dark border border-es-border dark:border-es-border-dark text-es-text-primary dark:text-es-text-primary-dark',
-          'hover:opacity-80',
-          sizeClasses[size],
-        ]"
-        @click="switchToLanguage(lang.code)"
-      >
-        <span v-if="showFlags">{{ lang.flag }}</span>
-        <span>{{ lang.name }}</span>
-      </button>
-    </div>
+    </Transition>
   </div>
 </template>
-
-<style scoped>
-.language-switcher {
-  display: inline-block;
-}
-</style>

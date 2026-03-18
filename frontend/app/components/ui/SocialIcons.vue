@@ -9,7 +9,10 @@
       :aria-label="social.label"
       class="social-icon-link"
     >
-      <component :is="social.icon" class="w-5 h-5" />
+      <component
+        :is="social.icon"
+        class="w-6 h-6"
+      />
     </a>
   </div>
 </template>
@@ -68,32 +71,32 @@ const socials = [
   {
     name: 'instagram',
     icon: InstagramIcon,
-    url: 'https://instagram.com/esperion_id',
+    url: 'https://instagram.com/esperion.one',
     label: 'Instagram'
   },
   {
     name: 'facebook',
     icon: FacebookIcon,
-    url: 'https://facebook.com/esperiondigital',
+    url: 'https://facebook.com/esperion.one',
     label: 'Facebook'
   },
   {
     name: 'linkedin',
     icon: LinkedInIcon,
-    url: 'https://linkedin.com/company/esperiondigital',
+    url: 'https://linkedin.com/company/esperion-one',
     label: 'LinkedIn'
   },
   {
     name: 'tiktok',
     icon: TikTokIcon,
-    url: 'https://tiktok.com/@esperion_id',
+    url: 'https://tiktok.com/@esperion.one',
     label: 'TikTok'
   },
   {
     name: 'twitter',
     icon: TwitterIcon,
-    url: 'https://twitter.com/esperion_id',
-    label: 'Twitter/X'
+    url: 'https://x.com/esperion_one',
+    label: 'X (Twitter)'
   }
 ]
 </script>
@@ -101,34 +104,26 @@ const socials = [
 <style scoped>
 .social-icons {
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .social-icon-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 9999px;
-  background-color: var(--es-bg-tertiary);
   color: var(--es-text-secondary);
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .social-icon-link:hover {
-  background-color: var(--es-accent-primary);
   color: white;
-  transform: translateY(-2px);
 }
 
 .dark .social-icon-link {
-  background-color: var(--es-bg-tertiary-dark, #1E293B);
   color: var(--es-text-secondary-dark, #94A3B8);
 }
 
 .dark .social-icon-link:hover {
-  background-color: var(--es-accent-primary-dark, #2B9EDB);
   color: white;
 }
 
@@ -142,14 +137,14 @@ const socials = [
 }
 
 .social-icon-link[href*="linkedin"]:hover {
-  background-color: #0077B5;
+  background-color: #0A66C2;
 }
 
 .social-icon-link[href*="tiktok"]:hover {
-  background-color: #000000;
+  background-color: #FE2C55;
 }
 
-.social-icon-link[href*="twitter"]:hover {
+.social-icon-link[href*="x.com"]:hover {
   background-color: #000000;
 }
 </style>

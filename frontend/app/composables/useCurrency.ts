@@ -34,7 +34,7 @@ export const currencies: Record<string, CurrencyConfig> = {
  */
 export function formatPrice(priceUSD: number, locale: string): string {
   const config = currencies[locale] || currencies.en
-  
+
   if (locale === 'id') {
     // Convert to IDR
     const priceIDR = Math.round(priceUSD * config.exchangeRate)
@@ -67,14 +67,14 @@ export function parsePrice(pricingString: string): number {
     .replace(/[\$Rp\s]/gi, '')
     .replace(/\./g, '') // Remove thousand separators (dots for IDR)
     .replace(/,/g, '') // Remove thousand separators (commas for USD)
-  
+
   const numericValue = parseInt(cleaned, 10)
-  
+
   // If the value is very large (> 10000), assume it's already in IDR
   if (numericValue > 10000 && pricingString.includes('Rp')) {
     return Math.round(numericValue / EXCHANGE_RATE)
   }
-  
+
   return numericValue || 0
 }
 
@@ -90,7 +90,7 @@ export function getPriceDisplay(priceUSD: number, locale: string): {
   value: number
 } {
   const config = currencies[locale] || currencies.en
-  
+
   if (locale === 'id') {
     const value = Math.round(priceUSD * config.exchangeRate)
     return {
@@ -124,17 +124,17 @@ export function getPriceDisplay(priceUSD: number, locale: string): {
  */
 export function useCurrency() {
   const { locale } = useI18n()
-  
+
   const currentCurrency = computed(() => {
     return currencies[locale.value] || currencies.en
   })
-  
+
   const format = (priceUSD: number | string): string => {
     const numericPrice = typeof priceUSD === 'string' ? parsePrice(priceUSD) : priceUSD
     return formatPrice(numericPrice, locale.value)
   }
-  
-  const formatWithUnit = (priceUSD: number | string): { price: string; unit: string } => {
+
+  const formatWithUnit = (priceUSD: number | string): { price: string, unit: string } => {
     const numericPrice = typeof priceUSD === 'string' ? parsePrice(priceUSD) : priceUSD
     const display = getPriceDisplay(numericPrice, locale.value)
     return {
@@ -142,7 +142,7 @@ export function useCurrency() {
       unit: locale.value === 'id' ? 'IDR' : 'USD'
     }
   }
-  
+
   return {
     formatPrice: format,
     formatWithUnit,

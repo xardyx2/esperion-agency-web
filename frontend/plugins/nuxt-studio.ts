@@ -1,11 +1,11 @@
 /**
  * Nuxt Studio Compatibility Plugin
- * 
+ *
  * Provides editable regions markers and click-to-edit functionality
  * for Nuxt Studio integration
  */
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((nuxtApp) => {
   const isStudioMode = import.meta.env.NUXT_STUDIO_MODE === 'true'
 
   // Add editable region marker
@@ -44,7 +44,7 @@ export default defineNuxtPlugin(() => {
       window.postMessage({
         type: 'NUXT_STUDIO_EDIT',
         field,
-        element,
+        element
       }, '*')
     })
   }
@@ -55,17 +55,16 @@ export default defineNuxtPlugin(() => {
       if (binding.value) {
         addEditableMarker(el, binding.value)
       }
-    },
+    }
   }
 
   // Register global directive
-  // @ts-ignore
-  app.directive('editable', editableDirective)
+  nuxtApp.vueApp.directive('editable', editableDirective)
 
   return {
     provide: {
       isStudioMode,
-      addEditableMarker,
-    },
+      addEditableMarker
+    }
   }
 })

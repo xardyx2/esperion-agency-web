@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://esperion.id/sitemap.xml
+
+# Internationalization
+Host: https://esperion.id
+
+# Country specific
+User-Agent: AdsBot-Google-Mobile
+Disallow:
+
+User-Agent: Googlebot-Mobile
+Disallow:

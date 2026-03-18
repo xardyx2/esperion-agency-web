@@ -1,0 +1,26 @@
+<svg width="768" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="worksGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6D28D9;stop-opacity:1" />
+    </linearGradient>
+    <pattern id="worksPattern" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
+      <rect x="10" y="10" width="15" height="15" fill="rgba(255,255,255,0.08)"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="768" height="400" fill="url(#worksGradient)"/>
+  
+  <!-- Pattern overlay -->
+  <rect width="768" height="400" fill="url(#worksPattern)"/>
+  
+  <!-- Geometric shapes -->
+  <rect x="80" y="100" width="60" height="60" fill="rgba(255,255,255,0.05)" transform="rotate(30 110 130)"/>
+  <rect x="580" y="240" width="50" height="50" fill="rgba(255,255,255,0.05)" transform="rotate(15 605 265)"/>
+  
+  <!-- Text -->
+  <text x="384" y="190" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="rgba(255,255,255,0.9)" text-anchor="middle">PORTFOLIO</text>
+  <text x="384" y="240" font-family="Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.8)" text-anchor="middle">Works Banner</text>
+  <text x="384" y="280" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.6)" text-anchor="middle">768 × 400px</text>
+</svg>

@@ -2,7 +2,7 @@
 /**
  * Esperion Card Component
  * Reusable card with Esperion Design System styling
- * 
+ *
  * @usage
  * ```vue
  * <EsCard>
@@ -22,14 +22,14 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   variant: 'default',
   padding: 'md',
-  hoverable: false,
+  hoverable: false
 })
 
 // Variant classes following Esperion 60-30-10 rule
 const variantClasses = {
   default: 'bg-es-bg-secondary dark:bg-es-bg-secondary-dark border border-es-border dark:border-es-border-dark',
   elevated: 'bg-es-bg-secondary dark:bg-es-bg-secondary-dark shadow-lg',
-  outlined: 'bg-transparent border-2 border-es-accent-primary dark:border-es-accent-primary-dark',
+  outlined: 'bg-transparent border-2 border-es-accent-primary dark:border-es-accent-primary-dark'
 }
 
 // Padding classes
@@ -37,7 +37,7 @@ const paddingClasses = {
   none: '',
   sm: 'p-3',
   md: 'p-6',
-  lg: 'p-8',
+  lg: 'p-8'
 }
 
 // Hover effect
@@ -55,11 +55,14 @@ const hoverClass = computed(() => {
       'rounded-xl transition-all duration-200',
       variantClasses[variant],
       paddingClasses[padding],
-      hoverClass,
+      hoverClass
     ]"
   >
     <!-- Header slot -->
-    <div v-if="$slots.header" class="mb-4 pb-4 border-b border-es-border dark:border-es-border-dark">
+    <div
+      v-if="$slots.header"
+      class="mb-4 pb-4 border-b border-es-border dark:border-es-border-dark"
+    >
       <slot name="header" />
     </div>
 
@@ -67,7 +70,10 @@ const hoverClass = computed(() => {
     <slot />
 
     <!-- Footer slot -->
-    <div v-if="$slots.footer" class="mt-4 pt-4 border-t border-es-border dark:border-es-border-dark">
+    <div
+      v-if="$slots.footer"
+      class="mt-4 pt-4 border-t border-es-border dark:border-es-border-dark"
+    >
       <slot name="footer" />
     </div>
   </div>

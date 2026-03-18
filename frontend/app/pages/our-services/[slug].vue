@@ -288,6 +288,7 @@ watchEffect(() => {
   })
 })
 
+/*
 // Only set Schema.org when service is loaded
 watchEffect(() => {
   if (!service.value) return
@@ -369,4 +370,5 @@ watchEffect(() => {
     })
   ])
 })
+*/
 </script>

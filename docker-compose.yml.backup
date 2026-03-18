@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # Frontend - Nuxt 4 Application
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.nuxt
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+      - NUXT_PUBLIC_API_BASE=http://backend:8080
+      - NUXT_RECAPTCHA_SITE_KEY=${NUXT_RECAPTCHA_SITE_KEY:-}
+      - NUXT_GA4_MEASUREMENT_ID=${NUXT_GA4_MEASUREMENT_ID:-}
+      - NUXT_CLARITY_PROJECT_ID=${NUXT_CLARITY_PROJECT_ID:-}
+      - NUXT_META_PIXEL_ID=${NUXT_META_PIXEL_ID:-}
+      - NUXT_TIKTOK_PIXEL_ID=${NUXT_TIKTOK_PIXEL_ID:-}
+      - NUXT_LINKEDIN_PIXEL_ID=${NUXT_LINKEDIN_PIXEL_ID:-}
+    depends_on:
+      - backend
+    networks:
+      - esperion-network
+
+  # Backend - Rust + Axum API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - DB_HOST=database
+      - DB_PORT=8000
+      - DB_USER=root
+      - DB_PASS=root
+      - DB_NS=esperion
+      - DB_DB=esperion_db
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+      - JWT_EXPIRATION=7d
+      - REFRESH_TOKEN_EXPIRATION=30d
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY:-}
+      - ALIBABA_AI_API_KEY=${ALIBABA_AI_API_KEY:-sk-sp-83766abe865e4c14af18ae9a918c7d8b}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - RUST_LOG=debug
+    depends_on:
+      database:
+        condition: service_healthy  # Wait for database to be healthy
+    networks:
+      - esperion-network
+
+  # Database - SurrealDB 2.1.4 with file-based persistence
+  database:
+    image: surrealdb/surrealdb:v2.1.4
+    container_name: esperion-surrealdb
+    ports:
+      - "8002:8000"  # Changed port to avoid conflicts
+    volumes:
+      - surreal-data:/data
+    environment:
+      - SURREAL_USER=root
+      - SURREAL_PASS=root
+      - SURREAL_DB=file:/data/esperion.db
+    command: sh -c "
+      chown -R 1000:1000 /data && 
+      chmod -R 755 /data && 
+      exec surreal start --log debug --user root --pass root file:/data/esperion.db
+    "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - esperion-network
+
+networks:
+  esperion-network:
+    driver: bridge
+
+volumes:
+  surreal-data:

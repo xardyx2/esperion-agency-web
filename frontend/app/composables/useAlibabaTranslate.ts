@@ -1,21 +1,21 @@
 /**
  * Alibaba Cloud Translation API Composable
  * Integrates with Alibaba Cloud Translation API for auto-translation
- * 
+ *
  * API Documentation:
  * https://www.alibabacloud.com/help/en/machine-translation/latest/overview-6
- * 
+ *
  * @usage
  * ```ts
  * const { translate, batchTranslate, detectLanguage } = useAlibabaTranslate()
- * 
+ *
  * // Translate single text
  * const result = await translate({
  *   sourceText: 'Hello World',
  *   sourceLang: 'en',
  *   targetLang: 'id'
  * })
- * 
+ *
  * // Batch translate (cached)
  * const results = await batchTranslate([
  *   { text: 'Hello', from: 'en', to: 'id' },
@@ -61,7 +61,7 @@ async function translate(request: TranslateRequest): Promise<TranslateResult> {
       sourceText,
       translatedText: sourceText,
       sourceLang,
-      targetLang,
+      targetLang
     }
   }
 
@@ -72,8 +72,8 @@ async function translate(request: TranslateRequest): Promise<TranslateResult> {
       body: {
         text: sourceText,
         source: sourceLang,
-        target: targetLang,
-      },
+        target: targetLang
+      }
     })
 
     // Cache the translation
@@ -83,7 +83,7 @@ async function translate(request: TranslateRequest): Promise<TranslateResult> {
       translatedText: result.translatedText,
       sourceLang: result.sourceLang as 'id' | 'en',
       targetLang: result.targetLang as 'id' | 'en',
-      contentType: 'dynamic',
+      contentType: 'dynamic'
     })
 
     return result
@@ -103,7 +103,7 @@ async function translate(request: TranslateRequest): Promise<TranslateResult> {
         sourceText,
         translatedText: cached,
         sourceLang,
-        targetLang,
+        targetLang
       }
     }
 
@@ -112,7 +112,7 @@ async function translate(request: TranslateRequest): Promise<TranslateResult> {
       sourceText,
       translatedText: sourceText,
       sourceLang,
-      targetLang,
+      targetLang
     }
   }
 }
@@ -146,8 +146,8 @@ async function batchTranslate(
         body: {
           texts: group.map(item => item.text),
           source: from,
-          target: to,
-        },
+          target: to
+        }
       })
 
       results.push(...result)
@@ -160,7 +160,7 @@ async function batchTranslate(
           translatedText: r.translatedText,
           sourceLang: r.sourceLang as 'id' | 'en',
           targetLang: r.targetLang as 'id' | 'en',
-          contentType: 'dynamic',
+          contentType: 'dynamic'
         })
       }
     } catch (error) {
@@ -171,7 +171,7 @@ async function batchTranslate(
           sourceText: item.text,
           translatedText: item.text,
           sourceLang: item.from,
-          targetLang: item.to,
+          targetLang: item.to
         }))
       )
     }
@@ -188,7 +188,7 @@ async function detectLanguage(text: string): Promise<'id' | 'en' | 'unknown'> {
   try {
     const result = await $fetch<{ language: string }>(`${API_BASE_URL}/detect`, {
       method: 'POST',
-      body: { text },
+      body: { text }
     })
 
     const lang = result.language.toLowerCase()
@@ -229,7 +229,7 @@ async function translateWithCache(
   const result = await translate({
     sourceText,
     sourceLang,
-    targetLang,
+    targetLang
   })
 
   return result.translatedText
@@ -240,6 +240,6 @@ export function useAlibabaTranslate() {
     translate,
     batchTranslate,
     detectLanguage,
-    translateWithCache,
+    translateWithCache
   }
 }

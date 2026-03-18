@@ -1,0 +1,6 @@
+2026/03/14-10:39:34.013122 20 [WARN] [table/block_based/block_based_table_reader.cc:1036] [/data/esperion.db/000085.sst] Tail prefetch size 524288 is calculated based on heuristics.
+2026/03/14-10:39:34.013539 21 [WARN] [table/block_based/block_based_table_reader.cc:1036] [/data/esperion.db/000080.sst] Tail prefetch size 524288 is calculated based on heuristics.
+2026/03/14-10:39:34.014002 22 [WARN] [table/block_based/block_based_table_reader.cc:1041] [/data/esperion.db/000077.sst] Tail prefetch size 1762 is calculated based on TailPrefetchStats.
+2026/03/14-10:39:34.032792 1 [WARN] [db/db_impl/db_impl_open.cc:633] [default] Trivially move files down the LSM when open with level_compaction_dynamic_level_bytes=true, lsm_state: [2,1,0,0,0,0,0] (Files are moved only if DB Recovery is successful).
+2026/03/14-10:39:34.032854 1 [WARN] [db/db_impl/db_impl_open.cc:641] [default] Moving 1 files from from_level-1 to from_level-6
+2026/03/14-10:39:34.032865 1 [WARN] [db/db_impl/db_impl_open.cc:661] [default] Moving #77 from from_level-1 to from_level-6 637756 bytes

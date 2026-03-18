@@ -22,7 +22,10 @@
             <span class="text-lg font-semibold">E</span>
           </NuxtLink>
 
-          <div v-if="!collapsed" class="min-w-0">
+          <div
+            v-if="!collapsed"
+            class="min-w-0"
+          >
             <p class="truncate text-base font-semibold text-es-text-primary dark:text-es-text-primary-dark">
               {{ brandName }}
             </p>
@@ -34,14 +37,21 @@
       </template>
 
       <template #default="{ collapsed }">
-        <div data-testid="dashboard-sidebar" class="flex h-full flex-col gap-4">
+        <div
+          data-testid="dashboard-sidebar"
+          class="flex h-full flex-col gap-4"
+        >
           <UDashboardSearchButton
             :collapsed="collapsed"
             class="bg-es-bg-primary text-es-text-primary ring-1 ring-es-border dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark dark:ring-es-border-dark"
           />
 
           <div class="space-y-4">
-            <section v-for="group in navigationGroups" :key="group.label" class="space-y-2">
+            <section
+              v-for="group in navigationGroups"
+              :key="group.label"
+              class="space-y-2"
+            >
               <p
                 v-if="!collapsed"
                 class="px-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-es-text-secondary dark:text-es-text-secondary-dark"
@@ -61,20 +71,37 @@
                     : 'text-es-text-secondary hover:bg-es-bg-primary hover:text-es-text-primary dark:text-es-text-secondary-dark dark:hover:bg-es-bg-primary-dark dark:hover:text-es-text-primary-dark'"
                   @click="closeSidebar"
                 >
-                  <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-es-bg-primary text-es-text-primary transition-colors dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark" :class="isActive(item.to) ? 'bg-transparent text-current' : ''">
-                    <UIcon :name="item.icon" class="h-5 w-5" />
+                  <span
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-es-bg-primary text-es-text-primary transition-colors dark:bg-es-bg-primary-dark dark:text-es-text-primary-dark"
+                    :class="isActive(item.to) ? 'bg-transparent text-current' : ''"
+                  >
+                    <UIcon
+                      :name="item.icon"
+                      class="h-5 w-5"
+                    />
                   </span>
 
-                  <div v-if="!collapsed" class="min-w-0 flex-1">
+                  <div
+                    v-if="!collapsed"
+                    class="min-w-0 flex-1"
+                  >
                     <div class="flex items-center gap-2">
                       <p class="truncate text-sm font-medium">
                         {{ item.label }}
                       </p>
-                      <UBadge v-if="item.badge" color="primary" variant="soft" size="sm">
+                      <UBadge
+                        v-if="item.badge"
+                        color="primary"
+                        variant="soft"
+                        size="sm"
+                      >
                         {{ item.badge }}
                       </UBadge>
                     </div>
-                    <p class="truncate text-xs text-es-text-secondary dark:text-es-text-secondary-dark" :class="isActive(item.to) ? 'text-current/80' : ''">
+                    <p
+                      class="truncate text-xs text-es-text-secondary dark:text-es-text-secondary-dark"
+                      :class="isActive(item.to) ? 'text-current/80' : ''"
+                    >
                       {{ item.description }}
                     </p>
                   </div>
@@ -87,7 +114,10 @@
 
       <template #footer="{ collapsed }">
         <div class="space-y-4">
-          <div v-if="!collapsed" class="rounded-2xl border border-es-border bg-es-bg-primary p-3 dark:border-es-border-dark dark:bg-es-bg-primary-dark">
+          <div
+            v-if="!collapsed"
+            class="rounded-2xl border border-es-border bg-es-bg-primary p-3 dark:border-es-border-dark dark:bg-es-bg-primary-dark"
+          >
             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-es-text-secondary dark:text-es-text-secondary-dark">
               Appearance
             </p>
@@ -96,7 +126,10 @@
             </div>
           </div>
 
-          <UDropdownMenu :items="userMenuItems" :content="{ align: 'center', collisionPadding: 12 }">
+          <UDropdownMenu
+            :items="userMenuItems"
+            :content="{ align: 'center', collisionPadding: 12 }"
+          >
             <UButton
               color="neutral"
               variant="ghost"
@@ -106,11 +139,17 @@
             >
               <template #leading>
                 <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
-                  <UIcon name="i-lucide-user-round" class="h-4 w-4" />
+                  <UIcon
+                    name="i-lucide-user-round"
+                    class="h-4 w-4"
+                  />
                 </div>
               </template>
 
-              <div v-if="!collapsed" class="min-w-0 flex-1">
+              <div
+                v-if="!collapsed"
+                class="min-w-0 flex-1"
+              >
                 <p class="truncate text-sm font-medium">
                   {{ displayUserName }}
                 </p>
@@ -126,7 +165,10 @@
 
     <UDashboardSearch :groups="searchGroups" />
 
-    <UDashboardPanel id="esperion-dashboard-panel" :ui="{ root: 'min-h-svh bg-transparent', body: 'p-0' }">
+    <UDashboardPanel
+      id="esperion-dashboard-panel"
+      :ui="{ root: 'min-h-svh bg-transparent', body: 'p-0' }"
+    >
       <template #header>
         <UDashboardNavbar
           :title="currentPageTitle"
@@ -172,8 +214,15 @@
               class="rounded-full border border-es-border bg-es-bg-secondary text-es-text-primary hover:bg-es-bg-tertiary dark:border-es-border-dark dark:bg-es-bg-secondary-dark dark:text-es-text-primary-dark dark:hover:bg-es-bg-tertiary-dark"
               @click="notificationsOpen = true"
             >
-              <UChip :show="unreadCount > 0" color="error" inset>
-                <UIcon name="i-lucide-bell-ring" class="h-5 w-5" />
+              <UChip
+                :show="unreadCount > 0"
+                color="error"
+                inset
+              >
+                <UIcon
+                  name="i-lucide-bell-ring"
+                  class="h-5 w-5"
+                />
               </UChip>
             </UButton>
 
@@ -181,7 +230,10 @@
               <ThemeToggle />
             </div>
 
-            <UDropdownMenu :items="userMenuItems" :content="{ align: 'end', collisionPadding: 12 }">
+            <UDropdownMenu
+              :items="userMenuItems"
+              :content="{ align: 'end', collisionPadding: 12 }"
+            >
               <UButton
                 color="neutral"
                 variant="ghost"
@@ -189,7 +241,10 @@
               >
                 <template #leading>
                   <div class="flex h-8 w-8 items-center justify-center rounded-full bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
-                    <UIcon name="i-lucide-user-round" class="h-4 w-4" />
+                    <UIcon
+                      name="i-lucide-user-round"
+                      class="h-4 w-4"
+                    />
                   </div>
                 </template>
 
@@ -206,7 +261,12 @@
         >
           <template #left>
             <div class="flex flex-wrap items-center gap-2 text-xs text-es-text-secondary dark:text-es-text-secondary-dark">
-              <UBadge color="primary" variant="soft">CSR dashboard</UBadge>
+              <UBadge
+                color="primary"
+                variant="soft"
+              >
+                CSR dashboard
+              </UBadge>
               <span class="hidden sm:inline">Template-inspired admin shell with Esperion tokens</span>
             </div>
           </template>

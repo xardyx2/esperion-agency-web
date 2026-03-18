@@ -16,12 +16,12 @@ describe('SeoScoreDisplay', () => {
       readability: 12,
       internal_linking: 8,
       technical_seo: 10,
-      local_seo: 5,
+      local_seo: 5
     },
     suggestions: [
       'Add more internal links (aim for 3+)',
-      'Consider adding local keywords for better local SEO',
-    ],
+      'Consider adding local keywords for better local SEO'
+    ]
   }
 
   beforeEach(() => {
@@ -32,8 +32,8 @@ describe('SeoScoreDisplay', () => {
     it('should display score when provided', () => {
       const wrapper = mount(SeoScoreDisplay, {
         props: {
-          seoScore: mockSeoScore,
-        },
+          seoScore: mockSeoScore
+        }
       })
 
       expect(wrapper.text()).toContain('85/100')
@@ -43,8 +43,8 @@ describe('SeoScoreDisplay', () => {
     it('should show empty state when no score', () => {
       const wrapper = mount(SeoScoreDisplay, {
         props: {
-          seoScore: null,
-        },
+          seoScore: null
+        }
       })
 
       expect(wrapper.text()).toContain('No SEO score available yet')
@@ -54,8 +54,8 @@ describe('SeoScoreDisplay', () => {
     it('should emit calculate event when button clicked', async () => {
       const wrapper = mount(SeoScoreDisplay, {
         props: {
-          seoScore: null,
-        },
+          seoScore: null
+        }
       })
 
       await wrapper.find('button').trigger('click')
@@ -71,9 +71,9 @@ describe('SeoScoreDisplay', () => {
           seoScore: {
             ...mockSeoScore,
             score: 95,
-            grade: 'Excellent',
-          },
-        },
+            grade: 'Excellent'
+          }
+        }
       })
 
       const scoreElement = wrapper.find('.text-green-500')
@@ -86,9 +86,9 @@ describe('SeoScoreDisplay', () => {
           seoScore: {
             ...mockSeoScore,
             score: 85,
-            grade: 'Good',
-          },
-        },
+            grade: 'Good'
+          }
+        }
       })
 
       const scoreElement = wrapper.find('.text-blue-500')
@@ -101,9 +101,9 @@ describe('SeoScoreDisplay', () => {
           seoScore: {
             ...mockSeoScore,
             score: 75,
-            grade: 'Fair',
-          },
-        },
+            grade: 'Fair'
+          }
+        }
       })
 
       const scoreElement = wrapper.find('.text-yellow-500')
@@ -116,9 +116,9 @@ describe('SeoScoreDisplay', () => {
           seoScore: {
             ...mockSeoScore,
             score: 65,
-            grade: 'Needs Improvement',
-          },
-        },
+            grade: 'Needs Improvement'
+          }
+        }
       })
 
       const scoreElement = wrapper.find('.text-orange-500')
@@ -131,9 +131,9 @@ describe('SeoScoreDisplay', () => {
           seoScore: {
             ...mockSeoScore,
             score: 45,
-            grade: 'Poor',
-          },
-        },
+            grade: 'Poor'
+          }
+        }
       })
 
       const scoreElement = wrapper.find('.text-red-500')
@@ -145,8 +145,8 @@ describe('SeoScoreDisplay', () => {
     it('should display all breakdown categories', () => {
       const wrapper = mount(SeoScoreDisplay, {
         props: {
-          seoScore: mockSeoScore,
-        },
+          seoScore: mockSeoScore
+        }
       })
 
       expect(wrapper.text()).toContain('Content Quality')
@@ -160,8 +160,8 @@ describe('SeoScoreDisplay', () => {
     it('should display correct max values for each category', () => {
       const wrapper = mount(SeoScoreDisplay, {
         props: {
-          seoScore: mockSeoScore,
-        },
+          seoScore: mockSeoScore
+        }
       })
 
       expect(wrapper.text()).toContain('30/35') // Content Quality
@@ -177,8 +177,8 @@ describe('SeoScoreDisplay', () => {
     it('should show suggestions when available', () => {
       const wrapper = mount(SeoScoreDisplay, {
         props: {
-          seoScore: mockSeoScore,
-        },
+          seoScore: mockSeoScore
+        }
       })
 
       expect(wrapper.text()).toContain('Suggestions for Improvement')
@@ -191,9 +191,9 @@ describe('SeoScoreDisplay', () => {
         props: {
           seoScore: {
             ...mockSeoScore,
-            suggestions: [],
-          },
-        },
+            suggestions: []
+          }
+        }
       })
 
       expect(wrapper.text()).not.toContain('Suggestions for Improvement')
@@ -204,8 +204,8 @@ describe('SeoScoreDisplay', () => {
     it('should display progress bar with correct width', () => {
       const wrapper = mount(SeoScoreDisplay, {
         props: {
-          seoScore: mockSeoScore,
-        },
+          seoScore: mockSeoScore
+        }
       })
 
       const progressBar = wrapper.find('.h-4.rounded-full')
@@ -215,8 +215,8 @@ describe('SeoScoreDisplay', () => {
     it('should display breakdown progress bars with correct widths', () => {
       const wrapper = mount(SeoScoreDisplay, {
         props: {
-          seoScore: mockSeoScore,
-        },
+          seoScore: mockSeoScore
+        }
       })
 
       // Content Quality: 30/35 = 85.7%

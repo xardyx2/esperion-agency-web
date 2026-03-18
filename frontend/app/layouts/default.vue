@@ -5,7 +5,10 @@
       <nav class="container mx-auto px-4">
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
-          <NuxtLink to="/" class="flex items-center space-x-2">
+          <NuxtLink
+            to="/"
+            class="flex items-center space-x-2"
+          >
             <span class="text-2xl font-bold text-es-text-primary dark:text-es-text-primary-dark">
               Esperion
             </span>
@@ -13,8 +16,8 @@
 
           <!-- Desktop Navigation -->
           <div class="hidden md:flex items-center space-x-8">
-            <NuxtLink 
-              v-for="item in navItems" 
+            <NuxtLink
+              v-for="item in navItems"
               :key="item.href"
               :to="item.href"
               class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors font-medium"
@@ -26,19 +29,6 @@
 
           <!-- Right side buttons -->
           <div class="flex items-center space-x-4">
-            <!-- Language Switcher -->
-            <LanguageSwitcher />
-
-            <!-- Theme Toggle -->
-            <button
-              @click="toggleTheme"
-              class="p-2 rounded-lg hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark transition-colors"
-              :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
-            >
-              <span v-if="isDark" class="text-xl">☀️</span>
-              <span v-else class="text-xl">🌙</span>
-            </button>
-
             <!-- Contact CTA -->
             <NuxtLink
               to="/contact-us"
@@ -49,21 +39,30 @@
 
             <!-- Mobile menu button -->
             <button
-              @click="mobileMenuOpen = !mobileMenuOpen"
               class="md:hidden p-2 rounded-lg hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark transition-colors"
               :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
+              @click="mobileMenuOpen = !mobileMenuOpen"
             >
-              <span v-if="mobileMenuOpen" class="text-xl">✕</span>
-              <span v-else class="text-xl">☰</span>
+              <span
+                v-if="mobileMenuOpen"
+                class="text-xl"
+              >✕</span>
+              <span
+                v-else
+                class="text-xl"
+              >☰</span>
             </button>
           </div>
         </div>
 
         <!-- Mobile Navigation -->
-        <div v-if="mobileMenuOpen" class="md:hidden py-4 border-t border-es-border dark:border-es-border-dark">
+        <div
+          v-if="mobileMenuOpen"
+          class="md:hidden py-4 border-t border-es-border dark:border-es-border-dark"
+        >
           <div class="flex flex-col space-y-4">
-            <NuxtLink 
-              v-for="item in navItems" 
+            <NuxtLink
+              v-for="item in navItems"
               :key="item.href"
               :to="item.href"
               class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors font-medium"
@@ -89,6 +88,9 @@
       <slot />
     </main>
 
+    <!-- Cookie Consent Banner -->
+    <CookieConsentBanner />
+
     <!-- Footer -->
     <footer class="bg-es-bg-secondary dark:bg-es-bg-secondary-dark border-t border-es-border dark:border-es-border-dark">
       <div class="container mx-auto px-4 py-12">
@@ -101,23 +103,7 @@
             <p class="text-es-text-secondary dark:text-es-text-secondary-dark text-sm mb-4">
               Transforming businesses through innovative digital solutions.
             </p>
-            <div class="flex space-x-4">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors">
-                📷
-              </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors">
-                👍
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors">
-                💼
-              </a>
-              <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors">
-                🎵
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors">
-                𝕏
-              </a>
-            </div>
+            <SocialIcons />
           </div>
 
           <!-- Quick Links -->
@@ -126,8 +112,14 @@
               Quick Links
             </h4>
             <ul class="space-y-2">
-              <li v-for="link in quickLinks" :key="link.href">
-                <NuxtLink :to="link.href" class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors text-sm">
+              <li
+                v-for="link in quickLinks"
+                :key="link.href"
+              >
+                <NuxtLink
+                  :to="link.href"
+                  class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors text-sm"
+                >
                   {{ link.label }}
                 </NuxtLink>
               </li>
@@ -140,8 +132,14 @@
               Our Services
             </h4>
             <ul class="space-y-2">
-              <li v-for="service in services" :key="service.href">
-                <NuxtLink :to="service.href" class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors text-sm">
+              <li
+                v-for="service in services"
+                :key="service.href"
+              >
+                <NuxtLink
+                  :to="service.href"
+                  class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors text-sm"
+                >
                   {{ service.label }}
                 </NuxtLink>
               </li>
@@ -153,11 +151,16 @@
             <h4 class="text-sm font-semibold text-es-text-primary dark:text-es-text-primary-dark mb-4">
               Contact Us
             </h4>
-            <ul class="space-y-2 text-es-text-secondary dark:text-es-text-secondary-dark text-sm">
+            <ul class="space-y-2 text-es-text-secondary dark:text-es-text-secondary-dark text-sm mb-4">
               <li>📍 Jakarta, Indonesia</li>
               <li>📱 +62 812 3456 7890</li>
               <li>✉️ hello@esperion.com</li>
             </ul>
+            <!-- Language and Theme Controls -->
+            <div class="flex items-center gap-2">
+              <LanguageSwitcher size="sm" />
+              <ThemeToggle size="sm" />
+            </div>
           </div>
         </div>
 
@@ -168,10 +171,16 @@
               © {{ new Date().getFullYear() }} Esperion Digital Agency. All rights reserved.
             </p>
             <div class="flex space-x-6">
-              <NuxtLink to="/privacy-policy" class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors text-sm">
+              <NuxtLink
+                to="/privacy-policy"
+                class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors text-sm"
+              >
                 Privacy Policy
               </NuxtLink>
-              <NuxtLink to="/terms-of-service" class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors text-sm">
+              <NuxtLink
+                to="/terms-of-service"
+                class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-accent-primary dark:hover:text-es-accent-primary-dark transition-colors text-sm"
+              >
                 Terms of Service
               </NuxtLink>
             </div>
@@ -183,27 +192,22 @@
 </template>
 
 <script setup lang="ts">
-const { t, locale } = useI18n();
-const isDark = useColorMode();
+const { t, locale } = useI18n()
 
-const mobileMenuOpen = ref(false);
-
-const toggleTheme = () => {
-  isDark.value = isDark.value === 'dark' ? 'light' : 'dark';
-};
+const mobileMenuOpen = ref(false)
 
 const isActive = (href: string) => {
-  const route = useRoute();
-  return route.path === href || (href !== '/' && route.path.startsWith(href));
-};
+  const route = useRoute()
+  return route.path === href || (href !== '/' && route.path.startsWith(href))
+}
 
 const navItems = [
   { href: '/', label: 'Home' },
   { href: '/our-works', label: 'Our Works' },
   { href: '/our-services', label: 'Our Services' },
   { href: '/articles', label: 'Articles' },
-  { href: '/about', label: 'About Us' },
-];
+  { href: '/about', label: 'About Us' }
+]
 
 const quickLinks = [
   { href: '/', label: 'Home' },
@@ -211,8 +215,8 @@ const quickLinks = [
   { href: '/our-services', label: 'Services' },
   { href: '/articles', label: 'Blog' },
   { href: '/about', label: 'About' },
-  { href: '/contact-us', label: 'Contact' },
-];
+  { href: '/contact-us', label: 'Contact' }
+]
 
 const services = [
   { href: '/our-services/web-development', label: 'Web Development' },
@@ -220,6 +224,6 @@ const services = [
   { href: '/our-services/ui-ux-design', label: 'UI/UX Design' },
   { href: '/our-services/digital-marketing', label: 'Digital Marketing' },
   { href: '/our-services/ecommerce-solutions', label: 'E-Commerce Solutions' },
-  { href: '/our-services/consulting', label: 'Consulting' },
-];
+  { href: '/our-services/consulting', label: 'Consulting' }
+]
 </script>

@@ -71,7 +71,10 @@
               </h2>
             </div>
 
-            <UBadge color="primary" variant="soft">
+            <UBadge
+              color="primary"
+              variant="soft"
+            >
               {{ report.funnels.length }} active
             </UBadge>
           </div>
@@ -84,7 +87,10 @@
           {{ t('dashboard.analytics.funnels.noActive') }}
         </div>
 
-        <div v-else class="space-y-4">
+        <div
+          v-else
+          class="space-y-4"
+        >
           <article
             v-for="funnel in report.funnels"
             :key="funnel.funnel_id"
@@ -100,7 +106,10 @@
                 </p>
               </div>
 
-              <UBadge color="primary" variant="soft">
+              <UBadge
+                color="primary"
+                variant="soft"
+              >
                 {{ funnel.funnel_id }}
               </UBadge>
             </div>
@@ -160,7 +169,10 @@
           >
             <div class="flex items-start gap-3">
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
-                <UIcon :name="note.icon" class="h-5 w-5" />
+                <UIcon
+                  :name="note.icon"
+                  class="h-5 w-5"
+                />
               </div>
 
               <div>
@@ -180,13 +192,12 @@
 </template>
 
 <script setup lang="ts">
+import type { AnalyticsReportResponse } from '../../types/api'
+import { useAnalyticsApi } from '../../composables/useApi'
+
 definePageMeta({
   layout: 'dashboard'
 })
-
-
-import type { AnalyticsReportResponse } from '../../types/api'
-import { useAnalyticsApi } from '../../composables/useApi'
 
 const { t } = useI18n()
 

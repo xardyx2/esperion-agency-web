@@ -5,53 +5,53 @@ export interface LocalBusinessSchema {
   '@context': 'https://schema.org'
   '@type': string
   '@id'?: string
-  name: string
-  description?: string
-  url: string
-  telephone?: string
-  email?: string
-  image?: string | string[]
-  address: {
+  'name': string
+  'description'?: string
+  'url': string
+  'telephone'?: string
+  'email'?: string
+  'image'?: string | string[]
+  'address': {
     '@type': 'PostalAddress'
-    streetAddress: string
-    addressLocality: string
-    addressRegion: string
-    postalCode: string
-    addressCountry: string
+    'streetAddress': string
+    'addressLocality': string
+    'addressRegion': string
+    'postalCode': string
+    'addressCountry': string
   }
-  geo?: {
+  'geo'?: {
     '@type': 'GeoCoordinates'
-    latitude: number
-    longitude: number
+    'latitude': number
+    'longitude': number
   }
-  openingHoursSpecification?: OpeningHoursSpec[]
-  priceRange?: string
-  aggregateRating?: {
+  'openingHoursSpecification'?: OpeningHoursSpec[]
+  'priceRange'?: string
+  'aggregateRating'?: {
     '@type': 'AggregateRating'
-    ratingValue: number
-    reviewCount: number
+    'ratingValue': number
+    'reviewCount': number
   }
-  sameAs?: string[]
-  areaServed?: string[]
-  hasOfferCatalog?: OfferCatalog
+  'sameAs'?: string[]
+  'areaServed'?: string[]
+  'hasOfferCatalog'?: OfferCatalog
 }
 
 export interface OpeningHoursSpec {
   '@type': 'OpeningHoursSpecification'
-  dayOfWeek: string[]
-  opens: string
-  closes: string
+  'dayOfWeek': string[]
+  'opens': string
+  'closes': string
 }
 
 export interface OfferCatalog {
   '@type': 'OfferCatalog'
-  name: string
-  itemListElement: {
+  'name': string
+  'itemListElement': {
     '@type': 'Offer'
-    itemOffered: {
+    'itemOffered': {
       '@type': 'Service'
-      name: string
-      description?: string
+      'name': string
+      'description'?: string
     }
   }[]
 }
@@ -64,7 +64,7 @@ export const esperionBusinessConfig = {
   url: 'https://esperion.id',
   telephone: '+62-XXX-XXXX-XXXX', // TODO: Update with actual phone
   email: 'hello@esperion.id',
-  logo: '/placeholders/first-party/brand-mark-required.svg',
+  logo: 'https://cdn.pixabay.com/photo/2016/11/18/19/01/branding-1836468_1280.jpg',
   image: [
     '/images/office-exterior.jpg',
     '/images/office-interior.jpg',
@@ -105,15 +105,15 @@ export const esperionBusinessConfig = {
 export const openingHours: OpeningHoursSpec[] = [
   {
     '@type': 'OpeningHoursSpecification',
-    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-    opens: '09:00',
-    closes: '18:00'
+    'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    'opens': '09:00',
+    'closes': '18:00'
   },
   {
     '@type': 'OpeningHoursSpecification',
-    dayOfWeek: ['Saturday'],
-    opens: '09:00',
-    closes: '14:00'
+    'dayOfWeek': ['Saturday'],
+    'opens': '09:00',
+    'closes': '14:00'
   }
 ]
 
@@ -150,7 +150,7 @@ export const services = [
  */
 export function useLocalBusinessSchema() {
   const config = useRuntimeConfig()
-  
+
   const generateSchema = (options: {
     type?: string
     includeServices?: boolean
@@ -170,29 +170,29 @@ export function useLocalBusinessSchema() {
       '@context': 'https://schema.org',
       '@type': type,
       '@id': `${esperionBusinessConfig.url}/#organization`,
-      name: esperionBusinessConfig.name,
-      description: esperionBusinessConfig.description,
-      url: esperionBusinessConfig.url,
-      telephone: esperionBusinessConfig.telephone,
-      email: esperionBusinessConfig.email,
-      image: esperionBusinessConfig.image,
-      address: {
+      'name': esperionBusinessConfig.name,
+      'description': esperionBusinessConfig.description,
+      'url': esperionBusinessConfig.url,
+      'telephone': esperionBusinessConfig.telephone,
+      'email': esperionBusinessConfig.email,
+      'image': esperionBusinessConfig.image,
+      'address': {
         '@type': 'PostalAddress',
-        streetAddress: esperionBusinessConfig.address.streetAddress,
-        addressLocality: esperionBusinessConfig.address.addressLocality,
-        addressRegion: esperionBusinessConfig.address.addressRegion,
-        postalCode: esperionBusinessConfig.address.postalCode,
-        addressCountry: esperionBusinessConfig.address.addressCountry
+        'streetAddress': esperionBusinessConfig.address.streetAddress,
+        'addressLocality': esperionBusinessConfig.address.addressLocality,
+        'addressRegion': esperionBusinessConfig.address.addressRegion,
+        'postalCode': esperionBusinessConfig.address.postalCode,
+        'addressCountry': esperionBusinessConfig.address.addressCountry
       },
-      geo: {
+      'geo': {
         '@type': 'GeoCoordinates',
-        latitude: esperionBusinessConfig.geo.latitude,
-        longitude: esperionBusinessConfig.geo.longitude
+        'latitude': esperionBusinessConfig.geo.latitude,
+        'longitude': esperionBusinessConfig.geo.longitude
       },
-      openingHoursSpecification: openingHours,
-      priceRange: esperionBusinessConfig.priceRange,
-      sameAs: esperionBusinessConfig.sameAs,
-      areaServed: esperionBusinessConfig.areaServed
+      'openingHoursSpecification': openingHours,
+      'priceRange': esperionBusinessConfig.priceRange,
+      'sameAs': esperionBusinessConfig.sameAs,
+      'areaServed': esperionBusinessConfig.areaServed
     }
 
     if (includeRating) {
@@ -206,13 +206,13 @@ export function useLocalBusinessSchema() {
     if (includeServices) {
       schema.hasOfferCatalog = {
         '@type': 'OfferCatalog',
-        name: 'Digital Agency Services',
-        itemListElement: services.map(service => ({
+        'name': 'Digital Agency Services',
+        'itemListElement': services.map(service => ({
           '@type': 'Offer',
-          itemOffered: {
+          'itemOffered': {
             '@type': 'Service',
-            name: service.name,
-            description: service.description
+            'name': service.name,
+            'description': service.description
           }
         }))
       }
@@ -229,24 +229,24 @@ export function useLocalBusinessSchema() {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       '@id': `${esperionBusinessConfig.url}/#organization`,
-      name: esperionBusinessConfig.name,
-      description: esperionBusinessConfig.description,
-      url: esperionBusinessConfig.url,
-      logo: esperionBusinessConfig.logo,
-      contactPoint: {
+      'name': esperionBusinessConfig.name,
+      'description': esperionBusinessConfig.description,
+      'url': esperionBusinessConfig.url,
+      'logo': esperionBusinessConfig.logo,
+      'contactPoint': {
         '@type': 'ContactPoint',
-        telephone: esperionBusinessConfig.telephone,
-        contactType: 'customer service',
-        availableLanguage: ['Indonesian', 'English']
+        'telephone': esperionBusinessConfig.telephone,
+        'contactType': 'customer service',
+        'availableLanguage': ['Indonesian', 'English']
       },
-      sameAs: esperionBusinessConfig.sameAs,
-      address: {
+      'sameAs': esperionBusinessConfig.sameAs,
+      'address': {
         '@type': 'PostalAddress',
-        streetAddress: esperionBusinessConfig.address.streetAddress,
-        addressLocality: esperionBusinessConfig.address.addressLocality,
-        addressRegion: esperionBusinessConfig.address.addressRegion,
-        postalCode: esperionBusinessConfig.address.postalCode,
-        addressCountry: esperionBusinessConfig.address.addressCountry
+        'streetAddress': esperionBusinessConfig.address.streetAddress,
+        'addressLocality': esperionBusinessConfig.address.addressLocality,
+        'addressRegion': esperionBusinessConfig.address.addressRegion,
+        'postalCode': esperionBusinessConfig.address.postalCode,
+        'addressCountry': esperionBusinessConfig.address.addressCountry
       }
     }
   }
@@ -254,16 +254,16 @@ export function useLocalBusinessSchema() {
   /**
    * Generate FAQ schema for common questions
    */
-  const generateFAQSchema = (faqs: { question: string; answer: string }[]) => {
+  const generateFAQSchema = (faqs: { question: string, answer: string }[]) => {
     return {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      mainEntity: faqs.map(faq => ({
+      'mainEntity': faqs.map(faq => ({
         '@type': 'Question',
-        name: faq.question,
-        acceptedAnswer: {
+        'name': faq.question,
+        'acceptedAnswer': {
           '@type': 'Answer',
-          text: faq.answer
+          'text': faq.answer
         }
       }))
     }
@@ -272,15 +272,15 @@ export function useLocalBusinessSchema() {
   /**
    * Generate BreadcrumbList schema
    */
-  const generateBreadcrumbSchema = (items: { name: string; url: string }[]) => {
+  const generateBreadcrumbSchema = (items: { name: string, url: string }[]) => {
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
-      itemListElement: items.map((item, index) => ({
+      'itemListElement': items.map((item, index) => ({
         '@type': 'ListItem',
-        position: index + 1,
-        name: item.name,
-        item: `${esperionBusinessConfig.url}${item.url}`
+        'position': index + 1,
+        'name': item.name,
+        'item': `${esperionBusinessConfig.url}${item.url}`
       }))
     }
   }

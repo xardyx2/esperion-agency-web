@@ -1,0 +1,1 @@
+export { default } from "D:/Bisnis/esperion/esperion openspec/frontend/node_modules/@nuxt/image/dist/runtime/components/NuxtImg.vue";

@@ -40,7 +40,10 @@
             <div class="flex items-start justify-between gap-3">
               <div class="space-y-2">
                 <div class="flex items-center gap-2">
-                  <span class="h-2.5 w-2.5 rounded-full" :class="badgeClass(notification.type)" />
+                  <span
+                    class="h-2.5 w-2.5 rounded-full"
+                    :class="badgeClass(notification.type)"
+                  />
                   <p class="font-medium text-es-text-primary dark:text-es-text-primary-dark">
                     {{ notification.title }}
                   </p>

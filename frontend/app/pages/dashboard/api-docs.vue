@@ -25,7 +25,9 @@
       class="flex items-center justify-center min-h-[60vh]"
     >
       <div class="text-center space-y-4 max-w-md mx-auto px-4">
-        <div class="text-6xl">⚠️</div>
+        <div class="text-6xl">
+          ⚠️
+        </div>
         <h2 class="text-xl font-semibold text-es-text-primary dark:text-es-text-primary-dark">
           {{ t('dashboard.apiDocs.errorTitle') }}
         </h2>
@@ -69,7 +71,6 @@ definePageMeta({
   layout: 'dashboard'
 })
 
-
 const { t } = useI18n()
 const config = useRuntimeConfig()
 
@@ -99,7 +100,7 @@ const fetchOpenApiSpec = async () => {
     const response = await fetch(openApiUrl.value, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json'
+        Accept: 'application/json'
       }
     })
 

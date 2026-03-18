@@ -13,7 +13,10 @@
           @click="exportCsv"
         >
           <template #leading>
-            <UIcon name="i-lucide-download" class="h-4 w-4" />
+            <UIcon
+              name="i-lucide-download"
+              class="h-4 w-4"
+            />
           </template>
           {{ t('dashboard.contact.export.button') }}
         </UButton>
@@ -209,14 +212,12 @@
 </template>
 
 <script setup lang="ts">
+import { useContactApi } from '../../composables/useApi'
+import type { ContactStats, ContactSubmission, ContactStatus } from '../../types/api'
+
 definePageMeta({
   layout: 'dashboard'
 })
-
-
-
-import { useContactApi } from '../../composables/useApi'
-import type { ContactStats, ContactSubmission, ContactStatus } from '../../types/api'
 
 const { t } = useI18n()
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Privacy Policy Page
- * 
+ *
  * GDPR-compliant privacy policy for Esperion Digital Agency
  * Available in both Indonesian and English
  */
@@ -12,9 +12,9 @@ const localePath = useLocalePath()
 // Page metadata
 useSeoMeta({
   title: () => locale.value === 'id' ? 'Kebijakan Privasi - Esperion' : 'Privacy Policy - Esperion',
-  description: () => locale.value === 'id' 
-    ? 'Kebijakan privasi Esperion Digital Agency' 
-    : 'Privacy policy of Esperion Digital Agency',
+  description: () => locale.value === 'id'
+    ? 'Kebijakan privasi Esperion Digital Agency'
+    : 'Privacy policy of Esperion Digital Agency'
 })
 
 // Content for both languages
@@ -37,7 +37,7 @@ const content = computed(() => ({
           - Data analitik (menggunakan Google Analytics 4)
           - Perilaku browsing (menggunakan Microsoft Clarity untuk heatmaps)
           - Cookie dan teknologi pelacakan serupa
-        `,
+        `
       },
       {
         title: '2. Bagaimana Kami Menggunakan Informasi Anda',
@@ -49,7 +49,7 @@ const content = computed(() => ({
           - Meningkatkan website dan layanan kami
           - Menganalisis penggunaan website untuk optimasi
           - Mematuhi kewajiban hukum
-        `,
+        `
       },
       {
         title: '3. Berbagi Informasi',
@@ -61,7 +61,7 @@ const content = computed(() => ({
           - **Penyedia Layanan**: Google Analytics, Microsoft Clarity untuk analitik
           - **Kewajiban Hukum**: Jika diwajibkan oleh hukum atau peraturan
           - **Persetujuan Anda**: Dengan persetujuan eksplisit Anda
-        `,
+        `
       },
       {
         title: '4. Cookie',
@@ -80,7 +80,7 @@ const content = computed(() => ({
           - LinkedIn Pixel
           
           Anda dapat mengontrol pengaturan cookie melalui browser Anda.
-        `,
+        `
       },
       {
         title: '5. Hak Anda (GDPR)',
@@ -95,7 +95,7 @@ const content = computed(() => ({
           - **Keberatan**: Menolak pemrosesan data tertentu
           
            Untuk menggunakan hak ini, hubungi: privacy@esperion.id
-        `,
+        `
       },
       {
         title: '6. Keamanan Data',
@@ -108,7 +108,7 @@ const content = computed(() => ({
           - Penyimpanan data di server yang aman
           
           Namun, tidak ada metode transmisi internet yang 100% aman.
-        `,
+        `
       },
       {
         title: '7. Retensi Data',
@@ -120,7 +120,7 @@ const content = computed(() => ({
           - **Session Recordings**: 30 hari (Microsoft Clarity)
           
           Setelah periode ini, data akan dihapus atau dianonimkan.
-        `,
+        `
       },
       {
         title: '8. Perubahan Kebijakan Privasi',
@@ -129,7 +129,7 @@ const content = computed(() => ({
           Perubahan akan diposting di halaman ini dengan tanggal pembaruan.
           
           Kami mendorong Anda untuk meninjau kebijakan ini secara berkala.
-        `,
+        `
       },
       {
         title: '9. Hubungi Kami',
@@ -141,9 +141,9 @@ const content = computed(() => ({
            **Telepon**: Detail telepon legal menunggu konfirmasi final
           
           Untuk keluhan, Anda dapat menghubungi otoritas perlindungan data setempat.
-        `,
-      },
-    ],
+        `
+      }
+    ]
   },
   en: {
     title: 'Privacy Policy',
@@ -163,7 +163,7 @@ const content = computed(() => ({
           - Analytics data (using Google Analytics 4)
           - Browsing behavior (using Microsoft Clarity for heatmaps)
           - Cookies and similar tracking technologies
-        `,
+        `
       },
       {
         title: '2. How We Use Your Information',
@@ -175,7 +175,7 @@ const content = computed(() => ({
           - Improve our website and services
           - Analyze website usage for optimization
           - Comply with legal obligations
-        `,
+        `
       },
       {
         title: '3. Information Sharing',
@@ -187,7 +187,7 @@ const content = computed(() => ({
           - **Service Providers**: Google Analytics, Microsoft Clarity for analytics
           - **Legal Requirements**: If required by law or regulation
           - **Your Consent**: With your explicit consent
-        `,
+        `
       },
       {
         title: '4. Cookies',
@@ -206,7 +206,7 @@ const content = computed(() => ({
           - LinkedIn Pixel
           
           You can control cookie settings through your browser.
-        `,
+        `
       },
       {
         title: '5. Your Rights (GDPR)',
@@ -221,7 +221,7 @@ const content = computed(() => ({
           - **Objection**: Object to certain data processing
           
            To exercise these rights, contact: privacy@esperion.id
-        `,
+        `
       },
       {
         title: '6. Data Security',
@@ -234,7 +234,7 @@ const content = computed(() => ({
           - Storage on secure servers
           
           However, no internet transmission method is 100% secure.
-        `,
+        `
       },
       {
         title: '7. Data Retention',
@@ -246,7 +246,7 @@ const content = computed(() => ({
           - **Session Recordings**: 30 days (Microsoft Clarity)
           
           After these periods, data will be deleted or anonymized.
-        `,
+        `
       },
       {
         title: '8. Changes to This Policy',
@@ -255,7 +255,7 @@ const content = computed(() => ({
           Changes will be posted on this page with an updated date.
           
           We encourage you to review this policy periodically.
-        `,
+        `
       },
       {
         title: '9. Contact Us',
@@ -267,10 +267,10 @@ const content = computed(() => ({
            **Phone**: Legal contact number is pending final confirmation
           
           For complaints, you may contact your local data protection authority.
-        `,
-      },
-    ],
-  },
+        `
+      }
+    ]
+  }
 }))
 
 const currentContent = computed(() => content.value[locale.value as 'id' | 'en'])
@@ -284,7 +284,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
         <h1
           class="text-4xl font-bold mb-4"
           :class="[
-            'text-es-text-primary dark:text-es-text-primary-dark',
+            'text-es-text-primary dark:text-es-text-primary-dark'
           ]"
         >
           {{ currentContent.title }}
@@ -292,7 +292,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
         <p
           class="text-sm"
           :class="[
-            'text-es-text-secondary dark:text-es-text-secondary-dark',
+            'text-es-text-secondary dark:text-es-text-secondary-dark'
           ]"
         >
           {{ currentContent.lastUpdated }}
@@ -309,7 +309,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
           <h2
             class="text-2xl font-semibold mb-4"
             :class="[
-              'text-es-text-primary dark:text-es-text-primary-dark',
+              'text-es-text-primary dark:text-es-text-primary-dark'
             ]"
           >
             {{ section.title }}
@@ -317,7 +317,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
           <div
             class="whitespace-pre-line"
             :class="[
-              'text-es-text-secondary dark:text-es-text-secondary-dark',
+              'text-es-text-secondary dark:text-es-text-secondary-dark'
             ]"
             v-html="section.content"
           />
@@ -330,8 +330,18 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
           :to="localePath('/')"
           class="inline-flex items-center gap-2 text-es-accent-primary dark:text-es-accent-primary-dark hover:underline"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
           {{ locale === 'id' ? 'Kembali ke Beranda' : 'Back to Home' }}
         </NuxtLink>

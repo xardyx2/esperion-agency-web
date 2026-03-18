@@ -1,6 +1,6 @@
 /**
  * Accessibility Composable
- * 
+ *
  * Provides WCAG 2.1 AA compliance utilities
  */
 
@@ -116,6 +116,6 @@ export const useAccessibility = () => {
     toggleHighContrast,
     adjustFontSize,
     restorePreferences,
-    handleKeyboardNavigation,
+    handleKeyboardNavigation
   }
 }

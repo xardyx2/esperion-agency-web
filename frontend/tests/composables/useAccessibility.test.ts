@@ -35,7 +35,7 @@ describe('useAccessibility', () => {
 
     it('should handle missing main content gracefully', () => {
       const { skipToContent } = useAccessibility()
-      
+
       // Should not throw
       expect(() => skipToContent()).not.toThrow()
     })
@@ -177,7 +177,7 @@ describe('useAccessibility', () => {
 
       const event = new KeyboardEvent('keydown', {
         key: 's',
-        ctrlKey: true,
+        ctrlKey: true
       })
 
       const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
@@ -194,11 +194,11 @@ describe('useAccessibility', () => {
 
       const event = new KeyboardEvent('keydown', {
         key: 't',
-        ctrlKey: true,
+        ctrlKey: true
       })
 
       handleKeyboardNavigation(event, {
-        'ctrl+t': actionSpy,
+        'ctrl+t': actionSpy
       })
 
       expect(actionSpy).toHaveBeenCalled()

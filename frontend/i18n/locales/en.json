@@ -119,6 +119,8 @@
     }
   },
   "services": {
+    "pricing": "Pricing",
+    "faq": "Frequently Asked Questions",
     "banner": {
       "title": "Our Services",
       "description": "Digital solutions designed to help your business move more clearly and grow better"
@@ -266,8 +268,10 @@
       "description": "Try changing filters to see other results",
       "resetButton": "Reset All Filters"
     },
-     "featuredBadge": "Featured",
-     "loadMore": {
+    "featuredBadge": "Featured",
+    "impact": "Impact",
+    "client": "Client",
+    "loadMore": {
        "button": "View More Projects"
       },
      "detail": {
@@ -280,49 +284,51 @@
        "startProjectDiscussion": "Start Project Discussion",
        "viewAllPortfolio": "View All Portfolio",
        "relatedWorks": "Related Works",
-       "seo": {
+  "article": {
+    "readTime": "min read",
+    "publishedOn": "Published on"
+  },
+  "seo": {
          "title": "{title} - Esperion Digital Agency",
          "description": "{description}"
        }
       }
     },
-   "contact": {
-     "banner": {
+  "contact": {
+    "address": "Address",
+    "addressText": "Sawangan Elok A1 No 5, Sawangan, Depok, Indonesia",
+    "banner": {
        "title": "Contact Us",
        "description": "Tell us your needs, and we'll help map out the most relevant digital path forward"
      },
      "form": {
        "title": "Send Your Brief",
        "fullNameLabel": "Full Name",
-       "companyNameLabel": "Company Name",
+       "fullNamePlaceholder": "Your Name",
        "emailLabel": "Email",
+       "emailPlaceholder": "{'john@example.com'}",
        "phoneLabel": "Phone Number",
+       "phonePlaceholder": "+62 812 3456 7890",
        "serviceLabel": "Required Services",
-       "descriptionLabel": "Project Summary",
        "servicePlaceholder": "Select a service",
        "serviceOptions": {
          "webDevelopment": "Web Development",
-         "mobileApp": "Mobile App",
+         "mobileApp": "Mobile App Development",
          "uiUxDesign": "UI/UX Design",
          "digitalMarketing": "Digital Marketing",
-         "ecommerce": "E-Commerce Solutions",
-         "consulting": "Digital Consulting",
          "other": "Other"
        },
-       "fullNamePlaceholder": "Your Name",
-       "companyNamePlaceholder": "Company or brand name",
-        "emailPlaceholder": "{'john@example.com'}",
-       "phonePlaceholder": "+62 812 3456 7890",
-      "descriptionPlaceholder": "Tell us about your project goals, context, and timeline...",
-      "submitButton": "Send Message",
-      "submittingButton": "Sending...",
-      "successMessage": "Thank you. Your brief has been submitted and the Esperion team will contact you shortly.",
-      "errorMessage": "There was a problem sending your message. Please try again later."
+       "messageLabel": "Message",
+       "messagePlaceholder": "Tell us about your project goals, context, and timeline...",
+       "submitButton": "Send Message",
+       "submittingButton": "Sending...",
+       "successMessage": "Thank you. Your message has been submitted and the Esperion team will contact you shortly.",
+       "errorMessage": "There was a problem sending your message. Please try again later."
     },
     "info": {
       "title": "Contact Information",
-      "location": "Location",
-      "locationText": "Jakarta, Indonesia",
+      "address": "Address",
+      "addressText": "Sawangan Elok A1 No 5, Sawangan, Depok, Indonesia",
       "phone": "Phone / WhatsApp",
       "phoneText": "+62 812 3456 7890",
       "email": "Email",
@@ -371,16 +377,21 @@
     "tiktok": "TikTok",
     "twitter": "Twitter"
   },
-   "aria": {
-     "location": "Location",
-     "phone": "Phone",
-     "email": "Email",
-     "businessHours": "Business hours",
-     "switchToLightMode": "Switch to light mode",
-     "switchToDarkMode": "Switch to dark mode",
-     "lightMode": "Light mode",
-     "darkMode": "Dark mode"
-   },
+  "aria": {
+    "location": "Location",
+    "phone": "Phone",
+    "email": "Email",
+    "businessHours": "Business hours",
+    "switchToLightMode": "Switch to light mode",
+    "switchToDarkMode": "Switch to dark mode",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
+  },
+  "themeToggle": {
+    "auto": "Auto",
+    "light": "Light",
+    "dark": "Dark"
+  },
    "offline": {
      "title": "You're Offline",
      "message": "It looks like you've lost your internet connection. Don't worry, you can still view some cached content.",

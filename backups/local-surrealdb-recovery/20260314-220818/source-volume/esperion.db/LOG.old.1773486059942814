@@ -1,0 +1,1 @@
+2026/03/14-10:59:39.874072 138489800860736 [WARN] [db/db_impl/db_impl_open.cc:2074] DB::Open() failed: Corruption: Corrupt or unsupported format_version: 6 in /data/esperion.db/000090.sst in file /data/esperion.db/MANIFEST-000092

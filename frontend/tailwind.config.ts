@@ -4,7 +4,7 @@ export default {
   darkMode: 'class',
   content: [
     './app/**/*.{js,ts,jsx,tsx,vue}',
-    './components/**/*.{js,ts,jsx,tsx,vue}',
+    './components/**/*.{js,ts,jsx,tsx,vue}'
   ],
   theme: {
     extend: {
@@ -33,13 +33,13 @@ export default {
         'es-accent-secondary': 'var(--es-accent-secondary)',
         'es-accent-primary-dark': 'var(--es-accent-primary-dark)',
         'es-accent-primary-hover-dark': 'var(--es-accent-primary-hover-dark)',
-        'es-accent-secondary-dark': 'var(--es-accent-secondary-dark)',
+        'es-accent-secondary-dark': 'var(--es-accent-secondary-dark)'
       },
       // Font family (optional customization)
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-    },
+        sans: ['Inter', 'system-ui', 'sans-serif']
+      }
+    }
   },
-  plugins: [],
+  plugins: []
 } satisfies Config

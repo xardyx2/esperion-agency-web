@@ -101,13 +101,11 @@
 </template>
 
 <script setup lang="ts">
+import { useArticlesApi } from '../../../composables/useApi'
+
 definePageMeta({
   layout: 'dashboard'
 })
-
-
-
-import { useArticlesApi } from '../../../composables/useApi'
 
 const { t } = useI18n()
 

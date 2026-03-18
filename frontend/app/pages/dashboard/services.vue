@@ -159,8 +159,15 @@
         <div class="space-y-4">
           <div class="flex items-start justify-between gap-4">
             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
-              <span v-if="service.icon" class="text-sm font-semibold">{{ service.icon }}</span>
-              <UIcon v-else name="i-lucide-briefcase" class="h-5 w-5" />
+              <span
+                v-if="service.icon"
+                class="text-sm font-semibold"
+              >{{ service.icon }}</span>
+              <UIcon
+                v-else
+                name="i-lucide-briefcase"
+                class="h-5 w-5"
+              />
             </div>
 
             <UBadge
@@ -215,14 +222,12 @@
 </template>
 
 <script setup lang="ts">
+import { useServicesApi } from '../../composables/useApi'
+import type { Service } from '../../types/api'
+
 definePageMeta({
   layout: 'dashboard'
 })
-
-
-
-import { useServicesApi } from '../../composables/useApi'
-import type { Service } from '../../types/api'
 
 const { t } = useI18n()
 

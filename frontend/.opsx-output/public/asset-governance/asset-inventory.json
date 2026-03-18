@@ -1,0 +1,351 @@
+{
+  "version": 1,
+  "status_enum": [
+    "stock-final",
+    "first-party-placeholder",
+    "first-party-final",
+    "missing"
+  ],
+  "assets": [
+    {
+      "path": "/articles/article-1.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-10.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-11.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-12.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-2.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-3.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-4.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-5.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-6.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-7.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-8.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/articles/article-9.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/about-esperion-agency.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banner-1.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banner-2.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banner-3.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banner-4.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banner-5.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banners/hero-services.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banners/lead-gen.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banners/portfolio.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banners/promo.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/banners/trust.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/contact-banner.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/esperion-agency-hero.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/hero-service-development.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/office-exterior.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/office-interior.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/service-consulting.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/service-digitalmarketing.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/service-ecommercesolutions.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/service-mobileappdevelopment.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/service-uiuxdesign.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/service-webdevelopment.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/services-banner.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/images/team.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/gallery-1.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/gallery-2.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/gallery-3.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/gallery-4.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-1.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-10.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-11.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-12.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-2.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-3.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-4.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-5.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-6.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-7.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-8.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/works/work-9.jpg",
+      "status": "stock-final",
+      "policy": "stock-eligible"
+    },
+    {
+      "path": "/placeholders/first-party/founder-identity-required.svg",
+      "status": "first-party-placeholder",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/placeholders/first-party/client-logo-required.svg",
+      "status": "first-party-placeholder",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/placeholders/first-party/brand-mark-required.svg",
+      "status": "first-party-placeholder",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/founders/founder-1.jpg",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/founders/founder-2.jpg",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/founders/founder-3.jpg",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/logos/client-1.png",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/logos/client-2.png",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/logos/client-3.png",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/logos/client-4.png",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/logos/client-5.png",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/logos/client-6.png",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/logos/client-7.png",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/logos/client-8.png",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/images/logo.svg",
+      "status": "missing",
+      "policy": "first-party-only"
+    },
+    {
+      "path": "/logo.png",
+      "status": "missing",
+      "policy": "first-party-only"
+    }
+  ]
+}

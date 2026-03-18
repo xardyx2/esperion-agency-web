@@ -243,6 +243,7 @@ watchEffect(() => {
   })
 })
 
+/*
 // Only set Schema.org when work is loaded
 watchEffect(() => {
   if (!work.value) return
@@ -280,4 +281,5 @@ watchEffect(() => {
     })
   ])
 })
+*/
 </script>

@@ -2,5 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/%TEMP%/OpenSpec" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/frontend/reference/dashboard-template" vcs="Git" />
   </component>
 </project>

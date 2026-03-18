@@ -507,6 +507,7 @@ useSeoMeta({
   ogLocale: 'id_ID'
 })
 
+/*
 // Set up Schema.org Organization
 useSchemaOrg([
   defineLocalBusiness({
@@ -616,6 +617,7 @@ useSchemaOrg([
     ]
   })
 ])
+*/
 
 // State
 const currentSlide = ref(0)

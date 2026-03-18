@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Terms of Service Page
- * 
+ *
  * Terms and conditions for Esperion Digital Agency
  * Available in both Indonesian and English
  */
@@ -12,9 +12,9 @@ const localePath = useLocalePath()
 // Page metadata
 useSeoMeta({
   title: () => locale.value === 'id' ? 'Syarat & Ketentuan - Esperion' : 'Terms of Service - Esperion',
-  description: () => locale.value === 'id' 
-    ? 'Syarat dan ketentuan layanan Esperion Digital Agency' 
-    : 'Terms and conditions of Esperion Digital Agency services',
+  description: () => locale.value === 'id'
+    ? 'Syarat dan ketentuan layanan Esperion Digital Agency'
+    : 'Terms and conditions of Esperion Digital Agency services'
 })
 
 // Content for both languages
@@ -30,7 +30,7 @@ const content = computed(() => ({
           Anda menerima dan setuju untuk terikat dengan syarat dan ketentuan ini.
           
           Jika Anda tidak setuju dengan syarat ini, harap tidak menggunakan Website kami.
-        `,
+        `
       },
       {
         title: '2. Layanan Kami',
@@ -45,7 +45,7 @@ const content = computed(() => ({
           - **Web & Mobile Development**: Pengembangan website dan aplikasi
           
           Kami berhak mengubah atau menghentikan layanan kapan saja.
-        `,
+        `
       },
       {
         title: '3. Penggunaan Website',
@@ -58,7 +58,7 @@ const content = computed(() => ({
           - Mematuhi semua hukum dan peraturan yang berlaku
           
           Pelanggaran dapat mengakibatkan penghentian akses.
-        `,
+        `
       },
       {
         title: '4. Hak Kekayaan Intelektual',
@@ -71,7 +71,7 @@ const content = computed(() => ({
           
           Dilarang mengcopy, mendistribusikan, atau membuat karya turunan 
           tanpa izin tertulis dari Esperion Digital Agency.
-        `,
+        `
       },
       {
         title: '5. Disclaimer',
@@ -83,7 +83,7 @@ const content = computed(() => ({
           - **Informasi Umum**: Konten adalah informasi umum, bukan advice profesional
           
           Esperion tidak bertanggung jawab atas kerugian dari penggunaan Website.
-        `,
+        `
       },
       {
         title: '6. Limitasi Tanggung Jawab',
@@ -95,7 +95,7 @@ const content = computed(() => ({
           - Kami tidak bertanggung jawab untuk error, downtime, atau kehilangan data
           
           Beberapa yurisdiksi tidak mengizinkan limitasi ini.
-        `,
+        `
       },
       {
         title: '7. Link ke Website Lain',
@@ -107,7 +107,7 @@ const content = computed(() => ({
           - Akses website third-party atas risiko Anda sendiri
           
           Kami tidak bertanggung jawab untuk konten atau praktik third-party.
-        `,
+        `
       },
       {
         title: '8. Perubahan Syarat',
@@ -119,7 +119,7 @@ const content = computed(() => ({
           - Penggunaan berkelanjutan berarti penerimaan perubahan
           
           Harap tinjau syarat ini secara berkala.
-        `,
+        `
       },
       {
         title: '9. Hukum yang Berlaku',
@@ -131,7 +131,7 @@ const content = computed(() => ({
           - **Sengketa**: Akan diselesaikan melalui negosiasi terlebih dahulu
           
           Jika ada klausul yang tidak valid, sisinya tetap berlaku.
-        `,
+        `
       },
       {
         title: '10. Kontak',
@@ -143,9 +143,9 @@ const content = computed(() => ({
            **Telepon**: Detail telepon legal menunggu konfirmasi final
           
           Kami akan merespons dalam 5-7 hari kerja.
-        `,
-      },
-    ],
+        `
+      }
+    ]
   },
   en: {
     title: 'Terms of Service',
@@ -158,7 +158,7 @@ const content = computed(() => ({
           you accept and agree to be bound by these terms and conditions.
           
           If you do not agree to these terms, please do not use our Website.
-        `,
+        `
       },
       {
         title: '2. Our Services',
@@ -173,7 +173,7 @@ const content = computed(() => ({
           - **Web & Mobile Development**: Website and application development
           
           We reserve the right to modify or discontinue services at any time.
-        `,
+        `
       },
       {
         title: '3. Website Usage',
@@ -186,7 +186,7 @@ const content = computed(() => ({
           - Comply with all applicable laws and regulations
           
           Violations may result in access termination.
-        `,
+        `
       },
       {
         title: '4. Intellectual Property',
@@ -199,7 +199,7 @@ const content = computed(() => ({
           
           Copying, distributing, or creating derivative works is prohibited 
           without written permission from Esperion Digital Agency.
-        `,
+        `
       },
       {
         title: '5. Disclaimer',
@@ -211,7 +211,7 @@ const content = computed(() => ({
           - **General Information**: Content is general information, not professional advice
           
           Esperion is not liable for damages arising from Website use.
-        `,
+        `
       },
       {
         title: '6. Limitation of Liability',
@@ -223,7 +223,7 @@ const content = computed(() => ({
           - We are not liable for errors, downtime, or data loss
           
           Some jurisdictions do not allow these limitations.
-        `,
+        `
       },
       {
         title: '7. Third-Party Links',
@@ -235,7 +235,7 @@ const content = computed(() => ({
           - Access third-party websites at your own risk
           
           We are not responsible for third-party content or practices.
-        `,
+        `
       },
       {
         title: '8. Changes to Terms',
@@ -247,7 +247,7 @@ const content = computed(() => ({
           - Continued use constitutes acceptance of changes
           
           Please review these terms periodically.
-        `,
+        `
       },
       {
         title: '9. Governing Law',
@@ -259,7 +259,7 @@ const content = computed(() => ({
           - **Disputes**: Will be resolved through negotiation first
           
           If any clause is invalid, the remainder remains effective.
-        `,
+        `
       },
       {
         title: '10. Contact',
@@ -271,10 +271,10 @@ const content = computed(() => ({
            **Phone**: Legal contact number is pending final confirmation
           
           We will respond within 5-7 business days.
-        `,
-      },
-    ],
-  },
+        `
+      }
+    ]
+  }
 }))
 
 const currentContent = computed(() => content.value[locale.value as 'id' | 'en'])
@@ -288,7 +288,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
         <h1
           class="text-4xl font-bold mb-4"
           :class="[
-            'text-es-text-primary dark:text-es-text-primary-dark',
+            'text-es-text-primary dark:text-es-text-primary-dark'
           ]"
         >
           {{ currentContent.title }}
@@ -296,7 +296,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
         <p
           class="text-sm"
           :class="[
-            'text-es-text-secondary dark:text-es-text-secondary-dark',
+            'text-es-text-secondary dark:text-es-text-secondary-dark'
           ]"
         >
           {{ currentContent.lastUpdated }}
@@ -313,7 +313,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
           <h2
             class="text-2xl font-semibold mb-4"
             :class="[
-              'text-es-text-primary dark:text-es-text-primary-dark',
+              'text-es-text-primary dark:text-es-text-primary-dark'
             ]"
           >
             {{ section.title }}
@@ -321,7 +321,7 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
           <div
             class="whitespace-pre-line"
             :class="[
-              'text-es-text-secondary dark:text-es-text-secondary-dark',
+              'text-es-text-secondary dark:text-es-text-secondary-dark'
             ]"
             v-html="section.content"
           />
@@ -334,8 +334,18 @@ const currentContent = computed(() => content.value[locale.value as 'id' | 'en']
           :to="localePath('/')"
           class="inline-flex items-center gap-2 text-es-accent-primary dark:text-es-accent-primary-dark hover:underline"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
           {{ locale === 'id' ? 'Kembali ke Beranda' : 'Back to Home' }}
         </NuxtLink>

@@ -8,7 +8,10 @@
     <div class="flex items-start justify-between gap-4">
       <div class="space-y-3">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary ring-1 ring-inset ring-es-accent-primary/20 dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark dark:ring-es-accent-primary-dark/25">
-          <UIcon :name="icon" class="h-5 w-5" />
+          <UIcon
+            :name="icon"
+            class="h-5 w-5"
+          />
         </div>
 
         <div>
@@ -22,7 +25,11 @@
       </div>
 
       <div class="text-right">
-        <UBadge v-if="trend" color="primary" variant="soft">
+        <UBadge
+          v-if="trend"
+          color="primary"
+          variant="soft"
+        >
           {{ trend }}
         </UBadge>
         <UIcon
@@ -33,7 +40,10 @@
       </div>
     </div>
 
-    <p v-if="detail" class="mt-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark">
+    <p
+      v-if="detail"
+      class="mt-4 text-sm text-es-text-secondary dark:text-es-text-secondary-dark"
+    >
       {{ detail }}
     </p>
   </component>

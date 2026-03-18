@@ -1,9 +1,9 @@
 /**
  * Theme Management Composable
- * 
+ *
  * Manages dark/light mode with system preference detection, time-based fallback,
  * and localStorage persistence.
- * 
+ *
  * Features:
  * - System preference detection (prefers-color-scheme)
  * - Time-based fallback: 7PM-7AM = dark mode
@@ -25,7 +25,7 @@ export const useTheme = () => {
       if (prefersDark.matches !== undefined) {
         return prefersDark.matches ? 'dark' : 'light'
       }
-      
+
       // 2. Fallback: Time-based (7PM-7AM = dark)
       const hour = new Date().getHours()
       const isNightTime = hour >= 19 || hour < 7

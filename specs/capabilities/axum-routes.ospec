@@ -1,0 +1,118 @@
+# Capability: axum-routes
+
+## Summary
+HTTP route definitions for the API using Axum 0.8 framework with new path parameter syntax.
+
+## MODIFIED Requirements
+
+### Route Syntax Changes (Axum 0.7 → 0.8)
+
+1. **All routes SHALL use new syntax `{param}` not `:param`**
+   - OLD (Axum 0.7): `/users/:id`, `/files/*path`
+   - NEW (Axum 0.8): `/users/{id}`, `/files/{*path}`
+
+2. **All routes SHALL compile without errors**
+   - No compilation warnings related to route definitions
+   - All path parameters correctly extracted in handlers
+
+3. **Route handlers SHALL receive parameters correctly**
+   - Path parameters extracted via `Path<T>` extractor
+   - Wildcard paths extracted as `String` or `PathBuf`
+   - Type conversion handled automatically
+
+4. **API endpoints SHALL respond correctly**
+   - Valid requests return appropriate HTTP status codes
+   - Invalid parameters return 404 or 400 as appropriate
+   - Response bodies match expected schemas
+
+## Scenarios
+
+### Scenario 1: GET /api/v1/users/{id} returns user
+```
+GIVEN a user exists with id=123
+WHEN GET /api/v1/users/123
+THEN response status is 200 OK
+AND response body contains user data with id=123
+```
+
+### Scenario 2: POST /api/v1/articles creates article
+```
+GIVEN valid article data in request body
+WHEN POST /api/v1/articles with JSON payload
+THEN response status is 201 Created
+AND response body contains created article with generated id
+```
+
+### Scenario 3: Wildcard routes work
+```
+GIVEN media files exist at nested paths
+WHEN GET /api/v1/media/documents/reports/annual.pdf
+THEN response status is 200 OK
+AND path parameter captures "documents/reports/annual.pdf"
+```
+
+### Scenario 4: All 13 handlers accessible
+```
+GIVEN the API server is running
+WHEN each of the 13 route handlers is invoked
+THEN each handler responds without 404 errors
+AND route matching follows Axum 0.8 precedence rules
+```
+
+## Route Definitions
+
+### Base Path
+All routes prefixed with: `/api/v1`
+
+### Endpoints
+
+| Method | Route Pattern | Handler | Description |
+|--------|--------------|---------|-------------|
+| GET | `/health` | health_check | Health check endpoint |
+| GET | `/users` | list_users | List all users |
+| GET | `/users/{id}` | get_user | Get user by ID |
+| POST | `/users` | create_user | Create new user |
+| PUT | `/users/{id}` | update_user | Update user |
+| DELETE | `/users/{id}` | delete_user | Delete user |
+| GET | `/articles` | list_articles | List all articles |
+| GET | `/articles/{id}` | get_article | Get article by ID |
+| POST | `/articles` | create_article | Create new article |
+| PUT | `/articles/{id}` | update_article | Update article |
+| DELETE | `/articles/{id}` | delete_article | Delete article |
+| GET | `/media/{*path}` | serve_media | Serve media files |
+| POST | `/media` | upload_media | Upload media file |
+
+## Implementation Notes
+
+### Axum 0.8 Migration
+- Replace all `:param` with `{param}` in route macros
+- Replace all `*path` with `{*path}` for wildcards
+- Update `Path` extractor types to match new parameter names
+- Verify route precedence (specific before wildcard)
+
+### Example Route Registration
+```rust
+Router::new()
+    .route("/api/v1/users/{id}", get(get_user))
+    .route("/api/v1/media/{*path}", get(serve_media))
+```
+
+### Example Handler Signature
+```rust
+async fn get_user(Path(id): Path<u32>) -> impl IntoResponse {
+    // Handler implementation
+}
+
+async fn serve_media(Path(path): Path<String>) -> impl IntoResponse {
+    // Wildcard path handling
+}
+```
+
+## Acceptance Criteria
+
+- [ ] All 13 routes defined with `{param}` syntax
+- [ ] Project compiles with `cargo build` without errors
+- [ ] All route tests pass
+- [ ] Path parameters correctly extracted in handlers
+- [ ] Wildcard routes capture full remaining path
+- [ ] API documentation updated with new route syntax

@@ -3,19 +3,19 @@ import { ref, computed } from 'vue'
 /**
  * Esperion i18n Composable with Caching
  * Internationalization with smart caching to minimize API calls
- * 
+ *
  * Caching Strategy:
  * - Static UI translations: Cached in localStorage (never expire)
  * - Dynamic content translations: Cached in SurrealDB with version tracking
  * - Only changed content is requested from API
- * 
+ *
  * @usage
  * ```ts
  * const { t, locale, setLocale, detectLocale, cacheTranslation } = useI18n()
- * 
+ *
  * // Get translation (auto-cached)
  * const text = t('navigation.home')
- * 
+ *
  * // Cache dynamic content translation
  * await cacheTranslation({
  *   sourceText: 'Hello World',
@@ -62,7 +62,7 @@ const cacheVersion = ref<number>(1)
 const STORAGE_KEYS = {
   LOCALE: 'esperion_locale',
   STATIC_CACHE: 'esperion_static_translations',
-  CACHE_VERSION: 'esperion_cache_version',
+  CACHE_VERSION: 'esperion_cache_version'
 }
 
 /**
@@ -81,7 +81,7 @@ async function loadTranslations(loc: Locale): Promise<void> {
     // Fallback to loading from file
     const module = await import(`../locales/${loc}.json`)
     translations.value = module.default
-    
+
     // Cache for next time
     saveToCache(loc, module.default)
   } catch (error) {
@@ -140,19 +140,19 @@ function getNestedValue(obj: Translations, path: string): string {
  */
 function t(key: string, params?: Record<string, string | number>): string {
   let text = getNestedValue(translations.value, key)
-  
+
   // If translation not found, try fallback to English
   if (text === key && locale.value !== 'en') {
     text = getNestedValue(translations.value, key)
   }
-  
+
   // Interpolate parameters
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       text = text.replace(new RegExp(`\\{${key}\\}`, 'g'), String(value))
     })
   }
-  
+
   return text
 }
 
@@ -163,12 +163,12 @@ async function setLocale(loc: Locale): Promise<void> {
   if (loc !== locale.value) {
     locale.value = loc
     await loadTranslations(loc)
-    
+
     // Save preference
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(STORAGE_KEYS.LOCALE, loc)
     }
-    
+
     // Update HTML lang attribute
     if (typeof document !== 'undefined') {
       document.documentElement.lang = loc
@@ -187,7 +187,7 @@ function detectLocale(): Locale {
       return saved
     }
   }
-  
+
   // Check browser language
   if (typeof navigator !== 'undefined') {
     const browserLang = navigator.language.toLowerCase()
@@ -198,7 +198,7 @@ function detectLocale(): Locale {
       return 'en'
     }
   }
-  
+
   // Default to Indonesian
   return 'id'
 }
@@ -214,7 +214,7 @@ function toggleLocale(): Promise<void> {
 /**
  * Cache dynamic content translation
  * Only caches if content has changed (version tracking)
- * 
+ *
  * @param content - Content to cache
  * @param forceUpdate - Force update even if version matches
  */
@@ -223,7 +223,7 @@ async function cacheTranslation(
   forceUpdate: boolean = false
 ): Promise<void> {
   const cacheKey = `${content.sourceLang}-${content.targetLang}-${content.sourceText}`
-  
+
   // Check if already cached with same version
   const existing = translationCache.value.get(cacheKey)
   if (existing && existing.version >= cacheVersion.value && !forceUpdate) {
@@ -235,7 +235,7 @@ async function cacheTranslation(
     id: cacheKey,
     version: cacheVersion.value,
     createdAt: existing?.createdAt || new Date(),
-    updatedAt: new Date(),
+    updatedAt: new Date()
   }
 
   // Update in-memory cache
@@ -258,11 +258,11 @@ function getCachedTranslation(
 ): string | null {
   const cacheKey = `${sourceLang}-${targetLang}-${sourceText}`
   const cached = translationCache.value.get(cacheKey)
-  
+
   if (cached && cached.version >= cacheVersion.value) {
     return cached.translatedText
   }
-  
+
   return null
 }
 
@@ -276,7 +276,7 @@ async function saveToBackend(content: CachedTranslation): Promise<void> {
     // POST /api/v1/translations/cache
     await $fetch('/api/v1/translations/cache', {
       method: 'POST',
-      body: content,
+      body: content
     })
   } catch (error) {
     console.error('Failed to save translation to backend:', error)
@@ -290,12 +290,12 @@ async function saveToBackend(content: CachedTranslation): Promise<void> {
 async function loadCacheFromBackend(): Promise<void> {
   try {
     // GET /api/v1/translations/cache?version={cacheVersion}
-    const cached = await $fetch< CachedTranslation[]>('/api/v1/translations/cache', {
-      query: { version: cacheVersion.value },
+    const cached = await $fetch<CachedTranslation[]>('/api/v1/translations/cache', {
+      query: { version: cacheVersion.value }
     })
 
     // Update in-memory cache with only new/changed translations
-    cached.forEach(item => {
+    cached.forEach((item) => {
       translationCache.value.set(item.id, item)
     })
   } catch (error) {
@@ -309,7 +309,7 @@ async function loadCacheFromBackend(): Promise<void> {
 function invalidateCache(): void {
   translationCache.value.clear()
   cacheVersion.value++
-  
+
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem(STORAGE_KEYS.CACHE_VERSION, String(cacheVersion.value))
   }
@@ -320,14 +320,14 @@ function invalidateCache(): void {
  */
 function clearAllCaches(): void {
   translationCache.value.clear()
-  
+
   if (typeof localStorage !== 'undefined') {
     localStorage.removeItem(STORAGE_KEYS.STATIC_CACHE_id)
     localStorage.removeItem(STORAGE_KEYS.STATIC_CACHE_en)
     localStorage.removeItem(STORAGE_KEYS.LOCALE)
     localStorage.removeItem(STORAGE_KEYS.CACHE_VERSION)
   }
-  
+
   cacheVersion.value = 1
 }
 
@@ -337,7 +337,7 @@ export function useI18n() {
     const detected = detectLocale()
     loadTranslations(detected)
     locale.value = detected
-    
+
     // Load cache version from storage
     if (typeof localStorage !== 'undefined') {
       const version = localStorage.getItem(STORAGE_KEYS.CACHE_VERSION)
@@ -345,7 +345,7 @@ export function useI18n() {
         cacheVersion.value = parseInt(version, 10)
       }
     }
-    
+
     // Load dynamic content cache from backend (non-blocking)
     loadCacheFromBackend()
   }
@@ -363,6 +363,6 @@ export function useI18n() {
     getCachedTranslation,
     invalidateCache,
     clearAllCaches,
-    cacheVersion: computed(() => cacheVersion.value),
+    cacheVersion: computed(() => cacheVersion.value)
   }
 }

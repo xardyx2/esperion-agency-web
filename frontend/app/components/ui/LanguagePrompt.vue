@@ -2,16 +2,16 @@
 /**
  * Language Prompt Component
  * Toast notification that prompts users to switch to their detected language
- * 
+ *
  * Features:
  * - Shows after 5-second delay
  * - Once per session frequency capping
  * - Auto-hide after 10 seconds
  * - Accessible with keyboard navigation
- * 
+ *
  * @usage
  * ```vue
- * <LanguagePrompt 
+ * <LanguagePrompt
  *   :current-lang="'id'"
  *   :detected-lang="'en'"
  *   :translated-slug="'what-is-agency'"
@@ -31,7 +31,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   delay: 5000,
-  autoHide: 10000,
+  autoHide: 10000
 })
 
 const emit = defineEmits<{
@@ -49,24 +49,24 @@ const labels = computed(() => ({
   id: {
     title: 'Artikel ini tersedia dalam Bahasa Inggris',
     button: 'Lihat dalam Bahasa Inggris',
-    dismiss: 'Tetap dalam Bahasa Indonesia',
+    dismiss: 'Tetap dalam Bahasa Indonesia'
   },
   en: {
     title: 'This article is available in Indonesian',
     button: 'View in Indonesian',
-    dismiss: 'Stay in English',
-  },
+    dismiss: 'Stay in English'
+  }
 }))
 
 // Current labels based on detected language
-const currentLabels = computed(() => 
+const currentLabels = computed(() =>
   props.detectedLang === 'id' ? labels.value.id : labels.value.en
 )
 
 // Target language URL for switch
 const targetUrl = computed(() => {
   if (!props.translatedSlug) return null
-  
+
   const currentPath = useRoute().path
   const newPath = currentPath.replace(
     `/${props.currentLang}/`,
@@ -75,7 +75,7 @@ const targetUrl = computed(() => {
     currentPath.split('/').pop() || '',
     props.translatedSlug
   )
-  
+
   return `/${props.detectedLang}${newPath}`
 })
 
@@ -89,7 +89,7 @@ function showPrompt() {
     isVisible.value = true
     isAnimating.value = false
     emit('show')
-    
+
     // Auto-hide after specified duration
     if (props.autoHide > 0 && !hideTimeout) {
       hideTimeout = setTimeout(() => {
@@ -143,7 +143,7 @@ onBeforeUnmount(() => {
 // Expose methods for parent component
 defineExpose({
   show: showPrompt,
-  hide: hidePrompt,
+  hide: hidePrompt
 })
 </script>
 
@@ -167,7 +167,7 @@ defineExpose({
           class="rounded-lg shadow-lg"
           :class="[
             'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
-            'border border-es-border dark:border-es-border-dark',
+            'border border-es-border dark:border-es-border-dark'
           ]"
         >
           <!-- Content -->
@@ -177,74 +177,84 @@ defineExpose({
               <div class="flex-shrink-0">
                 <span class="text-2xl">🌐</span>
               </div>
-              
+
               <!-- Text -->
               <div class="flex-1 min-w-0">
                 <p
                   class="text-sm font-medium"
                   :class="[
-                    'text-es-text-primary dark:text-es-text-primary-dark',
+                    'text-es-text-primary dark:text-es-text-primary-dark'
                   ]"
                 >
                   {{ currentLabels.title }}
                 </p>
-                
+
                 <!-- Actions -->
                 <div class="mt-3 flex gap-2">
                   <button
                     v-if="targetUrl"
-                    @click="handleSwitch"
                     class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
                     :class="[
-                      'bg-es-accent-primary hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:hover:bg-es-accent-primary-hover-dark text-es-text-inverse dark:text-es-text-inverse-dark',
+                      'bg-es-accent-primary hover:bg-es-accent-primary-hover dark:bg-es-accent-primary-dark dark:hover:bg-es-accent-primary-hover-dark text-es-text-inverse dark:text-es-text-inverse-dark'
                     ]"
+                    @click="handleSwitch"
                   >
                     {{ currentLabels.button }}
                   </button>
                   <button
-                    @click="handleDismiss"
                     class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
                     :class="[
                       'bg-es-bg-secondary dark:bg-es-bg-secondary-dark',
                       'border border-es-border dark:border-es-border-dark',
                       'text-es-text-primary dark:text-es-text-primary-dark',
-                      'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
+                      'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark'
                     ]"
+                    @click="handleDismiss"
                   >
                     {{ currentLabels.dismiss }}
                   </button>
                 </div>
               </div>
-              
+
               <!-- Close button -->
               <button
-                @click="handleDismiss"
                 class="flex-shrink-0 ml-2"
                 :class="[
                   'text-es-text-secondary dark:text-es-text-secondary-dark',
-                  'hover:text-es-text-primary dark:hover:text-es-text-primary-dark',
+                  'hover:text-es-text-primary dark:hover:text-es-text-primary-dark'
                 ]"
                 aria-label="Dismiss"
+                @click="handleDismiss"
               >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
           </div>
-          
+
           <!-- Progress bar (for auto-hide) -->
           <div
             v-if="autoHide > 0"
             class="h-1 rounded-b-lg overflow-hidden"
             :class="[
-              'bg-esperion-light-border dark:bg-esperion-dark-border',
+              'bg-esperion-light-border dark:bg-esperion-dark-border'
             ]"
           >
             <div
               class="h-full bg-esperion-primary transition-all duration-linear"
               :style="{
-                animation: `shrink ${autoHide}ms linear forwards`,
+                animation: `shrink ${autoHide}ms linear forwards`
               }"
             />
           </div>

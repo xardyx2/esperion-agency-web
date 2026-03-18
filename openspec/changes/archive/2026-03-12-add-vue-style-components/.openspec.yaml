@@ -1,0 +1,5 @@
+schema: spec-driven
+applies:
+  - proposal
+  - design
+  - tasks

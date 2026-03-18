@@ -1,0 +1,9 @@
+[target.x86_64-unknown-linux-musl]
+linker = "clang"
+rustflags = ["-C", "link-arg=-fuse-ld=lld"]
+
+[profile.dev]
+# Keep debug info for development
+debug = true
+# Don't optimize for faster compile times
+opt-level = 0

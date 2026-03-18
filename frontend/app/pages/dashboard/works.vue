@@ -86,14 +86,12 @@
 </template>
 
 <script setup lang="ts">
+import { useWorksApi } from '../../composables/useApi'
+import type { Work } from '../../types/api'
+
 definePageMeta({
   layout: 'dashboard'
 })
-
-
-
-import { useWorksApi } from '../../composables/useApi'
-import type { Work } from '../../types/api'
 
 const { t } = useI18n()
 

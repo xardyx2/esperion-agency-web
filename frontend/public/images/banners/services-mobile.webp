@@ -1,0 +1,27 @@
+<svg width="768" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="servicesGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <pattern id="servicesPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="40" y2="40" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="40" y1="0" x2="0" y2="40" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="768" height="400" fill="url(#servicesGradient)"/>
+  
+  <!-- Pattern overlay -->
+  <rect width="768" height="400" fill="url(#servicesPattern)"/>
+  
+  <!-- Geometric shapes -->
+  <circle cx="120" cy="180" r="40" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="620" cy="220" r="60" fill="rgba(255,255,255,0.05)"/>
+  
+  <!-- Text -->
+  <text x="384" y="190" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="rgba(255,255,255,0.9)" text-anchor="middle">SERVICES</text>
+  <text x="384" y="240" font-family="Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.8)" text-anchor="middle">Services Banner</text>
+  <text x="384" y="280" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.6)" text-anchor="middle">768 × 400px</text>
+</svg>

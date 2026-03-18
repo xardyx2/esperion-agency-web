@@ -56,7 +56,10 @@
               </h2>
             </div>
 
-            <UBadge color="primary" variant="soft">
+            <UBadge
+              color="primary"
+              variant="soft"
+            >
               {{ focusChecklist.length }} lanes
             </UBadge>
           </div>
@@ -79,7 +82,10 @@
               </div>
 
               <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
-                <UIcon :name="item.icon" class="h-4 w-4" />
+                <UIcon
+                  :name="item.icon"
+                  class="h-4 w-4"
+                />
               </div>
             </div>
           </article>
@@ -112,7 +118,10 @@
             class="flex items-center gap-3 rounded-2xl border border-es-border bg-es-bg-primary px-4 py-4 transition-colors hover:bg-es-bg-tertiary dark:border-es-border-dark dark:bg-es-bg-primary-dark dark:hover:bg-es-bg-tertiary-dark"
           >
             <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-es-accent-primary/10 text-es-accent-primary dark:bg-es-accent-primary-dark/15 dark:text-es-accent-primary-dark">
-              <UIcon :name="item.icon" class="h-5 w-5" />
+              <UIcon
+                :name="item.icon"
+                class="h-5 w-5"
+              />
             </div>
 
             <div class="min-w-0 flex-1">
@@ -124,7 +133,10 @@
               </p>
             </div>
 
-            <UIcon name="i-lucide-arrow-up-right" class="h-4 w-4 text-es-text-secondary dark:text-es-text-secondary-dark" />
+            <UIcon
+              name="i-lucide-arrow-up-right"
+              class="h-4 w-4 text-es-text-secondary dark:text-es-text-secondary-dark"
+            />
           </NuxtLink>
         </div>
       </UCard>
@@ -133,11 +145,11 @@
 </template>
 
 <script setup lang="ts">
+import { useDashboardNavigation } from '../../composables/useDashboardNavigation'
+
 definePageMeta({
   layout: 'dashboard'
 })
-
-import { useDashboardNavigation } from '../../composables/useDashboardNavigation'
 
 const { t } = useI18n()
 const localePath = useLocalePath()

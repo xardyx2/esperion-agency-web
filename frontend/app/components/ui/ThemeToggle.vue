@@ -1,114 +1,97 @@
-<template>
-  <div class="theme-toggle" role="radiogroup" :aria-label="t('footer.appearance')">
-    <button
-      v-for="option in themeOptions"
-      :key="option.value"
-      type="button"
-      role="radio"
-      :aria-checked="currentTheme === option.value"
-      :aria-label="option.label"
-      class="theme-toggle-btn"
-      :class="{ active: currentTheme === option.value }"
-      @click="setTheme(option.value)"
-    >
-      <UIcon :name="option.icon" class="w-4 h-4" />
-    </button>
-    <!-- Sliding indicator -->
-    <div class="theme-toggle-indicator" :style="indicatorStyle" />
-  </div>
-</template>
-
 <script setup lang="ts">
-const { t } = useI18n()
+/**
+ * Theme Toggle Component
+ * Simple sun/moon toggle button for dark/light mode switching
+ * Inspired by vuejs.org design
+ *
+ * @usage
+ * ```vue
+ * <ThemeToggle />
+ * <ThemeToggle size="sm" />
+ * ```
+ */
+
+interface Props {
+  size?: 'sm' | 'md' | 'lg'
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  size: 'md'
+})
+
 const colorMode = useColorMode()
 
-type ThemeValue = 'system' | 'light' | 'dark'
-
-const themeOptions: { value: ThemeValue; icon: string; label: string }[] = [
-  { value: 'system', icon: 'i-heroicons-computer-desktop', label: 'System' },
-  { value: 'light', icon: 'i-heroicons-sun', label: 'Light' },
-  { value: 'dark', icon: 'i-heroicons-moon', label: 'Dark' },
-]
-
-const currentTheme = computed(() => colorMode.preference as ThemeValue)
-
-const setTheme = (theme: ThemeValue) => {
-  colorMode.preference = theme
+// Icon size mapping
+const iconSizes = {
+  sm: 'w-4 h-4',
+  md: 'w-5 h-5',
+  lg: 'w-6 h-6'
 }
 
-// Calculate indicator position based on selected theme
-const indicatorStyle = computed(() => {
-  const index = themeOptions.findIndex(opt => opt.value === currentTheme.value)
-  const position = index >= 0 ? index : 1 // Default to light (index 1)
-  return {
-    transform: `translateX(${position * 100}%)`,
-  }
-})
+// Button size mapping
+const buttonSizes = {
+  sm: 'p-1.5',
+  md: 'p-2',
+  lg: 'p-2.5'
+}
+
+const isDark = computed(() => colorMode.value === 'dark')
+
+function toggleTheme() {
+  colorMode.preference = isDark.value ? 'light' : 'dark'
+}
 </script>
 
-<style scoped>
-.theme-toggle {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem;
-  border-radius: 9999px;
-  background-color: var(--es-bg-tertiary);
-}
+<template>
+  <button
+    type="button"
+    :class="[
+      'rounded-lg transition-colors duration-200',
+      'text-es-text-secondary dark:text-es-text-secondary-dark',
+      'hover:text-es-text-primary dark:hover:text-es-text-primary-dark',
+      'hover:bg-es-bg-tertiary dark:hover:bg-es-bg-tertiary-dark',
+      buttonSizes[size]
+    ]"
+    :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+    @click="toggleTheme"
+  >
+    <!-- Sun Icon (shown in dark mode) -->
+    <svg
+      v-if="isDark"
+      :class="iconSizes[size]"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="4"
+      />
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+      />
+    </svg>
 
-.dark .theme-toggle {
-  background-color: var(--es-bg-tertiary-dark);
-}
-
-.theme-toggle-btn {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 9999px;
-  color: var(--es-text-secondary);
-  transition: color 0.2s;
-  cursor: pointer;
-}
-
-.theme-toggle-btn:hover {
-  color: var(--es-text-primary);
-}
-
-.dark .theme-toggle-btn {
-  color: var(--es-text-secondary-dark);
-}
-
-.dark .theme-toggle-btn:hover {
-  color: var(--es-text-primary-dark);
-}
-
-.theme-toggle-btn.active {
-  color: var(--es-accent-primary);
-}
-
-.dark .theme-toggle-btn.active {
-  color: var(--es-accent-primary-dark);
-}
-
-.theme-toggle-indicator {
-  position: absolute;
-  top: 0.25rem;
-  left: 0.25rem;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 9999px;
-  background-color: var(--es-bg-secondary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: transform 0.25s ease;
-}
-
-.dark .theme-toggle-indicator {
-  background-color: var(--es-bg-secondary-dark);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-</style>
+    <!-- Moon Icon (shown in light mode) -->
+    <svg
+      v-else
+      :class="iconSizes[size]"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"
+      />
+    </svg>
+  </button>
+</template>

@@ -2,7 +2,9 @@
   <div class="min-h-screen bg-es-bg-primary dark:bg-es-bg-primary-dark flex items-center justify-center px-4">
     <div class="text-center max-w-md">
       <!-- Offline Icon -->
-      <div class="text-8xl mb-8">📡</div>
+      <div class="text-8xl mb-8">
+        📡
+      </div>
 
       <!-- Title -->
       <h1 class="text-3xl font-bold text-es-text-primary dark:text-es-text-primary-dark mb-4">
@@ -17,8 +19,8 @@
       <!-- Actions -->
       <div class="space-y-4">
         <button
-          @click="retryConnection"
           class="w-full px-6 py-3 bg-es-accent-primary dark:bg-es-accent-primary-dark text-es-text-inverse dark:text-es-text-inverse-dark rounded-lg font-semibold hover:bg-es-accent-primary-hover dark:hover:bg-es-accent-primary-hover-dark transition-colors"
+          @click="retryConnection"
         >
           {{ t('offline.tryAgain') }}
         </button>
@@ -53,7 +55,7 @@ const localePath = useLocalePath()
 
 useSeoMeta({
   title: t('offline.seo.title'),
-  description: t('offline.seo.description'),
+  description: t('offline.seo.description')
 })
 
 const retryConnection = async () => {

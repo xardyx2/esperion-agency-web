@@ -1,0 +1,27 @@
+<svg width="1920" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="articlesGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D97706;stop-opacity:1" />
+    </linearGradient>
+    <pattern id="articlesPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="3" fill="rgba(255,255,255,0.12)"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1920" height="400" fill="url(#articlesGradient)"/>
+  
+  <!-- Pattern overlay -->
+  <rect width="1920" height="400" fill="url(#articlesPattern)"/>
+  
+  <!-- Geometric shapes -->
+  <circle cx="300" cy="150" r="50" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="1600" cy="250" r="80" fill="rgba(255,255,255,0.05)"/>
+  <rect x="700" y="120" width="80" height="80" fill="rgba(255,255,255,0.05)" rx="40"/>
+  
+  <!-- Text -->
+  <text x="960" y="190" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="rgba(255,255,255,0.9)" text-anchor="middle">ARTICLES</text>
+  <text x="960" y="250" font-family="Arial, sans-serif" font-size="32" fill="rgba(255,255,255,0.8)" text-anchor="middle">Articles Banner</text>
+  <text x="960" y="300" font-family="Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.6)" text-anchor="middle">1920 × 400px</text>
+</svg>

@@ -9,49 +9,49 @@ type Translate = (key: string, params?: Record<string, unknown>) => string
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 type TypedSchemaError = {
-  path?: string,
+  path?: string
   errors: string[]
 }
 
 type TypedSchemaResult<TOutput> = {
-  value?: TOutput,
+  value?: TOutput
   errors: TypedSchemaError[]
 }
 
 type VeeTypedSchema<TInput, TOutput> = {
-  __type: 'VVTypedSchema',
+  __type: 'VVTypedSchema'
   parse(values: TInput): Promise<TypedSchemaResult<TOutput>>
 }
 
 export interface LoginFormValues {
-  email: string,
+  email: string
   password: string
 }
 
 export interface RegisterFormValues {
-  fullName: string,
-  username: string,
-  email: string,
-  phone: string,
-  password: string,
+  fullName: string
+  username: string
+  email: string
+  phone: string
+  password: string
   acceptTerms: boolean
 }
 
 export interface ContactFormValues {
-  fullName: string,
-  companyName: string,
-  email: string,
-  phone: string,
-  service: string,
+  fullName: string
+  companyName: string
+  email: string
+  phone: string
+  service: string
   description: string
 }
 
 export interface UserFormValues {
-  full_name: string,
-  username: string,
-  email: string,
-  phone: string,
-  role: string,
+  full_name: string
+  username: string
+  email: string
+  phone: string
+  role: string
   password: string
 }
 

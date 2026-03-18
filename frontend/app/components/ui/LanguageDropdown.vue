@@ -11,7 +11,10 @@
       class="text-es-text-secondary dark:text-es-text-secondary-dark hover:text-es-text-primary dark:hover:text-es-text-primary-dark"
     >
       <span>{{ currentLanguage.name }}</span>
-      <UIcon name="i-heroicons-chevron-down" class="w-4 h-4 ml-1" />
+      <UIcon
+        name="i-heroicons-chevron-down"
+        class="w-4 h-4 ml-1"
+      />
     </UButton>
   </UDropdownMenu>
 </template>
@@ -23,7 +26,7 @@ const { locale, setLocale } = useI18n()
 
 const languages = [
   { code: 'id' as const, name: 'Bahasa Indonesia' },
-  { code: 'en' as const, name: 'English' },
+  { code: 'en' as const, name: 'English' }
 ]
 
 const currentLanguage = computed(() =>
@@ -39,7 +42,7 @@ const menuItems = computed<DropdownMenuItem[]>(() =>
       if (locale.value !== lang.code) {
         setLocale(lang.code)
       }
-    },
+    }
   }))
 )
 </script>

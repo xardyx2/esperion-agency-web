@@ -113,6 +113,8 @@
     }
   },
   "services": {
+    "pricing": "Pricing",
+    "faq": "FAQ",
     "banner": {
       "title": "Our Services",
       "description": "Solusi digital yang dirancang untuk membantu bisnis Anda bergerak lebih jelas dan lebih siap tumbuh"
@@ -245,6 +247,8 @@
     }
   },
   "contact": {
+    "address": "Alamat",
+    "addressText": "Sawangan Elok A1 No 5, Sawangan, Depok, Indonesia",
     "banner": {
       "title": "Hubungi Kami",
       "description": "Ceritakan kebutuhan Anda, lalu kami bantu petakan langkah digital yang paling relevan"
@@ -252,40 +256,36 @@
     "form": {
       "title": "Send Your Brief",
       "fullNameLabel": "Nama Lengkap",
-      "companyNameLabel": "Nama Perusahaan",
+      "fullNamePlaceholder": "Nama Anda",
       "emailLabel": "Email",
+      "emailPlaceholder": "{'anda@contoh.com'}",
       "phoneLabel": "Nomor Telepon",
+      "phonePlaceholder": "+62 812 3456 7890",
       "serviceLabel": "Layanan yang Dibutuhkan",
-      "descriptionLabel": "Ringkasan Proyek",
       "servicePlaceholder": "Pilih layanan",
       "serviceOptions": {
         "webDevelopment": "Web Development",
         "mobileApp": "Mobile App Development",
         "uiUxDesign": "UI/UX Design",
         "digitalMarketing": "Digital Marketing",
-        "ecommerce": "E-Commerce Solutions",
-        "consulting": "Consulting",
         "other": "Other"
       },
-      "fullNamePlaceholder": "Nama Anda",
-      "companyNamePlaceholder": "Nama perusahaan atau brand",
-      "emailPlaceholder": "{'anda@contoh.com'}",
-      "phonePlaceholder": "+62 812 3456 7890",
-      "descriptionPlaceholder": "Ceritakan tujuan, konteks, dan target waktu proyek Anda...",
+      "messageLabel": "Pesan",
+      "messagePlaceholder": "Ceritakan tujuan, konteks, dan target waktu proyek Anda...",
       "submitButton": "Send Message",
       "submittingButton": "Sending...",
-      "successMessage": "Terima kasih. Brief Anda sudah terkirim dan tim Esperion akan segera menghubungi Anda.",
+      "successMessage": "Terima kasih. Pesan Anda sudah terkirim dan tim Esperion akan segera menghubungi Anda.",
       "errorMessage": "Terjadi kendala saat mengirim pesan. Silakan coba beberapa saat lagi."
     },
     "info": {
       "title": "Contact Information",
-      "location": "Location",
-      "locationText": "Sawangan Elok A1 No 5 RT 1 RW 10, Sawangan, Depok, Jawa Barat, Indonesia",
-      "phone": "Phone / WhatsApp",
+      "address": "Alamat",
+      "addressText": "Sawangan Elok A1 No 5, Sawangan, Depok, Indonesia",
+      "phone": "Telepon / WhatsApp",
       "phoneText": "+62 812 3456 7890",
       "email": "Email",
       "emailText": "{'hello@esperion.one'}",
-      "businessHours": "Business Hours",
+      "businessHours": "Jam Operasional",
       "businessHoursText": "Senin - Jumat: 09.00 - 18.00 WIB"
     },
     "social": {
@@ -338,6 +338,11 @@
     "switchToDarkMode": "Switch to dark mode",
     "lightMode": "Light mode",
     "darkMode": "Dark mode"
+  },
+  "themeToggle": {
+    "auto": "Auto",
+    "light": "Terang",
+    "dark": "Gelap"
   },
   "offline": {
     "title": "You're Offline",
@@ -549,9 +554,15 @@
       "resetButton": "Reset Semua Filter"
     },
     "featuredBadge": "Featured",
+    "impact": "Dampak",
+    "client": "Klien",
     "loadMore": {
       "button": "View More Projects"
     }
+  },
+  "article": {
+    "readTime": "menit baca",
+    "publishedOn": "Dipublikasikan pada"
   },
   "seo": {
     "home": {

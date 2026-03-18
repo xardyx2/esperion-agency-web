@@ -1,0 +1,36 @@
+schema: spec-driven
+created: 2026-03-14
+merged_from:
+  - repair-local-surrealdb-recovery
+  - migrate-surrealdb-v3
+merge_date: 2026-03-14
+rationale: |
+  Both changes addressed the same root problem: SurrealDB v1→v3 migration.
+  
+  repair-local-surrealdb-recovery focused on local development recovery
+  when legacy volumes block v3 startup, while migrate-surrealdb-v3 
+  covered production migration + backend code updates.
+  
+  Overlapping specs and capability claims created confusion.
+  Unified for clarity and single source of truth.
+  
+  Merged content:
+  - surrealdb-v3 spec: Combined ADDED (v3 runtime) + MODIFIED (migration path)
+  - docker-infrastructure spec: Added recovery tooling + health checks
+  - Moved local-docker-deployment spec (NEW)
+  - Moved surrealdb-local-recovery spec (NEW)
+  - Tasks: Integrated 18 local recovery tasks + 83 production tasks
+  - Design: Added Local Recovery section with 9 new decisions
+  - Proposal: Expanded scope to include local recovery
+  
+  Result: Unified SurrealDB v3 Migration with complete local-to-production coverage
+source_changes:
+  - name: repair-local-surrealdb-recovery
+    status: completed
+    tasks: 13/18 (72%)
+    archived: true
+    archived_date: 2026-03-14
+  - name: migrate-surrealdb-v3
+    status: in-progress
+    tasks: 42/98 (43%)
+    primary: true

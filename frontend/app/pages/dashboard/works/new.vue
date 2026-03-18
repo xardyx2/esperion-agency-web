@@ -159,13 +159,11 @@
 </template>
 
 <script setup lang="ts">
+import { useWorksApi } from '../../../composables/useApi'
+
 definePageMeta({
   layout: 'dashboard'
 })
-
-
-
-import { useWorksApi } from '../../../composables/useApi'
 
 const { t } = useI18n()
 

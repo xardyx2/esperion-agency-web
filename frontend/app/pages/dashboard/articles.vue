@@ -158,14 +158,12 @@
 </template>
 
 <script setup lang="ts">
+import { useArticlesApi } from '../../composables/useApi'
+import type { Article } from '../../types/api'
+
 definePageMeta({
   layout: 'dashboard'
 })
-
-
-
-import { useArticlesApi } from '../../composables/useApi'
-import type { Article } from '../../types/api'
 
 const { t } = useI18n()
 

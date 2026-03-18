@@ -1,17 +1,17 @@
 {
   "nav": {
-    "home": "Beranda",
-    "works": "Portofolio",
-    "services": "Layanan",
-    "articles": "Artikel",
-    "about": "Tentang",
-    "contact": "Hubungi Kami",
-    "appearance": "Tampilan",
-    "darkMode": "Mode Gelap",
+    "home": "Home",
+    "works": "Portfolio",
+    "services": "Services",
+    "articles": "Articles",
+    "about": "About",
+    "contact": "Contact Us",
+    "appearance": "Appearance",
+    "darkMode": "Dark Mode",
     "aria": {
-      "home": "Beranda Esperion",
-      "openMenu": "Buka menu",
-      "closeMenu": "Tutup menu"
+      "home": "Esperion Home",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
     }
   },
   "language": {
@@ -31,8 +31,8 @@
     "filter": "Filter",
     "sort": "Urutkan",
     "reset": "Reset",
-    "readMore": "Baca Selengkapnya",
-    "learnMore": "Pelajari",
+    "readMore": "Read More",
+    "learnMore": "Learn More",
     "submit": "Kirim",
     "pagination": {
       "previous": "Sebelumnya",
@@ -55,23 +55,23 @@
       "slide1Title": "Bangun Kehadiran Digital Anda",
       "slide1Sub": "Solusi terpercaya untuk bisnis Indonesia",
       "slide1Desc": "Kami merancang website dan produk digital yang membantu bisnis tampil jelas, cepat, dan siap berkembang.",
-      "slide1Cta": "Mulai Konsultasi",
+      "slide1Cta": "Start Consultation",
       "slide2Title": "Siap untuk Fase Pertumbuhan Berikutnya?",
       "slide2Sub": "Solusi digital untuk fase tumbuh berikutnya",
       "slide2Desc": "Dari perencanaan sampai peluncuran, Esperion membantu tim Anda merilis pengalaman digital yang relevan dan terukur.",
-      "slide2Cta": "Lihat Portofolio",
+      "slide2Cta": "View Portfolio",
       "slide3Title": "Tim Kecil, Dampak Nyata",
       "slide3Sub": "Tim kecil yang fokus pada hasil nyata",
       "slide3Desc": "Kami menggabungkan strategi, desain, dan pengembangan untuk menghadirkan pengalaman digital yang konsisten dengan brand Anda.",
-      "slide3Cta": "Pelajari Lebih Lanjut",
+      "slide3Cta": "Learn More",
       "slide4Title": "Layanan Digital Lengkap",
       "slide4Sub": "Layanan Digital Lengkap",
       "slide4Desc": "Dari web development hingga digital marketing, kami menyediakan solusi end-to-end untuk transformasi digital.",
-      "slide4Cta": "Jelajahi Layanan",
+      "slide4Cta": "Explore Services",
       "slide5Title": "Dipercaya oleh Bisnis yang Berkembang",
       "slide5Sub": "Dipercaya oleh Bisnis yang Berkembang",
       "slide5Desc": "Bergabung dengan bisnis yang telah tumbuh bersama Esperion melalui solusi digital yang terukur dan berdampak.",
-      "slide5Cta": "Lihat Testimoni"
+      "slide5Cta": "View Testimonials"
     },
     "whoAreWe": {
       "title": "Tentang Esperion",
@@ -245,13 +245,13 @@
       "descriptionLabel": "Ringkasan Proyek",
       "servicePlaceholder": "Pilih layanan",
       "serviceOptions": {
-        "webDevelopment": "Pengembangan Web",
-        "mobileApp": "Aplikasi Mobile",
+        "webDevelopment": "Web Development",
+        "mobileApp": "Mobile App Development",
         "uiUxDesign": "UI/UX Design",
         "digitalMarketing": "Digital Marketing",
-        "ecommerce": "Solusi E-Commerce",
-        "consulting": "Konsultasi Digital",
-        "other": "Lainnya"
+        "ecommerce": "E-Commerce Solutions",
+        "consulting": "Digital Consulting",
+        "other": "Other"
       },
       "fullNamePlaceholder": "Nama Anda",
       "companyNamePlaceholder": "Nama perusahaan atau brand",
@@ -270,7 +270,7 @@
       "phone": "Telepon / WhatsApp",
       "phoneText": "+62 812 3456 7890",
       "email": "Email",
-      "emailText": "{'hello@esperion.id'}",
+      "emailText": "{'hello@esperion.one'}",
       "businessHours": "Jam Operasional",
       "businessHoursText": "Senin - Jumat: 09.00 - 18.00 WIB"
     },
@@ -1272,6 +1272,13 @@
       },
       "empty": "Tidak ada data analytics."
     }
+  },
+  "footer": {
+    "copyright": "© {year} Esperion. Hak Cipta Dilindungi.",
+    "cookieSettings": "Pengaturan Cookie",
+    "privacyPolicy": "Kebijakan Privasi",
+    "termsOfService": "Syarat Layanan",
+    "sitemap": "Peta Situs"
   },
   "error": {
     "backToHome": "Kembali ke Beranda",

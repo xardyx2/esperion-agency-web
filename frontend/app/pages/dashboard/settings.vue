@@ -543,7 +543,6 @@
             </div>
           </div>
 
-
           <!-- Funnels Section -->
           <div class="space-y-4">
             <div class="flex items-center justify-between">
@@ -814,7 +813,6 @@
           </div>
         </div>
       </UCard>
-
 
       <!-- Monitoring Section -->
       <UCard
@@ -1284,12 +1282,6 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: 'dashboard'
-})
-
-
-
 import type {
   AlertDestination,
   AlertInstanceItem,
@@ -1303,6 +1295,10 @@ import type {
   MonitoredService
 } from '../../types/api'
 import { useAnalyticsApi, useBackupApi, useMonitoringApi } from '../../composables/useApi'
+
+definePageMeta({
+  layout: 'dashboard'
+})
 
 const { t } = useI18n()
 

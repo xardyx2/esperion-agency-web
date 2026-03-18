@@ -115,6 +115,7 @@ useSeoMeta({
   ogLocale: 'id_ID'
 })
 
+/*
 // Define schema for the services page
 useSchemaOrg([
   defineWebPage({
@@ -141,6 +142,7 @@ useSchemaOrg([
     ]
   })
 ])
+*/
 
 const services = publicServices
 

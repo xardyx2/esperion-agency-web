@@ -6,7 +6,10 @@
       :description="t('dashboard.media.description')"
     >
       <template #actions>
-        <UButton color="primary" class="rounded-full">
+        <UButton
+          color="primary"
+          class="rounded-full"
+        >
           <span class="text-sm">↑</span> {{ t('dashboard.media.uploadButton') }}
         </UButton>
       </template>
@@ -92,8 +95,6 @@
 definePageMeta({
   layout: 'dashboard'
 })
-
-
 
 const { t } = useI18n()
 

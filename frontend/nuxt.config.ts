@@ -10,7 +10,7 @@ export default ({
     '@nuxt/fonts',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
-    'nuxt-schema-org',
+    // 'nuxt-schema-org', // Disabled due to defineDataset export issue
     '@nuxt/eslint',
     '@nuxtjs/color-mode',
     '@nuxtjs/i18n',
@@ -187,7 +187,24 @@ export default ({
         '@scalar/nuxt > highlight.js/lib/core',
         '@vue/devtools-core',
         '@vue/devtools-kit'
-      ]
+      ],
+      exclude: ['ajv', 'ajv-draft-04']
+    },
+    build: {
+      commonjsOptions: {
+        transformMixedEsModules: true
+      },
+      rollupOptions: {
+        external: [
+          'ajv',
+          'ajv/*',
+          'ajv-draft-04',
+          'ajv-draft-04/*'
+        ]
+      }
+    },
+    ssr: {
+      external: ['ajv', 'ajv-draft-04']
     },
     vue: {
       scriptSetup: true

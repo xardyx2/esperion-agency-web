@@ -358,6 +358,7 @@ watchEffect(() => {
   })
 })
 
+/*
 // Only set Schema.org when article is loaded
 watchEffect(() => {
   if (!article.value) return
@@ -430,4 +431,5 @@ watchEffect(() => {
     })
   ])
 })
+*/
 </script>

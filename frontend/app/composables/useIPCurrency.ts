@@ -22,7 +22,7 @@ export async function detectLocationFromIP(): Promise<GeoLocationResponse | null
     // Use ipapi.co for free IP geolocation
     const response = await fetch('https://ipapi.co/json/')
     if (!response.ok) return null
-    
+
     const data = await response.json()
     return {
       country: data.country_name,
@@ -52,18 +52,18 @@ export function useIPCurrency(priceUSD: number) {
   const location = ref<GeoLocationResponse | null>(null)
   const isLoading = ref(true)
   const isClient = ref(false)
-  
+
   // Only detect location on client-side
   onMounted(async () => {
     isClient.value = true
-    if (process.client) {
+    if (import.meta.client) {
       location.value = await detectLocationFromIP()
       isLoading.value = false
     }
   })
-  
+
   const useIDR = computed(() => shouldUseIDR(location.value))
-  
+
   const price = computed(() => {
     if (!isClient.value) return priceUSD // Default to USD on SSR
     if (useIDR.value) {
@@ -71,17 +71,17 @@ export function useIPCurrency(priceUSD: number) {
     }
     return priceUSD
   })
-  
+
   const currency = computed(() => {
     if (!isClient.value) return 'USD'
     return useIDR.value ? 'IDR' : 'USD'
   })
-  
+
   const symbol = computed(() => {
     if (!isClient.value) return '$'
     return useIDR.value ? 'Rp' : '$'
   })
-  
+
   const formatted = computed(() => {
     // During SSR, always show USD
     if (!isClient.value) {
@@ -92,7 +92,7 @@ export function useIPCurrency(priceUSD: number) {
         maximumFractionDigits: 0
       }).format(priceUSD)
     }
-    
+
     if (useIDR.value) {
       return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -109,7 +109,7 @@ export function useIPCurrency(priceUSD: number) {
       }).format(price.value)
     }
   })
-  
+
   return {
     price,
     currency,
@@ -129,15 +129,15 @@ export function usePriceFormatter() {
   const location = ref<GeoLocationResponse | null>(null)
   const detected = ref(false)
   const isClient = ref(false)
-  
+
   onMounted(async () => {
     isClient.value = true
-    if (process.client && !detected.value) {
+    if (import.meta.client && !detected.value) {
       location.value = await detectLocationFromIP()
       detected.value = true
     }
   })
-  
+
   const formatPrice = (priceUSD: number): string => {
     // During SSR, always show USD
     if (!isClient.value) {
@@ -148,9 +148,9 @@ export function usePriceFormatter() {
         maximumFractionDigits: 0
       }).format(priceUSD)
     }
-    
+
     const isIDR = shouldUseIDR(location.value)
-    
+
     if (isIDR) {
       const priceIDR = Math.round(priceUSD * EXCHANGE_RATE)
       return new Intl.NumberFormat('id-ID', {
@@ -168,12 +168,12 @@ export function usePriceFormatter() {
       }).format(priceUSD)
     }
   }
-  
+
   const getCurrencyLabel = (): string => {
     if (!isClient.value) return 'USD'
     return shouldUseIDR(location.value) ? 'IDR' : 'USD'
   }
-  
+
   return {
     formatPrice,
     getCurrencyLabel,

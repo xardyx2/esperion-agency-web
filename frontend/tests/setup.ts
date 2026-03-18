@@ -1,6 +1,6 @@
 /**
  * Vitest Test Setup
- * 
+ *
  * Global test utilities and mocks
  */
 
@@ -22,8 +22,8 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
+    dispatchEvent: vi.fn()
+  }))
 })
 
 // Mock IntersectionObserver
@@ -40,14 +40,14 @@ const localStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn(),
-  clear: vi.fn(),
+  clear: vi.fn()
 }
 global.localStorage = localStorageMock as any
 
 // Vue Test Utils global config
 config.global.mocks = {
   $fetch: global.$fetch,
-  fetch: global.fetch,
+  fetch: global.fetch
 }
 
 // Reset all mocks before each test

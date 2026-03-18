@@ -305,8 +305,6 @@
 </template>
 
 <script setup lang="ts">
-import { useAnalyticsApi, useContactApi } from '../composables/useApi'
-
 const { t } = useI18n()
 
 // SEO Meta
@@ -325,6 +323,7 @@ useSeoMeta({
   ogLocale: 'id_ID'
 })
 
+/*
 // Define schema for the contact page
 useSchemaOrg([
   defineWebPage({
@@ -351,6 +350,7 @@ useSchemaOrg([
     ]
   })
 ])
+*/
 
 // Form state
 const form = ref({
@@ -363,7 +363,6 @@ const form = ref({
 })
 
 const isSubmitting = ref(false)
-const analyticsApi = useAnalyticsApi()
 
 // Handle form submission
 const handleSubmit = async () => {

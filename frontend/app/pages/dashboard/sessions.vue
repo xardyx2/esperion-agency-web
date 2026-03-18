@@ -102,8 +102,6 @@
 </template>
 
 <script setup lang="ts">
-
-
 import { useAuthApi } from '../../composables/useApi'
 import type { Session } from '~/types/api'
 

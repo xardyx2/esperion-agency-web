@@ -323,7 +323,7 @@ export const publicWorks: PublicWork[] = [
       'SEO optimization',
       'Performance optimization'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-1-gallery-1.jpg', '/works/work-1-gallery-2.jpg', '/works/work-1-gallery-3.jpg', '/works/work-1-gallery-4.jpg']
   },
   {
     id: 2,
@@ -346,7 +346,7 @@ export const publicWorks: PublicWork[] = [
       'Secure fund transfer modules',
       'Card and account management dashboard'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-2-gallery-1.jpg', '/works/work-2-gallery-2.jpg', '/works/work-2-gallery-3.jpg', '/works/work-2-gallery-4.jpg']
   },
   {
     id: 3,
@@ -368,7 +368,7 @@ export const publicWorks: PublicWork[] = [
       'Telemedicine session scheduling',
       'Secure records and role-based access'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-3-gallery-1.jpg', '/works/work-3-gallery-2.jpg', '/works/work-3-gallery-3.jpg', '/works/work-3-gallery-4.jpg']
   },
   {
     id: 4,
@@ -390,7 +390,7 @@ export const publicWorks: PublicWork[] = [
       'Online ordering and checkout',
       'Campaign and seasonal promotion slots'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-4-gallery-1.jpg', '/works/work-4-gallery-2.jpg', '/works/work-4-gallery-3.jpg', '/works/work-4-gallery-4.jpg']
   },
   {
     id: 5,
@@ -412,7 +412,7 @@ export const publicWorks: PublicWork[] = [
       'Nutrition and progress tracking',
       'Goal milestones and reminders'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-5-gallery-1.jpg', '/works/work-5-gallery-2.jpg', '/works/work-5-gallery-3.jpg', '/works/work-5-gallery-4.jpg']
   },
   {
     id: 6,
@@ -434,7 +434,7 @@ export const publicWorks: PublicWork[] = [
       'High-density analytics cards',
       'Contextual command patterns'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-6-gallery-1.jpg', '/works/work-6-gallery-2.jpg', '/works/work-6-gallery-3.jpg', '/works/work-6-gallery-4.jpg']
   },
   {
     id: 7,
@@ -456,7 +456,7 @@ export const publicWorks: PublicWork[] = [
       'Performance dashboard and attribution',
       'Audience segmentation and retargeting'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-7-gallery-1.jpg', '/works/work-7-gallery-2.jpg', '/works/work-7-gallery-3.jpg', '/works/work-7-gallery-4.jpg']
   },
   {
     id: 8,
@@ -478,7 +478,7 @@ export const publicWorks: PublicWork[] = [
       'One-tap checkout flows',
       'Saved carts and personalized offers'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-8-gallery-1.jpg', '/works/work-8-gallery-2.jpg', '/works/work-8-gallery-3.jpg', '/works/work-8-gallery-4.jpg']
   },
   {
     id: 9,
@@ -500,7 +500,7 @@ export const publicWorks: PublicWork[] = [
       'Multi-author CMS workflow',
       'SEO-safe migration setup'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-9-gallery-1.jpg', '/works/work-9-gallery-2.jpg', '/works/work-9-gallery-3.jpg', '/works/work-9-gallery-4.jpg']
   },
   {
     id: 10,
@@ -522,7 +522,7 @@ export const publicWorks: PublicWork[] = [
       'Brand expression for product UI',
       'Guideline handoff documentation'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-10-gallery-1.jpg', '/works/work-10-gallery-2.jpg', '/works/work-10-gallery-3.jpg', '/works/work-10-gallery-4.jpg']
   },
   {
     id: 11,
@@ -544,7 +544,7 @@ export const publicWorks: PublicWork[] = [
       'Content cluster planning',
       'Search performance reporting'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-11-gallery-1.jpg', '/works/work-11-gallery-2.jpg', '/works/work-11-gallery-3.jpg', '/works/work-11-gallery-4.jpg']
   },
   {
     id: 12,
@@ -566,7 +566,7 @@ export const publicWorks: PublicWork[] = [
       'Roadmap and capability planning',
       'Execution governance model'
     ],
-    gallery: ['/works/gallery-1.jpg', '/works/gallery-2.jpg', '/works/gallery-3.jpg', '/works/gallery-4.jpg']
+    gallery: ['/works/work-12-gallery-1.jpg', '/works/work-12-gallery-2.jpg', '/works/work-12-gallery-3.jpg', '/works/work-12-gallery-4.jpg']
   }
 ]
 

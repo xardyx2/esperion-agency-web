@@ -223,14 +223,12 @@
 </template>
 
 <script setup lang="ts">
+import { useClientsApi } from '../../composables/useApi'
+import type { Client } from '../../types/api'
+
 definePageMeta({
   layout: 'dashboard'
 })
-
-
-
-import { useClientsApi } from '../../composables/useApi'
-import type { Client } from '../../types/api'
 
 const { t } = useI18n()
 
