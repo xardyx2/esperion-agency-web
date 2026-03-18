@@ -20,6 +20,11 @@ interface _GlobalComponents {
   SiteFooter: typeof import("../../app/components/Footer/SiteFooter.vue")['default']
   MainNav: typeof import("../../app/components/Navigation/MainNav.vue")['default']
   SeoScoreDisplay: typeof import("../../app/components/SeoScoreDisplay.vue")['default']
+  BannerSlideAnnouncement: typeof import("../../app/components/banner/BannerSlideAnnouncement.vue")['default']
+  BannerSlideCTA: typeof import("../../app/components/banner/BannerSlideCTA.vue")['default']
+  BannerSlideFeature: typeof import("../../app/components/banner/BannerSlideFeature.vue")['default']
+  BannerSlideHero: typeof import("../../app/components/banner/BannerSlideHero.vue")['default']
+  BannerSlideTestimonial: typeof import("../../app/components/banner/BannerSlideTestimonial.vue")['default']
   DashboardMetricCard: typeof import("../../app/components/dashboard/DashboardMetricCard.vue")['default']
   DashboardNotificationsSlideover: typeof import("../../app/components/dashboard/DashboardNotificationsSlideover.vue")['default']
   DashboardPageHeader: typeof import("../../app/components/dashboard/DashboardPageHeader.vue")['default']
@@ -196,6 +201,11 @@ interface _GlobalComponents {
   LazySiteFooter: LazyComponent<typeof import("../../app/components/Footer/SiteFooter.vue")['default']>
   LazyMainNav: LazyComponent<typeof import("../../app/components/Navigation/MainNav.vue")['default']>
   LazySeoScoreDisplay: LazyComponent<typeof import("../../app/components/SeoScoreDisplay.vue")['default']>
+  LazyBannerSlideAnnouncement: LazyComponent<typeof import("../../app/components/banner/BannerSlideAnnouncement.vue")['default']>
+  LazyBannerSlideCTA: LazyComponent<typeof import("../../app/components/banner/BannerSlideCTA.vue")['default']>
+  LazyBannerSlideFeature: LazyComponent<typeof import("../../app/components/banner/BannerSlideFeature.vue")['default']>
+  LazyBannerSlideHero: LazyComponent<typeof import("../../app/components/banner/BannerSlideHero.vue")['default']>
+  LazyBannerSlideTestimonial: LazyComponent<typeof import("../../app/components/banner/BannerSlideTestimonial.vue")['default']>
   LazyDashboardMetricCard: LazyComponent<typeof import("../../app/components/dashboard/DashboardMetricCard.vue")['default']>
   LazyDashboardNotificationsSlideover: LazyComponent<typeof import("../../app/components/dashboard/DashboardNotificationsSlideover.vue")['default']>
   LazyDashboardPageHeader: LazyComponent<typeof import("../../app/components/dashboard/DashboardPageHeader.vue")['default']>

@@ -27,4 +27,5 @@ pub mod contact;
 pub mod seo_score;
 pub mod translation;
 pub mod email;
+pub mod email_management;
 pub mod user_management;

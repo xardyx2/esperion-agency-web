@@ -20,6 +20,11 @@ export const CookieConsentBanner: typeof import("../app/components/CookieConsent
 export const SiteFooter: typeof import("../app/components/Footer/SiteFooter.vue")['default']
 export const MainNav: typeof import("../app/components/Navigation/MainNav.vue")['default']
 export const SeoScoreDisplay: typeof import("../app/components/SeoScoreDisplay.vue")['default']
+export const BannerSlideAnnouncement: typeof import("../app/components/banner/BannerSlideAnnouncement.vue")['default']
+export const BannerSlideCTA: typeof import("../app/components/banner/BannerSlideCTA.vue")['default']
+export const BannerSlideFeature: typeof import("../app/components/banner/BannerSlideFeature.vue")['default']
+export const BannerSlideHero: typeof import("../app/components/banner/BannerSlideHero.vue")['default']
+export const BannerSlideTestimonial: typeof import("../app/components/banner/BannerSlideTestimonial.vue")['default']
 export const DashboardMetricCard: typeof import("../app/components/dashboard/DashboardMetricCard.vue")['default']
 export const DashboardNotificationsSlideover: typeof import("../app/components/dashboard/DashboardNotificationsSlideover.vue")['default']
 export const DashboardPageHeader: typeof import("../app/components/dashboard/DashboardPageHeader.vue")['default']
@@ -196,6 +201,11 @@ export const LazyCookieConsentBanner: LazyComponent<typeof import("../app/compon
 export const LazySiteFooter: LazyComponent<typeof import("../app/components/Footer/SiteFooter.vue")['default']>
 export const LazyMainNav: LazyComponent<typeof import("../app/components/Navigation/MainNav.vue")['default']>
 export const LazySeoScoreDisplay: LazyComponent<typeof import("../app/components/SeoScoreDisplay.vue")['default']>
+export const LazyBannerSlideAnnouncement: LazyComponent<typeof import("../app/components/banner/BannerSlideAnnouncement.vue")['default']>
+export const LazyBannerSlideCTA: LazyComponent<typeof import("../app/components/banner/BannerSlideCTA.vue")['default']>
+export const LazyBannerSlideFeature: LazyComponent<typeof import("../app/components/banner/BannerSlideFeature.vue")['default']>
+export const LazyBannerSlideHero: LazyComponent<typeof import("../app/components/banner/BannerSlideHero.vue")['default']>
+export const LazyBannerSlideTestimonial: LazyComponent<typeof import("../app/components/banner/BannerSlideTestimonial.vue")['default']>
 export const LazyDashboardMetricCard: LazyComponent<typeof import("../app/components/dashboard/DashboardMetricCard.vue")['default']>
 export const LazyDashboardNotificationsSlideover: LazyComponent<typeof import("../app/components/dashboard/DashboardNotificationsSlideover.vue")['default']>
 export const LazyDashboardPageHeader: LazyComponent<typeof import("../app/components/dashboard/DashboardPageHeader.vue")['default']>

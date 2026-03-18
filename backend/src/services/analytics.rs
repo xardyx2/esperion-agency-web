@@ -556,6 +556,475 @@ where
     Ok(())
 }
 
+// ============== New Analytics Service Methods ==============
+
+impl AnalyticsService {
+    /// Get dashboard stats (articles, works, clients, contacts)
+    pub async fn get_dashboard_stats(&self, db: &crate::db::DbState) -> Result<DashboardStats, String> {
+        // Count articles
+        let articles_result: Result<u64, String> = self.count_table(db, "articles").await;
+        let total_articles = articles_result.unwrap_or(0);
+        
+        // Count published articles
+        let published_result = db
+            .query("SELECT count() FROM articles WHERE published = true")
+            .await
+            .map_err(|e| format!("Failed to count published articles: {e}"));
+        let published_articles = published_result
+            .ok()
+            .and_then(|mut r| r.take::<Vec<serde_json::Value>>(0).ok())
+            .and_then(|v| v.first().and_then(|x| x.get("count").and_then(|c| c.as_u64())))
+            .unwrap_or(0);
+        
+        // Count works
+        let total_works = self.count_table(db, "works").await.unwrap_or(0);
+        
+        // Count featured works
+        let featured_result = db
+            .query("SELECT count() FROM works WHERE featured = true")
+            .await
+            .map_err(|e| format!("Failed to count featured works: {e}"));
+        let featured_works = featured_result
+            .ok()
+            .and_then(|mut r| r.take::<Vec<serde_json::Value>>(0).ok())
+            .and_then(|v| v.first().and_then(|x| x.get("count").and_then(|c| c.as_u64())))
+            .unwrap_or(0);
+        
+        // Count clients
+        let total_clients = self.count_table(db, "clients").await.unwrap_or(0);
+        
+        // Count active clients
+        let active_result = db
+            .query("SELECT count() FROM clients WHERE status = 'active'")
+            .await
+            .map_err(|e| format!("Failed to count active clients: {e}"));
+        let active_clients = active_result
+            .ok()
+            .and_then(|mut r| r.take::<Vec<serde_json::Value>>(0).ok())
+            .and_then(|v| v.first().and_then(|x| x.get("count").and_then(|c| c.as_u64())))
+            .unwrap_or(0);
+        
+        // Count contacts
+        let total_contacts = self.count_table(db, "contact_submissions").await.unwrap_or(0);
+        
+        // Count new contacts
+        let new_result = db
+            .query("SELECT count() FROM contact_submissions WHERE status = 'new'")
+            .await
+            .map_err(|e| format!("Failed to count new contacts: {e}"));
+        let new_contacts = new_result
+            .ok()
+            .and_then(|mut r| r.take::<Vec<serde_json::Value>>(0).ok())
+            .and_then(|v| v.first().and_then(|x| x.get("count").and_then(|c| c.as_u64())))
+            .unwrap_or(0);
+        
+        Ok(DashboardStats {
+            total_articles,
+            total_works,
+            total_clients,
+            total_contacts,
+            published_articles,
+            featured_works,
+            active_clients,
+            new_contacts,
+        })
+    }
+    
+    /// Count records in a table
+    async fn count_table(&self, db: &crate::db::DbState, table: &str) -> Result<u64, String> {
+        let query = format!("SELECT count() FROM {table}");
+        let result = db
+            .query(&query)
+            .await
+            .map_err(|e| format!("Failed to count {table}: {e}"));
+        
+        result
+            .ok()
+            .and_then(|mut r| r.take::<Vec<serde_json::Value>>(0).ok())
+            .and_then(|v| v.first().and_then(|x| x.get("count").and_then(|c| c.as_u64())))
+            .ok_or_else(|| format!("Failed to parse count from {table}"))
+    }
+    
+    /// Get data trends for charts
+    pub async fn get_data_trends(&self, db: &crate::db::DbState) -> Result<DataTrends, String> {
+        // For now, return empty trends - can be enhanced with time-series data
+        Ok(DataTrends {
+            page_views_trend: vec![],
+            sessions_trend: vec![],
+            conversions_trend: vec![],
+        })
+    }
+    
+    /// Get user behavior overview
+    pub async fn get_behavior_overview(&self, db: &crate::db::DbState) -> Result<BehaviorOverview, String> {
+        // Query analytics_events for behavior data
+        let mut result = db
+            .query("SELECT country, page_url, session_id FROM analytics_events ORDER BY created_at DESC LIMIT 10000")
+            .await
+            .map_err(|e| format!("Failed to query behavior data: {e}"))?;
+        
+        let rows: Vec<serde_json::Value> = result
+            .take(0)
+            .map_err(|e| format!("Failed to parse behavior data: {e}"))?;
+        
+        // Aggregate by country
+        let mut country_map: std::collections::HashMap<String, u64> = std::collections::HashMap::new();
+        let mut page_map: std::collections::HashMap<String, u64> = std::collections::HashMap::new();
+        let mut sessions = std::collections::HashSet::new();
+        
+        for row in &rows {
+            if let Some(country) = row.get("country").and_then(|v| v.as_str()) {
+                if !country.is_empty() {
+                    *country_map.entry(country.to_string()).or_insert(0) += 1;
+                }
+            }
+            
+            if let Some(page_url) = row.get("page_url").and_then(|v| v.as_str()) {
+                *page_map.entry(page_url.to_string()).or_insert(0) += 1;
+            }
+            
+            if let Some(session_id) = row.get("session_id").and_then(|v| v.as_str()) {
+                if !session_id.is_empty() {
+                    sessions.insert(session_id.to_string());
+                }
+            }
+        }
+        
+        // Convert to by_country metrics
+        let mut by_country: Vec<UserBehaviorMetrics> = country_map
+            .into_iter()
+            .map(|(country, page_views)| UserBehaviorMetrics {
+                country,
+                city: None,
+                page_views,
+                sessions: 0,
+            })
+            .collect();
+        by_country.sort_by(|a, b| b.page_views.cmp(&a.page_views));
+        by_country.truncate(10);
+        
+        // Convert to top_pages
+        let mut top_pages: Vec<TopPage> = page_map
+            .into_iter()
+            .map(|(path, views)| TopPage {
+                path,
+                views,
+                unique_visitors: 0,
+                avg_time_on_page: None,
+            })
+            .collect();
+        top_pages.sort_by(|a, b| b.views.cmp(&a.views));
+        top_pages.truncate(10);
+        
+        Ok(BehaviorOverview {
+            by_country,
+            by_city: vec![],
+            top_pages,
+            total_unique_visitors: sessions.len() as u64,
+            total_sessions: sessions.len() as u64,
+            avg_session_duration: None,
+        })
+    }
+    
+    /// Get real-time statistics
+    pub async fn get_realtime_stats(&self, db: &crate::db::DbState) -> Result<RealTimeStats, String> {
+        let one_hour_ago = chrono::Utc::now() - chrono::Duration::hours(1);
+        let one_hour_ago_str = one_hour_ago.to_rfc3339();
+        
+        // Count events in last hour
+        let mut result = db
+            .query("SELECT count() FROM analytics_events WHERE created_at > $time")
+            .bind(("time", one_hour_ago_str))
+            .await
+            .map_err(|e| format!("Failed to query recent events: {e}"))?;
+        
+        let events_last_hour: u64 = result
+            .take::<Vec<serde_json::Value>>(0)
+            .ok()
+            .and_then(|v| v.first().and_then(|x| x.get("count").and_then(|c| c.as_u64())))
+            .unwrap_or(0);
+        
+        // Count page views in last hour
+        let page_views_result = db
+            .query("SELECT count() FROM analytics_events WHERE event_type = 'page_view' AND created_at > $time")
+            .bind(("time", one_hour_ago_str))
+            .await
+            .map_err(|e| format!("Failed to query page views: {e}"));
+        
+        let page_views_last_hour = page_views_result
+            .ok()
+            .and_then(|mut r| r.take::<Vec<serde_json::Value>>(0).ok())
+            .and_then(|v| v.first().and_then(|x| x.get("count").and_then(|c| c.as_u64())))
+            .unwrap_or(0);
+        
+        // Count unique sessions in last hour
+        let sessions_result = db
+            .query("SELECT count(DISTINCT session_id) FROM analytics_events WHERE created_at > $time")
+            .bind(("time", one_hour_ago_str))
+            .await
+            .map_err(|e| format!("Failed to query sessions: {e}"));
+        
+        let active_users = sessions_result
+            .ok()
+            .and_then(|mut r| r.take::<Vec<serde_json::Value>>(0).ok())
+            .and_then(|v| v.first().and_then(|x| x.get("count").and_then(|c| c.as_u64())))
+            .unwrap_or(0);
+        
+        Ok(RealTimeStats {
+            active_users,
+            page_views_last_hour,
+            events_last_hour,
+            top_active_page: None,
+            timestamp: chrono::Utc::now().to_rfc3339(),
+        })
+    }
+    
+    /// List custom journeys
+    pub async fn list_journeys(&self, db: &crate::db::DbState) -> Result<Vec<CustomJourney>, String> {
+        let mut result = db
+            .query("SELECT * FROM custom_journeys WHERE active = true ORDER BY created_at DESC")
+            .await
+            .map_err(|e| format!("Failed to query journeys: {e}"))?;
+        
+        let rows: Vec<serde_json::Value> = result
+            .take(0)
+            .map_err(|e| format!("Failed to parse journeys: {e}"))?;
+        
+        let journeys = rows
+            .into_iter()
+            .filter_map(|row| serde_json::from_value::<CustomJourney>(row).ok())
+            .collect();
+        
+        Ok(journeys)
+    }
+    
+    /// Create custom journey
+    pub async fn create_journey(&self, db: &crate::db::DbState, payload: CreateJourneyRequest) -> Result<CustomJourney, String> {
+        if payload.name.trim().is_empty() {
+            return Err("Journey name is required".to_string());
+        }
+        
+        if payload.steps.is_empty() {
+            return Err("Journey must have at least one step".to_string());
+        }
+        
+        let journey = CustomJourney {
+            id: format!("journey_{}", chrono::Utc::now().timestamp()),
+            name: payload.name,
+            description: payload.description,
+            steps: payload.steps,
+            active: true,
+            created_at: Some(chrono::Utc::now().to_rfc3339()),
+        };
+        
+        let value = serde_json::to_value(&journey)
+            .map_err(|e| format!("Failed to serialize journey: {e}"))?;
+        
+        db.query("CREATE custom_journeys CONTENT $content")
+            .bind(("content", value))
+            .await
+            .map_err(|e| format!("Failed to create journey: {e}"))?;
+        
+        Ok(journey)
+    }
+    
+    /// Get journey completion statistics
+    pub async fn get_journey_completion(&self, db: &crate::db::DbState, journey_id: &str) -> Result<JourneyCompletion, String> {
+        // Get journey definition
+        let mut journey_result = db
+            .query("SELECT * FROM custom_journeys WHERE id = $id")
+            .bind(("id", journey_id.to_string()))
+            .await
+            .map_err(|e| format!("Failed to query journey: {e}"))?;
+        
+        let journeys: Vec<CustomJourney> = journey_result
+            .take(0)
+            .map_err(|e| format!("Failed to parse journey: {e}"))?;
+        
+        let journey = journeys.first()
+            .ok_or_else(|| format!("Journey not found: {journey_id}"))?;
+        
+        // Calculate completion stats (simplified)
+        let total_steps = journey.steps.len() as u64;
+        let total_completions = 0u64;
+        let completion_rate = 0.0;
+        let avg_steps_completed = 0.0;
+        
+        Ok(JourneyCompletion {
+            journey_id: journey.id.clone(),
+            journey_name: journey.name.clone(),
+            total_completions,
+            completion_rate,
+            avg_steps_completed,
+        })
+    }
+    
+    /// Compare journey periods
+    pub async fn compare_journey_periods(
+        &self,
+        db: &crate::db::DbState,
+        journey_id: &str,
+        payload: JourneyComparisonRequest,
+    ) -> Result<JourneyComparison, String> {
+        // Get journey definition
+        let mut journey_result = db
+            .query("SELECT * FROM custom_journeys WHERE id = $id")
+            .bind(("id", journey_id.to_string()))
+            .await
+            .map_err(|e| format!("Failed to query journey: {e}"))?;
+        
+        let journeys: Vec<CustomJourney> = journey_result
+            .take(0)
+            .map_err(|e| format!("Failed to parse journey: {e}"))?;
+        
+        let journey = journeys.first()
+            .ok_or_else(|| format!("Journey not found: {journey_id}"))?;
+        
+        // Placeholder - return empty comparison
+        Ok(JourneyComparison {
+            journey_id: journey.id.clone(),
+            journey_name: journey.name.clone(),
+            period_a: JourneyPeriodData {
+                period_name: "Period A".to_string(),
+                start_date: payload.period_a_start,
+                end_date: payload.period_a_end,
+                completions: 0,
+                drop_off_points: vec![],
+            },
+            period_b: JourneyPeriodData {
+                period_name: "Period B".to_string(),
+                start_date: payload.period_b_start,
+                end_date: payload.period_b_end,
+                completions: 0,
+                drop_off_points: vec![],
+            },
+            change_percentage: 0.0,
+        })
+    }
+    
+    /// List user-defined funnels
+    pub async fn list_user_funnels(&self, db: &crate::db::DbState) -> Result<Vec<UserFunnel>, String> {
+        let mut result = db
+            .query("SELECT * FROM analytics_funnels ORDER BY created_at DESC")
+            .await
+            .map_err(|e| format!("Failed to query funnels: {e}"))?;
+        
+        let rows: Vec<serde_json::Value> = result
+            .take(0)
+            .map_err(|e| format!("Failed to parse funnels: {e}"))?;
+        
+        let funnels = rows
+            .into_iter()
+            .filter_map(|row| serde_json::from_value::<UserFunnel>(row).ok())
+            .collect();
+        
+        Ok(funnels)
+    }
+    
+    /// Create user-defined funnel
+    pub async fn create_user_funnel(&self, db: &crate::db::DbState, payload: CreateFunnelRequest) -> Result<UserFunnel, String> {
+        if payload.name.trim().is_empty() {
+            return Err("Funnel name is required".to_string());
+        }
+        
+        if payload.steps.is_empty() {
+            return Err("Funnel must have at least one step".to_string());
+        }
+        
+        let funnel = UserFunnel {
+            id: format!("funnel_{}", chrono::Utc::now().timestamp()),
+            name: payload.name,
+            description: payload.description,
+            steps: payload.steps,
+            active: true,
+            created_by: None,
+            created_at: Some(chrono::Utc::now().to_rfc3339()),
+            updated_at: Some(chrono::Utc::now().to_rfc3339()),
+        };
+        
+        let value = serde_json::to_value(&funnel)
+            .map_err(|e| format!("Failed to serialize funnel: {e}"))?;
+        
+        db.query("CREATE analytics_funnels CONTENT $content")
+            .bind(("content", value))
+            .await
+            .map_err(|e| format!("Failed to create funnel: {e}"))?;
+        
+        Ok(funnel)
+    }
+    
+    /// Analyze funnel performance
+    pub async fn analyze_funnel(
+        &self,
+        db: &crate::db::DbState,
+        funnel_id: &str,
+        payload: AnalyzeFunnelRequest,
+    ) -> Result<FunnelAnalysisResponse, String> {
+        // Get funnel definition
+        let mut funnel_result = db
+            .query("SELECT * FROM analytics_funnels WHERE id = $id")
+            .bind(("id", funnel_id.to_string()))
+            .await
+            .map_err(|e| format!("Failed to query funnel: {e}"))?;
+        
+        let funnels: Vec<UserFunnel> = funnel_result
+            .take(0)
+            .map_err(|e| format!("Failed to parse funnel: {e}"))?;
+        
+        let funnel = funnels.first()
+            .ok_or_else(|| format!("Funnel not found: {funnel_id}"))?;
+        
+        // Placeholder analysis
+        let step_metrics: Vec<FunnelStepAnalysis> = funnel.steps.iter().map(|step| {
+            FunnelStepAnalysis {
+                step_id: step.id.clone(),
+                step_name: step.name.clone(),
+                step_order: step.order,
+                entries: 0,
+                completions: 0,
+                conversion_rate: 0.0,
+                drop_off_count: 0,
+                drop_off_rate: 0.0,
+                avg_time_to_complete: None,
+            }
+        }).collect();
+        
+        Ok(FunnelAnalysisResponse {
+            funnel_id: funnel.id.clone(),
+            funnel_name: funnel.name.clone(),
+            total_entries: 0,
+            completions: 0,
+            overall_conversion_rate: 0.0,
+            step_metrics,
+        })
+    }
+    
+    /// Get enterprise dashboard summary
+    pub async fn get_enterprise_summary(&self, db: &crate::db::DbState) -> Result<EnterpriseDashboardSummary, String> {
+        let stats = self.get_dashboard_stats(db).await?;
+        let behavior = self.get_behavior_overview(db).await?;
+        let real_time = self.get_realtime_stats(db).await?;
+        let trends = self.get_data_trends(db).await?;
+        
+        // Get funnels
+        let funnels = self.list_funnels(db).await?;
+        let funnel_reports = build_funnel_reports(&[], &funnels);
+        
+        // Get journeys
+        let journeys = self.list_journeys(db).await?;
+        let journey_completions = vec![]; // Placeholder
+        
+        Ok(EnterpriseDashboardSummary {
+            stats,
+            behavior,
+            real_time,
+            funnels: funnel_reports,
+            journeys: journey_completions,
+            trends,
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{build_funnel_reports, AnalyticsFunnel};

@@ -233,6 +233,36 @@ lazy_static! {
             up: include_str!("./007_add_backup_jobs.sql").to_string(),
             down: Some(include_str!("./007_add_backup_jobs_down.sql").to_string()),
         },
+        Migration {
+            version: "1.7.0".to_string(),
+            name: "Create translation memory table".to_string(),
+            up: include_str!("./006_translation_memory.sql").to_string(),
+            down: Some(include_str!("./006_translation_memory_down.sql").to_string()),
+        },
+        Migration {
+            version: "1.8.0".to_string(),
+            name: "Add backup history table".to_string(),
+            up: include_str!("./004_backup_history.sql").to_string(),
+            down: None,
+        },
+        Migration {
+            version: "1.9.0".to_string(),
+            name: "Create user sessions table for analytics".to_string(),
+            up: include_str!("./005_user_sessions.sql").to_string(),
+            down: None,
+        },
+        Migration {
+            version: "1.10.0".to_string(),
+            name: "Add email system tables".to_string(),
+            up: include_str!("./008_email_system.sql").to_string(),
+            down: Some(include_str!("./008_email_system_down.sql").to_string()),
+        },
+        Migration {
+            version: "1.11.0".to_string(),
+            name: "Add migrations tracking table".to_string(),
+            up: include_str!("./007_migrations_tracking.sql").to_string(),
+            down: Some(include_str!("./007_migrations_tracking_down.sql").to_string()),
+        },
     ];
 }
 

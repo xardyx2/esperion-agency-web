@@ -1,0 +1,95 @@
+# Git Attributes for Nuxt Studio Compatibility
+# Ensures proper text handling and Git LFS for media files
+
+# ===========================================
+# Line Endings
+# ===========================================
+# Normalize all text files to LF on commit, convert to CRLF on checkout (Windows)
+* text=auto
+
+# Force LF for web files (prevents CRLF issues in browsers)
+*.vue text eol=lf
+*.ts text eol=lf
+*.js text eol=lf
+*.tsx text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.sass text eol=lf
+
+# ===========================================
+# Git LFS for Media Files
+# ===========================================
+# Large binary files should use Git LFS for Nuxt Studio media handling
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.gif filter=lfs diff=lfs merge=lfs -text
+*.svg filter=lfs diff=lfs merge=lfs -text
+*.webp filter=lfs diff=lfs merge=lfs -text
+*.avif filter=lfs diff=lfs merge=lfs -text
+*.ico filter=lfs diff=lfs merge=lfs -text
+*.bmp filter=lfs diff=lfs merge=lfs -text
+
+# Video files
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.webm filter=lfs diff=lfs merge=lfs -text
+*.mov filter=lfs diff=lfs merge=lfs -text
+*.avi filter=lfs diff=lfs merge=lfs -text
+
+# Audio files
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+
+# Document files
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.doc filter=lfs diff=lfs merge=lfs -text
+*.docx filter=lfs diff=lfs merge=lfs -text
+*.xls filter=lfs diff=lfs merge=lfs -text
+*.xlsx filter=lfs diff=lfs merge=lfs -text
+*.ppt filter=lfs diff=lfs merge=lfs -text
+*.pptx filter=lfs diff=lfs merge=lfs -text
+
+# Archive files
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.tar filter=lfs diff=lfs merge=lfs -text
+*.gz filter=lfs diff=lfs merge=lfs -text
+*.rar filter=lfs diff=lfs merge=lfs -text
+
+# ===========================================
+# Export Settings
+# ===========================================
+# Prevent certain files from being exported in Git archives
+.gitattributes export-ignore
+.gitignore export-ignore
+.env export-ignore
+.env.local export-ignore
+.env.* export-ignore
+node_modules/ export-ignore
+.output/ export-ignore
+dist/ export-ignore
+.nyc_output/ export-ignore
+coverage/ export-ignore
+*.log export-ignore
+
+# ===========================================
+# Nuxt Studio Specific
+# ===========================================
+# Content files that Nuxt Studio should track for visual editing
+*.md text
+*.mdx text
+content/**/* text
+
+# ===========================================
+# Binary Files (Explicit)
+# ===========================================
+# Ensure these are never treated as text
+*.lock binary
+*.lockb binary
+*.bin binary

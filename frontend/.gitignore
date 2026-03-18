@@ -1,3 +1,50 @@
+# Test & Coverage
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/coverage/
+.nyc_output/
+
+# ===========================================
+# Nuxt Studio & Visual Editing
+# ===========================================
+# Nuxt Studio local state
+.nuxt-studio/
+.studio/
+*.studio.json
+
+# Visual editing drafts
+.drafts/
+*.draft.*
+
+# ===========================================
+# Nuxt Build
+# ===========================================
+# Development build
+.nuxt/
+
+# Production build
+.output/
+dist/
+
+# Generated static
+generate/
+
+# ===========================================
+# Dependencies
+# ===========================================
+node_modules/
+.pnp/
+.pnp.js
+
+# Package manager locks (keep bun.lockb)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ===========================================
+# Environment
+# ===========================================
+.env
+.env.local
+.env.*.local

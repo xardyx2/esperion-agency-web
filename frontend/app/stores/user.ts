@@ -1,96 +1,94 @@
 import { defineStore } from 'pinia'
-import { useAuthApi, useApi } from '~/composables/useApi'
-import type { User } from '~/types/api'
+import { ref, computed } from 'vue'
 
-export interface UserPreferences {
-  theme?: 'light' | 'dark'
-  language?: 'en' | 'id'
-  notifications?: boolean
-  sidebarCollapsed?: boolean
-  [key: string]: any
+export interface UserProfile {
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+  avatar?: string
+  createdAt: string
+  updatedAt: string
 }
 
-interface UserState {
-  profile: User | null
-  preferences: UserPreferences
-  isLoading: boolean
+export type UserRole = 'admin' | 'editor' | 'viewer'
+
+export interface UserPermissions {
+  canCreate: boolean
+  canEdit: boolean
+  canDelete: boolean
+  canPublish: boolean
 }
 
-export const useUserStore = defineStore('user', {
-  state: (): UserState => ({
-    profile: null,
-    preferences: {},
-    isLoading: false
-  }),
+export const useUserStore = defineStore('user', () => {
+  // State
+  const profile = ref<UserProfile | null>(null)
+  const role = ref<UserRole | null>(null)
+  const permissions = ref<UserPermissions | null>(null)
 
-  getters: {
-    userProfile: state => state.profile,
-    userPreferences: state => state.preferences,
-    isProfileLoading: state => state.isLoading
-  },
+  // Getters
+  const isAdmin = computed(() => role.value === 'admin')
+  const isEditor = computed(() => role.value === 'editor' || role.value === 'admin')
+  const fullName = computed(() => {
+    if (!profile.value) return ''
+    return `${profile.value.firstName} ${profile.value.lastName}`.trim()
+  })
 
-  actions: {
-    async fetchProfile() {
-      this.isLoading = true
-      try {
-        const response = await useAuthApi().getCurrentUser()
-        this.profile = response
-        return response
-      } catch (error) {
-        console.error('Failed to fetch user profile:', error)
-        throw error
-      } finally {
-        this.isLoading = false
+  // Actions
+  async function fetchUser() {
+    try {
+      const response = await fetch('/api/v1/user/me')
+      if (!response.ok) {
+        throw new Error('Failed to fetch user')
       }
-    },
-
-    async updateProfile(data: Partial<User>) {
-      // NOTE: This is currently a simplified implementation
-      // In practice, you'd make an API call to update user data
-      this.isLoading = true
-
-      try {
-        // In a real implementation, this would be an API call like:
-        // const response = await useUserApi().updateProfile(data);
-
-        // For now, we'll just update locally
-        if (this.profile) {
-          this.profile = { ...this.profile, ...data }
-        }
-        return this.profile
-      } catch (error) {
-        console.error('Failed to update user profile:', error)
-        throw error
-      } finally {
-        this.isLoading = false
-      }
-    },
-
-    updatePreferences(prefs: UserPreferences) {
-      this.preferences = { ...this.preferences, ...prefs }
-
-      // Save preferences to local storage for persistence
-      if (import.meta.client) {
-        localStorage.setItem('user-preferences', JSON.stringify(this.preferences))
-      }
-    },
-
-    loadPreferencesFromStorage() {
-      if (import.meta.client) {
-        const storedPrefs = localStorage.getItem('user-preferences')
-        if (storedPrefs) {
-          try {
-            this.preferences = JSON.parse(storedPrefs)
-          } catch (e) {
-            console.error('Failed to parse stored preferences:', e)
-          }
-        }
-      }
+      const data = await response.json()
+      profile.value = data.profile
+      role.value = data.role
+      permissions.value = data.permissions
+    } catch (error) {
+      console.error('Error fetching user:', error)
+      throw error
     }
-  },
+  }
 
-  persist: {
-    key: 'user-store',
-    pick: ['preferences']
+  async function updateProfile(updates: Partial<UserProfile>) {
+    try {
+      const response = await fetch('/api/v1/user/profile', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      })
+      if (!response.ok) {
+        throw new Error('Failed to update profile')
+      }
+      const data = await response.json()
+      profile.value = { ...profile.value, ...data }
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      throw error
+    }
+  }
+
+  function clearUser() {
+    profile.value = null
+    role.value = null
+    permissions.value = null
+  }
+
+  return {
+    // State
+    profile,
+    role,
+    permissions,
+    // Getters
+    isAdmin,
+    isEditor,
+    fullName,
+    // Actions
+    fetchUser,
+    updateProfile,
+    clearUser,
   }
 })

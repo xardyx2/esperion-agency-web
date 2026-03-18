@@ -36,3 +36,64 @@ coverage/
 # Misc
 .cache/
 .temp/
+
+# ===========================================
+# Nuxt Studio & Visual Editing
+# ===========================================
+# Nuxt Studio local state
+.nuxt-studio/
+.studio/
+*.studio.json
+
+# Visual editing drafts
+.drafts/
+*.draft.*
+
+# Git LFS objects (managed by LFS)
+.git/lfs/
+
+# ===========================================
+# Nuxt Specific
+# ===========================================
+# Nuxt build output (production)
+.output/
+dist/
+
+# Nuxt dev build (development)
+.nuxt/
+frontend/.nuxt/
+
+# Nuxt generate
+generate/
+
+# ===========================================
+# Content & Media (Managed via Nuxt Studio)
+# ===========================================
+# Large media files (use Git LFS)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+*.avif
+*.mp4
+*.webm
+*.mov
+*.mp3
+*.wav
+*.pdf
+
+# Content directory (if used)
+content/.index/
+
+# ===========================================
+# IDE & Editor (Extended)
+# ===========================================
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-*

@@ -1,3 +1,33 @@
-# Uptime Kuma deployment
-# TODO: Configure Uptime Kuma for monitoring the Esperion Agency Web application
-# This will be deployed as part of the monitoring stack
+# Uptime Kuma Configuration for Esperion Agency Web
+# Documentation: https://github.com/louislam/uptime-kuma
+
+# Basic monitoring configuration
+monitoring:
+  # Application endpoints to monitor
+  endpoints:
+    - name: Frontend
+      url: http://localhost:3000
+      type: http
+      interval: 60
+
+    - name: Backend API
+      url: http://localhost:8081/api/v1
+      type: http
+      interval: 60
+
+    - name: SurrealDB
+      url: http://localhost:8002
+      type: http
+      interval: 60
+
+  # Alert configuration (configure notification channels in Uptime Kuma UI)
+  alerts:
+    enabled: true
+    notification_channels:
+      - email
+      - webhook
+
+  # Maintenance windows (optional)
+  maintenance:
+    enabled: false
+    windows: []
